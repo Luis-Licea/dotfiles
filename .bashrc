@@ -1,13 +1,18 @@
 # ALIASES
-alias guhome='cd /home/luis' #Go ubuntu home
-alias uhome='home/luis' #Ubuntu home
+alias guhome='cd /home/luis' 		#Go ubuntu home
+alias uhome='home/luis' 		#Ubuntu home
 
-alias gchome='cd /mnt/c/Users/luisl/' #Go c home
-alias wcome='/mnt/c/Users/luisl/' #c home
+alias gchome='cd /mnt/c/Users/luisl/' 	#Go c home
+alias chome='/mnt/c/Users/luisl/' 	#c home
 
-alias gdhome='cd /mnt/d/' #Go d
-alias dhome='/mnt/d/' #d
+alias gdhome='cd /mnt/d/' 		#Go d
+alias dhome='/mnt/d/' 			#d
 
+alias gqt='cd /mnt/d/Documents/Qt/'	#Go Qt folder
+alias qt='/mnt/d/Documents/Qt/'		#Qt folder
+
+alias gtemp='cd /tmp/'			#Go temp folder
+alias temp='/temp/'			#Temp folder
 
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
