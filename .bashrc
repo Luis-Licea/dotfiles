@@ -11,6 +11,15 @@ alias dhome='/mnt/d/' 			#d
 alias gqt='cd /mnt/d/Documents/Qt/'	#Go Qt folder
 alias qt='/mnt/d/Documents/Qt/'		#Qt folder
 
+alias gdownloads='cd /mnt/d/Downloads/' #Go Downloads folder
+alias downloads='/mnt/d/Downlods/'	#Downloads folder
+
+alias gcode='cd /mnt/d/Downloads/Code' 	#Go Code folder
+alias code='/mnt/d/Downloads/Code'	#Code folder
+
+alias gdtemp='cd /mnt/d/Downloads/Temp/' #Go temp folder in d:
+alias dtemp='/mnt/d/Downloads/Temp/'	#Temp folder in d:
+
 alias gtemp='cd /tmp/'			#Go temp folder
 alias temp='/temp/'			#Temp folder
 
