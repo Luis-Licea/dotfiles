@@ -33,6 +33,12 @@ autocmd FileType python imap <buffer> <F5> <esc>:w<CR>:exec '!clear; python3' sh
 autocmd FileType cpp map <buffer> <F5> :w<CR>:exec '!clear; g++ -o %< % && ./%<' shellescape(@%, 1)<CR>
 autocmd FileType cpp imap <buffer> <F5> <esc>:w<CR>:exec '!clear; g++ -o %< % && ./%<' shellescape(@%, 1)<CR>
 
+" Compiling LaTex code in Vim 
+autocmd FileType tex map <buffer> <F5> :w<CR>:exec '!clear; pdflatex.exe %' shellescape(@%, 1)<CR>
+autocmd FileType tex imap <buffer> <F5> <esc>:w<CR>:exec '!clear; pdflatex.exe %' shellescape(@%, 1)<CR> <CR>
+autocmd FileType tex map <buffer> <F4> :w<CR>:exec '!sumatrapdf.exe %<.pdf &'<CR> <CR>
+autocmd FileType tex imap <buffer> <F4> <esc>:w<CR>:exec '!sumatrapdf.exe %<.pdf &'<CR> <CR>
+
 " Formats text in gitcommits
 autocmd Filetype gitcommit setlocal spell textwidth=72 "Spell check and automatic wrapping for commit messages
 

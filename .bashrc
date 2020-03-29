@@ -23,6 +23,12 @@ alias dtemp='/mnt/d/Downloads/Temp/'	#Temp folder in d:
 alias gtemp='cd /tmp/'			#Go temp folder
 alias temp='/temp/'			#Temp folder
 
+alias glatex='cd /mnt/d/Documents/LaTeX/' #Go LaTeX folder
+alias dlatex='/mnt/d/Documents/LaTeX/' #LaTeX folder
+
+alias gdocuments='cd /mnt/d/Documents/' #Go Documents folder
+alias documents='cd /mnt/d/Documents/LaTeX' #Documents folder
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
