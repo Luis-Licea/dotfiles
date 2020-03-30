@@ -1,6 +1,6 @@
 " Leader Mappings
 map <Space> <Leader>
-map ; <LocalLeader>
+map \ <LocalLeader>
 " Fix syntax highlighting 
 nnoremap <silent> <Leader>c :syntax sync fromstart<CR> 
 " Stiwch between relative and absolute numbers 
@@ -13,12 +13,8 @@ nnoremap <Leader>w :write<CR>
 nnoremap <Leader>q :quit<CR>
 " Close all vim windows
 nnoremap <Leader>q :qall<CR>
-nnoremap <Leader>gs :Gstatus<CR>
-
 " Recently edited files
 nnoremap <Leader>h :history<CR>
-inoremap ;e <Esc> 
- 
 " CtrlP use FZF (faster!)
 noremap <C-p> :files<Cr>
 
@@ -53,14 +49,13 @@ set ignorecase smartcase              	" Search queries intelligently set case
 " set hlsearch                          " Highlight search results
 " set incsearch                         " Show search results as you type
 " set timeoutlen=1000 ttimeoutlen=0     " Remove timeout when hitting escape
-" set showcmd                           " Show size of visual selection
-
 "-------------------------------------------------------------------------------
 " Interface
 "-------------------------------------------------------------------------------
 set number            	" Enable line numbers
 syntax on 		" Highlights texts
-
+set tabstop=4		" Shortens the tab size to 4 spaces
+set autoindent		" Automatic indentation when goint to next line
 "-------------------------------------------------------------------------------
 " Colors & Formatting
 "-------------------------------------------------------------------------------
@@ -80,7 +75,7 @@ nnoremap <C-Right> :tabnext<CR>
 " Find/replace
 " vnoremap <C-r> "hy:%s/<C-r>h//g<left><left><left>
 
-" Get off my lawn - helpful when learning Vim :)
+" Helpful when learning Vim
 nnoremap <Left> :echoe "Use h"<CR>
 nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up> :echoe "Use k"<CR>
