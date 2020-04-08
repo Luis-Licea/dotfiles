@@ -3,18 +3,20 @@ map <Space> <Leader>
 map \ <LocalLeader>
 " Fix syntax highlighting 
 nnoremap <silent> <Leader>c :syntax sync fromstart<CR> 
-" Stiwch between relative and absolute numbers 
-nnoremap <silent> <Leader>r :set nu! rnu!<CR>
+" Stiwch relative numbers 
+nnoremap <silent> <Leader>r :set relativenumber!<CR>
+" Swith numbered lines 
+nnoremap <silent> <Leader>n :set number!<CR>
 " Print file name
 nnoremap <Leader>p :echo expand('%')<CR>
 " Save file
 nnoremap <Leader>w :write<CR>
 " Quit vim
 nnoremap <Leader>q :quit<CR>
-" Close all vim windows
-nnoremap <Leader>q :qall<CR>
 " Recently edited files
 nnoremap <Leader>h :history<CR>
+" Switch autoindentation 
+nnoremap <Leader>a :set autoindent!<CR>
 " CtrlP use FZF (faster!)
 noremap <C-p> :files<Cr>
 
@@ -41,7 +43,7 @@ autocmd Filetype gitcommit setlocal spell textwidth=72 "Spell check and automati
 " autocmd Filetype scss if getfsize(@%) > 300 | setlocal syntax=OFF | endif
 
 set autoread                          	" Auto reload changed files
-set history=500 			" History file is at most 500 lines
+set history=499 						" History file is at most 500 lines
 set ignorecase smartcase              	" Search queries intelligently set case
 " set splitright                        " Open new splits to the right
 " set splitbelow                        " Open new splits to the bottom
@@ -50,12 +52,30 @@ set ignorecase smartcase              	" Search queries intelligently set case
 " set incsearch                         " Show search results as you type
 " set timeoutlen=1000 ttimeoutlen=0     " Remove timeout when hitting escape
 "-------------------------------------------------------------------------------
+" File finder
+"-------------------------------------------------------------------------------
+set path+=** 		" Looks into subfolders to find and open a file. 
+					" :find filename - finds the file in subfolders
+					" Press Tab for suggesting files
+					" Use the * as a wildcard for beginnings or endings
+set wildmenu		" Display all matching files when tab is pressed
+					" :b filename - goes to other buffers
+					" Can use Tab or specify unique substring of filename
+"-------------------------------------------------------------------------------
+" Snippets
+"-------------------------------------------------------------------------------
+" Paste the following code from the specified file into the buffer
+nnoremap <Leader>cpp :-1read ~/Templates/code.cpp<CR> 
+"-------------------------------------------------------------------------------
 " Interface
 "-------------------------------------------------------------------------------
-set number            	" Enable line numbers
-syntax on 		" Highlights texts
+set number          " Enable line numbers
 set tabstop=4		" Shortens the tab size to 4 spaces
+set shiftwidth=4	" Sets tab size to 4 spaces when using shift > and shift <
 set autoindent		" Automatic indentation when goint to next line
+set nocompatible	" Not compatible with Vi (embrace the future)
+syntax on 			" Highlights texts
+filetype plugin on	" Enable plugins
 "-------------------------------------------------------------------------------
 " Colors & Formatting
 "-------------------------------------------------------------------------------
