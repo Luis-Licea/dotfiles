@@ -11,7 +11,7 @@
 .profile
 .python_history
 .sudo_as_admin_successful
-.vim/
+.vim/.netrwhist
 .viminfo
 .wget-hsts
 .bash_logout
