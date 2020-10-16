@@ -31,9 +31,13 @@ autocmd FileType python imap <buffer> <F5> <esc>:w<CR>:exec '!clear; python3' sh
 autocmd FileType cpp map <buffer> <F5> :w<CR>:exec '!clear; g++ -o %< % && ./%<' shellescape(@%, 1)<CR>
 autocmd FileType cpp imap <buffer> <F5> <esc>:w<CR>:exec '!clear; g++ -o %< % && ./%<' shellescape(@%, 1)<CR>
 
-" Running C# code in Vim 
-autocmd FileType cs map <buffer> <F5> :w<CR>:exec '!clear; dotnet run' shellescape(@%, 1)<CR>
-autocmd FileType cs imap <buffer> <F5> <esc>:w<CR>:exec '!clear; dotnet run' shellescape(@%, 1)<CR>
+" Running C# code in Vim
+" autocmd FileType cs map <buffer> <F5> :w<CR>:exec '!clear; dotnet run' shellescape(@%, 1)<CR>
+" autocmd FileType cs imap <buffer> <F5> <esc>:w<CR>:exec '!clear; dotnet run' shellescape(@%, 1)<CR>
+" Use Mono C# compiler
+autocmd FileType cs map <buffer> <F5> :w<CR>:exec '!clear; mcs -o:%< % && ./%<.exe' shellescape(@%, 1)<CR>
+autocmd FileType cs imap <buffer> <F5> <esc>:w<CR>:exec '!clear; mcs -o:%< % && ./%<.exe' shellescape(@%, 1)<CR>
+
 
 " Compiling LaTex code in Vim 
 autocmd FileType tex map <buffer> <F5> :w<CR>:exec '!clear; pdflatex.exe %' shellescape(@%, 1)<CR>
