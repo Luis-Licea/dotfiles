@@ -35,8 +35,9 @@ autocmd FileType cpp imap <buffer> <F5> <esc>:w<CR>:exec '!clear; g++ -o %< % &&
 " autocmd FileType cs map <buffer> <F5> :w<CR>:exec '!clear; dotnet run' shellescape(@%, 1)<CR>
 " autocmd FileType cs imap <buffer> <F5> <esc>:w<CR>:exec '!clear; dotnet run' shellescape(@%, 1)<CR>
 " Use Mono C# compiler
-autocmd FileType cs map <buffer> <F5> :w<CR>:exec '!clear; mcs -o:%< % && ./%<.exe' shellescape(@%, 1)<CR>
-autocmd FileType cs imap <buffer> <F5> <esc>:w<CR>:exec '!clear; mcs -o:%< % && ./%<.exe' shellescape(@%, 1)<CR>
+autocmd FileType cs map <buffer> <F5> :w<CR>:exec '!clear; mcs "%" && ./"%<.exe"' shellescape(@%, 1)<CR>
+autocmd FileType cs imap <buffer> <F5> <esc>:w<CR>:exec '!clear; mcs "%" && ./"%<.exe"' shellescape(@%, 1)<CR>
+
 
 
 " Compiling LaTex code in Vim 
