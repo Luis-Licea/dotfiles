@@ -1,6 +1,8 @@
+"-------------------------------------------------------------------------------
+" Mappings
+"-------------------------------------------------------------------------------
 " Leader Mappings
 map <Space> <Leader>
-map \ <LocalLeader>
 " Fix syntax highlighting 
 nnoremap <silent> <Leader>c :syntax sync fromstart<CR> 
 " Stiwch relative numbers 
@@ -69,6 +71,7 @@ nnoremap <Leader>cpp :-1read ~/Templates/code.cpp<CR>
 "-------------------------------------------------------------------------------
 " Interface
 "-------------------------------------------------------------------------------
+set clipboard=unnamed		" Share clipboard with operating system
 set backspace=2				" Enable backspace when using gVim
 set number          		" Enable line numbers
 set tabstop=4				" Shortens the tab size to 4 spaces
@@ -85,8 +88,19 @@ filetype plugin on			" Enable plugins
 "-------------------------------------------------------------------------------
 " Colors & Formatting
 "-------------------------------------------------------------------------------
+" Set colorscheme for terminal
 colorscheme desert 
 set background=dark
+
+" Change gVim looks depending on operating system
+if has("gui_running")
+	if has("gui_gtk3")
+		set guifont=Inconsolata\ 12
+	elseif has("gui_win32")
+		set guifont=Consolas:h11:cANSI
+		colorscheme slate
+	endif
+endif
 
 " Showcase comments in italics
 highlight Comment cterm=italic gui=italic
