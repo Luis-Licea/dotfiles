@@ -69,6 +69,7 @@ nnoremap <Leader>cpp :-1read ~/Templates/code.cpp<CR>
 "-------------------------------------------------------------------------------
 " Interface
 "-------------------------------------------------------------------------------
+set backspace=2				" Enable backspace when using gVim
 set number          		" Enable line numbers
 set tabstop=4				" Shortens the tab size to 4 spaces
 set shiftwidth=4			" Set tab size to 4 spaces
