@@ -71,6 +71,7 @@ nnoremap <Leader>cpp :-1read ~/Templates/code.cpp<CR>
 "-------------------------------------------------------------------------------
 " Interface
 "-------------------------------------------------------------------------------
+set cindent					" Add indentation when S or cc is pressed
 set colorcolumn=81			" Reminder to keep lines at most 80 characters long
 set clipboard=unnamed		" Share clipboard with operating system
 set backspace=2				" Enable backspace when using gVim
