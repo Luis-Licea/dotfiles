@@ -5,12 +5,14 @@
 map <Space> <Leader>
 " Fix syntax highlighting 
 nnoremap <silent> <Leader>c :syntax sync fromstart<CR> 
-" Stiwch relative numbers 
+" Switch relative numbers 
 nnoremap <silent> <Leader>r :set relativenumber!<CR>
-" Swith numbered lines 
+" Switch numbered lines 
 nnoremap <silent> <Leader>n :set number!<CR>
-" Stiwch paste
+" Switch paste
 nnoremap <Leader>p :set paste!<CR>
+" Switch spellcheck
+nnoremap <Leader>s :set spell!<CR>
 " Load .vimrc
 nnoremap <Leader>v :source ~/.vimrc<CR>
 " Print file name
