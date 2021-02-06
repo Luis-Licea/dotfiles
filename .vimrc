@@ -70,10 +70,11 @@ nnoremap <Leader>cpp :-1read ~/Templates/code.cpp<CR>
 "-------------------------------------------------------------------------------
 " Interface
 "-------------------------------------------------------------------------------
+set encoding=utf-8          " Set encoding to UTF-8 to recognize Greek/Cyrillic
 set ruler 					" Set the ruler to see the line and column  
 set cindent					" Add indentation when S or cc is pressed
 set colorcolumn=81			" Reminder to keep lines at most 80 characters long
-set clipboard=unnamed		" Share clipboard with operating system
+set clipboard=unnamedplus	" Share clipboard with operating system
 set backspace=2				" Enable backspace when using gVim
 set number          		" Enable line numbers
 set tabstop=4				" Shorten the tab size to 4 spaces
