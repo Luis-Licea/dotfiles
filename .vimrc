@@ -1,24 +1,64 @@
 "-------------------------------------------------------------------------------
 " Mappings
+" Note: It is important that comments not be in the same line as commands.
+" Prefix s means "switch". Prefix f means "file".
 "-------------------------------------------------------------------------------
-map <Space> <Leader>                                    " Leader Mappings
-nnoremap <silent> <Leader>c :syntax sync fromstart<CR>  " Fix syntax highlighting
-nnoremap <silent> <Leader>r :set relativenumber!<CR>    " Switch relative numbers
-nnoremap <silent> <Leader>n :set number!<CR>            " Switch numbered lines
-nnoremap <Leader>p :set paste!<CR>                      " Switch paste
-nnoremap <Leader>s :set spell!<CR>                      " Switch spellcheck
-nnoremap <Leader>v :source ~/.vimrc<CR>                 " Load .vimrc
-nnoremap <Leader>f :echo expand('%')<CR>                " Print file name
-nnoremap <Leader>ff :echo expand("%:p")<CR>             " Print file name (full)
-nnoremap <Leader>fff :echo expand("%:p:h")<CR>          " Print file directory
-nnoremap <Leader>w :write<CR>                           " Save file
-nnoremap <Leader>q :quit<CR>                            " Quit vim
-nnoremap <Leader>h :history<CR>                         " Recently edited files
-nnoremap <Leader>a :set autoindent!<CR>                 " Switch autoindentation
-nnoremap <Left> :echoe "Use h"<CR>                      " Prevent arrow keys
-nnoremap <Right> :echoe "Use l"<CR>                     " Prevent arrow keys
-nnoremap <Up> :echoe "Use k"<CR>                        " Prevent arrow keys
-nnoremap <Down> :echoe "Use j"<CR>                      " Prevent arrow keys
+" Leader Mappings.
+map <Space> <Leader>
+
+" Save file.
+nnoremap <Leader>w :write<CR>
+
+" Quit vim.
+nnoremap <Leader>q :quit<CR>
+
+" Add indentation when S or cc is pressed.
+nnoremap <Leader>c :set cindent<CR>
+
+" Load .vimrc.
+nnoremap <Leader>v :source ~/.vimrc<CR>
+
+" Print file name.
+nnoremap <Leader>fn :echo expand('%')<CR>
+
+" Print file path (full).
+nnoremap <Leader>fp :echo expand("%:p")<CR>
+
+" Print file directory.
+nnoremap <Leader>fd :echo expand("%:p:h")<CR>
+
+" Switch relative numbers.
+nnoremap <Leader>sr :set relativenumber!<CR>
+
+" Switch numbered lines.
+nnoremap <Leader>sn :set number!<CR>
+
+" Switch paste.
+nnoremap <Leader>sp :set paste!<CR>
+
+" Switch spellcheck.
+nnoremap <Leader>ss :set spell!<CR>
+
+" Switch autoindent.
+nnoremap <Leader>sa :set autoindent!<CR>
+
+" Switch wrap.
+nnoremap <Leader>sw :set wrap!<CR>
+
+" Fix syntax highlighting.
+nnoremap <Leader>fs :syntax sync fromstart<CR>
+
+" Prevent arrow keys.
+nnoremap <Left> :echoe "Use h"<CR>
+
+" Prevent arrow keys.
+nnoremap <Right> :echoe "Use l"<CR>
+
+" Prevent arrow keys.
+nnoremap <Up> :echoe "Use k"<CR>
+
+" Prevent arrow keys.
+nnoremap <Down> :echoe "Use j"<CR>
 "-------------------------------------------------------------------------------
 " Program settings
 "-------------------------------------------------------------------------------
@@ -43,6 +83,10 @@ autocmd FileType cs imap <buffer> <F5> <esc>:w<CR>:exec '!clear; csc.exe "%" && 
 " Run Java code in Vim.
 autocmd FileType java map <buffer> <F5> :w<CR>:exec '!clear; javac "%" && java "%<"' shellescape(@%, 1)<CR>
 autocmd FileType java imap <buffer> <F5> <esc>:w<CR>:exec '!clear; javac "%" && java "%<"' shellescape(@%, 1)<CR>
+
+" Run Rust code in Vim.
+autocmd FileType rust map <buffer> <F5> :w<CR>:exec '!clear; rustc "%" && ./"%<"' shellescape(@%, 1)<CR>
+autocmd FileType rust imap <buffer> <F5> <esc>:w<CR>:exec '!clea:r; rustc "%" && ./"%<"' shellescape(@%, 1)<CR>
 
 " Compile LaTeX code in Vim.
 autocmd FileType tex map <buffer> <F5> :w<CR>:exec '!clear; pdflatex.exe "%"' shellescape(@%, 1)<CR>
@@ -85,7 +129,6 @@ set autoread				" Auto reload changed files
 set history=20 				" History file is at most 20 lines
 set ignorecase smartcase	" Search queries intelligently set case
 set incsearch				" Show search results as you type
-set smartindent				" Indent text inside brackets
 set background=dark         " Tell Vim if the background is light or dark
 "-------------------------------------------------------------------------------
 " Colors & Formatting
@@ -122,9 +165,6 @@ nnoremap <C-Down> :silent! let &guifont = substitute(
 " Other
 "-------------------------------------------------------------------------------
 " autocmd Filetype scss if getfsize(@%) > 300 | setlocal syntax=OFF | endif
-" set splitright						" Open new splits to the right
-" set splitbelow						" Open new splits to the bottom
-" set noerrorbells novisualbell			" Turn off visual and audible bells
 " set hlsearch							" Highlight search results
-" set timeoutlen=1000 ttimeoutlen=0		" Remove timeout when hitting escape
+" set smartindent				" Indent text inside brackets
 "-------------------------------------------------------------------------------
