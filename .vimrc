@@ -134,7 +134,7 @@ set background=dark         " Tell Vim if the background is light or dark
 " Colors & Formatting
 "-------------------------------------------------------------------------------
 syntax enable 				" Highlight texts
-filetype plugin on			" Enable plugins
+filetype indent plugin on	" Enable plugins
 colorscheme desert 			" Set color scheme for terminal
 
 " Show comments in gray italics
