@@ -1,0 +1,21 @@
+NPP_SAVE
+cd "$(CURRENT_DIRECTORY)"
+if '$(EXT_PART)' == '.cs'
+   csc "$(FILE_NAME)"
+   "$(NAME_PART)".exe
+   //npp_run cmd.exe /k "$(NAME_PART)".exe
+   //npp_run cmd.exe /c "$(NAME_PART)".exe
+
+else if '$(EXT_PART)' == '.py'
+    python "$(NAME_PART)".py 
+   //npp_run cmd.exe /c "$(NAME_PART)".py pause
+   
+else if '$(EXT_PART)' == '.java'
+   //javac "$(FILE_NAME)"
+   //java "$(NAME_PART)"
+   java.exe "$(FILE_NAME)"
+  
+else if '$(EXT_PART)' == '.tex'
+   pdflatex.exe "$(FILE_NAME)" 
+   
+endif
