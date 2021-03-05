@@ -5,58 +5,40 @@
 "-------------------------------------------------------------------------------
 " Leader Mappings.
 map <Space> <Leader>
-
 " Save file.
 nnoremap <Leader>w :write<CR>
-
 " Quit vim.
 nnoremap <Leader>q :quit<CR>
-
 " Add indentation when S or cc is pressed.
 nnoremap <Leader>c :set cindent<CR>
-
 " Load .vimrc.
 nnoremap <Leader>v :source ~/.vimrc<CR>
-
 " Print file name.
 nnoremap <Leader>fn :echo expand('%')<CR>
-
 " Print file path (full).
 nnoremap <Leader>fp :echo expand("%:p")<CR>
-
 " Print file directory.
 nnoremap <Leader>fd :echo expand("%:p:h")<CR>
-
 " Switch relative numbers.
 nnoremap <Leader>sr :set relativenumber!<CR>
-
 " Switch numbered lines.
 nnoremap <Leader>sn :set number!<CR>
-
 " Switch paste.
 nnoremap <Leader>sp :set paste!<CR>
-
 " Switch spellcheck.
 nnoremap <Leader>ss :set spell!<CR>
-
 " Switch autoindent.
 nnoremap <Leader>sa :set autoindent!<CR>
-
 " Switch wrap.
 nnoremap <Leader>sw :set wrap!<CR>
-
 " Fix syntax highlighting.
 nnoremap <Leader>fs :syntax sync fromstart<CR>
-
 " Prevent arrow keys.
 nnoremap <Left> :echoe "Use h"<CR>
-
 " Prevent arrow keys.
 nnoremap <Right> :echoe "Use l"<CR>
-
 " Prevent arrow keys.
 nnoremap <Up> :echoe "Use k"<CR>
-
 " Prevent arrow keys.
 nnoremap <Down> :echoe "Use j"<CR>
 "-------------------------------------------------------------------------------
