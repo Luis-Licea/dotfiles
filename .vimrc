@@ -1,10 +1,10 @@
 "-------------------------------------------------------------------------------
-" Mappings
-" Note: It is important that comments not be in the same line as commands.
-" Prefix s means "switch". Prefix f means "file".
+" Ungrouped Mappings. Note: Do not place comments in the same line as mappings.
 "-------------------------------------------------------------------------------
-" Leader Mappings.
+" Leader Mapping.
 map <Space> <Leader>
+" Pannel (window) mapping.
+map <BSlash> <C-W>
 " Save file.
 nnoremap <Leader>w :write<CR>
 " Quit vim.
@@ -12,13 +12,32 @@ nnoremap <Leader>q :quit<CR>
 " Add indentation when S or cc is pressed.
 nnoremap <Leader>c :set cindent<CR>
 " Load .vimrc.
-nnoremap <Leader>v :source ~/.vimrc<CR>
+nnoremap <Leader>so :source ~/.vimrc<CR>
+" Fix syntax highlighting.
+nnoremap <Leader>fs :syntax sync fromstart<CR>
+"-------------------------------------------------------------------------------
+" Arrow key mappings.
+"-------------------------------------------------------------------------------
+" Prevent arrow keys.
+nnoremap <Left> :echoe "Use h"<CR>
+" Prevent arrow keys.
+nnoremap <Right> :echoe "Use l"<CR>
+" Prevent arrow keys.
+nnoremap <Up> :echoe "Use k"<CR>
+" Prevent arrow keys.
+nnoremap <Down> :echoe "Use j"<CR>
+"-------------------------------------------------------------------------------
+" File mappings. Prefix f means "file".
+"-------------------------------------------------------------------------------
 " Print file name.
 nnoremap <Leader>fn :echo expand('%')<CR>
 " Print file path (full).
 nnoremap <Leader>fp :echo expand("%:p")<CR>
 " Print file directory.
 nnoremap <Leader>fd :echo expand("%:p:h")<CR>
+"-------------------------------------------------------------------------------
+" Switch mappings. Prefix s means "switch".
+"-------------------------------------------------------------------------------
 " Switch relative numbers.
 nnoremap <Leader>sr :set relativenumber!<CR>
 " Switch numbered lines.
@@ -31,18 +50,43 @@ nnoremap <Leader>ss :set spell!<CR>
 nnoremap <Leader>sa :set autoindent!<CR>
 " Switch wrap.
 nnoremap <Leader>sw :set wrap!<CR>
-" Fix syntax highlighting.
-nnoremap <Leader>fs :syntax sync fromstart<CR>
-" Prevent arrow keys.
-nnoremap <Left> :echoe "Use h"<CR>
-" Prevent arrow keys.
-nnoremap <Right> :echoe "Use l"<CR>
-" Prevent arrow keys.
-nnoremap <Up> :echoe "Use k"<CR>
-" Prevent arrow keys.
-nnoremap <Down> :echoe "Use j"<CR>
 "-------------------------------------------------------------------------------
-" Program settings
+" Buffer mappings. Prefix b means "buffer".
+"-------------------------------------------------------------------------------
+" Go to the next buffer.
+nnoremap <Leader>bn :bn<CR>
+" Go to the previous buffer.
+nnoremap <Leader>bp :bp<CR>
+" Go back (to last) buffer.
+nnoremap <Leader>bb :b#<CR>
+" Show open buffers.
+nnoremap <Leader>bs :buffers<CR>
+" Delete (close) buffer from buffers list.
+nnoremap <Leader>bd :bd<CR>
+"-------------------------------------------------------------------------------
+" Pannel (window) mappings. Prefix p means "pannel".
+"-------------------------------------------------------------------------------
+" Create pannel horizontally.
+nnoremap <Leader>ph :sp<CR>
+" Create pannel vertically.
+nnoremap <Leader>pv :vsp<CR>
+" Pannel flip (exchange).
+nnoremap <Leader>pf <C-W>x
+" Show only one pannel.
+nnoremap <Leader>po <C-W>o
+"-------------------------------------------------------------------------------
+" NERDTree mappings. Prefix t means "tree".
+"-------------------------------------------------------------------------------
+" Open/Close NERDTree.
+nnoremap <Leader>t :NERDTreeToggle<CR>
+" Go to NERDTree window.
+nnoremap <Leader>tw :NERDTreeFocus<CR>
+" Open NERTDTree in CWD.
+nnoremap <Leader>tc :NERDTree<CR>
+" Find current buffer in NERDTree.
+nnoremap <Leader>tf :NERDTreeFind<CR>
+"-------------------------------------------------------------------------------
+" Program settings.
 "-------------------------------------------------------------------------------
 "In Windows, replace "clear;" with "cls &&" and "python3" with "python"
 
@@ -56,7 +100,7 @@ autocmd FileType c imap <buffer> <F5> <esc>:w<CR>:exec '!clear; gcc "%" -o "%<" 
 autocmd FileType cpp map <buffer> <F5> :w<CR>:exec '!clear; g++ "%" -o "%<" && "./%<"' shellescape(@%, 1)<CR>
 autocmd FileType cpp imap <buffer> <F5> <esc>:w<CR>:exec '!clear; g++ "%" -o "%<" && "./%<"' shellescape(@%, 1)<CR>
 
-" Run C# code in Vim (using Mono C# compiler or regular C# compiler).	
+" Run C# code in Vim (using Mono C# compiler or regular C# compiler).
 " autocmd FileType cs map <buffer> <F5> :w<CR>:exec '!clear; mcs "%" && ./"%<.exe"' shellescape(@%, 1)<CR>
 " autocmd FileType cs imap <buffer> <F5> <esc>:w<CR>:exec '!clear; mcs "%" && ./"%<.exe"' shellescape(@%, 1)<CR>
 autocmd FileType cs map <buffer> <F5> :w<CR>:exec '!clear; csc.exe "%" && ./"%<.exe"' shellescape(@%, 1)<CR>
@@ -79,7 +123,7 @@ autocmd FileType tex imap <buffer> <F4> <esc>:w<CR>:exec '!sumatrapdf.exe "%"<.p
 " Spell check and wrap commit messages.
 autocmd Filetype gitcommit setlocal spell textwidth=72
 "-------------------------------------------------------------------------------
-" File finder
+" File finder.
 "-------------------------------------------------------------------------------
 set path+=** 				" Looks into subfolders to find and open a file. 
 							" :find filename - finds the file in subfolders
@@ -89,20 +133,20 @@ set wildmenu				" Display all matching files when tab is pressed
 							" :b filename - goes to other buffers
 							" Can use Tab or specify unique filename substring
 "-------------------------------------------------------------------------------
-" Snippets
+" Snippets.
 "-------------------------------------------------------------------------------
 " Paste the following code from the specified file into the buffer
 nnoremap <Leader>cpp :-1read ~/Templates/code.cpp<CR> 
 "-------------------------------------------------------------------------------
-" Interface
+" Interface.
 "-------------------------------------------------------------------------------
-set encoding=utf-8          " Set encoding to UTF-8 to recognize Greek/Cyrillic
+set encoding=utf-8			" Set encoding to UTF-8 to recognize Greek/Cyrillic
 set ruler 					" Set the ruler to see the line and column  
 set cindent					" Add indentation when S or cc is pressed
 set colorcolumn=81			" Reminder to keep lines at most 80 characters long
 set clipboard=unnamedplus	" Share clipboard with operating system
 set backspace=2				" Enable backspace when using gVim
-set number          		" Enable line numbers
+set number					" Enable line numbers
 set tabstop=4				" Shorten the tab size to 4 spaces
 set shiftwidth=4			" Set tab size to 4 spaces
 set autoindent				" Automatic indentation when going to next line
@@ -111,9 +155,9 @@ set autoread				" Auto reload changed files
 set history=20 				" History file is at most 20 lines
 set ignorecase smartcase	" Search queries intelligently set case
 set incsearch				" Show search results as you type
-set background=dark         " Tell Vim if the background is light or dark
+set background=dark			" Tell Vim if the background is light or dark
 "-------------------------------------------------------------------------------
-" Colors & Formatting
+" Colors & Formatting.
 "-------------------------------------------------------------------------------
 syntax enable 				" Highlight texts
 filetype indent plugin on	" Enable plugins
@@ -144,7 +188,7 @@ nnoremap <C-Down> :silent! let &guifont = substitute(
  \ '\=eval(submatch(0)-1)',
  \ '')<CR><CR>
 "-------------------------------------------------------------------------------
-" Other
+" Other.
 "-------------------------------------------------------------------------------
 " autocmd Filetype scss if getfsize(@%) > 300 | setlocal syntax=OFF | endif
 " set hlsearch							" Highlight search results
