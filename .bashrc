@@ -116,38 +116,22 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# My modifications
-# ##################################################################
-# ALIASES
-alias guhome='cd /home/luis'        #Go ubuntu home
-alias uhome='home/luis'         #Ubuntu home
-
-alias gchome='cd /mnt/c/Users/luisl/'   #Go c home
-alias chome='/mnt/c/Users/luisl/'   #c home
-
-alias gdhome='cd /mnt/d/'       #Go d
-alias dhome='/mnt/d/'           #d
-
-alias gqt='cd /mnt/d/Documents/Qt/' #Go Qt folder
-alias qt='/mnt/d/Documents/Qt/'     #Qt folder
-
-alias gdownloads='cd /mnt/d/Downloads/' #Go Downloads folder
-alias downloads='/mnt/d/Downlods/'  #Downloads folder
-
-alias gcode='cd /mnt/d/Downloads/Code'  #Go Code folder
-alias code='/mnt/d/Downloads/Code'  #Code folder
-
-alias gdtemp='cd /mnt/d/Downloads/Temp/' #Go temp folder in d:
-alias dtemp='/mnt/d/Downloads/Temp/'    #Temp folder in d:
-
-alias gtemp='cd /tmp/'          #Go temp folder
-alias temp='/temp/'         #Temp folder
-
-alias glatex='cd /mnt/d/Documents/LaTeX/' #Go LaTeX folder
-alias dlatex='/mnt/d/Documents/LaTeX/' #LaTeX folder
-
-alias gdocuments='cd /mnt/d/Documents/' #Go Documents folder
-alias documents='cd /mnt/d/Documents/LaTeX' #Documents folder
-
-# Install "most" before setting it as default pager
-# export PAGER="most"
+###################################################################
+# Aliases
+###################################################################
+# Go to home folder.
+alias homef='cd /mnt/c/Users/luisl/'
+# Go to d drive folder.
+alias df='cd /mnt/d/'
+# Go to Qt folder.
+alias qtf='cd /mnt/d/Documents/Qt/'
+# Go to Downloads folder.
+alias downf='cd /mnt/d/Downloads/'
+# Go to Code folder.
+alias codef='cd /mnt/d/Downloads/Code'
+# Go to temp folder in d.
+alias tempf='cd /mnt/d/Downloads/Temp/'
+# Go to LaTeX folder.
+alias latexf='cd /mnt/d/Documents/LaTeX/'
+# Go to Documents folder.
+alias docf='cd /mnt/d/Documents/'
