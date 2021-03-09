@@ -3,8 +3,12 @@
 "-------------------------------------------------------------------------------
 " Leader Mapping.
 map <Space> <Leader>
-" Pannel (window) mapping.
+" Panel (window) mapping.
 map <BSlash> <C-W>
+" Unmap accidental horizontal split.
+map <C-W>s <Nop>
+" Unmap accidental horizontal split.
+map <Leader>s <Nop>
 " Save file.
 nnoremap <Leader>w :write<CR>
 " Quit vim.
@@ -64,15 +68,15 @@ nnoremap <Leader>bs :buffers<CR>
 " Delete (close) buffer from buffers list.
 nnoremap <Leader>bd :bd<CR>
 "-------------------------------------------------------------------------------
-" Pannel (window) mappings. Prefix p means "pannel".
+" Panel (window) mappings. Prefix p means "panel".
 "-------------------------------------------------------------------------------
-" Create pannel horizontally.
+" Create panel horizontally.
 nnoremap <Leader>ph :sp<CR>
-" Create pannel vertically.
+" Create panel vertically.
 nnoremap <Leader>pv :vsp<CR>
-" Pannel flip (exchange).
+" Panel flip (exchange).
 nnoremap <Leader>pf <C-W>x
-" Show only one pannel.
+" Show only one panel.
 nnoremap <Leader>po <C-W>o
 "-------------------------------------------------------------------------------
 " NERDTree mappings. Prefix t means "tree".
@@ -112,7 +116,7 @@ autocmd FileType java imap <buffer> <F5> <esc>:w<CR>:exec '!clear; javac "%" && 
 
 " Run Rust code in Vim.
 autocmd FileType rust map <buffer> <F5> :w<CR>:exec '!clear; rustc "%" && ./"%<"' shellescape(@%, 1)<CR>
-autocmd FileType rust imap <buffer> <F5> <esc>:w<CR>:exec '!clea:r; rustc "%" && ./"%<"' shellescape(@%, 1)<CR>
+autocmd FileType rust imap <buffer> <F5> <esc>:w<CR>:exec '!clear; rustc "%" && ./"%<"' shellescape(@%, 1)<CR>
 
 " Compile LaTeX code in Vim.
 autocmd FileType tex map <buffer> <F5> :w<CR>:exec '!clear; pdflatex.exe "%"' shellescape(@%, 1)<CR>
