@@ -138,6 +138,10 @@ alias docf='cd /mnt/d/Documents/'
 ###################################################################
 # Tmux startup customization.
 ###################################################################
+# Make a shorter alias for tmux.
+alias t='tmux'
+# Make a shorter alias to kill all the other sessions.
+alias tka='tmux kill-session -a'
 # Update tmux source file at startup.
 tmux source-file ~/.tmux.conf
 # Run tmux at startup and test that (1) tmux exists on the system, (2) we're in an interactive shell, and (3) tmux doesn't try to run within itself.
@@ -149,3 +153,5 @@ fi
 ###################################################################
 # Set vi mode in terminal.
 set -o vi
+# Make a shorter alias for vim.
+alias v='vim'
