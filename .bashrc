@@ -117,7 +117,7 @@ if ! shopt -oq posix; then
 fi
 
 ###################################################################
-# Aliases
+# Aliases.
 ###################################################################
 # Go to home folder.
 alias homef='cd /mnt/c/Users/luisl/'
