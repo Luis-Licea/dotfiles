@@ -135,3 +135,12 @@ alias tempf='cd /mnt/d/Downloads/Temp/'
 alias latexf='cd /mnt/d/Documents/LaTeX/'
 # Go to Documents folder.
 alias docf='cd /mnt/d/Documents/'
+###################################################################
+# Tmux startup customization.
+###################################################################
+# Update tmux source file at startup.
+tmux source-file ~/.tmux.conf
+# Run tmux at startup and test that (1) tmux exists on the system, (2) we're in an interactive shell, and (3) tmux doesn't try to run within itself.
+if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+  exec tmux
+fi
