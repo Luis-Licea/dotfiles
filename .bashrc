@@ -144,3 +144,8 @@ tmux source-file ~/.tmux.conf
 if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   exec tmux
 fi
+###################################################################
+# Other settings.
+###################################################################
+# Set vi mode in terminal.
+set -o vi
