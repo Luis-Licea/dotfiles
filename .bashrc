@@ -149,9 +149,25 @@ if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] &&
   exec tmux
 fi
 ###################################################################
-# Other settings.
+# Vim settings.
 ###################################################################
 # Set vi mode in terminal.
 set -o vi
 # Make a shorter alias for vim.
 alias v='vim'
+###################################################################
+# Other settings.
+###################################################################
+# Change the starting directory of wsl in Windows 10.
+if [ "/mnt/c/WINDOWS/system32" == "$PWD"  ]; then
+  # Go to home directory or return if command fails.
+  cd ~/ || return
+fi
+# Prevent nested ranger instances.
+ranger() {
+    if [ -z "$RANGER_LEVEL" ]; then
+        /usr/bin/ranger "$@"
+    else
+        exit
+    fi
+}
