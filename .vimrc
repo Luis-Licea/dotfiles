@@ -2,13 +2,11 @@
 " Ungrouped Mappings. Note: Do not place comments in the same line as mappings.
 "-------------------------------------------------------------------------------
 " Leader Mapping.
-map <Space> <Leader>
-" Panel (window) mapping.
-map <BSlash> <C-W>
-" Unmap accidental horizontal split.
-map <C-W>s <Nop>
-" Unmap accidental horizontal split.
-map <Leader>s <Nop>
+let mapleader="\<Space>"
+" LocalLeader Mapping.
+let maplocalleader="\\"
+" Map LocalLeader to CTRL-W.
+map <LocalLeader> <C-W>
 " Save file.
 nnoremap <Leader>w :write<CR>
 " Quit vim.
@@ -19,6 +17,10 @@ nnoremap <Leader>c :set cindent<CR>
 nnoremap <Leader>so :source ~/.vimrc<CR>
 " Fix syntax highlighting.
 nnoremap <Leader>fs :syntax sync fromstart<CR>
+" Check script to make it POSIX compliant.
+nnoremap <Leader>sc :!clear && shellcheck "%"<CR>
+" Remove trailing white space.
+nnoremap <Leader>rw :%s/\s\+$//e<CR>
 "-------------------------------------------------------------------------------
 " Arrow key mappings.
 "-------------------------------------------------------------------------------
@@ -48,12 +50,23 @@ nnoremap <Leader>sr :set relativenumber!<CR>
 nnoremap <Leader>sn :set number!<CR>
 " Switch paste.
 nnoremap <Leader>sp :set paste!<CR>
-" Switch spellcheck.
-nnoremap <Leader>ss :set spell!<CR>
 " Switch autoindent.
 nnoremap <Leader>sa :set autoindent!<CR>
 " Switch wrap.
 nnoremap <Leader>sw :set wrap!<CR>
+" Switch highlight search.
+nnoremap <Leader>sh :set hlsearch!<CR>
+"-------------------------------------------------------------------------------
+" Spellcheck mappings. Prefix s means "spell".
+"-------------------------------------------------------------------------------
+" Switch spellcheck for English.
+nnoremap <Leader>sse :setlocal spell spelllang=en<CR>
+" Switch spellcheck for Spanish.
+nnoremap <Leader>sss :setlocal spell spelllang=es<CR>
+" Switch spellcheck for Russian.
+nnoremap <Leader>ssr :setlocal spell spelllang=ru<CR>
+" Switch spellcheck off.
+nnoremap <Leader>sso :setlocal nospell<CR>
 "-------------------------------------------------------------------------------
 " Buffer mappings. Prefix b means "buffer".
 "-------------------------------------------------------------------------------
@@ -68,31 +81,43 @@ nnoremap <Leader>bs :buffers<CR>
 " Delete (close) buffer from buffers list.
 nnoremap <Leader>bd :bd<CR>
 "-------------------------------------------------------------------------------
-" Panel (window) mappings. Prefix p means "panel".
+" Window mappings.
 "-------------------------------------------------------------------------------
-" Create panel horizontally.
-nnoremap <Leader>ph :sp<CR>
-" Create panel vertically.
-nnoremap <Leader>pv :vsp<CR>
-" Panel flip (exchange).
-nnoremap <Leader>pf <C-W>x
-" Show only one panel.
-nnoremap <Leader>po <C-W>o
+" <LocalLeader>s - split window (added for responsiveness).
+nnoremap <LocalLeader>s :sp<CR>
+" <LocalLeader>v - split window vertically (added for responsiveness).
+nnoremap <LocalLeader>v :vsp<CR>
+" Remaping LocalLeader to CTRL-W enabled the following mappings.
+" <LocalLeader>w - switch windows
+" <LocalLeader>q - quit a window
+" <LocalLeader>x - exchange current window with next one
+" <LocalLeader>= - make all windows equal height & width
+" <LocalLeader>h - move cursor to the left window (vertical split)
+" <LocalLeader>l - move cursor to the right window (vertical split)
+" <LocalLeader>j - move cursor to the window below (horizontal split)
+" <LocalLeader>k - move cursor to the window above (horizontal split)
 "-------------------------------------------------------------------------------
-" NERDTree mappings. Prefix t means "tree".
+" Dirvish mappings. Prefix t means "tree".
 "-------------------------------------------------------------------------------
-" Open/Close NERDTree.
-nnoremap <Leader>t :NERDTreeToggle<CR>
-" Go to NERDTree window.
-nnoremap <Leader>tw :NERDTreeFocus<CR>
-" Open NERTDTree in CWD.
-nnoremap <Leader>tc :NERDTree<CR>
-" Find current buffer in NERDTree.
-nnoremap <Leader>tf :NERDTreeFind<CR>
+" Execute selected arguments.
+nnoremap <Leader>tx :argdo !clear && '%'<CR>
+" Open/close Dirvish tree.
+nnoremap <Leader>tt :Dirvish<CR>
+"-------------------------------------------------------------------------------
+" Vim-plug settings.
+"-------------------------------------------------------------------------------
+call plug#begin('~/.vim/plugged')
+    Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+    Plug 'jiangmiao/auto-pairs'
+    Plug 'preservim/nerdcommenter'
+    Plug 'tpope/vim-surround'
+    Plug 'rust-lang/rust.vim'
+    Plug 'justinmk/vim-dirvish'
+call plug#end()
 "-------------------------------------------------------------------------------
 " Program settings.
 "-------------------------------------------------------------------------------
-"In Windows, replace "clear;" with "cls &&" and "python3" with "python"
+" In Windows, replace "clear;" with "cls &&" and "python3" with "python"
 
 " Run Python code in Vim (edit and insert modes).
 autocmd FileType python map <buffer> <F5> :w<CR>:exec '!clear; python3' shellescape(@%, 1)<CR>
@@ -130,12 +155,12 @@ autocmd Filetype gitcommit setlocal spell textwidth=72
 " File finder.
 "-------------------------------------------------------------------------------
 set path+=** 				" Looks into subfolders to find and open a file. 
-							" :find filename - finds the file in subfolders
-							" Press Tab for suggesting files
-							" Use the * as a wild card for beginnings or endings
-set wildmenu				" Display all matching files when tab is pressed
-							" :b filename - goes to other buffers
-							" Can use Tab or specify unique filename substring
+							" :find filename - finds the file in subfolders.
+							" Press Tab for suggesting files.
+							" Use * as a wild card for beginnings or endings.
+set wildmenu				" Display all matching files when tab is pressed.
+							" :b filename - goes to other buffers.
+							" Can use Tab or specify unique filename substring.
 "-------------------------------------------------------------------------------
 " Snippets.
 "-------------------------------------------------------------------------------
@@ -144,33 +169,38 @@ nnoremap <Leader>cpp :-1read ~/Templates/code.cpp<CR>
 "-------------------------------------------------------------------------------
 " Interface.
 "-------------------------------------------------------------------------------
-set encoding=utf-8			" Set encoding to UTF-8 to recognize Greek/Cyrillic
-set ruler 					" Set the ruler to see the line and column  
-set cindent					" Add indentation when S or cc is pressed
-set colorcolumn=81			" Reminder to keep lines at most 80 characters long
-set clipboard=unnamedplus	" Share clipboard with operating system
-set backspace=2				" Enable backspace when using gVim
-set number					" Enable line numbers
-set tabstop=4				" Shorten the tab size to 4 spaces
-set shiftwidth=4			" Set tab size to 4 spaces
-set autoindent				" Automatic indentation when going to next line
-set nocompatible			" Not compatible with Vi (embrace the future)
-set autoread				" Auto reload changed files
-set history=20 				" History file is at most 20 lines
-set ignorecase smartcase	" Search queries intelligently set case
-set incsearch				" Show search results as you type
-set background=dark			" Tell Vim if the background is light or dark
+set encoding=utf-8			" Set encoding to UTF-8 to recognize Greek/Cyrillic.
+set ruler 					" Set the ruler to see the line and column.
+set cindent					" Add indentation when S or cc is pressed.
+set colorcolumn=81			" Reminder to keep lines at most 80 characters long.
+set clipboard=unnamedplus	" Share clipboard with operating system.
+set backspace=2				" Enable backspace when using gVim.
+set number					" Enable line numbers.
+set tabstop=4				" Shorten the tab size to 4 spaces.
+set shiftwidth=4			" Set tab size to 4 spaces.
+set autoindent				" Automatic indentation when going to next line.
+set nocompatible			" Not compatible with Vi (embrace the future).
+set autoread				" Auto reload changed files.
+set history=20 				" History file is at most 20 lines.
+set ignorecase smartcase	" Search queries intelligently set case.
+set incsearch				" Show search results as you type.
+set background=dark			" Tell Vim if the background is light or dark.
+set showcmd                 " Show commands as they are typed on the banner.
 "-------------------------------------------------------------------------------
 " Colors & Formatting.
 "-------------------------------------------------------------------------------
-syntax enable 				" Highlight texts
-filetype indent plugin on	" Enable plugins
-colorscheme desert 			" Set color scheme for terminal
-
-" Show comments in gray italics
+" Enable code syntax highlighting.
+syntax enable
+" Enable plugins.
+filetype indent plugin on
+" Set color scheme for terminal.
+colorscheme desert
+" Show comments in gray italics.
+highlight Comment ctermfg=Gray gui=italic
+" Show comments in gray italics.
 highlight Comment ctermfg=Gray gui=italic 
 
-" Change gVim looks depending on operating system
+" Change gVim looks depending on operating system.
 if has("gui_running")
 	if has("gui_gtk2")
 		set guifont=Inconsolata\ 15
@@ -178,6 +208,14 @@ if has("gui_running")
 		set guifont=Consolas:h15:cANSI
 		colorscheme slate
 	endif
+endif
+
+" Enable gVim terminal to use wsl when using Windows 10.
+if has("win32")
+    set shell=C:\Windows\Sysnative\wsl.exe
+    set shellpipe=|
+    set shellredir=>
+    set shellcmdflag=
 endif
 
 " Map Ctrl-Up and Ctrl-Down to change font size in gVim.
@@ -195,6 +233,5 @@ nnoremap <C-Down> :silent! let &guifont = substitute(
 " Other.
 "-------------------------------------------------------------------------------
 " autocmd Filetype scss if getfsize(@%) > 300 | setlocal syntax=OFF | endif
-" set hlsearch							" Highlight search results
 " set smartindent				" Indent text inside brackets
 "-------------------------------------------------------------------------------
