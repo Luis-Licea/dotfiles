@@ -1,0 +1,1 @@
+Use vim to spellchek English, Spanish, or Russian.
