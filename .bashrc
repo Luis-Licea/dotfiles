@@ -115,26 +115,61 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
 ###################################################################
-# Aliases.
+# WSL Directory Aliases.
+###################################################################
+## Go to home folder.
+#alias homef='cd /mnt/c/Users/luisl/'
+## Go to d drive folder.
+#alias df='cd /mnt/d/'
+## Go to Qt folder.
+#alias qtf='cd /mnt/d/Documents/Qt/'
+## Go to Downloads folder.
+#alias downf='cd /mnt/d/Downloads/'
+## Go to Code folder.
+#alias codef='cd /mnt/d/Downloads/Code'
+## Go to temp folder in d.
+#alias tempf='cd /mnt/d/Downloads/Temp/'
+## Go to LaTeX folder.
+#alias latexf='cd /mnt/d/Documents/LaTeX/'
+## Go to Documents folder.
+#alias docf='cd /mnt/d/Documents/'j
+####################################################################
+# Directory Aliases.
 ###################################################################
 # Go to home folder.
-alias homef='cd /mnt/c/Users/luisl/'
-# Go to d drive folder.
-alias df='cd /mnt/d/'
+alias homef='cd ~/'
 # Go to Qt folder.
-alias qtf='cd /mnt/d/Documents/Qt/'
+alias qtf='cd ~/Documents/Qt/'
 # Go to Downloads folder.
-alias downf='cd /mnt/d/Downloads/'
+alias downf='cd ~/Downloads/'
 # Go to Code folder.
-alias codef='cd /mnt/d/Downloads/Code'
+alias codef='cd ~/Documents/Code'
 # Go to temp folder in d.
-alias tempf='cd /mnt/d/Downloads/Temp/'
+alias tempf='cd ~/Downloads/Temp/'
 # Go to LaTeX folder.
-alias latexf='cd /mnt/d/Documents/LaTeX/'
+alias latexf='cd ~/Documents/LaTeX/'
 # Go to Documents folder.
-alias docf='cd /mnt/d/Documents/'
+alias docf='cd ~/Documents/'
+# Go to Pictures folder.
+alias picf='cd ~/Pictures/'
+# Go to Music folder.
+alias musicf='cd ~/Music/'
+# Go to Templates folder.
+alias templatef='cd ~/Templates/'
+# Go to Videos folder.
+alias videof='cd ~/Videos/'
+# Go to library folder.
+alias libf='cd ~/Documents/Calibre\ Library/'
+####################################################################
+# Terminal Aliases.
+###################################################################
+# Make a shorter alias for exit command.
+alias e='exit'
+# Make a shorter alias for cheat.sh.
+alias c='cht.sh'
+# Make a shorter alias for cheat.sh --shell command.
+alias cs='cht.sh --shell'
 ###################################################################
 # Tmux startup customization.
 ###################################################################
@@ -158,11 +193,11 @@ alias v='vim'
 ###################################################################
 # Other settings.
 ###################################################################
-# Change the starting directory of wsl in Windows 10.
-if [ "/mnt/c/WINDOWS/system32" == "$PWD"  ]; then
-  # Go to home directory or return if command fails.
-  cd ~/ || return
-fi
+## Change the starting directory of WSL in Windows 10.
+#if [ "/mnt/c/WINDOWS/system32" == "$PWD"  ]; then
+#  # Go to home directory or return if command fails.
+#  cd ~/ || return
+#fi
 # Prevent nested ranger instances.
 ranger() {
     if [ -z "$RANGER_LEVEL" ]; then
@@ -171,3 +206,5 @@ ranger() {
         exit
     fi
 }
+## This line was automatically added by installing Rustup.
+#source "$HOME/.cargo/env"
