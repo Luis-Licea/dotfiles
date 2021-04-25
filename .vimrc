@@ -21,17 +21,16 @@ nnoremap <Leader>fs :syntax sync fromstart<CR>
 nnoremap <Leader>sc :!clear && shellcheck "%"<CR>
 " Remove trailing white space.
 nnoremap <Leader>rw :%s/\s\+$//e<CR>
+" Remove swap file. Make the command long in purpose. 
+nnoremap <Leader>rswap :!rm '.%.swp'<CR>
 "-------------------------------------------------------------------------------
 " Arrow key mappings.
 "-------------------------------------------------------------------------------
-" Prevent arrow keys.
-nnoremap <Left> :echoe "Use h"<CR>
-" Prevent arrow keys.
-nnoremap <Right> :echoe "Use l"<CR>
-" Prevent arrow keys.
-nnoremap <Up> :echoe "Use k"<CR>
-" Prevent arrow keys.
-nnoremap <Down> :echoe "Use j"<CR>
+" Resize Window.
+map <Up> <c-w>+
+map <Down> <c-w>-
+map <Left> <c-w><
+map <Right> <c-w>>
 "-------------------------------------------------------------------------------
 " File mappings. Prefix f means "file".
 "-------------------------------------------------------------------------------
@@ -113,6 +112,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-surround'
     Plug 'rust-lang/rust.vim'
     Plug 'justinmk/vim-dirvish'
+    Plug 'dbeniamine/cheat.sh-vim' 
 call plug#end()
 "-------------------------------------------------------------------------------
 " Program settings.
@@ -166,8 +166,12 @@ set wildmenu				" Display all matching files when tab is pressed.
 "-------------------------------------------------------------------------------
 " Snippets.
 "-------------------------------------------------------------------------------
-" Paste the following code from the specified file into the buffer
-nnoremap <Leader>cpp :-1read ~/Templates/code.cpp<CR> 
+" Paste C++ template.
+nnoremap <Leader>tcpp :-1read ~/Templates/Template.cpp<CR>
+" Paste Python unit test.
+nnoremap <Leader>tupy :-1read ~/Templates/UnitTest.py<CR>
+" Paste Rust template.
+nnoremap <Leader>trs :-1read ~/Templates/Template.rs<CR>
 "-------------------------------------------------------------------------------
 " Interface.
 "-------------------------------------------------------------------------------
