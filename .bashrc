@@ -179,9 +179,16 @@ alias t='tmux'
 alias tka='tmux kill-session -a'
 # Update tmux source file at startup.
 tmux source-file ~/.tmux.conf
-# Run tmux at startup and test that (1) tmux exists on the system, (2) we're in an interactive shell, and (3) tmux doesn't try to run within itself.
+# Run tmux at startup and test that (1) tmux exists on the system, (2) it is in an interactive shell, and (3) tmux doesn't try to run within itself.
 if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  exec tmux
+    # Find the terminal name. Could be alacritty, konsole, gnome-terminal, etc.
+    current_terminal=$(ps -o 'cmd=' -p "$(ps -o 'ppid=' -p $$)")
+    # Match the current terminal path to any string ending with "alacritty".
+    # This is useful so that tmux only runs inside alacritty.
+    if [[ $current_terminal == *"alacritty" ]]; then
+        # Attach tmux if a session exists, otherwise run tmux.
+        tmux attach || exec tmux
+    fi
 fi
 ###################################################################
 # Vim settings.
