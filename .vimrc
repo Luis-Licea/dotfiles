@@ -130,6 +130,7 @@ nnoremap <Leader>trs :-1read ~/Templates/Template.rs<CR>
 "-------------------------------------------------------------------------------
 " Vim-plug settings.
 "-------------------------------------------------------------------------------
+" Install Vim-plug and run :PlugInstall.
 call plug#begin('~/.vim/plugged')
     " Comment and uncomment code sections more easily witch cc and uc.
     Plug 'preservim/nerdcommenter'
@@ -188,7 +189,7 @@ let g:rustfmt_autosave = 1
 autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
 autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
 " TODO
-" Set shortcut to make tag, jump to tag, and split window and go to tag. 
+" Set shortcut to make tag, jump to tag, and split window and go to tag.
 "-------------------------------------------------------------------------------
 " Vim-lsp mappings. Prefix g means "go".
 "-------------------------------------------------------------------------------
@@ -299,9 +300,9 @@ set number                  " Enable line numbers.
 "-------------------------------------------------------------------------------
 " Tabs & spaces.
 "-------------------------------------------------------------------------------
-set tabstop=4               " Tell vim how many columns a tab counts for.
-set softtabstop=4           " Mixes tabs and spaces unless equal to tabstop.
-set shiftwidth=4            " Control how text is indented when using << and >>.
+set tabstop=2               " Tell vim how many columns a tab counts for.
+set softtabstop=2           " Mixes tabs and spaces unless equal to tabstop.
+set shiftwidth=2            " Control how text is indented when using << and >>.
 set expandtab               " Tells vim to replace tabs with spaces.
 set backspace=2             " Enable backspace when using gVim.
 "-------------------------------------------------------------------------------
