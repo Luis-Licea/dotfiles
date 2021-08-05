@@ -1,0 +1,78 @@
+super + o ; {e,w,m,s}
+	{gvim,firefox,thunderbird,spectacle --gui}
+
+#{gvim,firefox,thunderbird,spectacle -b -w -t}
+# Take a screenshot by clicking and dragging:
+# Set the save path to write screenshots to:
+#flameshot gui
+#flameshot full --path ~/Pictures/
+#flameshot full --path ~/Pictures/ --clipboard
+
+# Take a screenshot {gui, full screen, full screen and clipboard}.
+#alt + s ; {g, f, c}
+#	{ flameshot gui \
+#	, flameshot full --path ~/Pictures/ \
+#	, flameshot full --path ~/Pictures/ --clipboard \
+#	}
+# Capture active window Meta+Print
+# Capture entire desktop Shift+Print
+# Capture region Meta+shift+Print
+# Launch spectacle Print
+
+# Launch spectacle Print
+# Capture active window Meta+Print
+# Capture entire desktop Shift+Print
+# Capture region Meta+shift+Print
+# Capture {(launch) gui, active, full, region} window.
+#alt + s ; {g, a, f, r}
+#	{ xdotool sleep 0.1 key Print \
+#	, xdotool sleep 0.1 key Super_L+Print \
+#	, xdotool sleep 0.1 key Shift_L+Print \
+#	, xdotool sleep 0.1 key Shift_L+Super_L+Print \
+#	}
+
+#super + @s
+#	spectacle -b -a
+
+#super + s + g
+#	xdotool sleep 0.1 key Print
+#super + s + a
+#	xdotool sleep 0.1 key Super_L+Print
+#super + s + f
+#	xdotool sleep 0.1 key Shift_L+Print
+#super + s + r
+#	xdotool sleep 0.1 key Shift_L+Super_L+Print
+
+# General syntax:
+#
+#           HOTKEY
+#               [;]COMMAND
+#
+#           HOTKEY      := CHORD_1 ; CHORD_2 ; ... ; CHORD_n
+#           CHORD_i     := [MODIFIERS_i +] [~][@]KEYSYM_i
+#           MODIFIERS_i := MODIFIER_i1 + MODIFIER_i2 + ... + MODIFIER_ik
+#
+#       The valid modifier names are: super, hyper, meta, alt, control, ctrl, shift,
+#       mode_switch, lock, mod1, mod2, mod3, mod4, mod5 and any.
+
+
+
+# Increase volume.
+alt + v + i
+	pactl set-sink-volume 0 +10%
+
+# Decrease volume.
+alt + v + d
+	pactl set-sink-volume 0 -10%
+
+# Toggle volume.
+alt + v + m
+	pactl set-sink-mute 0 toggle
+
+# Does not respond correctly.
+## {Increase, Decrease, Mute toggle} volume.
+#alt + v ; {i, d, m}
+#	{ pactl set-sink-volume 0 +10% \
+#	, pactl set-sink-volume 0 -10% \
+#	, pactl set-sink-mute 0 toggle \
+#	}
