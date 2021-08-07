@@ -299,7 +299,7 @@ RunClipboard=Alt+Shift+F2
 _launch=Search; Alt+F2
 
 [org.kde.plasma.emojier.desktop][Global Shortcuts]
-_launch=Meta+.
+_launch=
 
 [org.kde.spectacle.desktop][Global Shortcuts]
 ActiveWindowScreenShot=Meta+Print
