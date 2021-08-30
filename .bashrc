@@ -162,6 +162,35 @@ alias videof='cd ~/Videos/'
 # Go to library folder.
 alias libf='cd ~/Documents/Calibre\ Library/'
 ####################################################################
+# Directory Aliases for DATA drive.
+###################################################################
+# Mount DATA drive.
+alias mountd='udisksctl mount -b /dev/sdb1'
+# Go to home folder.
+alias homed='cd /run/media/luis/DATA/'
+# Go to Qt folder.
+alias qtd='cd /run/media/luis/DATA/Documents/Qt/'
+# Go to Downloads folder.
+alias downd='cd /run/media/luis/DATA/Downloads/'
+# Go to Code folder.
+alias coded='cd /run/media/luis/DATA/Documents/Code'
+# Go to temp folder in d.
+alias tempd='cd /run/media/luis/DATA/Downloads/Temp/'
+# Go to LaTeX folder.
+alias latexd='cd /run/media/luis/DATA/Documents/LaTeX/'
+# Go to Documents folder.
+alias docd='cd /run/media/luis/DATA/Documents/'
+# Go to Pictures folder.
+alias picd='cd /run/media/luis/DATA/Pictures/'
+# Go to Music folder.
+alias musicd='cd /run/media/luis/DATA/Music/'
+# Go to Templates folder.
+alias templated='cd /run/media/luis/DATA/Templates/'
+# Go to Videos folder.
+alias videod='cd /run/media/luis/DATA/Videos/'
+# Go to library folder.
+alias libd='cd /run/media/luis/DATA/Documents/Calibre\ Library/'
+####################################################################
 # Terminal Aliases.
 ###################################################################
 # Make a shorter alias for exit command.
