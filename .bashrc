@@ -242,5 +242,7 @@ ranger() {
         exit
     fi
 }
+# Stay in current folder when exiting ranger.
+alias ranger='source ranger'
 ## This line was automatically added by installing Rustup.
 #source "$HOME/.cargo/env"
