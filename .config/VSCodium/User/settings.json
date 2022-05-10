@@ -1,160 +1,231 @@
 {
-    // Open pdf previews on a tab.
-    "latex-workshop.view.pdf.viewer": "tab",
-    "editor.wordWrap": "on",
+  // Open pdf previews on a tab.
+  "latex-workshop.view.pdf.viewer": "tab",
+  "editor.wordWrap": "on",
 
-    // // CCLS path to headers. The include commands should match the Makefile.
-    // "ccls.clang.extraArgs": [
-    //     "-Ishared",
-    //     "-Iengine",
-    //     "-I/usr/X11R6/include",
-    //     "`sdl2-config --cflags`"
-    // ],
+  // // CCLS path to headers. The include commands should match the Makefile.
+  // "ccls.clang.extraArgs": [
+  //     "-Ishared",
+  //     "-Iengine",
+  //     "-I/usr/X11R6/include",
+  //     "`sdl2-config --cflags`"
+  // ],
 
-    // Custom LaTex recipies.
-    "latex-workshop.latex.recipes": [
-        // Use LuaLaTeX for building projects that use BibLaTeX.
-        {
-            "name": "latexmk (lualatex)",
-            "tools": [
-            "lualatexmk"
-            ]
-        },
-        {
-            "name": "latexmk (latexmkrc)",
-            "tools": [
-            "latexmk_rconly"
-            ]
-        },
-        {
-            "name": "pdflatex ➞ bibtex ➞ pdflatex`×2",
-            "tools": [
-            "pdflatex",
-            "bibtex",
-            "pdflatex",
-            "pdflatex"
-            ]
-        }
-    ],
-
-    // Intellisense should show the following items when hovering on a citation.
-    "latex-workshop.intellisense.citation.format": [
-        "author",
-        "title",
-        "journal",
-        "publisher",
-        "booktitle",
-        "year",
-        "date",
-        "urldate",
-        "url"
-    ],
-    // Clean LaTeX files when the build process is complete.
-    "latex-workshop.latex.autoClean.run": "onBuilt",
-    // File extension associations.
-    "workbench.editorAssociations": {
-        "*.drawio.png": "hediet.vscode-drawio",
-        "*.sqlite3": "default"
+  // Custom LaTex recipies.
+  "latex-workshop.latex.recipes": [
+    // Use LuaLaTeX for building projects that use BibLaTeX.
+    {
+      "name": "latexmk (lualatex)",
+      "tools": ["lualatexmk"]
     },
-    // Change font family to Source Code Pro so that characters from Oh-My-Zsh
-    // Agnoster theme display correctly.
-    "editor.fontFamily": "'Source Code Pro', 'monospace', monospace",
+    {
+      "name": "latexmk (latexmkrc)",
+      "tools": ["latexmk_rconly"]
+    },
+    {
+      "name": "pdflatex ➞ bibtex ➞ pdflatex`×2",
+      "tools": ["pdflatex", "bibtex", "pdflatex", "pdflatex"]
+    }
+  ],
 
-    "projectManager.git.baseFolders": [
-        "/home/luis/Code/nifti-project/nifti/",
-        "/home/luis/Code/nifti-project/nifti.wiki/"
-    ],
-    "diffEditor.ignoreTrimWhitespace": false,
+  // Intellisense should show the following items when hovering on a citation.
+  "latex-workshop.intellisense.citation.format": [
+    "author",
+    "title",
+    "journal",
+    "publisher",
+    "booktitle",
+    "year",
+    "date",
+    "urldate",
+    "url"
+  ],
+  // Clean LaTeX files when the build process is complete.
+  "latex-workshop.latex.autoClean.run": "onBuilt",
+  // File extension associations.
+  "workbench.editorAssociations": {
+    "*.drawio.png": "hediet.vscode-drawio",
+    "*.sqlite3": "default"
+  },
+  // Change font family to Source Code Pro so that characters from Oh-My-Zsh
+  // Agnoster theme display correctly.
+  "editor.fontFamily": "'Source Code Pro', 'monospace', monospace",
 
+  "projectManager.git.baseFolders": [
+    "/home/luis/Code/nifti-project/nifti/",
+    "/home/luis/Code/nifti-project/nifti.wiki/"
+  ],
+  "diffEditor.ignoreTrimWhitespace": false,
 
-    // Vim settings.
-    // Set the leader key.
-    "vim.leader": " ",
-    // Set to true fro copy and paste to work seamlessly.
-    "vim.useSystemClipboard": true,
-    "vim.normalModeKeyBindingsNonRecursive": [
-        // {
-        //     "before": ["<leader>", "r", "r"],
-        //     "commands": ["editor.action.rename"]
-        // },
-        {
-            "before": ["K"],
-            "commands": ["editor.action.showHover"]
-        },
-        // {
-        //     "before": ["<leader>", "r", "f"],
-        //     "commands": ["fileutils.renameFile"]
-        // },
-        {
-            "before": ["<leader>", "p", "s"],
-            "commands": ["extension.fuzzySearch"]
-        },
-        {
-            "before": ["<leader>", "s"],
-            "commands": ["workbench.action.splitEditor"]
-        },
-        {
-            "before": ["<leader>", "s", "w"],
-            "commands": ["editor.action.toggleWordWrap"]
-        },
-        {
-            // Move to the editor to the left.
-            "before": ["<leader>", "h"],
-            "commands": ["workbench.action.focusLeftGroup"]
-        },
-        {
-            // Move to the editor below.
-            "before": ["<leader>", "j"],
-            "commands": ["workbench.action.focusBelowGroup"]
-        },
-        {
-            // Move to the editor above.
-            "before": ["<leader>", "k"],
-            "commands": ["workbench.action.focusAboveGroup"]
-        },
-        {
-            // Move to the editor to the right.
-            "before": ["<leader>", "l"],
-            "commands": ["workbench.action.focusRightGroup"]
-        },
-        {
-            // Open current file in file explorer.
-            "before": ["<leader>", "f"],
-            "commands": ["revealFileInOS"]
-        },
-        {
-            // Show pallete.
-            "before": ["<leader>", "<leader>"],
-            "commands": ["workbench.action.showCommands"],
-            "silent": true
-        },
-        {
-            // Close buffer.
-            "before": ["<leader>", "q"],
-            "commands": ["workbench.action.closeActiveEditor"],
-            "silent": true
-        },
-        {
-            // Close buffer.
-            "before": ["<leader>", "w"],
-            "commands": ["workbench.action.files.save"],
-            "silent": true
-        },
-    ],
-    "vim.normalModeKeyBindings": [
-        {
-            // Show open buffers.
-            "before": [";"],
-            "commands": ["workbench.action.showEditorsInActiveGroup"],
-            "silent": true
-        },
-    ],
-    "gitlens.currentLine.enabled": false,
-    "gitlens.hovers.currentLine.over": "line",
-    "gitlens.codeLens.enabled": false,
-    "gitlens.statusBar.enabled": false,
-    "gitlens.defaultDateStyle": "absolute",
-    "window.zoomLevel": 1,
-    // Prevents Agnoster theme not displaying correctly.
-    "terminal.integrated.gpuAcceleration": "canvas"
+  // Vim settings.
+  // Set the leader key.
+  "vim.leader": " ",
+  // Set to true fro copy and paste to work seamlessly.
+  "vim.useSystemClipboard": true,
+
+  // Let VSCode handle these keybinding.
+  "vim.handleKeys": {
+      "<C-a>": false, // Select all.
+      "<C-f>": false, // Search.
+      "<C-h>": false, // Search and replace.
+      "<C-H>": false, // Global search and replace.
+  },
+  "vim.enableNeovim": true,
+  "vim.normalModeKeyBindingsNonRecursive": [
+    // {
+    //     "before": ["<leader>", "r", "r"],
+    //     "commands": ["editor.action.rename"]
+    // },
+    {
+      "before": ["K"],
+      "commands": ["editor.action.showHover"]
+    },
+    {
+      // Split down.
+      "before": ["<leader>", "s", "j"],
+      "commands": ["workbench.action.splitEditorDown"]
+    },
+    {
+      // Split up.
+      "before": ["<leader>", "s", "k"],
+      "commands": ["workbench.action.splitEditorUp"]
+    },
+    {
+      // Split left.
+      "before": ["<leader>", "s", "h"],
+      "commands": ["workbench.action.splitEditorLeft"]
+    },
+    {
+      // Split right.
+      "before": ["<leader>", "s", "l"],
+      "commands": ["workbench.action.splitEditorRight"]
+    },
+    {
+      // Toggle wordwrap.
+      "before": ["<leader>", "t", "w"],
+      "commands": ["editor.action.toggleWordWrap"]
+    },
+    {
+      // Move to the editor to the left.
+      "before": ["<leader>", "h"],
+      "commands": ["workbench.action.focusLeftGroup"]
+    },
+    {
+      // Move to the editor below.
+      "before": ["<leader>", "j"],
+      "commands": ["workbench.action.focusBelowGroup"]
+    },
+    {
+      // Move to the editor above.
+      "before": ["<leader>", "k"],
+      "commands": ["workbench.action.focusAboveGroup"]
+    },
+    {
+      // Move to the editor to the right.
+      "before": ["<leader>", "l"],
+      "commands": ["workbench.action.focusRightGroup"]
+    },
+    // Good bindings, but I opted for alt bindings for consistency.
+    // {
+    //     // Go to previous editor (tab).
+    //     "before": ["L"],
+    //     "commands": ["workbench.action.nextEditor"]
+    // },
+    // {
+    //     // Go to previous editor (tab).
+    //     "before": ["H"],
+    //     "commands": ["workbench.action.previousEditor"]
+    // },
+    {
+      // Open current file in file explorer.
+      "before": ["<leader>", "o"],
+      "commands": ["revealFileInOS"]
+    },
+    {
+      // Show pallete.
+      "before": ["<leader>", "<leader>"],
+      "commands": ["workbench.action.showCommands"],
+      "silent": true
+    },
+    {
+      // Close buffer.
+      "before": ["<leader>", "q"],
+      "commands": ["workbench.action.closeActiveEditor"],
+      "silent": true
+    },
+    {
+      // Close buffer.
+      "before": ["<leader>", "w"],
+      "commands": ["workbench.action.files.save"],
+      "silent": true
+    },
+    {
+      // Open recent.
+      "before": ["<leader>", "r"],
+      "commands": ["workbench.action.openRecent"],
+      "silent": true
+    },
+    {
+      // Open file explorer.
+      "before": ["<leader>", "e"],
+      "commands": ["workbench.view.explorer"],
+      "silent": true
+    },
+    {
+      // Search files by name.
+      "before": ["<leader>", "f"],
+      "commands": ["workbench.action.quickOpen"],
+      "silent": true
+    },
+    {
+      // Open search in sidebar.
+      "before": ["<leader>", "s"],
+      "commands": ["workbench.action.findInFiles"]
+    },
+    {
+      // Open Git in sidebar.
+      "before": ["<leader>", "g"],
+      "commands": ["workbench.view.scm"]
+    },
+    {
+      // Open Git in sidebar.
+      "before": ["<leader>", "p"],
+      "commands": ["projectManager.listProjects"]
+    },
+
+  ],
+
+  "vim.normalModeKeyBindings": [
+    {
+      // Show open buffers.
+      "before": [";"],
+      "commands": ["workbench.action.showEditorsInActiveGroup"],
+      "silent": true
+    },
+    {
+        "before": [
+            ">"
+        ],
+        "commands": [
+            "editor.action.indentLines"
+        ]
+    },
+    {
+        "before": [
+            "<"
+        ],
+        "commands": [
+            "editor.action.outdentLines"
+        ]
+    },
+  ],
+
+  "gitlens.currentLine.enabled": false,
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.codeLens.enabled": false,
+  "gitlens.statusBar.enabled": false,
+  "gitlens.defaultDateStyle": "absolute",
+  "window.zoomLevel": 1,
+  "editor.bracketPairColorization.enabled": true,
+  "terminal.integrated.allowMnemonics": true
 }
