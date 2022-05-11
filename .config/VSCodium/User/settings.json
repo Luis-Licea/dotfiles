@@ -227,5 +227,6 @@
   "gitlens.defaultDateStyle": "absolute",
   "window.zoomLevel": 1,
   "editor.bracketPairColorization.enabled": true,
-  "terminal.integrated.allowMnemonics": true
+  "terminal.integrated.allowMnemonics": true,
+  "terminal.integrated.gpuAcceleration": "off"
 }
