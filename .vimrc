@@ -98,27 +98,6 @@ nnoremap <LocalLeader>v :vsp<CR>
 " <LocalLeader>j - move cursor to the window below (horizontal split)
 " <LocalLeader>k - move cursor to the window above (horizontal split)
 "-------------------------------------------------------------------------------
-" Auto-closing mappings.
-"-------------------------------------------------------------------------------
-" Create a shortcut for skipping quotes, parenthesis, etc.
-inoremap zw <Esc>wa
-" Create shortcuts for auto-closing on the same line.
-inoremap z" ""<Esc>i
-inoremap z' ''<Esc>i
-inoremap z( ()<Esc>i
-inoremap z[ []<Esc>i
-inoremap z{ {}<Esc>i
-" Create shortcuts for auto-closing on the next line.
-inoremap z;( (<CR>);<Esc>O
-inoremap z,( (<CR>),<Esc>O
-inoremap zz(  (<CR>)<Esc>O
-inoremap z;{ {<CR>};<Esc>O
-inoremap z,{ {<CR>},<Esc>O
-inoremap zz{ {<CR>}<Esc>O
-inoremap z;[ [<CR>];<Esc>O
-inoremap z,[ [<CR>],<Esc>O
-inoremap zz[ [<CR>]<Esc>O
-"-------------------------------------------------------------------------------
 " Snippets. Paste the following code from the specified file into the buffer.
 "-------------------------------------------------------------------------------
 " Paste C++ template.
