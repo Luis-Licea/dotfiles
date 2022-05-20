@@ -86,6 +86,7 @@ plugins=(git vi-mode)
 # else
 #   export EDITOR='mvim'
 # fi
+export PAGER=most
 export EDITOR=nvim
 export VISUAL="$EDITOR"
 
