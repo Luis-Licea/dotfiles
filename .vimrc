@@ -300,9 +300,9 @@ set number                  " Enable line numbers.
 "-------------------------------------------------------------------------------
 " Tabs & spaces.
 "-------------------------------------------------------------------------------
-set tabstop=2               " Tell vim how many columns a tab counts for.
-set softtabstop=2           " Mixes tabs and spaces unless equal to tabstop.
-set shiftwidth=2            " Control how text is indented when using << and >>.
+set tabstop=4               " Tell vim how many columns a tab counts for.
+set softtabstop=4           " Mixes tabs and spaces unless equal to tabstop.
+set shiftwidth=4            " Control how text is indented when using << and >>.
 set expandtab               " Tells vim to replace tabs with spaces.
 set backspace=2             " Enable backspace when using gVim.
 "-------------------------------------------------------------------------------
