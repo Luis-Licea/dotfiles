@@ -72,10 +72,6 @@
   },
   "vim.enableNeovim": true,
   "vim.normalModeKeyBindingsNonRecursive": [
-    // {
-    //     "before": ["<leader>", "r", "r"],
-    //     "commands": ["editor.action.rename"]
-    // },
     {
       "before": ["K"],
       "commands": ["editor.action.showHover"]
@@ -192,7 +188,6 @@
       "before": ["<leader>", "p"],
       "commands": ["projectManager.listProjects"]
     },
-
   ],
 
   "vim.normalModeKeyBindings": [
@@ -225,8 +220,25 @@
   "gitlens.codeLens.enabled": false,
   "gitlens.statusBar.enabled": false,
   "gitlens.defaultDateStyle": "absolute",
-  "window.zoomLevel": 1,
   "editor.bracketPairColorization.enabled": true,
   "terminal.integrated.allowMnemonics": true,
-  "terminal.integrated.gpuAcceleration": "off"
+  // Do not show search results from these folders.
+  "search.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CSV": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.ccls-cache": true,
+    },
+    "[cpp]": {
+      "editor.defaultFormatter": "xaver.clang-format"
+    },
+    "window.zoomLevel": 1,
+    "terminal.integrated.drawBoldTextInBrightColors": false,
+    // May need one of the symbol-patched nerd fonts.
+    "terminal.integrated.gpuAcceleration": "on",
+    // A symbol-patched nerd font. Otherwise symbols will not render.
+    "terminal.integrated.fontFamily": "SauceCodePro Nerd Font Mono",
 }

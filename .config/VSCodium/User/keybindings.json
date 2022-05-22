@@ -110,4 +110,37 @@
         "command": "workbench.action.terminal.toggleTerminal",
         "when": "terminal.active"
     },
+    {
+        // Remove Go to File keybinding because it conflicts with Gitui.
+        "key": "ctrl+e",
+        "command": "-workbench.action.quickOpen"
+    },
+    {
+        // Create new folder in sidebar explorer.
+        "key": "f",
+        "command": "explorer.newFolder",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        // Create new file in sidebar explorer.
+        "key": "n",
+        "command": "explorer.newFile",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        // Format document.
+        "key": "alt+f",
+        "command": "editor.action.formatSelection",
+        "when": "editorHasDocumentSelectionFormattingProvider && editorTextFocus && !editorReadonly"
+    },
+    {
+        // Disable because it conflicts with Neovim.
+        "key": "ctrl+p",
+        "command": "-workbench.action.quickOpen",
+    },
+    {
+        // Disable because it conflicts with Neovim.
+        "key": "ctrl+k",
+        "command": "-extension.vim_ctrl+k",
+    },
 ]
