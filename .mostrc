@@ -1,4 +1,4 @@
-% This is an example configuration file that provides a `less' emulation 
+% This is an example configuration file that provides a `less' emulation
 % for MOST.
 %
 % The format is simple:
@@ -10,8 +10,8 @@
 % The function name is not in double quotes.
 %
 %
-% When MOST starts up, it looks for a keymap file given by the environment 
-% variable MOST_INITFILE.  If that environment variable does not exist, 
+% When MOST starts up, it looks for a keymap file given by the environment
+% variable MOST_INITFILE.  If that environment variable does not exist,
 % MOST will look in the users HOME directory for .mostrc on Unix systems
 % and MOST.RC on VMS systems.
 %
