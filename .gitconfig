@@ -1,0 +1,9 @@
+[user]
+	email = luislicea@hotmail.com
+	name = Luis David Licea Torres
+[credential]
+	helper = store
+[url "https://"]
+	insteadOf = git://
+[core]
+	pager = less -
