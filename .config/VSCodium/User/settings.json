@@ -222,7 +222,6 @@
   "gitlens.defaultDateStyle": "absolute",
   "editor.bracketPairColorization.enabled": true,
   "terminal.integrated.allowMnemonics": true,
-  // Do not show search results from these folders.
   "search.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -240,5 +239,6 @@
     // May need one of the symbol-patched nerd fonts.
     "terminal.integrated.gpuAcceleration": "on",
     // A symbol-patched nerd font. Otherwise symbols will not render.
-    "terminal.integrated.fontFamily": "SauceCodePro Nerd Font Mono",
+    // Use "MesloLGS NF" or "SauceCodePro Nerd Font Mono".
+    "terminal.integrated.fontFamily": "MesloLGS NF",
 }
