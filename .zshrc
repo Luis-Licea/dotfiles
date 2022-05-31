@@ -15,8 +15,16 @@ ZSH=/usr/share/oh-my-zsh/
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# NOTE: First install zsh-theme-powerlevel10k ttf-meslo-nerd-font-powerlevel10k
-ZSH_THEME="../../zsh-theme-powerlevel10k/powerlevel10k"
+
+# Set powerlevel10k as theme if installed, and set agnoster theme as a backup.
+POWERLEVEL10k_DIR=zsh-theme-powerlevel10k
+if [[ -d "$ZSH../$POWERLEVEL10k_DIR" ]]; then
+    # Must be a path relative to themes folder in $ZSH folder.
+    ZSH_THEME=../../$POWERLEVEL10k_DIR/powerlevel10k
+else
+    # Backup theme.
+    ZSH_THEME="agnoster"
+fi
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
