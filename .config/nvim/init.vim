@@ -236,8 +236,14 @@ endif
 "-------------------------------------------------------------------------------
 " Scratchpads.
 "-------------------------------------------------------------------------------
-" Execute the file each time it is saved.
+" Execute the file "scratchpad.sh" each time it is saved.
 au! BufWritePost scratchpad.sh exec '!bash "%"'
+
+"-------------------------------------------------------------------------------
+" Vim Terminal.
+"-------------------------------------------------------------------------------
+" Close tab immediately after closing terminal.
+au! TermClose * :q
 
 "-------------------------------------------------------------------------------
 " Program settings.
