@@ -96,14 +96,17 @@ plugins=(git vi-mode copypath copyfile)
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
+# Ruby configuration. Make Ruby gems executable. Needed by Jekyll.
+export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin"
+
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-export PAGER=most
-export EDITOR=nvim
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR=nvim
+else
+  export PAGER=most
+  export EDITOR=nvim
+  alias vim='$EDITOR --noplugin'
+fi
 export VISUAL="$EDITOR"
 
 # Compilation flags
@@ -115,8 +118,8 @@ export VISUAL="$EDITOR"
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+alias zshconfig="$EDITOR ~/.zshrc"
+alias nvimconfig="$EDITOR ~/.config/nvim/init.vim"
 
 ZSH_CACHE_DIR=$HOME/.cache/oh-my-zsh
 if [[ ! -d $ZSH_CACHE_DIR ]]; then
