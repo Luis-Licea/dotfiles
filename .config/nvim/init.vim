@@ -52,7 +52,7 @@ au TermOpen * setlocal nospell
 " Disable line numbering in terminal.
 au TermOpen * setlocal nonumber
 " Press escape twice to exit. Add only to zsh because it conflicts with fzf.
-au TermOpen * if expand('%:t') == "zsh" | tnoremap <esc><esc> <c-\><c-n> | endif
+au TermOpen * if expand('%:t') == "zsh" | tnoremap <c-q> <c-\><c-n> | endif
 
 "-------------------------------------------------------------------------------
 " Resize Window mappings. Prefix is "ctrl".
