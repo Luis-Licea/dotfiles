@@ -246,6 +246,12 @@ au! BufWritePost scratchpad.sh exec '!bash "%"'
 au! TermClose * :q
 
 "-------------------------------------------------------------------------------
+" Auto-apply Xresources.
+"-------------------------------------------------------------------------------
+" Apply .Xresources file after editing the file.
+au! BufWritePost .Xresources exec '!xrdb -merge ~/.Xresources'
+
+"-------------------------------------------------------------------------------
 " Program settings.
 "-------------------------------------------------------------------------------
 " Run C code in Vim.
