@@ -19,10 +19,11 @@
 
 % Color settings
 
-color normal lightgray black
-color status yellow blue
-color underline brightgreen black
-color overstrike brightred black
+% For a black background, replace none with black.
+color normal lightgray none
+color status yellow blue none
+color underline brightgreen none
+color overstrike brightred none
 
 % Keybindings
 
