@@ -120,6 +120,9 @@ export VISUAL="$EDITOR"
 # Example aliases
 alias zshconfig="$EDITOR ~/.zshrc"
 alias nvimconfig="$EDITOR ~/.config/nvim/init.vim"
+alias alacrittyconfig="$EDITOR ~/.config/alacritty/alacritty.yml"
+alias rangerconfig="$EDITOR ~/.config/ranger/"
+alias vscodiumconfig="$EDITOR ~/.config/VSCodium/User/"
 
 ZSH_CACHE_DIR=$HOME/.cache/oh-my-zsh
 if [[ ! -d $ZSH_CACHE_DIR ]]; then
