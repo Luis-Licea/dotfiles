@@ -99,6 +99,9 @@ plugins=(git vi-mode copypath copyfile)
 # Ruby configuration. Make Ruby gems executable. Needed by Jekyll.
 export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin"
 
+# Disable loading Ranger's global configuration files.
+export RANGER_LOAD_DEFAULT_RC=FALSE
+
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR=nvim
