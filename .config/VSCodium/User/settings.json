@@ -1,33 +1,68 @@
 {
-  // Open pdf previews on a tab.
-  "latex-workshop.view.pdf.viewer": "tab",
+  //  _____    _ _ _
+  // | ____|__| (_) |_ ___  _ __
+  // |  _| / _` | | __/ _ \| '__|
+  // | |__| (_| | | || (_) | |
+  // |_____\__,_|_|\__\___/|_|
+
+  // Show whitespace differences.
+  "diffEditor.ignoreTrimWhitespace": false,
+  // Wrap long lines around.
   "editor.wordWrap": "on",
+  // Let the terminal receive Alt and Ctrl shortcuts.
+  "terminal.integrated.allowMnemonics": true,
+  // May need one of the symbol-patched nerd fonts.
+  "terminal.integrated.gpuAcceleration": "on",
+  // A symbol-patched nerd font. Otherwise symbols will not render.
+  "terminal.integrated.fontFamily": "MesloLGS NF",
+  // Show leading and trailing spaces and tabs.
+  "editor.renderWhitespace": "boundary",
+  // Make matching bracket pairs the same color.
+  "editor.bracketPairColorization.enabled": true,
+  // File extension associations.
+  "workbench.editorAssociations": {
+    "*.drawio.png": "hediet.vscode-drawio",
+    "*.drawio.svg": "hediet.vscode-drawio"
+  },
+  // Do not search text in these directories.
+  "search.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CSV": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.ccls-cache": true
+  },
+  // Formatter for each file type.
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "code-runner.saveFileBeforeRun": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
 
-  // // CCLS path to headers. The include commands should match the Makefile.
-  // "ccls.clang.extraArgs": [
-  //     "-Ishared",
-  //     "-Iengine",
-  //     "-I/usr/X11R6/include",
-  //     "`sdl2-config --cflags`"
-  // ],
+  //  ____  _             _
+  // |  _ \| |_   _  __ _(_)_ __  ___
+  // | |_) | | | | |/ _` | | '_ \/ __|
+  // |  __/| | |_| | (_| | | | | \__ \
+  // |_|   |_|\__,_|\__, |_|_| |_|___/
+  //                |___/
 
-  // Custom LaTex recipies.
-  "latex-workshop.latex.recipes": [
-    // Use LuaLaTeX for building projects that use BibLaTeX.
-    {
-      "name": "latexmk (lualatex)",
-      "tools": ["lualatexmk"]
-    },
-    {
-      "name": "latexmk (latexmkrc)",
-      "tools": ["latexmk_rconly"]
-    },
-    {
-      "name": "pdflatex ➞ bibtex ➞ pdflatex`×2",
-      "tools": ["pdflatex", "bibtex", "pdflatex", "pdflatex"]
-    }
-  ],
-
+  //  Open pdf previews on a tab.
+  "latex-workshop.view.pdf.viewer": "tab",
+  // Clean LaTeX files when the build process is complete.
+  "latex-workshop.latex.autoClean.run": "onBuilt",
   // Intellisense should show the following items when hovering on a citation.
   "latex-workshop.intellisense.citation.format": [
     "author",
@@ -40,39 +75,77 @@
     "urldate",
     "url"
   ],
-  // Clean LaTeX files when the build process is complete.
-  "latex-workshop.latex.autoClean.run": "onBuilt",
-  // File extension associations.
-  "workbench.editorAssociations": {
-    "*.drawio.png": "hediet.vscode-drawio",
-    "*.sqlite3": "default"
-  },
-  // Change font family to Source Code Pro so that characters from Oh-My-Zsh
-  // Agnoster theme display correctly.
-  "editor.fontFamily": "'Source Code Pro', 'monospace', monospace",
 
+  // Base folder for searching Git projects.
   "projectManager.git.baseFolders": [
-    "/home/luis/Code/nifti-project/nifti/",
-    "/home/luis/Code/nifti-project/nifti.wiki/"
+    "/home/luis/Code/",
   ],
-  "diffEditor.ignoreTrimWhitespace": false,
 
-  // Vim settings.
+  "gitlens.currentLine.enabled": false,
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.codeLens.enabled": false,
+  "gitlens.statusBar.enabled": false,
+  "gitlens.defaultDateStyle": "absolute",
+
+  // // CCLS path to headers. The include commands should match the Makefile.
+  // "ccls.clang.extraArgs": [
+  //     "-Ishared",
+  //     "-Iengine",
+  //     "-I/usr/X11R6/include",
+  //     "`sdl2-config --cflags`"
+  // ],
+
+  // __     ___
+  // \ \   / (_)_ __ ___
+  //  \ \ / /| | '_ ` _ \
+  //   \ V / | | | | | | |
+  //    \_/  |_|_| |_| |_|
   // Set the leader key.
   "vim.leader": " ",
   // Set to true fro copy and paste to work seamlessly.
   "vim.useSystemClipboard": true,
-
+  // Set Neovim as the backend.
+  "vim.enableNeovim": true,
   // Let VSCode handle these keybinding.
   "vim.handleKeys": {
-      "<C-a>": false, // Select all.
-      "<C-f>": false, // Search.
-      "<C-h>": false, // Search and replace.
-      "<C-H>": false, // Global search and replace.
+    "<C-a>": false, // Select all.
+    "<C-f>": false, // Search.
+    "<C-h>": false, // Search and replace.
+    "<C-H>": false // Global search and replace.
   },
-  "vim.enableNeovim": true,
+  // Remap keys in normal mode.
+  "vim.normalModeKeyBindings": [
+    {
+      // Show open buffers.
+      "before": [";"],
+      "commands": ["workbench.action.showEditorsInActiveGroup"],
+      "silent": true
+    },
+    {
+      // Indent lines.
+      "before": [">"],
+      "commands": ["editor.action.indentLines"]
+    },
+    {
+      // Outdent lines.
+      "before": ["<"],
+      "commands": ["editor.action.outdentLines"]
+    }
+  ],
+  // Remap keys in normal mode non-recursively.
   "vim.normalModeKeyBindingsNonRecursive": [
     {
+        // Go to previous editor (tab).
+        "before": ["L"],
+        "commands": ["workbench.action.nextEditor"]
+    },
+    {
+        // Go to previous editor (tab).
+        "before": ["H"],
+        "commands": ["workbench.action.previousEditor"]
+    },
+    {
+      // Show hover options.
       "before": ["K"],
       "commands": ["editor.action.showHover"]
     },
@@ -121,17 +194,6 @@
       "before": ["<leader>", "l"],
       "commands": ["workbench.action.focusRightGroup"]
     },
-    // Good bindings, but I opted for alt bindings for consistency.
-    // {
-    //     // Go to previous editor (tab).
-    //     "before": ["L"],
-    //     "commands": ["workbench.action.nextEditor"]
-    // },
-    // {
-    //     // Go to previous editor (tab).
-    //     "before": ["H"],
-    //     "commands": ["workbench.action.previousEditor"]
-    // },
     {
       // Open current file in file explorer.
       "before": ["<leader>", "o"],
@@ -187,58 +249,6 @@
       // Open Git in sidebar.
       "before": ["<leader>", "p"],
       "commands": ["projectManager.listProjects"]
-    },
+    }
   ],
-
-  "vim.normalModeKeyBindings": [
-    {
-      // Show open buffers.
-      "before": [";"],
-      "commands": ["workbench.action.showEditorsInActiveGroup"],
-      "silent": true
-    },
-    {
-        "before": [
-            ">"
-        ],
-        "commands": [
-            "editor.action.indentLines"
-        ]
-    },
-    {
-        "before": [
-            "<"
-        ],
-        "commands": [
-            "editor.action.outdentLines"
-        ]
-    },
-  ],
-
-  "gitlens.currentLine.enabled": false,
-  "gitlens.hovers.currentLine.over": "line",
-  "gitlens.codeLens.enabled": false,
-  "gitlens.statusBar.enabled": false,
-  "gitlens.defaultDateStyle": "absolute",
-  "editor.bracketPairColorization.enabled": true,
-  "terminal.integrated.allowMnemonics": true,
-  "search.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CSV": true,
-        "**/.DS_Store": true,
-        "**/Thumbs.db": true,
-        "**/.ccls-cache": true,
-    },
-    "[cpp]": {
-      "editor.defaultFormatter": "xaver.clang-format"
-    },
-    "window.zoomLevel": 1,
-    "terminal.integrated.drawBoldTextInBrightColors": false,
-    // May need one of the symbol-patched nerd fonts.
-    "terminal.integrated.gpuAcceleration": "on",
-    // A symbol-patched nerd font. Otherwise symbols will not render.
-    // Use "MesloLGS NF" or "SauceCodePro Nerd Font Mono".
-    "terminal.integrated.fontFamily": "MesloLGS NF",
 }
