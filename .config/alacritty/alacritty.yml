@@ -415,19 +415,18 @@ font:
 #
 # Default:
 #   - (Linux) /bin/bash --login
-shell:
+# shell:
  # program: /bin/bash
  # args:
    # - --login
 
- # Vim terminal at startup.
- program: zsh
- args:
-   # Execute the given commands.
-   - -c
-    # Neovim; no plugins; launch terminal; enter insert mode, hide status line.
-   - "nvim --noplugin +term +startinsert '+set laststatus=0'"
-
+  # Vim terminal at startup.
+  # program: zsh
+  # args:
+    # Execute the given commands.
+    # - -c
+     # Neovim; no plugins; launch terminal; enter insert mode, hide status line.
+     # - "nvim --noplugin +term +startinsert '+set laststatus=0'"
 
 # Startup directory
 #
