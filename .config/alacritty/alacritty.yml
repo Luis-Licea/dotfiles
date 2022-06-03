@@ -23,7 +23,7 @@
   # available, otherwise `xterm-256color` is used.
   #TERM: alacritty
 
-# window:
+window:
   # Window dimensions (changes require restart)
   #
   # Number of lines/columns (not pixels) in the terminal. The number of columns
@@ -45,9 +45,9 @@
   #
   # Blank space added around the window in pixels. This padding is scaled
   # by DPI and the specified value is always added at both opposing sides.
-  # padding:
-   # x: 0
-   # y: 0
+  padding:
+   x: 20
+   y: 20
 
   # Spread additional padding evenly around the terminal content.
   #dynamic_padding: false
@@ -64,7 +64,7 @@
   # Window opacity as a floating point number from `0.0` to `1.0`.
   # The value `0.0` is completely transparent and `1.0` is opaque.
   # opacity: 1.0
-  # opacity: 8.0
+  opacity: 0.0
 
   # Startup Mode (changes require restart)
   #
@@ -106,8 +106,8 @@ font:
   # Normal (roman) font face
   normal:
     # Font family
-    # family: monospace
-    family: MesloLGS NF
+    family: monospace
+    # family: MesloLGS NF
 
     # The `style` can be specified to pick a specific face.
     # style: Regular
@@ -365,9 +365,9 @@ font:
   # When set to `true`, selected text will be copied to the primary clipboard.
   #save_to_clipboard: false
 
-#cursor:
+cursor:
   # Cursor style
-  #style:
+  style:
     # Cursor shape
     #
     # Values for `shape`:
@@ -384,6 +384,7 @@ font:
     #   - On: Enable blinking by default
     #   - Always: Force the cursor to always blink
     #blinking: Off
+    blinking: Always
 
   # Vi mode cursor style
   #
