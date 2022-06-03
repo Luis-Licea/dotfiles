@@ -9,6 +9,8 @@ let maplocalleader=","
 map <localleader> <c-w>
 " Save file.
 nnoremap <leader>w :write<cr>
+" Spawn a new terminal in the folder of the current file.
+nnoremap <leader>t :let $VIM_DIR=expand('%:p:h')<CR>:!alacritty --working-directory $VIM_DIR &<CR>
 " Quit vim.
 nnoremap <leader>q :quit<cr>
 " Add indentation when S or cc is pressed.
@@ -243,13 +245,13 @@ au! BufWritePost scratchpad.sh exec '!bash "%"'
 " Vim Terminal.
 "-------------------------------------------------------------------------------
 " Close tab immediately after closing terminal.
-au! TermClose * :q
+" au! TermClose * :q
 
 "-------------------------------------------------------------------------------
 " Auto-apply Xresources.
 "-------------------------------------------------------------------------------
 " Apply .Xresources file after editing the file.
-au! BufWritePost .Xresources exec '!xrdb -merge ~/.Xresources'
+au! BufWritePost .Xresources exec '!xrdb && xrdb -merge ~/.Xresources'
 
 "-------------------------------------------------------------------------------
 " Program settings.
@@ -346,6 +348,13 @@ call plug#begin()
 call plug#end()
 
 "-------------------------------------------------------------------------------
+" Startify settings.
+"-------------------------------------------------------------------------------
+" Automatically save session when leaving. Use :SSave to crate a session.
+let g:startify_session_persistence = 1
+" Do not show cowsay as part of the quote. It takes a lot of space.
+let g:startify_custom_header = 'startify#pad(startify#fortune#quote())'
+"-------------------------------------------------------------------------------
 "  Ack settings.
 "-------------------------------------------------------------------------------
 " Open ack finder. The ! means not to jump to the first occurrence.
@@ -419,6 +428,8 @@ let g:airline_powerline_fonts = 1
 " Set the color scheme. The schemes codedark and dracula are plugins.
 " colorscheme codedark
 colorscheme dracula
+" Make the background transparent.
+highlight normal guibg=none ctermbg=none
 
 "-------------------------------------------------------------------------------
 " Vim-airline settings.
