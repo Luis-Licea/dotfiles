@@ -3,7 +3,7 @@
 dotfiles=(
     .zshrc
     .p10k.zsh
-    .mostrc
+    .config/mostrc
     .latexmkrc
     .gitconfig
     .config/VSCodium/User/keybindings.json

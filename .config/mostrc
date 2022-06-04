@@ -25,36 +25,45 @@ color status yellow blue none
 color underline brightgreen none
 color overstrike brightred none
 
-% Keybindings
+% Keybindings. Use CTRL+G to abort search, finding files, etc.
 
-unsetkey "^K"
-setkey up "^K"
+% Vim-like keybindings.
 
-unsetkey ":"
-setkey next_file ":n"
-setkey find_file ":e"
-setkey next_file ":p"
-setkey toggle_options ":o"
-setkey toggle_case ":c"
-setkey delete_file ":d"
-setkey exit ":q"
+setkey page_down        "j"
+setkey page_left        "h"
+setkey page_right       "l"
+setkey page_up          "k"
 
-setkey down "e"
-setkey down "E"
-setkey down "j"
-setkey down "^N"
-setkey up "y"
-setkey up "^Y"
-setkey up "k"
-setkey up "^P"
-setkey page_down "f"
-setkey page_down "^F"
-setkey page_up "b"
-setkey page_up "^B"
-setkey other_window "z"
-setkey other_window "w"
-setkey search_backward "?"
-setkey bob "p"
-setkey goto_mark "'"
-setkey find_file "E"
-setkey edit "v"
+setkey column_left      "H"
+setkey column_right     "L"
+setkey down             "J"
+setkey up               "K"
+
+setkey bob              "gg"
+setkey eob              "G"
+setkey goto_mark        "'"
+setkey search_backward  "?"
+
+setkey help             ":h"
+setkey exit             ":q"
+setkey find_file        ":e"
+setkey next_file        ":n"
+
+% Window movement.
+
+setkey one_window       "o"
+setkey two_windows      "t"
+setkey delete_window    "x"
+setkey other_window     "w"
+
+% Other key.
+
+setkey delete_file      ":d"
+setkey suspend          "$"
+setkey toggle_case      "c"
+setkey toggle_options   ":o"
+
+% Unset keys.
+
+unsetkey                "\t"
+
