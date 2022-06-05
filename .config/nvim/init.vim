@@ -39,35 +39,31 @@ cnoremap <c-k> <c-p>
 cnoremap <c-j> <c-n>
 
 "-------------------------------------------------------------------------------
-" Embedded terminal settings and mappings.
+" Insert mode mappings.
 "-------------------------------------------------------------------------------
-" Move cursor to the left window.
-tnoremap <localleader>h <c-\><c-n><cr><c-w>h
-" Move cursor to the window above.
-tnoremap <localleader>j <c-\><c-n><cr><c-w>j
-" Move cursor to the window below.
-tnoremap <localleader>k <c-\><c-n><cr><c-w>k
-" Move cursor to the right window.
-tnoremap <localleader>l <c-\><c-n><cr><c-w>l
-" Turn off spelling in terminal.
-au TermOpen * setlocal nospell
-" Disable line numbering in terminal.
-au TermOpen * setlocal nonumber
-" Press escape twice to exit. Add only to zsh because it conflicts with fzf.
-au TermOpen * if expand('%:t') == "zsh" | tnoremap <c-q> <c-\><c-n> | endif
+" Move up autocomplete options in insert mode.
+inoremap <c-k> <c-p>
+" Move down autocomplete options in insert mode.
+inoremap <c-j> <c-n>
+
+"-------------------------------------------------------------------------------
+" Normal mode mappings.
+"-------------------------------------------------------------------------------
+" Remap fast movement.
+nnoremap <c-k> <c-u>
+nnoremap <c-j> <c-d>
 
 "-------------------------------------------------------------------------------
 " Resize Window mappings. Prefix is "ctrl".
 "-------------------------------------------------------------------------------
 " Increase height by N lines.
-map <c-K> 4<c-w>+
+vnoremap <c-k> 4<c-w>+
 " Decrease height by N lines.
-map <c-J> 4<c-w>-
+vnoremap <c-j> 4<c-w>-
 " Increase width by N lines.
-map <c-L> 4<c-w>>
+vnoremap <c-l> 4<c-w>>
 " Decrease width by N lines.
-map <c-H> 4<c-w><
-" Increase height by N lines.
+vnoremap <c-h> 4<c-w><
 
 "-------------------------------------------------------------------------------
 " Disable arrow keys.
@@ -106,7 +102,7 @@ nnoremap <leader>sr :set relativenumber!<cr>
 nnoremap <leader>sn :set number!<cr>
 " Switch paste.
 nnoremap <leader>sp :set paste!<cr>
-" Switch autoindent.
+" Switch automatic indentation.
 nnoremap <leader>sa :set autoindent!<cr>
 " Switch wrap.
 nnoremap <leader>sw :set wrap!<cr>
@@ -128,6 +124,10 @@ nnoremap <leader>sso :setlocal spell!<cr>
 "-------------------------------------------------------------------------------
 " Buffer mappings. Prefix b means "buffer".
 "-------------------------------------------------------------------------------
+" Go to the next buffer.
+nnoremap L :bn<cr>
+" Go to the previous buffer.
+nnoremap H :bp<cr>
 " Go to the next buffer.
 nnoremap <leader>bn :bn<cr>
 " Go to the previous buffer.
@@ -166,6 +166,24 @@ nnoremap <leader>l <c-w>l
 " nnoremap <localleader>s :sp<cr>
 " Split window vertically (add for responsiveness).
 " nnoremap <localleader>v :vsp<cr>
+
+"-------------------------------------------------------------------------------
+" Embedded terminal settings and mappings.
+"-------------------------------------------------------------------------------
+" Move cursor to the left window.
+tnoremap <localleader>h <c-\><c-n><cr><c-w>h
+" Move cursor to the window above.
+tnoremap <localleader>j <c-\><c-n><cr><c-w>j
+" Move cursor to the window below.
+tnoremap <localleader>k <c-\><c-n><cr><c-w>k
+" Move cursor to the right window.
+tnoremap <localleader>l <c-\><c-n><cr><c-w>l
+" Turn off spelling in terminal.
+au TermOpen * setlocal nospell
+" Disable line numbering in terminal.
+au TermOpen * setlocal nonumber
+" Press escape twice to exit. Add only to zsh because it conflicts with fzf.
+au TermOpen * if expand('%:t') == "zsh" | tnoremap <c-q> <c-\><c-n> | endif
 
 "-------------------------------------------------------------------------------
 " Interface.
