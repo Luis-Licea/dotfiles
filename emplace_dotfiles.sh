@@ -5,7 +5,7 @@ dotfiles=(
     .p10k.zsh
     .config/mostrc
     .latexmkrc
-    .gitconfig
+    .config/git/config
     .config/VSCodium/User/keybindings.json
     .config/VSCodium/User/settings.json
     .config/ranger/commands_full.py
