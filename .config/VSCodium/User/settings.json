@@ -19,6 +19,12 @@
   "editor.renderWhitespace": "boundary",
   // Make matching bracket pairs the same color.
   "editor.bracketPairColorization.enabled": true,
+  // Do not show the menu bar when pressing alt.
+  "window.customMenuBarAltFocus": false,
+  // Do not show menu bar when pressing alt-f, alt-e, alt-s, etc.
+  "window.enableMenuBarMnemonics": false,
+  // Do not show menu bar at startup.
+  "window.menuBarVisibility": "hidden",
   // File extension associations.
   "workbench.editorAssociations": {
     "*.drawio.png": "hediet.vscode-drawio",

@@ -2,42 +2,42 @@
 [
     {
         // Go to the terminal when it is visible.
-        "key": "alt+j",
+        "key": "cmd+j",
         "command": "terminal.focus",
         // "when": "view.terminal.visible"
         "when": "terminalViewShowing"
     },
     {
         // Leave terminal when it is focused.
-        "key": "alt+k",
+        "key": "cmd+k",
         "command": "workbench.action.focusPreviousPart",
         "when": "terminalFocus"
     },
     {
         // Go to the next buffer.
-        "key": "alt+l",
+        "key": "cmd+l",
         "command": "workbench.action.nextEditor"
     },
     {
         // Leave sidebar when it is focused.
-        "key": "alt+l",
+        "key": "cmd+l",
         "command": "workbench.action.focusNextPart",
         "when": "sideBarFocus"
     },
     {
         // Go to the previous buffer.
-        "key": "alt+h",
+        "key": "cmd+h",
         "command": "workbench.action.previousEditor"
     },
     {
         // Leave sidebar when it is focused.
-        "key": "alt+h",
+        "key": "cmd+h",
         "command": "workbench.action.focusNextPart",
         "when": "sideBarFocus"
     },
     {
         // Close buffer.
-        "key": "alt+w",
+        "key": "cmd+w",
         "command": "workbench.action.closeActiveEditor"
     },
     {
@@ -48,31 +48,31 @@
     },
     {
         // When using autocomplete, use to move down the list.
-        "key": "alt+j",
+        "key": "ctrl+j",
         "command": "selectNextSuggestion",
         "when": "suggestWidgetVisible"
     },
     {
         // When using autocomplete, use to move up the list.
-        "key": "alt+k",
+        "key": "ctrl+k",
         "command": "selectPrevSuggestion",
         "when": "suggestWidgetVisible"
     },
     {
         // When the palette is open, use to move down the list.
-        "key": "alt+j",
+        "key": "ctrl+j",
         "command": "workbench.action.quickOpenSelectNext",
         "when": "inQuickOpen"
     },
     {
         // When the palette is open, use to move up the list.
-        "key": "alt+k",
+        "key": "ctrl+k",
         "command": "workbench.action.quickOpenSelectPrevious",
         "when": "inQuickOpen"
     },
     {
         // Toggle sidebar.
-        "key": "alt+s",
+        "key": "cmd+s",
         "command": "workbench.action.toggleSidebarVisibility",
 
         // Use ctrl+0 repeatedly to close sidebar.
@@ -82,12 +82,12 @@
     },
     {
         // Close sidebar when it is focused.
-        "key": "alt+w",
+        "key": "cmd+w",
         "command": "workbench.action.closeSidebar",
         "when": "!editorTextFocus && sideBarFocus"
     },
     {
-        // Collapse all folder using H.
+        // Collapse all folders in sidebar using H.
         "key": "shift+h",
         "command": "workbench.files.action.collapseExplorerFolders",
         "when": "explorerViewletVisible && filesExplorerFocus"
@@ -106,7 +106,7 @@
     },
     {
         // Toggle terminal.
-        "key": "alt+t",
+        "key": "cmd+t",
         "command": "workbench.action.terminal.toggleTerminal",
         "when": "terminal.active"
     },
@@ -129,7 +129,7 @@
     },
     {
         // Format document.
-        "key": "alt+f",
+        "key": "cmd+f",
         "command": "editor.action.formatSelection",
         "when": "editorHasDocumentSelectionFormattingProvider && editorTextFocus && !editorReadonly"
     },
