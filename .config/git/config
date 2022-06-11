@@ -6,4 +6,6 @@
 [url "https://"]
     insteadOf = git://
 [core]
-    pager = less -
+    pager = nvimpager -
+[hub]
+    protocol = https
