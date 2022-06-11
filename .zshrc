@@ -96,6 +96,9 @@ plugins=(git vi-mode copypath copyfile)
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
+# Python configuration. Make Python modules executable. Needed by cppman.
+export PATH="$PATH:$HOME/.local/bin"
+
 # Ruby configuration. Make Ruby gems executable. Needed by Jekyll.
 export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin"
 
@@ -106,9 +109,11 @@ export RANGER_LOAD_DEFAULT_RC=FALSE
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR=nvim
 else
-  export PAGER=most
+  export PAGER=nvimpager
   export EDITOR=nvim
-  alias vim='$EDITOR --noplugin'
+  alias vim='nvim --noplugin'
+  alias edit=$EDITOR
+  alias page=$PAGER
 fi
 export VISUAL="$EDITOR"
 
@@ -127,6 +132,67 @@ alias alacrittyconfig="$EDITOR ~/.config/alacritty/alacritty.yml"
 alias rangerconfig="$EDITOR ~/.config/ranger/"
 alias vscodiumconfig="$EDITOR ~/.config/VSCodium/User/"
 alias picomconfig="$EDITOR ~/.config/picom/picom.conf"
+alias mostconfig="$EDITOR ~/.config/mostrc"
+alias vimbconfig="$EDITOR ~/.config/vimb/config"
+alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+alias e='exit'
+alias c='codium .'
+alias d='codium .'
+alias n='alacritty &'
+alias cheat='cht.sh'
+export bgs='/usr/share/backgrounds/nordic-wallpapers/'
+
+# Where user-specific configurations should be written (analogous to /etc).
+export XDG_CONFIG_HOME=$HOME/.config
+
+# Where user-specific non-essential (cached) data should be written (analogous to /var/cache).
+export XDG_CACHE_HOME=$HOME/.cache
+
+# Where user-specific data files should be written (analogous to /usr/share).
+export XDG_DATA_HOME=$HOME/.local/share
+
+# Where user-specific state files should be written (analogous to /var/lib).
+export XDG_STATE_HOME=$HOME/.local/state
+
+# Used for non-essential, user-specific data files such as sockets, named pipes, etc.
+export XDG_RUNTIME_DIR=/run/user/$UID
+
+# XDG-Ninja
+
+# [ruby bundler]: $HOME/.bundle
+export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
+export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
+export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
+
+# [bash]: ${HOME}/.bash_history
+export HISTFILE="${XDG_STATE_HOME}"/bash/history
+
+# [cargo]: $HOME/.cargo
+export CARGO_HOME="$XDG_DATA_HOME"/cargo
+
+# [gnupg]: $HOME/.gnupg
+export GNUPGHOME="$XDG_DATA_HOME"/gnupg
+
+# [gnu-screen]: $HOME/.screenrc
+export SCREENRC="$XDG_CONFIG_HOME"/screen/screenrc
+
+# [gtk-2]: $HOME/.gtkrc-2.0
+export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
+
+# [kde]: $HOME/.kde4
+export KDEHOME="$XDG_CONFIG_HOME"/kde
+
+# [less]: ${HOME}/.lesshst
+export LESSHISTFILE="$XDG_CACHE_HOME"/less/history
+
+# [most]: $HOME/.mostrc
+export MOST_INITFILE="$XDG_CONFIG_HOME"/mostrc
+
+# [nodejs]: $HOME/.node_repl_history
+export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
+
+# [texmf]: $HOME/.texlive/texmf-var
+export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var
 
 ZSH_CACHE_DIR=$HOME/.cache/oh-my-zsh
 if [[ ! -d $ZSH_CACHE_DIR ]]; then
