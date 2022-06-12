@@ -42,6 +42,8 @@ pacman_programs=(
     strawberry-qt5      # Music player that supports lyrics and star ratings.
     thunderbird         # Email client.
     yt-dlp              # ty-dlp fork with added features and patches.
+    clipgrab            # A video downloader and converter for YouTube, Veoh, DailyMotion, MyVideo, ...
+    
     most                # A terminal pager similar to 'more' and 'less'. NOTE: Set PAGER=most in .zshrc.
 
     # Terminal file manager and viewer.

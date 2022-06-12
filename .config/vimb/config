@@ -1,0 +1,97 @@
+shortcut-add gh=https://github.com/Luis-Licea
+set home-page=https://8bitdash.com
+# set home-page=https://8bitdashboard.com
+# set home-page=https://duckduckgo.com
+set download-path=~/Downloads/
+# x-terminal-emulator -e -vi '%s'
+# alacritty -e -vi '%s'
+set editor-command=alacritty -e nvim '%s'
+# :set editor-command=gvim -f %s
+
+# Zoom in.
+nmap + zI
+# Zoom out.
+nmap - zO
+# Zoom reset.
+nmap = zz
+
+# Fast movement on default j, k keys.
+nnoremap j <C-F>
+nnoremap k <C-B>
+
+# Slow movement on J, K keys.
+nnoremap J j
+nnoremap K k
+
+# In command mode, use ctrl-j to move down options.
+cmap <C-J> <Tab>
+# In command mode, use ctrl-k to move up options.
+cmap <C-K> <S-Tab>
+
+set default-charset=utf-8
+# set accelerated-compositing=true
+set input-autohide=true
+# set spell-checking=false
+set spell-checking=true
+# set statusbar=true
+# set webinspector=trueset
+# set dns-prefetching=true
+# set insecure-content-show=true
+# set insecure-content-run=true
+# set html5-database=true
+# set html5-local-storage=true
+# set strict-ssl=false
+# set defaultfont=DejaVu Sans
+# set fontsize=12
+# set monofont=M+ 1m
+# set monofontsize=11
+# set sansfont=DejaVu Sans
+# set seriffont=DejaVu Serif
+# set input-font-error=M+ 1m 11
+# set input-bg-error=#EC5044
+# set input-fg-error=#f1f1f1
+# set input-font-normal=M+ 1m 11
+# set input-bg-normal=#F8F5EC
+# set input-fg-normal=#222222
+# set completion-font=M+ 1m 11
+# set completion-bg-active=#FFEE99
+# set completion-fg-active=#222222
+# set completion-bg-normal=#F8F5EC
+# set completion-fg-normal=#222222
+# set status-font=M+ 1m 11
+# set status-color-bg=#36424E
+# set status-color-fg=#f1f1f1
+# set status-ssl-font=M+ 1m 11
+# set status-ssl-color-bg=#658175
+# set status-ssl-color-fg=#f1f1f1
+# set status-sslinvalid-font=M+ 1m 11
+# set status-sslinvalid-color-bg=#EC5044
+# set status-sslinvalid-color-fg=#f1f1f1
+# shortcut-default du
+# shortcut-add di=http://dictionary.reference.com/browse/$0
+# shortcut-add du=https://duckduckgo.com/?q=$0
+# shortcut-add gi=https://github.com/search?q=$0
+# shortcut-add go=https://encrypted.google.com/search?q=$0
+# shortcut-add im=http://www.imdb.com/find?s=all&q=$0
+# shortcut-add wi=http://en.wikipedia.org/w/index.php?title=Special:Search&search=$0
+# shortcut-add wo=http://www.wolframalpha.com/input/?i=$0
+# shortcut-add yo=http://www.youtube.com/results?search_query=$0
+# Shortcuts allow the opening of an URI built up from a named template with
+# additional parameters.
+shortcut-add d=https://duckduckgo.com/?q=$0
+# shortcut-add d=http://dict.cc/?s=$0
+shortcut-add g=https://encrypted.google.com/search?q=$0
+shortcut-add y=http://www.youtube.com/results?search_query=$0
+shortcut-add s=https://www.startpage.com/do/dsearch?query=$0
+shortcut-add w=https://en.wiktionary.org/wiki/$0#English
+
+# GUI color settings
+# Color scheme: Base16 Eighties (https://github.com/chriskempson/base16)
+set completion-css=color:#d3d0c8;background-color:#393939;font:12pt DejaVu Sans Mono;
+set completion-hover-css=color:#d3d0c8;background-color:#393939;font:12pt DejaVu Sans Mono;
+set completion-selected-css=color:#d3d0c8;background-color:#515151;font:12pt DejaVu Sans Mono;
+set input-css=color:#d3d0c8;background-color:#393939;font:12pt DejaVu Sans Mono;
+set input-error-css=color:#f2777a;background-color:#393939;font:12pt DejaVu Sans Mono;
+set status-css=color:#ffcc66;background-color:#393939;font:12pt DejaVu Sans Mono;
+set status-ssl-css=color:#ffffff;background-color:#393939;font:12pt DejaVu Sans Mono;
+set status-ssl-invalid-css=color:#f2777a;background-color:#393939;font:12pt DejaVu Sans Mono;
