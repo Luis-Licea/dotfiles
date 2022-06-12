@@ -134,7 +134,8 @@ alias vscodiumconfig="$EDITOR ~/.config/VSCodium/User/"
 alias picomconfig="$EDITOR ~/.config/picom/picom.conf"
 alias mostconfig="$EDITOR ~/.config/mostrc"
 alias vimbconfig="$EDITOR ~/.config/vimb/config"
-alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+alias dotfiles="/usr/bin/git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME"
+alias dotfilesui="gitui -d $HOME/.config/dotfiles/ -w $HOME"
 alias e='exit'
 alias c='codium .'
 alias d='codium .'
