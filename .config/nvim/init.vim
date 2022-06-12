@@ -10,11 +10,9 @@ map <localleader> <c-w>
 " Save file.
 nnoremap <leader>w :write<cr>
 " Spawn a new terminal in the folder of the current file.
-nnoremap <leader>t :let $VIM_DIR=expand('%:p:h')<CR>:!alacritty --working-directory $VIM_DIR &<CR>
+noremap <leader>t :let $VIM_DIR=expand('%:p:h')<CR>:sil !alacritty --working-directory $VIM_DIR &<CR>
 " Quit vim.
 nnoremap <leader>q :quit<cr>
-" Add indentation when S or cc is pressed.
-nnoremap <leader>c :set cindent<cr>
 " Load .vimrc.
 nnoremap <leader>so :source ~/.config/nvim/init.vim<cr>
 " Fix syntax highlighting.
@@ -47,10 +45,11 @@ inoremap <c-k> <c-p>
 inoremap <c-j> <c-n>
 
 "-------------------------------------------------------------------------------
-" Normal mode mappings.
+" Normal mode mappings. Fast movement.
 "-------------------------------------------------------------------------------
-" Remap fast movement.
+" Move a page up.
 nnoremap <c-k> <c-u>
+" Move a page down.
 nnoremap <c-j> <c-d>
 
 "-------------------------------------------------------------------------------
@@ -108,6 +107,8 @@ nnoremap <leader>sa :set autoindent!<cr>
 nnoremap <leader>sw :set wrap!<cr>
 " Switch highlight search.
 nnoremap <leader>sh :set hlsearch!<cr>
+" Switch indentation when S or cc is pressed.
+nnoremap <leader>sc :set cindent!<cr>
 
 "-------------------------------------------------------------------------------
 " Spellcheck mappings. Prefix s means "spell".
@@ -260,6 +261,20 @@ endif
 au! BufWritePost scratchpad.sh exec '!bash "%"'
 
 "-------------------------------------------------------------------------------
+" Latex auto compilation.
+"-------------------------------------------------------------------------------
+" Clean the all files except the compiled pdf when exiting.
+" au! VimLeavePre *.tex sil exec '!rubber --shell-escape --synctex --inplace --clean "%"'
+" Compile the file in the same directory.
+" nnoremap <leader>co :sil exec '!rubber --pdf --shell-escape --synctex --inplace "%"'<cr>
+" Compile the file in the same directory and watch for changes ever 10 seconds.
+" nnoremap <leader>co :sil exec '!watch -n 10 rubber --pdf --shell-escape --synctex --inplace "%"'<cr>
+" Clean all files except the compiled pdf.
+" nnoremap <leader>cr :sil exec '!rubber --shell-escape --synctex --inplace --clean "%"'<cr>
+" Get current file's root name (without) extension, add .pdf to it, and open it.
+" nnoremap <leader>cv :sil exec '!zathura "%:p:r.pdf" &'<cr>
+
+"-------------------------------------------------------------------------------
 " Vim Terminal.
 "-------------------------------------------------------------------------------
 " Close tab immediately after closing terminal.
@@ -372,6 +387,12 @@ call plug#end()
 let g:startify_session_persistence = 1
 " Do not show cowsay as part of the quote. It takes a lot of space.
 let g:startify_custom_header = 'startify#pad(startify#fortune#quote())'
+" Place sessions section first because that is what I access most often.
+let g:startify_lists = [
+    \ { 'header': ['   Sessions'],       'type': 'sessions' },
+    \ { 'header': ['   MRU'],            'type': 'files' },
+    \ { 'header': ['   MRU '. getcwd()], 'type': 'dir' },
+    \ ]
 "-------------------------------------------------------------------------------
 "  Ack settings.
 "-------------------------------------------------------------------------------
@@ -421,16 +442,14 @@ map <c-_> <plug>NERDCommenterToggle
 "-------------------------------------------------------------------------------
 " Nerd tree mappings. Prefix n means "nerd".
 "-------------------------------------------------------------------------------
-" Go to sidebar tree.
-nnoremap <leader>nf :NERDTreeFocus<cr>
 " Go to project root.
-nnoremap <leader>nn :NERDTree<cr>
+nnoremap <leader>nt :NERDTree<cr>
 " Switch sidebar tree.
-nnoremap <leader>nt :NERDTreeToggle<cr>
+nnoremap <leader>nn :NERDTreeToggle<cr>
 " Find current file in tree.
 nnoremap <leader>nf :NERDTreeFind<cr>
 " Refresh files
-nnoremap <leader>nr :NERDTreeFind<cr>
+nnoremap <leader>nr :NERDTreeRefreshRoot<cr>
 " Show hidden files by default.
 let NERDTreeShowHidden=1
 
@@ -470,7 +489,7 @@ let g:rustfmt_autosave = 1
 "-------------------------------------------------------------------------------
 " Looks for tags in current directory's rusty-tags.vi folder to the root.
 au BufRead *.rs :setlocal tags=./rusty-tags.vi;/
-au BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
+au BufWritePost *.rs :sil! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
 " TODO Set shortcut to make tag, jump to tag, and split window and go to tag.
 
 "-------------------------------------------------------------------------------
