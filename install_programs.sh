@@ -5,8 +5,8 @@
 
 # Install using pacman.
 pacman_programs=(
-    # Development tools.
 
+    # Development tools.
     boost               # C++ development headers.
     ccls                # Language server for C/C++.
     doxygen             # Documentation system for C/C++/Java/Python.
@@ -16,14 +16,14 @@ pacman_programs=(
     sourcetrail         # A cross-platform source explorer for C/C++ and Java.
     tldr                # Simplified man pages.
     vscodium            # Free/Libre Open Source Software Binaries of VSCode.
-
-        ## Python setup.
-        python-pip          # Intall pip3. NOTE: install virtualenv with `pip3 install virtualenv`.
-        bpython             # Fancy command line interpreter.
-
+    hub                 # CLI interface for Github.
+    python-pip          # Intall pip3. NOTE: install virtualenv with `pip3 install virtualenv`.
 
     # Miscellaneous.
-    # zathura             # Minimalistic document viewer.
+    kdeconnect            # Adds communication between KDE and your smartphone.
+    zathura               # Minimalistic document viewer.
+    zathura-cb            # Add comic-book support to zathura.
+    zathura-pdf-mupdf     # Add PDF, ePub, and OpenXPS support to zathura.
     # evince              # GTK PDF Viewer.
     # lollypop            # Music player (no support for star ratings).
     # pdfarranger         # Merge, split, rotate, crop and rearrange PDFs.
@@ -40,7 +40,6 @@ pacman_programs=(
     obs-strudio         # Recording studio.
     peek                # Screen recorder.
     strawberry-qt5      # Music player that supports lyrics and star ratings.
-    strawberry-qt5      # Music player.
     thunderbird         # Email client.
     yt-dlp              # ty-dlp fork with added features and patches.
     most                # A terminal pager similar to 'more' and 'less'. NOTE: Set PAGER=most in .zshrc.
@@ -48,6 +47,7 @@ pacman_programs=(
     # Terminal file manager and viewer.
     ranger    # Simple, vim-like file manager.
     ueberzug  # Display images in X11 in ranger. NOTE: Configure rc.conf.
+    sxiv      # Simple X Image Viewer.
 
     # System
     p7zip               # Command line archiver with high compression ratio.
@@ -58,17 +58,19 @@ pacman_programs=(
     # Texlive setup.
     biber               # Unicode-capable bibliography backend for BibLaTeX.
     minted              # Syntax highlighted source code for LaTeX. NOTE: run "pip3 install Pygments". Also, edit ifplatform.sty as shown in "https://github.com/wspr/will2e/pull/6/files". Also, add ".latexmkrc".
+    rubber              # A wrapper for LaTeX and friends.
 
     # Font support for emojis, Microsoft Word documents, Asian languages, and more.
     noto-fonts-cjk      # Supports Chinese, Japanese, and Korean fonts.
     noto-fonts-emoji    # Supports emojis.
-
 )
 
 # Install using yaourt, yay, etc.
 aur_programs=(
 
     # Miscellaneous.
+    nvimpager-git       # Use nvim to view manpages, diffs, etc with syntax highlighting
+    xdg-ninja-git       # A shell script that checks $HOME for unwanted files.
     cht.sh-git          # Command-line client for cheat.sh.
     navi                # An interactive cheatsheet tool for the command-line
     mousai              # Music name detector. Complements Shortwave.
@@ -110,11 +112,12 @@ aur_programs=(
     # texlive-science       Typesetting for mathematics, natural and computer sciences
 
     fcitx5-im           # Manage input method editors. NOTE: add env variables and locales.
-    fcitx5-mozc-ut      # Improved Japanese conversion quality over fcitx5-mozc.
+
+    dragon-drop         # For Ranger. Drag-and-drop source for X or Wayland.
 )
 
 modern_unix=(
-    # Intalled and liked.
+    # Install with pacman.
     bat       # A cat clone with syntax highlighting and Git integration.
     # exa       # A modern replacement for ls. (lsd is prettier by default)
     lsd       # The next gen file listing command. Backwards compatible with ls.
@@ -123,7 +126,7 @@ modern_unix=(
     cheat     # Create and view interactive cheatsheets on the command-line.
     tldr      # A community effort to simplify man pages with practical examples.
 
-    # Not xperimened with.
+    # Not experimened with.
     git-delta # A viewer for git and diff output
     dust      # A more intuitive version of du written in rust.
     duf       # A better df alternative.
@@ -142,6 +145,13 @@ modern_unix=(
     curlie    # The power of curl, the ease of use of httpie.
     xh        # A friendly and fast tool for sending HTTP requests. It reimplements as much as possible of HTTPie's excellent design, with a focus on improved performance.
     zoxide    # A smarter cd command inspired by z.
+)
+
+pretty=(
+    cava        # Console-based Audio Visualizer for Alsa
+    pfetch      # A pretty system information tool written in POSIX sh.
+    cbonsai     # A bonsai tree generator, written in C using ncurses.
+    pipes.sh    # Animated pipes terminal screensaver.
 )
 
 # Install using plasma-discover.
