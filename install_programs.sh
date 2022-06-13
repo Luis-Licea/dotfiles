@@ -24,6 +24,7 @@ pacman_programs=(
     zathura               # Minimalistic document viewer.
     zathura-cb            # Add comic-book support to zathura.
     zathura-pdf-mupdf     # Add PDF, ePub, and OpenXPS support to zathura.
+    newsboat            # An RSS/Atom feed reader for text terminals
     # evince              # GTK PDF Viewer.
     # lollypop            # Music player (no support for star ratings).
     # pdfarranger         # Merge, split, rotate, crop and rearrange PDFs.
@@ -71,7 +72,7 @@ pacman_programs=(
 aur_programs=(
 
     # Miscellaneous.
-    nvimpager-git       # Use nvim to view manpages, diffs, etc with syntax highlighting
+    nvimpager-git       # Use nvim to view manpages, diffs with syntax highlighting
     xdg-ninja-git       # A shell script that checks $HOME for unwanted files.
     cht.sh-git          # Command-line client for cheat.sh.
     navi                # An interactive cheatsheet tool for the command-line

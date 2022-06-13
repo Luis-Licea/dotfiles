@@ -62,6 +62,8 @@ nnoremap <leader>bs :buffers<cr>
 nnoremap <leader>bd :bd<cr>
 " Close all buffers even if more than one is open.
 nnoremap <leader>q :call CloseWintab()<cr>
+" Source the configuration file.
+nnoremap <leader>so :so ~/.config/nvimpager/init.vim<cr>
 
 "-------------------------------------------------------------------------------
 " Window mappings.
@@ -88,3 +90,22 @@ set showcmd                 " Show commands as they are typed on the banner.
 set termguicolors           " Support true color in vim.
 set title                   " Set window title to value of the manual entry.
 
+"-------------------------------------------------------------------------------
+" TUI Colors.
+"-------------------------------------------------------------------------------
+" Clear the font color for very first line in the man page.
+hi manHeader            guifg=none
+" Highlight options and inputs with a muted green color.
+hi manUnderline         cterm=underline gui=none guifg=#b9ca4a
+" A link to other man page, such as man(1).
+hi manReference         guifg=LightMagenta
+" Highlight bold letters using a muted red color.
+hi manBold              guifg=#d54e53
+" Items matching search should be green.
+hi Search               guibg=LightGreen
+" Item before entering search should be orange.
+hi IncSearch            guibg=reverse guifg=Orange
+" Regular pop-up menu item should have dark backgrounds.
+hi Pmenu                guibg=Black guifg=White
+" Selected pop-up menu item should have light backgrounds.
+hi PmenuSel             guibg=Gray guifg=White
