@@ -1,0 +1,86 @@
+################################################################################
+# Solarized theme
+################################################################################
+color background        default default
+color listnormal        default default
+color listnormal_unread color2  default # Make unread articles green.
+color listfocus         black   cyan
+color listfocus_unread  black   cyan
+color info              default black
+color article           default default
+
+################################################################################
+# Highlights article elements
+################################################################################
+highlight article "^(Title):.*$" blue default
+highlight article "https?://[^ ]+" red default
+highlight article "\\[image [0-9]+.*\\]" green default
+highlight article "\\[iframe [0-9]+.*\\]" green default
+
+################################################################################
+# Feeds
+################################################################################
+article-sort-order desc # sort articles in descending order
+auto-reload no          # disable autoreload feeds
+# browser "xdg-open %u >/dev/null 2>&1" # open articles in default browser
+browser "vimb %u >/dev/null 2>/dev/null &" # open articles in vimb
+download-retries 5      # increase retries of downloading feed
+download-timeout 60     # increase downloading feed timeout
+history-limit 100       # limit history to 100
+mark-as-read-on-hover no # do not mark read when we hover
+max-items 100           # limit articles to 100
+refresh-on-startup no   # disable auto refresh feeds on startup
+reload-threads 5        # number of threads or articles to reload
+reload-time 60          # reload time in minutes
+show-read-articles yes  # show all articles i.e read articles, unread articles
+show-read-feeds yes     # show all feeds i.e read feeds, unread feeds
+
+################################################################################
+# Directories
+################################################################################
+cache-file ~/.config/newsboat/cache.db      # save cache
+cookie-cache ~/.config/newsboat/cookies.txt # save cookies in this file
+error-log ~/.config/newsboat/error.log      # save errors
+save-path ~/.config/newsboat/articles       # save all articles in a file
+
+################################################################################
+# Bindings
+################################################################################
+bind-key G end
+bind-key J next-feed articlelist
+bind-key K prev-feed articlelist
+bind-key S save
+bind-key U show-urls
+bind-key g home
+bind-key h quit
+bind-key j down article
+bind-key j down feedlist
+bind-key j next articlelist
+bind-key k prev articlelist
+bind-key k up article
+bind-key k up feedlist
+bind-key l open
+bind-key o open-in-browser-and-mark-read
+bind-key s sort
+
+################################################################################
+# Formatting.
+################################################################################
+articlelist-title-format "Articles in feed '%T' (%u unread, %t total)%?F? matching filter '%F'&? - %U"
+dialogs-title-format "Dialogs"
+dirbrowser-title-format "%?O?Open Directory&Save File? - %f"
+feedlist-title-format "%?F?Feed&Your feeds? (%u unread, %t total)%?F? matching filter '%F'&?%?T? - tag '%T'&?"
+filebrowser-title-format "%?O?Open File&Save File? - %f"
+help-title-format "Help"
+itemview-title-format "Article '%T' (%u unread, %t total)"
+searchresult-title-format "Search results (%u unread, %t total)%?F? matching filter '%F'&?"
+selectfilter-title-format "Select Filter"
+selecttag-title-format "Select Tag"
+urlview-title-format "URLs"
+
+################################################################################
+# Others
+################################################################################
+# Show the day, month, and year of the article, as in "02 July 2021".
+datetime-format "%d %B %Y"
+
