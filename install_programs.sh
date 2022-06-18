@@ -19,18 +19,22 @@ pacman_programs=(
     hub                 # CLI interface for Github.
     python-pip          # Intall pip3. NOTE: install virtualenv with `pip3 install virtualenv`.
 
+    # Music player.
+    mpd                 # Flexible, powerful, server for playing music.
+    timidity++          # For mpd. A MIDI to WAVE converter and player.
+    ncmpcpp             # An mpd client like ncmpc with some new features.
+
     # Miscellaneous.
-    kdeconnect            # Adds communication between KDE and your smartphone.
-    zathura               # Minimalistic document viewer.
-    zathura-cb            # Add comic-book support to zathura.
-    zathura-pdf-mupdf     # Add PDF, ePub, and OpenXPS support to zathura.
     newsboat            # An RSS/Atom feed reader for text terminals
+    kdeconnect          # Adds communication between KDE and your smartphone.
+    zathura             # Minimalistic document viewer.
+    zathura-cb          # Add comic-book support to zathura.
+    zathura-pdf-mupdf   # Add PDF, ePub, and OpenXPS support to zathura.
     # evince              # GTK PDF Viewer.
     # lollypop            # Music player (no support for star ratings).
     # pdfarranger         # Merge, split, rotate, crop and rearrange PDFs.
     # gscan2pdf           # PDF tool. Can remove background from scanned PDFs.
     audacium            # Free version of Audacity.
-    cmus                # TUI music player.
     deja-dup            # File backups.
     firefox             # Firefox browser.
     firefox-extension-plasma-integration    # Player and Krunner integration.
