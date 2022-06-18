@@ -25,6 +25,8 @@ pacman_programs=(
     ncmpcpp             # An mpd client like ncmpc with some new features.
 
     # Miscellaneous.
+    calibre             # Ebook management application
+    termshark           # Terminal UI for tshark, inspired by Wireshark.
     newsboat            # An RSS/Atom feed reader for text terminals
     kdeconnect          # Adds communication between KDE and your smartphone.
     zathura             # Minimalistic document viewer.
@@ -34,6 +36,7 @@ pacman_programs=(
     # lollypop            # Music player (no support for star ratings).
     # pdfarranger         # Merge, split, rotate, crop and rearrange PDFs.
     # gscan2pdf           # PDF tool. Can remove background from scanned PDFs.
+    sc-im               # A spreadsheet program based on SC.
     audacium            # Free version of Audacity.
     deja-dup            # File backups.
     firefox             # Firefox browser.
@@ -76,6 +79,7 @@ pacman_programs=(
 aur_programs=(
 
     # Miscellaneous.
+    pipe-viewer-git     # A lightweight YouTube client for Linux (CLI/GTK).
     nvimpager-git       # Use nvim to view manpages, diffs with syntax highlighting
     xdg-ninja-git       # A shell script that checks $HOME for unwanted files.
     cht.sh-git          # Command-line client for cheat.sh.
@@ -90,6 +94,7 @@ aur_programs=(
     khronos             # Simple activity time tracker.
     goldendict-git      # Feature rich dictionary.
     ttf-ms-fonts        # Supports Times New Roman fonts.
+    htop-vim            # Interactive process viewer with a Vim keybindings.
     dolvim              # Dolphin but Vim. NOTE: Enable Git, Show Hidden files in Context Menu.
 
     # Terminal setup.

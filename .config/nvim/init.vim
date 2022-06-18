@@ -85,6 +85,8 @@ nnoremap <leader>fd :echo expand("%:p:h")<cr>
 "-------------------------------------------------------------------------------
 " Yank mappings. Prefix y means "yank".
 "-------------------------------------------------------------------------------
+" Copy file name to clipboard.
+nnoremap <silent> yn :let @+=expand('%:t')<cr>
 " Copy file path to clipboard.
 nnoremap <silent> yf :let @+=expand('%:p')<cr>
 " Copy pwd to clipboard.
