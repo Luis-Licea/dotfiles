@@ -72,5 +72,8 @@ fi
 # Get the directory associated to the chosen pdf title.
 pdf_dir=${title2dir["$choice"]}
 
-# Open the all the pdf in the directory. There should only be one pdf.
-zathura $pdf_dir/*.pdf
+# If the directory exists:
+if [ -d "$pdf_dir" ]; then
+    # Open the all the pdf in the directory. There should only be one pdf.
+    zathura $pdf_dir/*.pdf
+fi
