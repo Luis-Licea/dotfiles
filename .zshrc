@@ -138,6 +138,7 @@ alias newsboatconfig="$EDITOR ~/.config/newsboat/"
 alias nvimpagerconfig="$EDITOR ~/.config/nvimpager/init.vim"
 alias mpdconfig="$EDITOR ~/.config/mpd/mpd.conf"
 alias ncmpcppconfig="$EDITOR ~/.config/ncmpcpp/"
+alias zathuraconfig="$EDITOR ~/.config/zathura/zathurarc"
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME"
 alias dotfilesui="gitui -d $HOME/.config/dotfiles/ -w $HOME"
 alias e='exit'

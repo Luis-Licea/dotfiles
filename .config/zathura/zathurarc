@@ -1,0 +1,130 @@
+# place in ~/.config/zathura/
+# Zathura configuration file
+# See man `man zathurarc'
+#-----------------------------
+
+# set sandbox none
+# set statusbar-h-padding 0
+# set statusbar-v-padding 0
+# set page-padding 1
+# map D toggle_page_mode
+
+# Enable clipboard.
+set selection-clipboard clipboard
+
+# See man `man zathurarc'
+map r reload
+map p print
+map i recolor
+map R rotate
+
+map H zoom out
+map J scroll down
+map K scroll up
+map L zoom in
+map h scroll left
+# map j scroll half-down
+map j scroll full-down
+# map k scroll half-up
+map k scroll full-up
+map l scroll right
+
+# Enable quick fullscreen toggling.
+unmap f
+map f toggle_fullscreen
+map [fullscreen] f toggle_fullscreen
+
+map [fullscreen] i recolor
+map [fullscreen] j scroll full-down
+map [fullscreen] k scroll full-up
+map [fullscreen] h scroll left
+map [fullscreen] l scroll right
+map [fullscreen] J scroll down
+map [fullscreen] K scroll up
+
+# Open document in fit-width mode by default
+set adjust-open "best-fit"
+
+# scrollbars
+set show-scrollbars "true"
+set window-title-basename "true"
+set window-title-page "true"
+
+set scroll-wrap "true"
+set continuous-hist-save "true"
+# set zoom-center "true"
+# set vertical-center "true"
+
+# One page per row by default
+set pages-per-row 1
+
+#stop at page boundries
+set scroll-page-aware "true"
+set scroll-full-overlap 0.01
+set scroll-step 100
+
+#zoom settings
+set zoom-min 10
+set guioptions ""
+
+# zathurarc-dark
+
+# Use default system monospace font.
+set font "monospace 12"
+
+# set default-bg "#000000" #00
+# set default-fg "#F7F7F6" #01
+
+# set statusbar-fg "#B0B0B0" #04
+# set statusbar-bg "#202020" #01
+
+# set inputbar-bg "#151515" #00 currently not used
+# set inputbar-fg "#FFFFFF" #02
+
+# set highlight-color "#F4BF75" #0A
+# set highlight-active-color "#6A9FB5" #0D
+
+# set completion-group-bg         "#002b36" # base03
+# set completion-group-fg         "#839496" # base0
+# set completion-bg               "#073642" # base02
+# set completion-fg               "#93a1a1" # base1
+# set completion-highlight-bg     "#586e75" # base01
+# set completion-highlight-fg     "#eee8d5" # base2
+
+# Reverse book content's color
+set recolor "true"
+
+# set recolor-lightcolor "#000000" #00
+# set recolor-darkcolor "#E0E0E0" #06
+# set recolor-reverse-video "true"
+# set recolor-keephue "true"
+
+# Change index mode colors from green to gray.
+set index-active-bg             "#586e75" # base01
+set index-active-fg             "#eee8d5" # base2
+
+# Make input text black/white instead of green.
+set inputbar-fg                 "#eee8d5" # base2
+
+# set statusbar-bg                "#073642" # base02
+# set statusbar-fg                "#93a1a1" # base1
+
+# Change the selection box color from green to gray.
+set highlight-color             "#657b83" # base00  # hightlight match when search keyword(vim's /)
+set highlight-active-color      "#268bd2" # blue
+
+# ----------------------------------------------------------------------------
+# map [normal] c follow
+# map [normal] C display_link
+# # map [normal] j feedkeys /
+# map [normal] r recolor
+# map [normal] <C-r> rotate
+# map [normal] p print
+# # map [normal] k mark_evaluate
+# 
+# map [normal] s exec zathura-inverse-search
+# 
+# set selection-clipboard clipboard
+# set synctex true
+# set synctex-editor-command "vim --remote-silent +%{line} %{input}"
+# set highlight-transparency 0.15
