@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+# cals - Calibre Library Search.
+# Searches and opens pdfs in the Calibre Library directory.
+
+# The script searches all the metadata files in the Calibre Library
+# directory, displays all the pdfs in dmenu, and opens the pdf specified
+# by the user.
+
+# Whether or not to print debugging messages.
+is_debugging=false
+# is_debugging=true
+
+# Accept the directory where the library is, or use a default directory.
+if [ $# -eq 1 ] && [ -d "$1" ]; then
+    library_path="$1"
+elif [ -d "$HOME/Calibre Library" ]; then
+    library_path="$HOME/Calibre Library"
+elif [ -d "$HOME/Documents/Calibre Library" ]; then
+    library_path="$HOME/Documents/Calibre Library"
+fi
+
+# Find all files ending with the .opf extension. This type of XML files contain
+# information about pdf books. Eeach opf file corresponds to a pdf book.
+metadata_files="$(find "$library_path" -name "*.opf")"
+
+# For-loop setup.
+
+# Set newline as the delimiter, or else for loop will not work.
+IFS=$'\n'
+
+# Create associative array.
+declare -A title2dir
+
+for file in $metadata_files; do
+    # Get the pdf title by scanning the XML tags.
+    title=$(grep -o "<dc:title>.*</dc:title>" "$file")
+
+    # Remove dc:title tags prefix and suffix.
+    prefix="<dc:title>"
+    suffix="</dc:title>"
+    title="${title#"$prefix"}"
+    title="${title%"$suffix"}"
+
+    # Store the directory and the title of the pdf.
+    title2dir["$title"]="${file%"/$(basename "$file")"}"
+done
+
+if $is_debugging; then
+    echo "All the titles:"
+    for t in "${!title2dir[@]}"; do
+        echo "$t"
+    done
+fi
+
+# Display all the titles in dmenu. Use xargs or else the output of dmenu will
+# not be usable in other commands.
+choice=$(
+     # Iterate thru ever pdf title:
+    for title in "${!title2dir[@]}"; do
+         # Print the book title.
+        echo "$title"
+    # Show the titles in dmenu for selection, case insensitively.
+    done | dmenu -i | xargs
+)
+
+if $is_debugging; then
+    echo "Chosen title:"
+    echo "${title2dir["$choice"]}"
+fi
+
+# Get the directory associated to the chosen pdf title.
+pdf_dir=${title2dir["$choice"]}
+
+# Open the all the pdf in the directory. There should only be one pdf.
+zathura $pdf_dir/*.pdf
