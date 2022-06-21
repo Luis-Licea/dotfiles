@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Define a place to store the player name. Playerctl can only control one
+# player at a time, so this file will store the name of the player to control.
+player_file=/tmp/playerctl.txt
+
+# Pick the player that playerctl will control.
+pick_player() {
+    # Choose a player from the list.
+    player=$( playerctl -l | dmenu )
+    # Save the player program's name, such as vlc, mpd, mpv, etc.
+    if [ "$player" != "" ]; then
+        echo "$player" > "$player_file"
+    fi
+    # Exit script after picking the player.
+    exit
+}
+
+# Check the first argument to decide if a player should be picked.
+if [ "$1" = "pick-player" ]; then
+    pick_player
+fi
+
+# If a player has been picked:
+if [ -f  "$player_file" ]; then
+    # Retrieve player name from file.
+    player=$(cat "$player_file")
+else
+    # Leave player name empty. Playerctl can handle it.
+    player=''
+fi
+
+# Execute the arguments on the specified player.
+playerctl --player="$player" "$@"
+
+

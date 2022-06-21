@@ -139,14 +139,20 @@ alias nvimpagerconfig="$EDITOR ~/.config/nvimpager/init.vim"
 alias mpdconfig="$EDITOR ~/.config/mpd/mpd.conf"
 alias ncmpcppconfig="$EDITOR ~/.config/ncmpcpp/"
 alias zathuraconfig="$EDITOR ~/.config/zathura/zathurarc"
+alias passconfig="cd ~/.local/share/pass"
+alias fstabconfig="sudoedit /etc/fstab"
+
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME"
 alias dotfilesui="gitui -d $HOME/.config/dotfiles/ -w $HOME"
+
 alias e='exit'
 alias c='codium .'
 alias d='codium .'
 alias n='alacritty &'
 alias cheat='cht.sh'
 export bgs='/usr/share/backgrounds/nordic-wallpapers/'
+
+# XDG directories.
 
 # Where user-specific configurations should be written (analogous to /etc).
 export XDG_CONFIG_HOME=$HOME/.config
@@ -196,6 +202,9 @@ export MOST_INITFILE="$XDG_CONFIG_HOME"/mostrc
 
 # [nodejs]: $HOME/.node_repl_history
 export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
+
+# [pass]: $HOME/.password-store
+export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass
 
 # [texmf]: $HOME/.texlive/texmf-var
 export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var

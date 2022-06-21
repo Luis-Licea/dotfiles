@@ -23,6 +23,11 @@ pacman_programs=(
     mpd                 # Flexible, powerful, server for playing music.
     timidity++          # For mpd. A MIDI to WAVE converter and player.
     ncmpcpp             # An mpd client like ncmpc with some new features.
+    mpdris2             # MPRIS2 support for MPD. Use AUR.
+
+    # Video player.
+    mpv                 # The best video player.
+    mpv-mpris           # MPRIS plugin for mpv.
 
     # Miscellaneous.
     calibre             # Ebook management application
@@ -187,16 +192,9 @@ vscodium_extensions=(
     zaaack.markdown-editor          # A full-featured WYSIWYG editor for markdown.
 )
 
-# VHDL setup not needed anymore.
-    vhld_pacman_programs=(
-        # VHDL setup for VSCodium.
-        ghdl-llvm       # VHDL simulator. NOTE: Use VSCode TesoHDL plugin and run "pip3 install teroshdl".
-        gtkwave         # Waveform viewer for VHDL.
-    )
-    vhdl_vscodium_extensions=(
-        # VHDL setup for VSCodium.
-        teros-technology.teroshdl       # IDE for GHDL simulation.
-    )
+pip3_programs=(
+    cppman      # C++ man page documentation.
+)
 
 # List of installers that I hope existed.
 nonexistent_programs=(

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# If there is only one argument:
+if [ $# -eq 1 ] ; then
+    # Export the private key with the specified argument.
+    gpg --export-secret-keys --armor "$1" > "$1-private-key.asc"
+
+    # Export the public key with the specified argument.
+    gpg --export --armor "$1" > "$1-public-key.asc"
+else
+    echo "Enter the name or email associated to the key pair."
+fi
