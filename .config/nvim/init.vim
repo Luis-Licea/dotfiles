@@ -109,8 +109,6 @@ nnoremap <leader>sa :set autoindent!<cr>
 nnoremap <leader>sw :set wrap!<cr>
 " Switch highlight search.
 nnoremap <leader>sh :set hlsearch!<cr>
-" Switch indentation when S or cc is pressed.
-nnoremap <leader>sc :set cindent!<cr>
 
 "-------------------------------------------------------------------------------
 " Spellcheck mappings. Prefix s means "spell".
@@ -257,12 +255,6 @@ if has("autocmd")
 endif
 
 "-------------------------------------------------------------------------------
-" Scratchpads.
-"-------------------------------------------------------------------------------
-" Execute the file "scratchpad.sh" each time it is saved.
-au! BufWritePost scratchpad.sh exec '!bash "%"'
-
-"-------------------------------------------------------------------------------
 " Latex auto compilation.
 "-------------------------------------------------------------------------------
 " Clean the all files except the compiled pdf when exiting.
@@ -289,19 +281,41 @@ au! BufWritePost scratchpad.sh exec '!bash "%"'
 au! BufWritePost .Xresources exec '!xrdb && xrdb -merge ~/.Xresources'
 
 "-------------------------------------------------------------------------------
-" Program settings.
+" Auto compilation settings.
 "-------------------------------------------------------------------------------
+" Function for toggling auto compilation on save:
+let s:auto_compile = 0
+function! AutoCompileToggle()
+    if s:auto_compile  == 0
+        let s:auto_compile = 1
+    else
+        let s:auto_compile = 0
+    endif
+endfunction
+nnoremap <leader>ct :call AutoCompileToggle()<CR>
+
 " Run C code in Vim.
 au FileType c map <buffer> <F5> :w<cr>:exec '!clear; gcc -Wall -Wextra "%" -o "%<" && "./%<"' shellescape(@%, 1)<cr>
 au FileType c imap <buffer> <F5> <esc>:w<cr>:exec '!clear; gcc -Wall -Wextra "%" -o "%<" && "./%<"' shellescape(@%, 1)<cr>
 
 " Run C++ code in Vim.
-au FileType cpp map <buffer> <F5> :w<cr>:exec '!clear; g++ "%" -o "%<" && "./%<"' shellescape(@%, 1)<cr>
-au FileType cpp imap <buffer> <F5> <esc>:w<cr>:exec '!clear; g++ "%" -o "%<" && "./%<"' shellescape(@%, 1)<cr>
+function! CompileCpp()
+    w!
+    let $file=expand('%:t:r') " Remove the parent directories and extension.
+    !g++ -std=c++17 -Wall -Wextra "%" -o "/tmp/$file" && "/tmp/$file"
+endfunction
+au FileType cpp map <buffer> <F5> :call CompileCpp()<cr>
+au FileType cpp imap <buffer> <F5> <esc>:call CompileCpp()<cr>
+au BufWritePost *.cpp if s:auto_compile == 1 | call CompileCpp() | endif
 
 " Run Python code in Vim (edit and insert modes).
-au FileType python map <buffer> <F5> :w<cr>:exec '!clear; python3' shellescape(@%, 1)<cr>
-au FileType python imap <buffer> <F5> <esc>:w<cr>:exec '!clear; python3' shellescape(@%, 1)<cr>
+function! CompilePy()
+    w!
+    exec '!python3 "%"'
+endfunction
+au FileType python map <buffer> <F5> :call CompilePy()<cr>
+au FileType python imap <buffer> <F5> <esc>:call CompilePy()<cr>
+au BufWritePost *.py if s:auto_compile == 1 | call CompilePy() | endif
 
 " Run Rust code in Vim.
 au FileType rust map <buffer> <F5> :w<cr>:exec '!clear; rustc "%" && ./"%<"' shellescape(@%, 1)<cr>
@@ -311,8 +325,31 @@ au FileType rust imap <buffer> <F5> <esc>:w<cr>:exec '!clear; rustc "%" && ./"%<
 au FileType tex map <buffer> <F5> :w<cr>:exec '!clear; pdflatex.exe "%"' shellescape(@%, 1)<cr>
 au FileType tex imap <buffer> <F5> <esc>:w<cr>:exec '!clear; pdflatex.exe "%"' shellescape(@%, 1)<cr> <cr>
 
+" Run bash code in Vim.
+function! CompileSh()
+    w!
+    exec '!bash "%"'
+endfunction
+au FileType sh map <buffer> <F5> :call CompileSh()<cr>
+au FileType sh imap <buffer> <F5> <esc>:call CompileSh()<cr>
+au BufWritePost *.sh if s:auto_compile == 1 | call CompileSh() | endif
+
 " Spell check and wrap commit messages.
 au Filetype gitcommit setlocal spell textwidth=72
+
+"-------------------------------------------------------------------------------
+" Scratchpads.
+"-------------------------------------------------------------------------------
+" Execute files named "scratchpad" each time they are saved.
+au! BufEnter scratchpad.* call AutoCompileToggle()
+
+"-------------------------------------------------------------------------------
+" Templates for new files that do not exist.
+"-------------------------------------------------------------------------------
+autocmd BufNewFile  *.cpp   0r ~/.config/nvim/templates/skeleton.cpp
+autocmd BufNewFile  *.sh    0r ~/.config/nvim/templates/skeleton.sh
+autocmd BufNewFile  *.py    0r ~/.config/nvim/templates/skeleton.py
+autocmd BufNewFile  *.html  0r ~/.config/nvim/templates/skeleton.html
 
 "-------------------------------------------------------------------------------
 " Vim-plug settings.
@@ -372,21 +409,35 @@ call plug#begin()
     Plug 'tpope/vim-surround'
     " Auto pair plugin.
     Plug 'jiangmiao/auto-pairs'
-    " Jump to any location specified by two characters.
-    Plug 'justinmk/vim-sneak'
     " Fuzzy finder for searching files.
     Plug 'junegunn/fzf.vim'
     " Prettify status line. Add icons to status line and nerd tree.
     " NOTE: Use a patched font such as nerd-fonts-source-code-pro.
     " NOTE: Icons will not display unless airline loads before dev icons.
     Plug 'vim-airline/vim-airline' | Plug 'ryanoasis/vim-devicons'
+    " Syntax and keybindings for Markdown files. Vim-markdown needs tabular.
+    Plug 'godlygeek/tabular' | Plug 'preservim/vim-markdown'
 call plug#end()
+
+"-------------------------------------------------------------------------------
+" Md-vim settings.
+"-------------------------------------------------------------------------------
+" Create a binding for formatting tables.
+au BufReadPost *.md nnoremap <buffer><leader>fo :TableFormat()<cr>
+" Create a binding for formatting (renumbering) ordered lists.
+au BufReadPost *.md nnoremap <buffer><leader>fl :call MdFixOrderedList()<cr>
+" View compiled markdown pdf.
+au BufReadPost *.md nnoremap <buffer><leader>cv :silent !zathura "/tmp/%<.pdf" &<cr>
+" Auto compile the markdown file after saving if auto compilation is enabled.
+au BufWritePost *.md if s:auto_compile == 1 | sil exec '!pandoc "%" -o "/tmp/%<.pdf"' | endif
 
 "-------------------------------------------------------------------------------
 " Startify settings.
 "-------------------------------------------------------------------------------
 " Automatically save session when leaving. Use :SSave to crate a session.
 let g:startify_session_persistence = 1
+" Do not open blank windows when loading the session.
+set sessionoptions=curdir,folds,help,tabpages,winpos ",blank
 " Do not show cowsay as part of the quote. It takes a lot of space.
 let g:startify_custom_header = 'startify#pad(startify#fortune#quote())'
 " Place sessions section first because that is what I access most often.
@@ -408,20 +459,6 @@ nnoremap <leader>A :tab split<cr>:Ack! <c-r><c-w><cr>
 "-------------------------------------------------------------------------------
 " Open fuzzy finder.
 nnoremap <leader>ff :FZF<cr>
-
-"-------------------------------------------------------------------------------
-"  Sneak settings.
-"-------------------------------------------------------------------------------
-" Replace f with two-character Sneak. One-character Sneak is used when needed.
-map f <Plug>Sneak_s
-" Replace F with two-character Sneak. One-character Sneak is used when needed.
-map F <Plug>Sneak_S
-" Replace t with one-character Sneak. Works over multiple lines.
-map t <Plug>Sneak_t
-" Replace T with one-character Sneak. Works over multiple lines.
-map T <Plug>Sneak_T
-" Go to next or previous results using f or F.
-let g:sneak#s_next = 1
 
 "-------------------------------------------------------------------------------
 " Nerd commenter settings.

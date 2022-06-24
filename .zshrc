@@ -142,12 +142,19 @@ alias zathuraconfig="$EDITOR ~/.config/zathura/zathurarc"
 alias passconfig="cd ~/.local/share/pass"
 alias fstabconfig="sudoedit /etc/fstab"
 
+alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
+alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"
+alias bashscratch="cd /tmp && nvim scratchpad.sh && cd -"
+
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME"
 alias dotfilesui="gitui -d $HOME/.config/dotfiles/ -w $HOME"
 
 alias e='exit'
+alias h='helix'
 alias c='codium .'
-alias d='codium .'
+alias d='sdcv -u WordNet'
+alias de='sdcv -eu WordNet'
+alias t="sdcv -u 'Moby Thesaurus II'"
 alias n='alacritty &'
 alias cheat='cht.sh'
 export bgs='/usr/share/backgrounds/nordic-wallpapers/'

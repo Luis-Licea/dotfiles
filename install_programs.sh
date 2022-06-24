@@ -18,6 +18,7 @@ pacman_programs=(
     vscodium            # Free/Libre Open Source Software Binaries of VSCode.
     hub                 # CLI interface for Github.
     python-pip          # Intall pip3. NOTE: install virtualenv with `pip3 install virtualenv`.
+    pandoc-bin          # Pandoc executable only, without 750MB Haskell depends/makedepends.
 
     # Music player.
     mpd                 # Flexible, powerful, server for playing music.
@@ -83,6 +84,17 @@ pacman_programs=(
 # Install using yaourt, yay, etc.
 aur_programs=(
 
+    # Volume control.
+    pacmixer            # alsamixer alike for PulseAudio.
+
+    # Dictionaries and spell checkers.
+    sdcv                # StarDict Console Version.
+    stardict-wordnet    # WordNet dictionary for StarDict.
+    stardict-dictd-moby-thesaurus       # Moby Thesaurus II (English) for StarDict
+    stardict-wikt-en-all                # English Wiktionary All Languages for StarDict
+    write-good          # Naive linter for English prose.
+    aspell              # A spell checker designed to eventually replace Ispell
+    aspell-en           # English dictionary for aspell
     # Miscellaneous.
     pipe-viewer-git     # A lightweight YouTube client for Linux (CLI/GTK).
     nvimpager-git       # Use nvim to view manpages, diffs with syntax highlighting
