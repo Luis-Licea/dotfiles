@@ -1,33 +1,77 @@
 # vim: filetype=conf
 
+# Directory for storing ncmpcpp related files.
 ncmpcpp_directory = "~/.config/ncmpcpp"
+
+# Directory for storing  downloaded  lyrics.
 lyrics_directory = "~/.local/share/lyrics"
-# mpd_music_dir = "~/Music"
+
+# Directory where music is located.
 mpd_music_dir = "/run/media/luis/DATA/Music"
-message_delay_time = "1"
-visualizer_type = "spectrum"
-song_list_format = {$4%a - }{%t}|{$8%f$9}$R{$3(%l)$9}
-song_status_format = $b{{$8"%t"}} $3by {$4%a{ $3in $7%b{ (%y)}} $3}|{$8%f}
-song_library_format = {%n - }{%t}|{%f}
-alternative_header_first_line_format = $b$1$aqqu$/a$9 {%t}|{%f} $1$atqq$/a$9$/b
-alternative_header_second_line_format = {{$4$b%a$/b$9}{ - $7%b$9}{ ($4%y$9)}}|{%D}
-current_item_prefix = $(cyan)$r$b
-current_item_suffix = $/r$(end)$/b
-current_item_inactive_column_prefix = $(magenta)$r
-current_item_inactive_column_suffix = $/r$(end)
-playlist_display_mode = columns
-browser_display_mode = columns
-progressbar_look = ->
-media_library_primary_tag = album_artist
-media_library_albums_split_by_date = no
+
+# Select a visualizers: spectrum ellipse wave_filled wave
+visualizer_type = "ellipse"
+# visualizer_type = "spectrum"
+
+# Use dots inside the wave, spectrum, ellipse, and wave_filled visualizers.
+visualizer_look = "●●"
+
+# The screen shown when ncmpcpp is launched.
 startup_screen = "media_library"
-display_volume_level = no
-ignore_leading_the = yes
-external_editor = nvim
-use_console_editor = yes
-empty_tag_color = magenta
-main_window_color = white
-progressbar_color = black:b
+
+# Color of header, the top-most part of the window.
+header_window_color = blue
+
+# Font color for almost everything.
+main_window_color = blue
+
+# Change the color of the currently selected item.
+current_item_prefix = $(blue)$r$b
+current_item_suffix = $/r$(end)$/b
+current_item_inactive_column_suffix = $/r$(end)
+
+# Change the color of the inactive columns for Media Library and Tag Editor.
+current_item_inactive_column_prefix = $(magenta)$r
+
+# Sort by Album Artists, not by Album or Artist, to reduce clutter.
+media_library_primary_tag = album_artist
+
+# Do not show year before album names in Album column of Media Library screen.
+media_library_albums_split_by_date = no
+
+# Progress bar look.
+progressbar_look = ―●
 progressbar_elapsed_color = blue:b
+progressbar_color = black:b
+
+# Status bar below progress bar.
 statusbar_color = red
 statusbar_time_color = cyan:b
+
+# Playing: <Song> by <Artist> in <Album>
+song_status_format = $b{{$5%t}} $3by {$4%a{ $3in $7%b{ (%y)}} $3}|{$8%f}
+
+# Color highlight for empty tags and search engine fields.
+empty_tag_color = magenta
+
+# The beginning "the" in tags/filenames/sort will be ignored while sorting items.
+ignore_leading_the = yes
+
+# Path to external editor used to edit lyrics.
+external_editor = nvim
+
+# Enable it if your external editor is console application.
+use_console_editor = yes
+
+# Default user interface used by ncmpcpp at start: classic/alternative
+# user_interface = alternative
+alternative_header_first_line_format = $b$5$aqqu$/a$2 {%t}|{%f} $5$atqq$/a$9$/b
+alternative_header_second_line_format = {{$3$b%a$/b$9}{ - $6%b$9}{ ($4%y$9)}}|{%D}
+
+# Other options:
+
+# display_volume_level = no
+# message_delay_time = "1"
+# song_library_format = {%n - }{%t}|{%f}
+# song_list_format = {$4%a - }{%t}|{$8%f$9}$R{$3(%l)$9}
+
