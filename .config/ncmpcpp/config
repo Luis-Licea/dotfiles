@@ -5,13 +5,30 @@ ncmpcpp_directory = "~/.config/ncmpcpp"
 
 # Directory for storing  downloaded  lyrics.
 lyrics_directory = "~/.local/share/lyrics"
+# Fetch the lyrics for every song that is played.
+fetch_lyrics_for_current_song_in_background = yes
+# Instead of using lyrics directory, store lyrics where the song is.
+store_lyrics_in_song_dir = yes
 
-# Directory where music is located.
+# Needed for tag editor and file operations to work.
 mpd_music_dir = "/run/media/luis/DATA/Music"
 
 # Select a visualizers: spectrum ellipse wave_filled wave
-visualizer_type = "ellipse"
-# visualizer_type = "spectrum"
+# visualizer_type = "ellipse"
+visualizer_type = "spectrum"
+
+# Use unicode block characters for a smoother, more continuous look.
+# With transparent terminals and visualizer_in_stereo set, artifacts may be
+# visible on the bottom half of the visualization.
+visualizer_spectrum_smooth_look = yes
+visualizer_in_stereo = yes
+
+# Alternative subset of 256 colors for terminals that support it.
+# Look up colors at: https://www.ditig.com/256-colors-cheat-sheet
+# visualizer_color = 47, 83, 119, 155, 191, 227, 221, 215, 209, 203, 197, 161
+# visualizer_color = 201, 200, 199, 198, 197, 39, 69, 99, 129, 128, 126, 125, 124
+visualizer_color = 39, 69, 99, 129, 128, 126, 125, 124
+# visualizer_color = 39, 69, 99, 129, 200, 201
 
 # Use dots inside the wave, spectrum, ellipse, and wave_filled visualizers.
 visualizer_look = "●●"
@@ -40,7 +57,7 @@ media_library_primary_tag = album_artist
 media_library_albums_split_by_date = no
 
 # Progress bar look.
-progressbar_look = ―●
+progressbar_look = ―●―
 progressbar_elapsed_color = blue:b
 progressbar_color = black:b
 
@@ -67,11 +84,17 @@ use_console_editor = yes
 # user_interface = alternative
 alternative_header_first_line_format = $b$5$aqqu$/a$2 {%t}|{%f} $5$atqq$/a$9$/b
 alternative_header_second_line_format = {{$3$b%a$/b$9}{ - $6%b$9}{ ($4%y$9)}}|{%D}
+alternative_ui_separator_color = default:b
+
+# Show "Connected to <port>" message for this many seconds.
+message_delay_time = "1"
+
+# Increase or decrease volume in 5 integer increments.
+volume_change_step = 5
 
 # Other options:
 
 # display_volume_level = no
-# message_delay_time = "1"
 # song_library_format = {%n - }{%t}|{%f}
 # song_list_format = {$4%a - }{%t}|{$8%f$9}$R{$3(%l)$9}
 

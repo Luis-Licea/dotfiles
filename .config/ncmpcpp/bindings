@@ -398,7 +398,7 @@
 #
 #############################
 
-def_key "+"
+def_key "9"
     show_clock
 def_key "="
     volume_up
@@ -452,8 +452,6 @@ def_key "m"
   toggle_media_library_columns_mode
 def_key "t"
   show_tag_editor
-# def_key "v"
-#  show_visualizer
 def_key "G"
   move_end
 def_key "g"
