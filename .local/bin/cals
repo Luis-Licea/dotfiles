@@ -7,73 +7,199 @@
 # directory, displays all the pdfs in dmenu, and opens the pdf specified
 # by the user.
 
-# Whether or not to print debugging messages.
-is_debugging=false
-# is_debugging=true
+main() {
+    # Whether or not to print debugging messages.
+    is_debugging=false
+    # is_debugging=true
 
-# Accept the directory where the library is, or use a default directory.
-if [ $# -eq 1 ] && [ -d "$1" ]; then
-    library_path="$1"
-elif [ -d "$HOME/Calibre Library" ]; then
-    library_path="$HOME/Calibre Library"
-elif [ -d "$HOME/Documents/Calibre Library" ]; then
-    library_path="$HOME/Documents/Calibre Library"
-fi
+    # If an argument is passed, use it as the path to the Calibre library.
+    library_path="$(get_calibre_library_path "$1")"
 
-# Find all files ending with the .opf extension. This type of XML files contain
-# information about pdf books. Eeach opf file corresponds to a pdf book.
-metadata_files="$(find "$library_path" -name "*.opf")"
+    # Define a directory where all the cache files will be stored.
+    cache_dir="$(get_cache_dir)"
 
-# For-loop setup.
+    # Define a path to cache the calculated associative array. Calculating the
+    # directory in which a pdf is located each time the script is run is wasteful.
+    # It is better to find the directory in which the pdf is located once, and then
+    # store the file for later use. The cached file should only be re-calculated
+    # when the Calibre library database is modified or if the file does not exist
+    # in the first place.
+    title2dir_cache_file="$cache_dir/title2dir.sh"
 
-# Set newline as the delimiter, or else for loop will not work.
-IFS=$'\n'
+    # Define the file that will store the last modification date.
+    metadata_last_modified_file="$cache_dir/last_modified_date.txt"
 
-# Create associative array.
-declare -A title2dir
+    # Get the last modification date of the matadata.db file. The database
+    # changes each time Calibre is opened or books are added or removed.
+    metadata_last_modified_date="$(stat --printf="%y\n" "$library_path/metadata.db")"
 
-for file in $metadata_files; do
-    # Get the pdf title by scanning the XML tags.
-    title=$(grep -o "<dc:title>.*</dc:title>" "$file")
+    # Delete the cached book titles if the state of the database changed.
+    delete_cache_upon_metadata_change "$metadata_last_modified_file" \
+        "$metadata_last_modified_date" "$title2dir_cache_file"
 
-    # Remove dc:title tags prefix and suffix.
-    prefix="<dc:title>"
-    suffix="</dc:title>"
-    title="${title#"$prefix"}"
-    title="${title%"$suffix"}"
+    # Creates a book title cache if it does not exist.
+    create_book_title_cache "$title2dir_cache_file" "$library_path"
 
-    # Store the directory and the title of the pdf.
-    title2dir["$title"]="${file%"/$(basename "$file")"}"
-done
+    # Load the cached book titles file.
+    if [ -f "$title2dir_cache_file" ]; then
+        source "$title2dir_cache_file"
+    fi
 
-if $is_debugging; then
-    echo "All the titles:"
-    for t in "${!title2dir[@]}"; do
-        echo "$t"
-    done
-fi
+    if $is_debugging; then
+        echo "All the titles:"
+        for t in "${!title2dir[@]}"; do
+            echo "$t"
+        done
+    fi
+
+    # Get the directory associated to the chosen pdf title.
+    pdf_dir=$(select_dmenu_dict_value title2dir)
+
+    if $is_debugging; then
+        echo "Chosen key:"
+        echo "$pdf_dir"
+    fi
+
+    # Get the pdf path.
+    pdf_file=$(find "$pdf_dir" -type f -name "*.pdf")
+
+    # If the directory exists:
+    if [ -d "$pdf_dir" ]; then
+        # Open the all the pdf in the directory. There should only be one pdf.
+        zathura "$pdf_file"
+    fi
+}
+
+get_cache_dir() {
+    # Define a directory where all the cache files will be stored.
+    cache_dir="$HOME/.cache/$(basename "$0")"
+
+    # Create the cache directory if it does not exist.
+    if ! [ -d "$cache_dir" ]; then
+        mkdir -p "$cache_dir"
+    fi
+
+    # Return the cache directory.
+    echo "$cache_dir"
+}
+
+# Return the directory where the Calibre library is, use a default
+# directory, or search for the directory.
+get_calibre_library_path() {
+    if [ $# -eq 1 ] && [ -d "$1" ]; then
+        # If an argument is passed, use it as the path to the Calibre library.
+        echo "$1"
+    elif [ -d "$HOME/Calibre Library" ]; then
+        # Attempt to use the default directory.
+        echo "$HOME/Calibre Library"
+    elif [ -d "$HOME/Documents/Calibre Library" ]; then
+        # It is likely that the library is in the documents folder.
+        echo "$HOME/Documents/Calibre Library"
+    else
+        # Look for the Calibre Library in the home folder.
+        find ~ -maxdepth 3 -type d -name "Calibre Library"
+    fi
+}
+
+# Checks whether the Calibredb metadata has changed since the script was last
+# run. Side effects: If the metadata has changed, the last known modification
+# data is updated. Also, the book title cache is cleared so a new one can be
+# generated.
+delete_cache_upon_metadata_change() {
+
+    # Define the file that will store the last modification date.
+    metadata_last_modified_file="$1"
+
+    # Get the last time the metadata was modified.
+    metadata_last_modified_date="$2"
+
+    # Define the file where the book titles are cached.
+    title2dir_cache_file="$3"
+
+    # If the last modification date is known:
+    if test -f "$metadata_last_modified_file"
+       # And the last modification date has changed:
+       test "$metadata_last_modified_date" !=  "$(cat "$metadata_last_modified_file")"
+    then
+        # Remove the book title cache so a new one is created.
+        if [ -f "$title2dir_cache_file" ]; then
+            rm "$title2dir_cache_file"
+        fi
+
+        # Store or update the last modification date. The book title cache
+        # should only be updated when the metadata database has changed.
+        echo "$metadata_last_modified_date" > "$metadata_last_modified_file"
+    fi
+}
+
+# Create at book title cache since parsing the metadata each time the script is
+# run is slow.
+create_book_title_cache() {
+
+    # Define the file that will store the last modification date.
+    title2dir_cache_file="$1"
+
+    # Define the directory where the Calibre Library is.
+    library_path="$2"
+
+    # If the cached file does not exist:
+    if ! [ -f "$title2dir_cache_file" ]; then
+        # Find all files ending with the .opf extension. This type of XML files contain
+        # information about pdf books. Eeach opf file corresponds to a pdf book.
+        metadata_files="$(find "$library_path" -name "*.opf")"
+
+        # For-loop setup.
+
+        # Set newline as the delimiter, or else for loop will not work.
+        IFS=$'\n'
+
+        # Create associative array, and make it a reference to another variable.
+        declare -A title2dir
+
+        for file in $metadata_files; do
+            # Get the pdf title by scanning the XML tags.
+            title=$(grep -o "<dc:title>.*</dc:title>" "$file")
+
+            # Remove dc:title tags prefix and suffix.
+            prefix="<dc:title>"
+            suffix="</dc:title>"
+            title="${title#"$prefix"}"
+            title="${title%"$suffix"}"
+
+            # Store the directory and the title of the pdf.
+            title2dir["$title"]="${file%"/$(basename "$file")"}"
+        done
+
+        # Store the associate array so it is easier to retrieve later on folder.
+        declare -p title2dir > "$title2dir_cache_file"
+    fi
+
+    if $is_debugging; then
+        echo "All the titles:"
+        for t in "${!title2dir[@]}"; do
+            echo "$t"
+        done
+    fi
+}
 
 # Display all the titles in dmenu. Use xargs or else the output of dmenu will
 # not be usable in other commands.
-choice=$(
-     # Iterate thru ever pdf title:
-    for title in "${!title2dir[@]}"; do
-         # Print the book title.
-        echo "$title"
-    # Show the titles in dmenu for selection, case insensitively.
-    done | dmenu -i | xargs
-)
+select_dmenu_dict_value() {
+    # Create a ref-name for the dictionary so we can refer to it.
+    declare -n dictionary="$1"
+    # Iterate thru ever key in the dictionary:
+    choice=$(
+        for choice in "${!dictionary[@]}"; do
+             # Print the selected key.
+            echo "$choice"
+        # Show the keys in dmenu for selection, case insensitively.
+        done | dmenu -i | xargs
+    )
 
-if $is_debugging; then
-    echo "Chosen title:"
-    echo "${title2dir["$choice"]}"
-fi
+    # Get the value associated to the dictionary key.
+    echo "${dictionary["$choice"]}"
+}
 
-# Get the directory associated to the chosen pdf title.
-pdf_dir=${title2dir["$choice"]}
+# Pass all parameters and run program.
+main "$@"
 
-# If the directory exists:
-if [ -d "$pdf_dir" ]; then
-    # Open the all the pdf in the directory. There should only be one pdf.
-    zathura $pdf_dir/*.pdf
-fi
