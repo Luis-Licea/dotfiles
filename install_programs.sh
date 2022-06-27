@@ -7,6 +7,8 @@
 pacman_programs=(
 
     # Development tools.
+    gtest               # Google Test - C++ testing utility.
+    time                # Benchmarking tool.
     boost               # C++ development headers.
     ccls                # Language server for C/C++.
     doxygen             # Documentation system for C/C++/Java/Python.

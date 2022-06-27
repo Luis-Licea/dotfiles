@@ -284,55 +284,65 @@ au! BufWritePost .Xresources exec '!xrdb && xrdb -merge ~/.Xresources'
 " Auto compilation settings.
 "-------------------------------------------------------------------------------
 " Function for toggling auto compilation on save:
-let s:auto_compile = 0
-function! AutoCompileToggle()
-    if s:auto_compile  == 0
-        let s:auto_compile = 1
+let s:auto_run = 0
+function! AutoRunToggle()
+    if s:auto_run  == 0
+        let s:auto_run = 1
     else
-        let s:auto_compile = 0
+        let s:auto_run = 0
     endif
 endfunction
-nnoremap <leader>ct :call AutoCompileToggle()<CR>
+nnoremap <leader>ct :call AutoRunToggle()<CR>
 
 " Run C code in Vim.
 au FileType c map <buffer> <F5> :w<cr>:exec '!clear; gcc -Wall -Wextra "%" -o "%<" && "./%<"' shellescape(@%, 1)<cr>
 au FileType c imap <buffer> <F5> <esc>:w<cr>:exec '!clear; gcc -Wall -Wextra "%" -o "%<" && "./%<"' shellescape(@%, 1)<cr>
 
 " Run C++ code in Vim.
-function! CompileCpp()
-    w!
-    let $file=expand('%:t:r') " Remove the parent directories and extension.
-    !g++ -std=c++17 -Wall -Wextra "%" -o "/tmp/$file" && "/tmp/$file"
-endfunction
-au FileType cpp map <buffer> <F5> :call CompileCpp()<cr>
-au FileType cpp imap <buffer> <F5> <esc>:call CompileCpp()<cr>
-au BufWritePost *.cpp if s:auto_compile == 1 | call CompileCpp() | endif
+    " Remove the parent directories and extension.
+    let $cpp_file=expand('%:t:r') 
+
+    " Define a function for compiling cpp files.
+    function! RunCpp()
+        w!
+        !g++ -std=c++17 -Wall -Wextra "%" -o "/tmp/$cpp_file" && "/tmp/$cpp_file"
+    endfunction
+
+    " Benchmark the execution time of compiled binary.
+    function! TimeCpp()
+        !/usr/bin/time -p bash -c "for ((i=1;i<=100;i++)); do /tmp/"$cpp_file" > /dev/null; done"
+    endfunction
+
+    au FileType cpp map <buffer> <F5> :call RunCpp()<cr>
+    au FileType cpp imap <buffer> <F5> <esc>:call RunCpp()<cr>
+    au FileType cpp set shiftwidth=2 | set softtabstop=2  | set tabstop=2
+    au BufWritePost *.cpp if s:auto_run == 1 | call RunCpp() | endif
 
 " Run Python code in Vim (edit and insert modes).
-function! CompilePy()
-    w!
-    exec '!python3 "%"'
-endfunction
-au FileType python map <buffer> <F5> :call CompilePy()<cr>
-au FileType python imap <buffer> <F5> <esc>:call CompilePy()<cr>
-au BufWritePost *.py if s:auto_compile == 1 | call CompilePy() | endif
+    function! RunPy()
+        w!
+        exec '!python3 "%"'
+    endfunction
+    au FileType python map <buffer> <F5> :call RunPy()<cr>
+    au FileType python imap <buffer> <F5> <esc>:call RunPy()<cr>
+    au BufWritePost *.py if s:auto_run == 1 | call RunPy() | endif
 
 " Run Rust code in Vim.
 au FileType rust map <buffer> <F5> :w<cr>:exec '!clear; rustc "%" && ./"%<"' shellescape(@%, 1)<cr>
 au FileType rust imap <buffer> <F5> <esc>:w<cr>:exec '!clear; rustc "%" && ./"%<"' shellescape(@%, 1)<cr>
 
-" Compile LaTeX code in Vim.
+" Run LaTeX code in Vim.
 au FileType tex map <buffer> <F5> :w<cr>:exec '!clear; pdflatex.exe "%"' shellescape(@%, 1)<cr>
 au FileType tex imap <buffer> <F5> <esc>:w<cr>:exec '!clear; pdflatex.exe "%"' shellescape(@%, 1)<cr> <cr>
 
 " Run bash code in Vim.
-function! CompileSh()
-    w!
-    exec '!bash "%"'
-endfunction
-au FileType sh map <buffer> <F5> :call CompileSh()<cr>
-au FileType sh imap <buffer> <F5> <esc>:call CompileSh()<cr>
-au BufWritePost *.sh if s:auto_compile == 1 | call CompileSh() | endif
+    function! RunSh()
+        w!
+        exec '!bash "%"'
+    endfunction
+    au FileType sh map <buffer> <F5> :call RunSh()<cr>
+    au FileType sh imap <buffer> <F5> <esc>:call RunSh()<cr>
+    au BufWritePost *.sh if s:auto_run == 1 | call RunSh() | endif
 
 " Spell check and wrap commit messages.
 au Filetype gitcommit setlocal spell textwidth=72
@@ -341,7 +351,7 @@ au Filetype gitcommit setlocal spell textwidth=72
 " Scratchpads.
 "-------------------------------------------------------------------------------
 " Execute files named "scratchpad" each time they are saved.
-au! BufEnter scratchpad.* call AutoCompileToggle()
+au! BufEnter scratchpad.* call AutoRunToggle()
 
 "-------------------------------------------------------------------------------
 " Templates for new files that do not exist.
@@ -429,7 +439,7 @@ au BufReadPost *.md nnoremap <buffer><leader>fl :call MdFixOrderedList()<cr>
 " View compiled markdown pdf.
 au BufReadPost *.md nnoremap <buffer><leader>cv :silent !zathura "/tmp/%<.pdf" &<cr>
 " Auto compile the markdown file after saving if auto compilation is enabled.
-au BufWritePost *.md if s:auto_compile == 1 | sil exec '!pandoc "%" -o "/tmp/%<.pdf"' | endif
+au BufWritePost *.md if s:auto_run == 1 | sil exec '!pandoc "%" -o "/tmp/%<.pdf"' | endif
 
 "-------------------------------------------------------------------------------
 " Startify settings.
