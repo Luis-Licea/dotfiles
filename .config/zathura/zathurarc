@@ -65,6 +65,9 @@ set scroll-step 100
 set zoom-min 10
 set guioptions ""
 
+# Show status line.
+map b feedkeys ':set guioptions "s"'
+
 # zathurarc-dark
 
 # Use default system monospace font.
