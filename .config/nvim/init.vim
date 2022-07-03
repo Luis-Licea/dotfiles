@@ -27,7 +27,6 @@ nnoremap <leader>rt :retab<cr>
 nnoremap <leader>rswap :!rm '%.swp'<cr>
 " Unset the last search pattern register.
 nnoremap <silent> <esc> :nohl<cr><cr>
-
 "-------------------------------------------------------------------------------
 " Command mode mappings.
 "-------------------------------------------------------------------------------
@@ -53,24 +52,16 @@ nnoremap <c-k> <c-u>
 nnoremap <c-j> <c-d>
 
 "-------------------------------------------------------------------------------
-" Resize Window mappings. Prefix is "ctrl".
+" Resize Window mappings.
 "-------------------------------------------------------------------------------
 " Increase height by N lines.
-vnoremap <c-k> 4<c-w>+
+noremap <up> 4<c-w>+
 " Decrease height by N lines.
-vnoremap <c-j> 4<c-w>-
+noremap <down> 4<c-w>-
 " Increase width by N lines.
-vnoremap <c-l> 4<c-w>>
+noremap <right> 4<c-w>>
 " Decrease width by N lines.
-vnoremap <c-h> 4<c-w><
-
-"-------------------------------------------------------------------------------
-" Disable arrow keys.
-"-------------------------------------------------------------------------------
-noremap <up>    <nop>
-noremap <down>  <nop>
-noremap <left>  <nop>
-noremap <right> <nop>
+noremap <left> 4<c-w><
 
 "-------------------------------------------------------------------------------
 " File mappings. Prefix f means "file".
@@ -179,12 +170,16 @@ tnoremap <localleader>j <c-\><c-n><cr><c-w>j
 tnoremap <localleader>k <c-\><c-n><cr><c-w>k
 " Move cursor to the right window.
 tnoremap <localleader>l <c-\><c-n><cr><c-w>l
-" Turn off spelling in terminal.
-au TermOpen * setlocal nospell
-" Disable line numbering in terminal.
-au TermOpen * setlocal nonumber
-" Press escape twice to exit. Add only to zsh because it conflicts with fzf.
-au TermOpen * if expand('%:t') == "zsh" | tnoremap <c-q> <c-\><c-n> | endif
+aug TermOpenGroup
+    " Clear previous group auto commands to avoid duplicate definitions.
+    au!
+    " Turn off spelling in terminal.
+    au TermOpen * setlocal nospell
+    " Disable line numbering in terminal.
+    au TermOpen * setlocal nonumber
+    " Press escape twice to exit. Add only to zsh because it conflicts with fzf.
+    au TermOpen * if expand('%:t') == "zsh" | tnoremap <c-q> <c-\><c-n> | endif
+aug end
 
 "-------------------------------------------------------------------------------
 " Interface.
@@ -248,25 +243,13 @@ filetype indent plugin on
 "-------------------------------------------------------------------------------
 " Remember file position.
 "-------------------------------------------------------------------------------
-" Jump to the last position when reopening a file.
-if has("autocmd")
-  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+aug RememberFilePositionGroup
+    " Clear previous group auto commands to avoid duplicate definitions.
+    au!
+    " Jump to the last position when reopening a file.
+    au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
     \| exe "normal! g'\"" | endif
-endif
-
-"-------------------------------------------------------------------------------
-" Latex auto compilation.
-"-------------------------------------------------------------------------------
-" Clean the all files except the compiled pdf when exiting.
-" au! VimLeavePre *.tex sil exec '!rubber --shell-escape --synctex --inplace --clean "%"'
-" Compile the file in the same directory.
-" nnoremap <leader>co :sil exec '!rubber --pdf --shell-escape --synctex --inplace "%"'<cr>
-" Compile the file in the same directory and watch for changes ever 10 seconds.
-" nnoremap <leader>co :sil exec '!watch -n 10 rubber --pdf --shell-escape --synctex --inplace "%"'<cr>
-" Clean all files except the compiled pdf.
-" nnoremap <leader>cr :sil exec '!rubber --shell-escape --synctex --inplace --clean "%"'<cr>
-" Get current file's root name (without) extension, add .pdf to it, and open it.
-" nnoremap <leader>cv :sil exec '!zathura "%:p:r.pdf" &'<cr>
+aug end
 
 "-------------------------------------------------------------------------------
 " Vim Terminal.
@@ -294,58 +277,178 @@ function! AutoRunToggle()
 endfunction
 nnoremap <leader>ct :call AutoRunToggle()<CR>
 
+function! SetCompiledLanguageVariables()
+    " Remove the parent directories and extension to get file name.
+    let $file=expand('%:t:r')
+
+    " Define the path where the compiled executable will be placed, and where
+    " it should be executed.
+    let $executable_path="/tmp/" . $file
+
+    " C++ and C compilation flags:
+    " Wall: Warn questionable or easy to avoid constructions.
+    " Wextra: Some extra warnings not enabled by -Wall.
+    " Wfloat-conversion: Warns when doubles implicitly converted to floats.
+    " Wsign-conversion: Warn implicit conversion that change integer sign.
+    " fsanitize=leak: Warns when pointers have not been freed.
+    " fsanitize=address: Warns use after free.
+    " Wpedantic: Demand strict ISO C and ISO C++; no forbidden extensions.
+    " Wconversion: Warn implicit conversions that may alter a value.
+    let flags='-std=c++17 -Wall -Wextra -Wfloat-conversion -Wsign-conversion -Wconversion -fsanitize=address -fsanitize=leak'
+endfunction
+
+" Benchmark the execution time of compiled binary.
+function! Time_cpp_c_rs()
+    !/usr/bin/time -p bash -c "for ((i=1;i<=1000;i++)); do \"$executable_path\" > /dev/null; done"
+endfunction
+" Call the function by simply typing :Time.
+command Time call Time_cpp_c_rs()
+
+function! Run()
+    " Save file.
+    w!
+    " Compile and execute program in tmp folder.
+    !$compiler $flags "%" -o "$executable_path" && "$executable_path"
+endfunction
+
 " Run C code in Vim.
-au FileType c map <buffer> <F5> :w<cr>:exec '!clear; gcc -Wall -Wextra "%" -o "%<" && "./%<"' shellescape(@%, 1)<cr>
-au FileType c imap <buffer> <F5> <esc>:w<cr>:exec '!clear; gcc -Wall -Wextra "%" -o "%<" && "./%<"' shellescape(@%, 1)<cr>
+    function! RunC()
+        let $compiler="gcc" | call Run()
+    endfunction
+
+    aug CGroup
+        " Clear previous group auto commands to avoid duplicate definitions.
+        au!
+        au FileType c map <buffer> <F5> :call RunC()<cr>
+        au FileType c imap <buffer> <F5> <esc>:call RunC()<cr>
+        au FileType c call SetCompiledLanguageVariables()
+        au BufWritePost *.c if s:auto_run == 1 | call RunC() | endif
+    aug end
 
 " Run C++ code in Vim.
-    " Remove the parent directories and extension.
-    let $cpp_file=expand('%:t:r') 
 
     " Define a function for compiling cpp files.
     function! RunCpp()
-        w!
-        !g++ -std=c++17 -Wall -Wextra "%" -o "/tmp/$cpp_file" && "/tmp/$cpp_file"
+        let $compiler="g++" | call Run()
     endfunction
 
-    " Benchmark the execution time of compiled binary.
-    function! TimeCpp()
-        !/usr/bin/time -p bash -c "for ((i=1;i<=100;i++)); do /tmp/"$cpp_file" > /dev/null; done"
-    endfunction
-
-    au FileType cpp map <buffer> <F5> :call RunCpp()<cr>
-    au FileType cpp imap <buffer> <F5> <esc>:call RunCpp()<cr>
-    au FileType cpp set shiftwidth=2 | set softtabstop=2  | set tabstop=2
-    au BufWritePost *.cpp if s:auto_run == 1 | call RunCpp() | endif
+    aug CppGroup
+        au!
+        au FileType cpp map <buffer> <F5> :call RunCpp()<cr>
+        au FileType cpp imap <buffer> <F5> <esc>:call RunCpp()<cr>
+        au FileType cpp set shiftwidth=2 | set softtabstop=2  | set tabstop=2
+        au BufWritePost *.cpp if s:auto_run == 1 | call RunCpp() | endif
+        au BufWritePre *.cpp call SetCompiledLanguageVariables()
+    aug end
 
 " Run Python code in Vim (edit and insert modes).
     function! RunPy()
-        w!
-        exec '!python3 "%"'
+        w! | exec '!python3 "%"'
     endfunction
-    au FileType python map <buffer> <F5> :call RunPy()<cr>
-    au FileType python imap <buffer> <F5> <esc>:call RunPy()<cr>
-    au BufWritePost *.py if s:auto_run == 1 | call RunPy() | endif
+    aug PyGroup
+        au!
+        au FileType python map <buffer> <F5> :call RunPy()<cr>
+        au FileType python imap <buffer> <F5> <esc>:call RunPy()<cr>
+        au BufWritePost *.py if s:auto_run == 1 | call RunPy() | endif
+    aug end
 
 " Run Rust code in Vim.
-au FileType rust map <buffer> <F5> :w<cr>:exec '!clear; rustc "%" && ./"%<"' shellescape(@%, 1)<cr>
-au FileType rust imap <buffer> <F5> <esc>:w<cr>:exec '!clear; rustc "%" && ./"%<"' shellescape(@%, 1)<cr>
-
-" Run LaTeX code in Vim.
-au FileType tex map <buffer> <F5> :w<cr>:exec '!clear; pdflatex.exe "%"' shellescape(@%, 1)<cr>
-au FileType tex imap <buffer> <F5> <esc>:w<cr>:exec '!clear; pdflatex.exe "%"' shellescape(@%, 1)<cr> <cr>
+    function! RunRs()
+        w!
+        " -g: Include debugging information.
+        !rustc -g "%" -o "$executable_path" && "$executable_path"
+    endfunction
+    aug RsGroup
+        au!
+        au FileType rust map <buffer> <F5> :call RunRs()<cr>
+        au FileType rust imap <buffer> <F5> <esc>:call RunRs()<cr>
+        au BufWritePost *.rs if s:auto_run == 1 | call RunRs() | endif
+        au BufWritePre *.rs call SetCompiledLanguageVariables()
+    aug end
 
 " Run bash code in Vim.
     function! RunSh()
         w!
         exec '!bash "%"'
     endfunction
-    au FileType sh map <buffer> <F5> :call RunSh()<cr>
-    au FileType sh imap <buffer> <F5> <esc>:call RunSh()<cr>
-    au BufWritePost *.sh if s:auto_run == 1 | call RunSh() | endif
+
+    aug ShGroup
+        au!
+        au FileType sh map <buffer> <F5> :call RunSh()<cr>
+        au FileType sh imap <buffer> <F5> <esc>:call RunSh()<cr>
+        au BufWritePost *.sh if s:auto_run == 1 | call RunSh() | endif
+    aug end
+
 
 " Spell check and wrap commit messages.
-au Filetype gitcommit setlocal spell textwidth=72
+au! Filetype gitcommit setlocal spell textwidth=72
+
+"-------------------------------------------------------------------------------
+" Latex auto compilation.
+"-------------------------------------------------------------------------------
+function! SetLaTeXVariables()
+    let $rubber_flags='--shell-escape --synctex --inplace'
+    " grep: Look for first line that contains "% jobname:". Ignore whitespace.
+    " cut: Split the line using the ":" character, and get the second field.
+    " xargs: Remove leading whitespace.
+    " tr: Remove newline character by using tr.
+    " At the end we get a jobname with no loeading spaces; can be many words.
+    let $jobname=system('cat ' . expand('%') . ' | grep --max-count=1 "%*jobname:" | cut -d: -f2 | xargs | tr -d "\n"')
+endfunction
+
+function! RunLaTeX()
+    if $jobname == ""
+        " If there is no jobname, compile using the default file name.
+        !eval rubber --pdf $rubber_flags "%"
+    else
+        " Else compile using the jobname.
+        !eval rubber --pdf $rubber_flags --jobname \"$jobname\" '%'
+    endif
+endfunction
+
+function! CleanLaTeX()
+    " Use the same flags used for compilation in addition to --clean flag.
+    " Do not include --pdf flag as not to remove the output pdf.
+    if $jobname == ""
+        " Clean files matching the current file's name.
+        !eval rubber $rubber_flags --clean '%'
+    else
+        " Clean files matching the job name.
+        !eval rubber $rubber_flags --clean --jobname \"$jobname\" '%'
+    endif
+endfunction
+
+function! OpenLaTeXPDF(viewer)
+    " Assign viewer to a shell variable.
+    let $viewer=a:viewer
+    if $jobname == ""
+        " Get current file's root name (without extension) and add .pdf.
+        !$viewr "%:p:r.pdf" &
+    else
+        " Get current file's head (last path component removed) and add .pdf.
+        !$viewer "%:p:h/$jobname.pdf" &
+    endif
+endfunction
+
+aug LaTeXGroup
+    " Clear previous group auto commands to avoid duplicate definitions.
+    au!
+    " Define variables for compiling file into a PDF.
+    au FileType tex call SetLaTeXVariables()
+    " Compile the file in the same directory and watch for changes ever 10 seconds.
+    au FileType tex nnoremap <buffer> <leader>co :call RunLaTeX()<cr>
+    " Clean all files except the compiled pdf.
+    au FileType tex nnoremap <buffer> <leader>cr :call CleanLaTeX()<cr>
+    " Open the compiled LaTeX pdf with the specified viewer.
+    au FileType tex nnoremap <buffer> <leader>cv :sil call OpenLaTeXPDF("zathura")<cr>
+    " Compile LaTeX document every time after saving.
+    au BufWritePost *.tex if s:auto_run == 1 | call RunLaTex() | endif
+    " Clean the all files except the compiled pdf when exiting.
+    au VimLeavePre *.tex :call CleanLaTeX()
+aug end
+
+" Compile the file in the same directory and watch for changes ever 10 seconds.
+" nnoremap <leader>co :sil exec '!watch -n 10 rubber --pdf --shell-escape --synctex --inplace "%"'<cr>
 
 "-------------------------------------------------------------------------------
 " Scratchpads.
@@ -356,10 +459,14 @@ au! BufEnter scratchpad.* call AutoRunToggle()
 "-------------------------------------------------------------------------------
 " Templates for new files that do not exist.
 "-------------------------------------------------------------------------------
-autocmd BufNewFile  *.cpp   0r ~/.config/nvim/templates/skeleton.cpp
-autocmd BufNewFile  *.sh    0r ~/.config/nvim/templates/skeleton.sh
-autocmd BufNewFile  *.py    0r ~/.config/nvim/templates/skeleton.py
-autocmd BufNewFile  *.html  0r ~/.config/nvim/templates/skeleton.html
+aug TemplateGroup
+    au!
+    au BufNewFile  *.c     0r ~/.config/nvim/templates/skeleton.c
+    au BufNewFile  *.cpp   0r ~/.config/nvim/templates/skeleton.cpp
+    au BufNewFile  *.html  0r ~/.config/nvim/templates/skeleton.html
+    au BufNewFile  *.py    0r ~/.config/nvim/templates/skeleton.py
+    au BufNewFile  *.sh    0r ~/.config/nvim/templates/skeleton.sh
+aug end
 
 "-------------------------------------------------------------------------------
 " Vim-plug settings.
@@ -389,8 +496,12 @@ endfunction
 call plug#begin()
     " Use dark color scheme for Vim.
     Plug 'dracula/vim'
+    " Tabular for tables. Vim-json for conceal. Both needed by vim-markdown.
+    Plug 'godlygeek/tabular' | Plug 'elzr/vim-json' | Plug 'preservim/vim-markdown'
     " Nerd tree system file operations. Access it using "m" key in nerd tree.
     Plug 'ivalkeen/nerdtree-execute'
+    " Fuzzy finder for searching files.
+    Plug 'junegunn/fzf.vim'
     " Easily align tables, or text by symbols like , ; = & etc.
     Plug 'junegunn/vim-easy-align'
     " Install and update language servers using LspInstallServer.
@@ -417,30 +528,52 @@ call plug#begin()
     Plug 'tomasiser/vim-code-dark'
     " Surround words in parenthesis, quotations, etc., more easily.
     Plug 'tpope/vim-surround'
-    " Auto pair plugin.
-    Plug 'jiangmiao/auto-pairs'
-    " Fuzzy finder for searching files.
-    Plug 'junegunn/fzf.vim'
     " Prettify status line. Add icons to status line and nerd tree.
     " NOTE: Use a patched font such as nerd-fonts-source-code-pro.
     " NOTE: Icons will not display unless airline loads before dev icons.
     Plug 'vim-airline/vim-airline' | Plug 'ryanoasis/vim-devicons'
-    " Syntax and keybindings for Markdown files. Vim-markdown needs tabular.
-    Plug 'godlygeek/tabular' | Plug 'preservim/vim-markdown'
+    " A powerful autopair plugin for Neovim that supports multiple characters.
+    Plug 'windwp/nvim-autopairs'
 call plug#end()
+
+" Load autopair plugin.
+lua << EOF
+require("nvim-autopairs").setup {}
+EOF
 
 "-------------------------------------------------------------------------------
 " Md-vim settings.
 "-------------------------------------------------------------------------------
-" Create a binding for formatting tables.
-au BufReadPost *.md nnoremap <buffer><leader>fo :TableFormat()<cr>
-" Create a binding for formatting (renumbering) ordered lists.
-au BufReadPost *.md nnoremap <buffer><leader>fl :call MdFixOrderedList()<cr>
-" View compiled markdown pdf.
-au BufReadPost *.md nnoremap <buffer><leader>cv :silent !zathura "/tmp/%<.pdf" &<cr>
-" Auto compile the markdown file after saving if auto compilation is enabled.
-au BufWritePost *.md if s:auto_run == 1 | sil exec '!pandoc "%" -o "/tmp/%<.pdf"' | endif
+aug MdGroup
+    au!
+    " Create a binding for formatting tables.
+    au BufReadPost *.md nnoremap <buffer><leader>fo :TableFormat()<cr>
+    " au FileType cpp set shiftwidth=2 | set softtabstop=2  | set tabstop=2
+    " Create a binding for formatting (renumbering) ordered lists.
+    au BufReadPost *.md nnoremap <buffer><leader>fl :call MdFixOrderedList()<cr>
+    " View compiled markdown pdf.
+    au BufReadPost *.md nnoremap <buffer><leader>cv :silent !zathura "/tmp/%<.pdf" &<cr>
+    " Auto compile the markdown file after saving if auto compilation is enabled.
+    au BufWritePost *.md if s:auto_run == 1 | sil exec '!pandoc "%" -o "/tmp/%<.pdf"' | endif
+aug end
 
+" Disable header folding.
+let g:vim_markdown_folding_disabled = 1
+
+" Conceal ~~this~~ and *this* and `this` and more.
+let g:vim_markdown_conceal = 1
+
+" disable math tex conceal feature
+let g:tex_conceal = ""
+let g:vim_markdown_math = 1
+
+" Stop adding annoying indentation.
+let g:vim_markdown_new_list_item_indent = 0
+
+" support front matter of various format
+let g:vim_markdown_frontmatter = 1  " for YAML format
+let g:vim_markdown_toml_frontmatter = 1  " for TOML format
+let g:vim_markdown_json_frontmatter = 1  " for JSON format
 "-------------------------------------------------------------------------------
 " Startify settings.
 "-------------------------------------------------------------------------------
@@ -515,7 +648,7 @@ let g:airline_powerline_fonts = 1
 " colorscheme codedark
 colorscheme dracula
 " Make the background transparent.
-highlight normal guibg=none ctermbg=none
+" highlight normal guibg=none ctermbg=none
 
 "-------------------------------------------------------------------------------
 " Vim-airline settings.
@@ -537,8 +670,8 @@ let g:rustfmt_autosave = 1
 " Rusty-tags settings (Installed using `cargo install rusty-tags`).
 "-------------------------------------------------------------------------------
 " Looks for tags in current directory's rusty-tags.vi folder to the root.
-au BufRead *.rs :setlocal tags=./rusty-tags.vi;/
-au BufWritePost *.rs :sil! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
+" au BufRead *.rs :setlocal tags=./rusty-tags.vi;/
+" au BufWritePost *.rs :sil! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
 " TODO Set shortcut to make tag, jump to tag, and split window and go to tag.
 
 "-------------------------------------------------------------------------------
@@ -578,16 +711,17 @@ function! s:on_lsp_buffer_enabled() abort
 
     let g:lsp_format_sync_timeout = 1000
     " Start formatting server when the file is opened.
-    au! BufWritePre *.py,*.cpp,*.rs,*.go call execute('LspDocumentFormatSync')
+    au! BufWritePre *.py,*.cpp,*.c,*.rs call execute('LspDocumentFormatSync')
 
     " refer to doc to add more commands
 endfunction
 
-augroup lsp_install
+aug lsp_install
+    " Clear previous group auto commands to avoid duplicate definitions.
     au!
     " Call s:on_lsp_buffer_enabled only for languages with registered servers.
     au User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
+aug end
 
 "-------------------------------------------------------------------------------
 " Asyncomplete mappings.
