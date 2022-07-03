@@ -33,6 +33,7 @@ pacman_programs=(
     mpv-mpris           # MPRIS plugin for mpv.
 
     # Miscellaneous.
+    termdown            # Countdown timer and stopwatch in your terminal.
     calibre             # Ebook management application
     termshark           # Terminal UI for tshark, inspired by Wireshark.
     newsboat            # An RSS/Atom feed reader for text terminals
@@ -40,6 +41,7 @@ pacman_programs=(
     zathura             # Minimalistic document viewer.
     zathura-cb          # Add comic-book support to zathura.
     zathura-pdf-mupdf   # Add PDF, ePub, and OpenXPS support to zathura.
+    cpdf-bin            # Coherent PDF: merge, encrypt, decrypt, scale, crop, rotate, bookmarks, stamp, logos, page numbers, compress, etc.
     # evince              # GTK PDF Viewer.
     # lollypop            # Music player (no support for star ratings).
     # pdfarranger         # Merge, split, rotate, crop and rearrange PDFs.
