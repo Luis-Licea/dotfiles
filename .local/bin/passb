@@ -1,0 +1,763 @@
+#!/usr/bin/env bash
+
+################################################################################
+# MIT License
+#
+# Copyright (c) 2022 Luis David Licea Torres
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+################################################################################
+
+# passb - password backup script.
+
+# Define list of arguments expected in the input.
+optstring="he:i:t:xsbulcdr"
+
+show_help() {
+    echo 'Options for managing existing backups:'
+    echo '   -h        shows this help message'
+    echo '   -e <path> export an encrypted backup into a given path'
+    echo "   -i <file> import backup before decrypting with $(basename "$0") -t"
+    echo '   -t <dir>  decrypt backup and put output in the given directory'
+    echo '   -x        delete a backup from the default folder'
+    echo ''
+    echo 'Options for backups. They work best when they are run in order:'
+    echo '   -s        status report of new and modified password'
+    echo '   -b        backup new and modified passwords'
+    echo '   -u        update status to stop showing reminders'
+    echo ''
+    echo 'Options mostly for developers:'
+    echo '   -l        list all files and backups in default directory'
+    echo '   -c        create backup of current passwords and keys'
+    echo '   -d        decrypt backup and put output in the default directory'
+    echo '   -r        runs tests'
+    echo ''
+    echo 'Examples:'
+    echo ''
+    echo '# Show this help message.'
+    echo "$(basename "$0") -h"
+    echo ''
+    echo '# Export a backup file and name it passwords.gpg.'
+    echo "$(basename "$0") -e ~/Downloads/passwords.gpg"
+    echo ''
+    echo "# Import a backup file. To decrypt it, run $(basename "$0") -t"
+    echo "$(basename "$0") -i ~/Downloads/passwords.gpg"
+    echo ''
+    echo '# Decrypt a backup and put contents in specified folder.'
+    echo "$(basename "$0") -t ~/Downloads/passwords_out"
+    echo ''
+    echo '# Delete a backup from the default folder.'
+    echo "$(basename "$0") -x"
+    echo ''
+    echo '# Show new passwords, modified passwords, and reminders.'
+    echo "$(basename "$0") -s"
+    echo ''
+    echo '# Create backup of new and modified passwords in the default folder.'
+    echo "# These passwords will not longer be shown by $(basename "$0") -s."
+    echo '# You first need to create a script password using pass generate gpg.'
+    echo "$(basename "$0") -b"
+    echo ''
+    echo '# Run this after uploading backup online to stop receiving reminders.'
+    echo "$(basename "$0") -u"
+    echo ''
+    echo '# List all the files in the default backup directory.'
+    echo "$(basename "$0") -l"
+    echo ''
+    echo '# Create a backup into default folder.'
+    echo "$(basename "$0") -c"
+    echo ''
+    echo '# Decrypt the backup into default folder. Use the password pass gpg.'
+    echo "$(basename "$0") -d"
+    echo ''
+    echo '# Run tests. This is for the developer.'
+    echo "$(basename "$0") -r"
+    echo ''
+    echo '# Run the program normally.'
+    echo "$(basename "$0")"
+    echo ''
+    exit 1
+}
+
+set_global_variables() {
+
+    # The directory where the passwords and private keys are stored.
+    XDG_DATA_HOME="$HOME/.local/share"
+
+    # Password storage folder, where all passwords are stored.
+    password_dir="$XDG_DATA_HOME/pass"
+
+    # GNU privacy guard folder, where all private/public keys are stored.
+    gpg_dir="$XDG_DATA_HOME/gnupg"
+
+    # Get the number of files (passwords) stored in directory.
+    pass_count=$(ls "$password_dir" | wc -l)
+    # Get date in the format 2022-07-13.
+    current_date=$(date -u +"%Y-%m-%d")
+    # Format the name as "name date count" -> "name 2020-12-31 103.gpg".
+    file_name="backup $current_date $pass_count.gpg"
+
+    # The name of the output file and directory.
+    backup_dir_name='.backup'                   # backup folder
+    backup_dir="$password_dir/$backup_dir_name" # passwords/backup folder
+    file_path="$backup_dir/$file_name"          # passwords/backup/file file
+    out_dir="$file_path.d"                      # passwords/backup/file.d folder
+
+    # Define path to file where the passwords' last modified dates are stored.
+    pass2last_modified_path="$backup_dir/.pass2last_modified.sh"
+
+    # Define path to file to remind the user to back up the compressed file.
+    reminder_path="$backup_dir/.reminder.txt"
+
+    # The mime type for a GPG symmetrically encrypted file is obtained
+    # by running 'file --mime --brief <filename>'. Checking the mime type is
+    # necessary because in UNIX it is not possible to rely solely on file
+    # extensions.
+    mime_type='application/octet-stream; charset=binary'
+}
+
+status_report() {
+    # Define the directory where all the passwords are saved.
+    password_dir="$1"
+
+    # Define the directory where all the passwords are backed up.
+    backup_dir_name="$2"
+
+    # Define directory where the passwords' last modified date will be stored.
+    pass2last_modified_path="$3"
+
+    # Define path to file to remind the user to back up the compressed file.
+    reminder_path="$4"
+
+    # Get every file in password directory while ignoring the backup directory.
+    files_in_pass_dir=(
+        $(find "$password_dir" -type f ! -path "*$backup_dir_name*")
+    )
+
+    # Associative array storing password names and their last modified dates.
+    declare -A pass2last_modified
+    # List to store new passwords.
+    new_passwords=()
+    # List to store passwords that are not new but have been modified.
+    modified_passwords=()
+
+    # If file containing the last modification dates does not exist, create it.
+    if ! [ -f "$pass2last_modified_path" ]; then
+        # Iterate thru ever file in the passwords directory.
+        for file in "${files_in_pass_dir[@]}"; do
+            # Associate every file to its last modification date.
+            pass2last_modified["$file"]="$(stat --format="%y" "$file")"
+        done
+
+        # Store the associative array associating each password file to its
+        # modification date. This will come in handy when checking if new
+        # passwords have been added, or if the password has been modified.
+        declare -p pass2last_modified > "$pass2last_modified_path"
+    else
+        # Else the file exists, so load it.
+        source "$pass2last_modified_path"
+    fi
+
+    # Check if the last modification date of every file in the password
+    # directory is known. If the last modification date is now known (empty),
+    # then the password is new. If it is known, then it is still necessary to
+    # check that the password has not been modified.
+    for file in "${files_in_pass_dir[@]}"; do
+        last_modification_date="${pass2last_modified["$file"]}"
+        # Check if modification date is known.
+        if [ -z "$last_modification_date" ]; then
+            # If modification date is not known, add new password to list.
+            new_passwords+=("$file")
+        else
+            # If modification date is known, get current last modification date.
+            modification_date="$(stat --format="%y" "$file")"
+
+            # Check that the last modified date matches the current last
+            # modified date.
+            if ! [ "$last_modification_date" = "$modification_date" ]; then
+                # If the dates do not match, add the modified password to list.
+                modified_passwords+=("$file")
+            fi
+        fi
+    done
+
+    # Create an empty list to list the passwords that have been deleted.
+    deleted_passswords=()
+
+    # Iterate thru every known password.
+    for password in "${!pass2last_modified[@]}"; do
+        # If the password does not exist:
+        if ! [ -f "$password" ]; then
+            # Add the password path to the list of deleted passwords.
+            deleted_passswords+=("$password")
+        fi
+    done
+
+    # Regular Colors
+    RC='\033[0;31m'     # Red
+    PC='\033[0;35m'     # Purple
+    BC='\033[0;34m'     # Blue
+    GC='\033[0;32m'     # Green
+    NC='\033[0m'        # No color
+
+    # Get the number of new passwords.
+    new_password_count="${#new_passwords[@]}"
+    # Get the number of modified passwords.
+    modified_password_count="${#modified_passwords[@]}"
+    # Get the number of deleted passwords.
+    deleted_password_count="${#deleted_passswords[@]}"
+
+    # If the number of new passwords is greater than 0.
+    if [ "$new_password_count" -gt 0 ]; then
+        # Print the new passwords.
+        echo -e "\n${GC}New passwords: $new_password_count${NC}"
+        # Do not print absolute path, just relative path.
+        for file in "${new_passwords[@]}"; do
+            echo -e "${GC}${file#"$password_dir/"}${NC}"
+        done
+    fi
+
+    # If the number of modified passwords is greater than 0.
+    if [ "$modified_password_count" -gt 0 ]; then
+        # Print the modified passwords.
+        echo -e "\n${BC}Modified passwords: $modified_password_count${NC}"
+        # Do not print absolute path, just relative path.
+        for file in "${modified_passwords[@]}"; do
+            echo -e "${BC}${file#"$password_dir/"}${NC}"
+        done
+    fi
+
+    # If the number of modified passwords is greater than 0.
+    if [ "$deleted_password_count" -gt 0 ]; then
+        # Print the modified passwords.
+        echo -e "\n${RC}Deleted passwords: $deleted_password_count${NC}"
+        # Do not print absolute path, just relative path.
+        for file in "${deleted_passswords[@]}"; do
+            echo -e "${RC}${file#"$password_dir/"}${NC}"
+        done
+    fi
+
+    # If a reminder exists for backing up the encrypted file:
+    if [ -f "$reminder_path" ]; then
+        # Print the modified passwords.
+        file_contents="$(cat "$reminder_path")"
+        echo -e "\n${PC}$file_contents${NC}"
+    fi
+}
+
+create_backup() {
+    # The path to the encrypted backup.
+    file_path="$1"
+    # Password storage folder, where all passwords are stored.
+    password_dir="$2"
+    # GNU privacy guard folder, where all private/public keys are stored.
+    gpg_dir="$3"
+    # Define the directory where the backups are placed.
+    backup_dir="$4"
+    # Define path to file to remind the user to back up the compressed file.
+    reminder_path="$5"
+
+    # If the encrypted backup already exists, abort the program.
+    if [ -f "$file_path" ]; then
+        echo -e "Aborting. The encrypted file already exists:\n$file_path"
+        exit 1
+    fi
+
+    # If the directory where the passwords should be does not exist, exit.
+    if ! [ -d "$password_dir" ]; then
+        echo -e "Aborting. Directory does not exist:\n$password_dir"
+        exit 1
+    fi
+
+    # If the directory where the gpg private/public keys should be does not
+    # exist, exit.
+    if ! [ -d "$gpg_dir" ]; then
+        echo -e "Aborting. Directory does not exist:\n$gpg_dir"
+        exit 1
+    fi
+
+    # Create the compressed file output directory if it does not exist.
+    # Create the output directory if it does not exist.
+    if ! [ -d "$backup_dir" ]; then
+        mkdir -p "$backup_dir"
+    fi
+
+    # Get the password for storing gpg documents.
+    password=$(pass gpg)
+
+    # Gpgtar does not accept absolute paths, so get relative ones.
+    pass_rel_dir=$(realpath --relative-to="$PWD" "$password_dir")
+    gpg_rel_dir=$(realpath --relative-to="$PWD" "$gpg_dir")
+
+    # If file does not exist, create it.
+    # Use --cipher-algo AES256 because the default algorithm is weaker: AES128.
+    # Use --passphrase and --batch in combination as not to require user input.
+    # Use --symmetric to decrypt/encrypt the file without public/private keys.
+    # Use 2>&1 to catch any errors by redirecting errors to standard output.
+    error_message=$(
+        gpgtar --gpg-args="--cipher-algo AES256 --passphrase=\"$password\" \
+            --batch" --symmetric --output "$file_path" "$pass_rel_dir" \
+            "$gpg_rel_dir" 2>&1
+    )
+
+    # If the message error is empty:
+    if [ -z "$error_message" ]; then
+        # Notify the user where the file is stored.
+        echo -e "The encrypted file is located in:\n$file_path"
+
+        # Remind the user to back up the compressed file.
+        reminder="Last backup created: $file_name\n"
+        reminder+="Upload the backup and use $(basename "$0") -u to stop "
+        reminder+="showing this reminder."
+
+        # Store the reminder.
+        echo "$reminder" > "$reminder_path"
+    else
+        # Else, show error message. Notify the user where the file is stored.
+        echo "$error_message"
+
+        # Remove the faulty compressed file.
+        rm "$file_path"
+
+        # Return error.
+        exit 1
+    fi
+}
+
+decrypt_backup() {
+
+    # Define the path to the encrypted backup to decrypt and uncompress.
+    file_path="$1"
+
+    # Define the directory where the decompressed file contents will be placed.
+    out_dir="$2"
+
+    # Verify that arguments are not empty.
+    if [ -z "$file_path" ]; then
+        # Abort program if no file to decrypt is specified.
+        echo 'Aborting. No file path was given.'
+        exit 1
+    elif [ -z "$out_dir" ]; then
+        # Abort program if no output directory is specified.
+        echo 'Aborting. No output directory was given.'
+        exit 1
+    fi
+
+    # Turn absolute path into a relative path.
+    out_dir=$(realpath --relative-to="$PWD" "$out_dir")
+
+    # If the encrypted backup doest not exist, abort the program.
+    if ! [ -f "$file_path" ]; then
+        echo -e "Aborting. The encrypted file does not exist:\n$file_path"
+        exit 1
+    fi
+
+    echo "The file exists: $file_path"
+
+    # Verify that output folder exists and is empty.
+    if ! [ -d "$out_dir" ]; then
+        # Create the uncompressed files output directory if it does not exist.
+        # The contents of the file will go here after decompression.
+        mkdir -p "$out_dir"
+
+        # Verify that the folder was created successfully.
+        if ! [ -d "$out_dir" ]; then
+            echo -e "Aborting. The directory could not be created:\n$out_dir"
+            exit 1
+        fi
+
+    # If he directory is not empty, quit.
+    elif [ "$(ls -A "$out_dir")" ]; then
+        echo -e "Aborting. The output directory is not empty:\n$out_dir"
+        exit 1
+    fi
+
+    echo "The output directory exists: $out_dir"
+    echo "Decrypting..."
+
+    # Decrypt the file and put output in output directory.
+    gpgtar --decrypt --directory "$out_dir" "$file_path"
+}
+
+test_program() {
+    test_string='---------- Test ----------'
+    echo "$test_string"
+
+    echo -e "\nTest: Listing files in backups directory."
+    passb -l
+
+    echo -e "\nTest: Creating an encrypted file backup."
+    passb -c
+
+    echo -e "\nTest: Decrypting the encrypted file backup."
+    passb -d
+
+    echo -e "\nTest: Decrypting encrypted file backup into target directory."
+    passb -t ~/Downloads/test_folder_delete_me
+
+    echo -e "Test: Showing help message."
+    passb -h
+
+    echo "$test_string"
+}
+
+list_backups() {
+    # Define the directory where the backups are placed.
+    backup_dir="$1"
+
+    # ANSI escape codes for colored text output.
+    BLUE='\033[0;34m'   # Blue
+    NC='\033[0m'        # No color.
+
+    # Print default directory.
+    echo -e "$BLUE$backup_dir$NC"
+
+    # Print backed up files.
+    ls "$backup_dir"
+}
+
+backup_new_modified_passwords() {
+
+    # Define directory where the passwords' last modified date will be stored.
+    pass2last_modified_path="$1"
+
+    # Get date in the format 2022-07-13.
+    current_date="$2"
+
+    # Define the script's name so we do not need to get it each time.
+    program=$(basename "$0")
+
+    # program -c: Create a backup.
+    # rm file: Remove the file containing last modification dates.
+    # program -s: Create new file with last modification dates to clear status.
+    "$program" -c && \
+    rm "$pass2last_modified_path" && \
+    "$program" -s
+}
+
+update_status() {
+    # Define path to file to remind the user to back up the compressed file.
+    reminder_path="$1"
+
+    # The message to show for confirming a yes/no operation.
+    message="Have you backed up the encrypted file somewhere online? You will "
+    message+="no longer receive reminders, so you may forget. Continue (y/n)? "
+    # The message to show if yes is chosen.
+    yes_message='Chose to remove reminder.'
+    # The message to show if no is chosen.
+    no_message='Run this option again after uploading the backup.'
+    # The message to show if an invalid choice is chosen.
+    invalid_message='Invalid operation.'
+    # Whether to allow empty messages: true or false.
+    empty_messages_are_allowed=false
+
+    # Ask the user to confirm the file deletion.
+    confirm_choice "$message" "$yes_message" "$no_message" \
+        "$invalid_message" "$empty_messages_are_allowed"
+
+    # Remove reminder.
+    rm -r "$reminder_path" && echo "Removed $reminder_path" || exit
+}
+
+select_file_in_dir() {
+
+    # The directory from which a pattern-matched file will be chosen.
+    dir="$1"
+
+    # Use a bash pattern such as *.gpg, *.txt, *.jpg, *image*, program*, etc.
+    pattern="$2"
+
+    # PS3 prompt is displayed by select and a line is read from standard input.
+    PS3="$3"
+
+    # Checking the mime type is necessary because in UNIX it is not possible to
+    # rely solely on file extensions. Filter files by mime type, such as image,
+    # video, encrypted, etc. Use 'file --mime --brief <filename>' to get the
+    # mime type of a file.
+    mime_type="$4"
+
+    # If no prompt was given, assign a default one:
+    if [ -z "$PS3" ]; then
+        PS3='Select a file, or 0 to exit: '
+    fi
+
+    # Use >&2 so that output is not sent to standard output.
+    echo "Select a file from $dir:" >&2
+
+    # Use a pattern such as *.gpg, *.txt, *.jpg, etc. This list contains the
+    # path to all the files that match the pattern. An example would be:
+    # 1) /home/username/Pictures/dog.jpg
+    # 2) /home/username/car.jpg
+    # 3) /home/username/cat.jpg
+    available_absolute_paths=( "$dir/"$pattern )
+
+    # Create another list to store the file names after removing the directory
+    # name. It is too cumbersome to display the entire path. It is better to
+    # display the file names only. An example would be:
+    # 1) Pictures/dog.jpg
+    # 2) car.jpg
+    # 3) cat.jpg
+    available_names=()
+    # Iterate thru every file path:
+    for file_path in "${available_absolute_paths[@]}"; do
+        # If a mime type is specified:
+        if [ "$mime_type" ] ; then
+            # If the given mime type does not match the file's mime type:
+            if ! [ "$(file --mime --brief "$file_path")" = "$mime_type" ]; then
+                # Skip the file.
+                continue
+            fi
+        fi
+        # Get the file name by removing the directory name from the path.
+        file_name="${file_path#"$dir/"}"
+        # Append the file name to the list.
+        available_names+=("$file_name")
+    done
+
+    # Select a file from the list.
+    select file in "${available_names[@]}"; do
+        if [ "$REPLY" = "0" ]; then
+            #  If the input is 0, exit the script:
+            echo 'Aborting.' >&2
+
+            # Return error because program did not complete successfully.
+            exit 1
+        elif [ -z "$file" ]; then
+            # If the input is empty, prompt the user to try again.
+            echo 'Choose a valid number.' >&2
+        else
+            # When a valid value is selected, subtract 1 from the
+            # input. This is necessary because the selection choices
+            # start at index 1 but the choice list is 0-indexed.
+            REPLY=$((REPLY - 1))
+
+            # Show the user the selected choice.
+            # Use >&2 so that output is not sent to standard output.
+            echo "Selected choice: ${available_names[$REPLY]}" >&2
+
+            # Break from the loop, otherwise it will loop forever.
+            break
+        fi
+    done
+
+    # Return path to choice. An example would be:
+    # /home/username/Pictures/dog.jpg
+    echo "$dir/${available_names[$REPLY]}"
+}
+
+confirm_choice() {
+    # The message to show for confirming a yes/no operation.
+    confirmation_message="$1"
+    # The message to show if yes is chosen.
+    yes_message="$2"
+    # The message to show if no is chosen.
+    no_message="$3"
+    # The message to show if an invalid choice is chosen.
+    invalid_message="$4"
+    # Whether to allow empty messages: true or false.
+    empty_messages_are_allowed="$5"
+
+    # Whether to use default message for empty messages: true or false.
+    if [ -z "$empty_messages_are_allowed" ]; then
+        # If the argument is empty, use default messages.
+        empty_messages_are_allowed=false
+    else
+        # If the argument is not empty, allow empty messages.
+        empty_messages_are_allowed=true
+    fi
+
+    # If empty messages are not allowed, then provide default messages.
+    if ! $empty_messages_are_allowed; then
+        if [ -z "$confirmation_message" ]; then
+            confirmation_message='Are you sure? (y/n): '
+        elif [ -z "$yes_message" ]; then
+            yes_message='Proceeding with operation.'
+        elif [ -z "$no_message" ]; then
+            no_message='Aborting the operation.'
+        elif [ -z "$invalid_message" ]; then
+            invalid_message='Invalid choice. Aborting the operation.'
+        fi
+    fi
+
+    # Show the message and get input from the user.
+    read -rp "$confirmation_message" choice
+
+    # Pattern-match the input from the user.
+    case "$choice" in
+      y|Y )
+            if [ "$yes_message" ]; then
+                echo "$yes_message"
+            fi
+            return 0
+            ;;
+      n|N )
+            if [ "$no_message" ]; then
+                echo "$no_message"
+            fi
+            exit 1
+            ;;
+      * )
+            if [ "$invalid_message" ]; then
+                echo "$invalid_message"
+            fi
+            exit 1
+            ;;
+    esac
+}
+
+delete_file() {
+    # Define the path to the encrypted backup to delete.
+    file_path="$1"
+
+    # The message to show for confirming a yes/no operation.
+    confirmation_message='Do you want to delete the file? (y/n): '
+    # The message to show if yes is chosen.
+    yes_message=''
+    # The message to show if no is chosen.
+    no_message=''
+    # The message to show if an invalid choice is chosen.
+    invalid_message='Invalid operation.'
+    # Whether to allow empty messages: true or false.
+    empty_messages_are_allowed=true
+
+    # Ask the user to confirm the file deletion.
+    confirm_choice "$confirmation_message" "$yes_message" "$no_message" \
+        "$invalid_message" "$empty_messages_are_allowed"
+
+    # Remove the file or directory recursively and notify the user.
+    # If the removal is not successful, exit with last error value.
+    rm -r "$file_path" && echo "Removed $file_path" || exit
+
+    # Exit successfully.
+    exit 0
+}
+
+process_arguments() {
+    while getopts $optstring OPTION; do
+        case $OPTION in
+        h)
+            show_help
+            exit 0
+            ;;
+        e)
+            # -e requires an argument $OPTARG because of ":" in the definition:
+            # Select a GPG symmetrically encrypted file from backups directory.
+            # Then copy the selected file to the specified directory.
+            file_path=$(select_file_in_dir "$backup_dir" \
+                "*" 'Select file to export, or 0 to exit: ' "$mime_type") && \
+                cp "$(realpath "$file_path")" "$(realpath "$OPTARG")"
+            exit 0
+            ;;
+        i)
+            # -i requires an argument $OPTARG because of ":" in the definition:
+            # Then copy the selected file to the backups directory.
+            file_path="$(realpath "$OPTARG")"
+            if [ "$(file --mime --brief "$file_path")" = "$mime_type" ]; then
+                cp "$file_path" "$backup_dir"
+            else
+                echo "File could not be exported. It is not a GPG file."
+                exit 1
+            fi
+            exit 0
+            ;;
+        t)
+            # -t requires an argument $OPTARG because of ":" in the definition:
+            # Select a file and decrypt it. Do now decrypt if picking a file
+            # returned an error code.
+            file_path=$(select_file_in_dir "$backup_dir" \
+                "*" 'Select file to decrypt, or 0 to exit: ' "$mime_type") && \
+                decrypt_backup "$file_path" "$OPTARG" || exit
+            exit 0
+            ;;
+        x)
+            # Select a file and delete it. Do now delete if picking a file
+            # returned an error code.
+            file_path=$(select_file_in_dir "$backup_dir" \
+                "*" 'Select file to delete, or 0 to exit: ') && \
+                delete_file "$file_path" || exit
+            exit 0;
+            ;;
+        s)
+            status_report "$password_dir" "$backup_dir_name" \
+                "$pass2last_modified_path" "$reminder_path"
+            exit 0
+            ;;
+        b)
+            backup_new_modified_passwords "$pass2last_modified_path" \
+                "$current_date"
+            exit 0
+            ;;
+        u)
+            update_status "$reminder_path"
+            exit 0
+            ;;
+        l)
+            list_backups "$backup_dir"
+            exit 0
+            ;;
+        c)
+            create_backup "$file_path" "$password_dir" "$gpg_dir" \
+                "$backup_dir" "$reminder_path"
+            exit 0
+            ;;
+        d)
+            # Select a file and decrypt it. Do now decrypt if picking a file
+            # returned an error code.
+            file_path=$(select_file_in_dir "$backup_dir" "*" \
+                'Select file to decrypt, or 0 to exit: ' "$mime_type") && \
+                decrypt_backup "$file_path" "$out_dir" || exit
+            exit 0
+            ;;
+        r)
+            test_program
+            exit 0
+            ;;
+        ?)
+            printf "\nUnknown option. Aborting.\n"
+            show_help
+            exit 1
+            ;;
+        esac
+    done
+}
+
+main() {
+
+    # Define the directories where the passwords and backups are located.
+    # Global variables are passed down to functions when processing the
+    # arguments, but the functions themselves do not directly access global
+    # variables.
+    set_global_variables
+
+    # Process any flag arguments and exit program.
+    process_arguments "$@"
+
+    # If there were no flag arguments, pass the arguments to the pass program.
+    # IGNORE: You can pass remaining arguments with "${@:1}".
+    pass "$@"
+
+    # Status report of password storage.
+    $(basename "$0") -s
+
+    # Finish program successfully.
+    exit 0
+}
+
+# Program entry point.
+main "$@"
+

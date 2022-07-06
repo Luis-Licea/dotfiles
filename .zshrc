@@ -150,6 +150,10 @@ alias txtscratch="cd /tmp && nvim scratchpad.txt && cd -"
 
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME"
 alias dotfilesui="gitui -d $HOME/.config/dotfiles/ -w $HOME"
+alias passbackup="git --git-dir="$HOME/.local/share/pass/.backup/.git" \
+    --work-tree="$HOME/.local/share/pass/.backup""
+alias passbackupui="gitui -d "$HOME/.local/share/pass/.backup/.git" \
+    -w "$HOME/.local/share/pass/.backup""
 
 alias e='exit'
 alias h='helix'

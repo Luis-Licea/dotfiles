@@ -6,7 +6,12 @@
 # Install using pacman.
 pacman_programs=(
 
+
+
+
     # Development tools.
+    gnupg               # Complete and free implementation of the OpenPGP standard
+    kgpg                # A GnuPG frontend
     gtest               # Google Test - C++ testing utility.
     time                # Benchmarking tool.
     boost               # C++ development headers.
