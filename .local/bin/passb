@@ -145,9 +145,11 @@ status_report() {
     reminder_path="$4"
 
     # Get every file in password directory while ignoring the backup directory.
-    files_in_pass_dir=(
-        $(find "$password_dir" -type f ! -path "*$backup_dir_name*")
-    )
+    # Place the file paths in an array, and use -t to remove newline
+    # characters. Using the <(list) process substitution treats the output as
+    # coming from a file.
+    readarray -t files_in_pass_dir < \
+        <(find "$password_dir" -type f ! -path "*$backup_dir_name*")
 
     # Associative array storing password names and their last modified dates.
     declare -A pass2last_modified
@@ -298,7 +300,7 @@ create_backup() {
     fi
 
     # Get the password for storing gpg documents.
-    password=$(pass gpg)
+    password=$(pass documents/passb_backups)
 
     # Gpgtar does not accept absolute paths, so get relative ones.
     pass_rel_dir=$(realpath --relative-to="$PWD" "$password_dir")
