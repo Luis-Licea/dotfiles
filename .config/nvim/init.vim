@@ -442,7 +442,7 @@ aug LaTeXGroup
     " Open the compiled LaTeX pdf with the specified viewer.
     au FileType tex nnoremap <buffer> <leader>cv :sil call OpenLaTeXPDF("zathura")<cr>
     " Compile LaTeX document every time after saving.
-    au BufWritePost *.tex if s:auto_run == 1 | call RunLaTex() | endif
+    au BufWritePost *.tex if s:auto_run == 1 | call RunLaTeX() | endif
     " Clean the all files except the compiled pdf when exiting.
     au VimLeavePre *.tex :call CleanLaTeX()
 aug end
