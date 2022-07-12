@@ -9,3 +9,20 @@
     pager = nvimpager -
 [hub]
     protocol = https
+[alias]
+    ; Merge commits obfuscate intent. Pull requests should not include merge
+    ; commits. If there are local changes, always fetch and rebase. The commits
+    ; should be applied directly on the of the master branch. It may be
+    ; necessary to stash the changes before rebasing.
+    ;
+    ; Also, git fetch --all is only necessary when there are changes on the
+    ; remote, but type it as often as possible. There is nothing worse than
+    ; spending an eternity rebasing on an old cache of origin/master
+    nevermerge = !git fetch --all && git rebase -i origin/master
+
+    ; Why do people find git hard?
+    gitiseasy = !git submodule foreach git reset --hard HEAD && git submodule foreach git pull origin master
+
+    ; Notes: When using git reset, use --soft instead of --hard to change the
+    ; git state without modifying any files or work.
+
