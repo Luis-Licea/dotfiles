@@ -43,6 +43,8 @@ pacman_programs=(
     termshark           # Terminal UI for tshark, inspired by Wireshark.
     newsboat            # An RSS/Atom feed reader for text terminals
     kdeconnect          # Adds communication between KDE and your smartphone.
+
+    sshfs               # For kdeconnect. FUSE client based on the SSH File Transfer Protocol.
     zathura             # Minimalistic document viewer.
     zathura-cb          # Add comic-book support to zathura.
     zathura-pdf-mupdf   # Add PDF, ePub, and OpenXPS support to zathura.
@@ -104,7 +106,11 @@ aur_programs=(
     write-good          # Naive linter for English prose.
     aspell              # A spell checker designed to eventually replace Ispell
     aspell-en           # English dictionary for aspell
+
+
     # Miscellaneous.
+    mutt-wizard-git     # Auto-configure neomutt and isync/mpop with safe passwords (IMAP/POP3/SMTP)
+    abook               # Text-based addressbook designed for use with Mutt.
     pipe-viewer-git     # A lightweight YouTube client for Linux (CLI/GTK).
     nvimpager-git       # Use nvim to view manpages, diffs with syntax highlighting
     xdg-ninja-git       # A shell script that checks $HOME for unwanted files.
