@@ -45,6 +45,7 @@ pacman_programs=(
     kdeconnect          # Adds communication between KDE and your smartphone.
 
     sshfs               # For kdeconnect. FUSE client based on the SSH File Transfer Protocol.
+    sddm                # QML based X11 and Wayland display manager.
     zathura             # Minimalistic document viewer.
     zathura-cb          # Add comic-book support to zathura.
     zathura-pdf-mupdf   # Add PDF, ePub, and OpenXPS support to zathura.
@@ -68,7 +69,7 @@ pacman_programs=(
     thunderbird         # Email client.
     yt-dlp              # ty-dlp fork with added features and patches.
     clipgrab            # A video downloader and converter for YouTube, Veoh, DailyMotion, MyVideo, ...
-    
+
     most                # A terminal pager similar to 'more' and 'less'. NOTE: Set PAGER=most in .zshrc.
 
     # Terminal file manager and viewer.
@@ -95,6 +96,18 @@ pacman_programs=(
 # Install using yaourt, yay, etc.
 aur_programs=(
 
+    # Wayland
+    waybar              # Highly customizable Wayland bar for Sway and Wlroots based compositors
+    xorg-xlsclients     # List client applications running on a display.
+    swaybg              # wallpaper tool for wayland compositars.
+    swaylock            # Screen locker for Wayland.
+    wl-clipboard        # Command-line copy/paste utilities for Wayland.
+    networkmanager-openrc # OpenRC networkmanager init script.
+    grimshot            # A helper for screenshots within sway.
+    vim-dwm-git         # Dynamic Window Manager behaviour for Vim
+    wlr-randr-git       # Utility to manage outputs of a Wayland compositor.
+    inotify-tools       # A C library and programs for the inotify interface.
+
     # Volume control.
     pacmixer            # alsamixer alike for PulseAudio.
 
@@ -106,7 +119,6 @@ aur_programs=(
     write-good          # Naive linter for English prose.
     aspell              # A spell checker designed to eventually replace Ispell
     aspell-en           # English dictionary for aspell
-
 
     # Miscellaneous.
     mutt-wizard-git     # Auto-configure neomutt and isync/mpop with safe passwords (IMAP/POP3/SMTP)

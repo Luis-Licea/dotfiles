@@ -147,6 +147,8 @@ alias mpdconfig="$EDITOR ~/.config/mpd/mpd.conf"
 alias ncmpcppconfig="$EDITOR ~/.config/ncmpcpp/"
 alias zathuraconfig="$EDITOR ~/.config/zathura/zathurarc"
 alias cppmanconfig="$EDITOR ~/.config/cppman/cppman.cfg"
+alias waybarconfig="$EDITOR ~/.config/waybar/"
+alias dwlconfig="$EDITOR ~/.config/dwl/"
 alias passconfig="cd ~/.local/share/pass"
 alias passbackup="cp -iur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8/primary/pass/"
 alias passdiff="kdeconnect-cli --refresh && diff -q ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/"
@@ -174,6 +176,7 @@ alias de='sdcv -eu WordNet'
 alias t="sdcv -u 'Moby Thesaurus II'"
 alias n='alacritty &'
 alias cheat='cht.sh'
+alias swaylock='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
 export bgs='/usr/share/backgrounds/nordic-wallpapers/'
 
 ZSH_CACHE_DIR=$HOME/.cache/oh-my-zsh
