@@ -1,0 +1,62 @@
+[Groups/0]
+# Group Name
+Name=English
+# Layout
+Default Layout=us
+# Default Input Method
+DefaultIM=keyboard-us
+
+[Groups/0/Items/0]
+# Name
+Name=keyboard-us
+# Layout
+Layout=
+
+[Groups/1]
+# Group Name
+Name=Spanish
+# Layout
+Default Layout=latam
+# Default Input Method
+DefaultIM=keyboard-latam
+
+[Groups/1/Items/0]
+# Name
+Name=keyboard-latam
+# Layout
+Layout=
+
+[Groups/2]
+# Group Name
+Name=Russian
+# Layout
+Default Layout=ru
+# Default Input Method
+DefaultIM=keyboard-ru
+
+[Groups/2/Items/0]
+# Name
+Name=keyboard-ru
+# Layout
+Layout=
+
+[Groups/3]
+# Group Name
+Name=Polish
+# Layout
+Default Layout=pl
+# Default Input Method
+DefaultIM=keyboard-pl
+
+[Groups/3/Items/0]
+# Name
+Name=keyboard-pl
+# Layout
+Layout=
+
+[GroupOrder]
+0=English
+1=Russian
+2=Spanish
+3=Polish
+
