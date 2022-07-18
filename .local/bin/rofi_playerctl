@@ -7,30 +7,23 @@ player_file=/tmp/playerctl.txt
 # Pick the player that playerctl will control.
 pick_player() {
     # Choose a player from the list.
-    player=$( playerctl -l | dmenu )
+    player=$( playerctl -l | rofi -dmenu -i )
+
     # Save the player program's name, such as vlc, mpd, mpv, etc.
-    if [ "$player" != "" ]; then
-        echo "$player" > "$player_file"
-    fi
+    test "$player" != "" && echo "$player" > "$player_file"
+
     # Exit script after picking the player.
     exit
 }
 
-# Check the first argument to decide if a player should be picked.
-if [ "$1" = "pick-player" ]; then
-    pick_player
-fi
+# If no arguments are passed then pick a music player to control.
+test "$#" -eq 0 && pick_player
 
 # If a player has been picked:
-if [ -f  "$player_file" ]; then
-    # Retrieve player name from file.
-    player=$(cat "$player_file")
-else
-    # Leave player name empty. Playerctl can handle it.
-    player=''
-fi
+# Retrieve player name from file.
+# Else, leave player name empty. Playerctl can handle it.
+test -f "$player_file" && player=$(cat "$player_file") || player=''
 
 # Execute the arguments on the specified player.
 playerctl --player="$player" "$@"
-
 

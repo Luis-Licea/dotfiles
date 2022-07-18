@@ -16,11 +16,10 @@
     dunst &
 
 # Set the background.
-    # Get path to a random background.
-    bg=$(find /usr/share/backgrounds/suckless-wallpapers | shuf -n 1)
-
-    # Set the background.
-    swaybg -o "*" -i "$bg" &
+    # Get path to a random background and set the background.
+    find /usr/share/backgrounds/suckless-wallpapers \
+    | shuf -n 1 \
+    | xargs swaybg -i &
 
 # Show the status bar.
     waybar &

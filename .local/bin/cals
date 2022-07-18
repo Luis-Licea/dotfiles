@@ -193,7 +193,7 @@ select_dmenu_dict_value() {
              # Print the selected key.
             echo "$choice"
         # Show the keys in dmenu for selection, case insensitively.
-        done | dmenu -i | xargs
+        done | rofi -dmenu -i | xargs
     )
 
     # Get the value associated to the dictionary key.

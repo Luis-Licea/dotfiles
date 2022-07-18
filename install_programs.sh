@@ -6,10 +6,8 @@
 # Install using pacman.
 pacman_programs=(
 
-
-
-
     # Development tools.
+    pax                 # Portable Archive Interchange - the POSIX standard archive tool for cpio and tar formats
     gnupg               # Complete and free implementation of the OpenPGP standard
     kgpg                # A GnuPG frontend
     gtest               # Google Test - C++ testing utility.
@@ -55,6 +53,7 @@ pacman_programs=(
     # pdfarranger         # Merge, split, rotate, crop and rearrange PDFs.
     # gscan2pdf           # PDF tool. Can remove background from scanned PDFs.
     sc-im               # A spreadsheet program based on SC.
+    qt5ct               # Qt5 Configuration Utility.
     audacium            # Free version of Audacity.
     deja-dup            # File backups.
     firefox             # Firefox browser.
@@ -71,6 +70,7 @@ pacman_programs=(
     clipgrab            # A video downloader and converter for YouTube, Veoh, DailyMotion, MyVideo, ...
 
     most                # A terminal pager similar to 'more' and 'less'. NOTE: Set PAGER=most in .zshrc.
+    trash-cli           # Command line trashcan (recycle bin) interface.
 
     # Terminal file manager and viewer.
     ranger    # Simple, vim-like file manager.

@@ -18,7 +18,10 @@ ZSH=/usr/share/oh-my-zsh/
 
 # Set powerlevel10k as theme if installed, and set agnoster theme as a backup.
 POWERLEVEL10k_DIR=zsh-theme-powerlevel10k
-if [[ -d "$ZSH../$POWERLEVEL10k_DIR" ]]; then
+if [[ "$TERM" == "linux" ]]; then
+    # If using the tty, load a simple theme.
+    ZSH_THEME="half-life"
+elif [[ -d "$ZSH../$POWERLEVEL10k_DIR" ]] && [[ "$TERM" != "linux" ]]; then
     # Must be a path relative to themes folder in $ZSH folder.
     ZSH_THEME=../../$POWERLEVEL10k_DIR/powerlevel10k
 else
@@ -99,15 +102,6 @@ plugins=(git vi-mode copypath copyfile)
 # Disable loading Ranger's global configuration files.
 export RANGER_LOAD_DEFAULT_RC=FALSE
 
-# Prevent nested ranger instances.
-ranger() {
-    if [ -z "$RANGER_LEVEL" ]; then
-        /usr/bin/ranger "$@"
-    else
-        exit
-    fi
-}
-
 # Stay in current folder when exiting ranger.
 alias ranger='source ranger'
 
@@ -134,7 +128,7 @@ export VISUAL="$EDITOR"
 # Example aliases
 alias zshconfig="$EDITOR ~/.zshrc"
 alias nvimconfig="$EDITOR ~/.config/nvim/init.vim"
-alias nvimswap="ranger ~/.local/share/nvim/swap"
+alias nvimswap="cd ~/.local/share/nvim/swap/"
 alias alacrittyconfig="$EDITOR ~/.config/alacritty/alacritty.yml"
 alias rangerconfig="$EDITOR ~/.config/ranger/"
 alias vscodiumconfig="$EDITOR ~/.config/VSCodium/User/"
@@ -147,14 +141,14 @@ alias mpdconfig="$EDITOR ~/.config/mpd/mpd.conf"
 alias ncmpcppconfig="$EDITOR ~/.config/ncmpcpp/"
 alias zathuraconfig="$EDITOR ~/.config/zathura/zathurarc"
 alias cppmanconfig="$EDITOR ~/.config/cppman/cppman.cfg"
+alias neomuttconfig="$EDITOR ~/.config/mutt/"
+alias neomuttmsmtpconfig="$EDITOR ~/.config/msmtp/config"
 alias waybarconfig="$EDITOR ~/.config/waybar/"
 alias dwlconfig="$EDITOR ~/.config/dwl/"
+
 alias passconfig="cd ~/.local/share/pass"
 alias passbackup="cp -iur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8/primary/pass/"
 alias passdiff="kdeconnect-cli --refresh && diff -q ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/"
-
-alias neomuttconfig="$EDITOR ~/.config/mutt/"
-alias neomuttmsmtpconfig="$EDITOR ~/.config/msmtp/config"
 
 alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
 alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"

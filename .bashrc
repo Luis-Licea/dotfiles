@@ -245,14 +245,6 @@ alias v='vim'
 #  # Go to home directory or return if command fails.
 #  cd ~/ || return
 #fi
-# Prevent nested ranger instances.
-ranger() {
-    if [ -z "$RANGER_LEVEL" ]; then
-        /usr/bin/ranger "$@"
-    else
-        exit
-    fi
-}
 # Stay in current folder when exiting ranger.
 alias ranger='source ranger'
 ## This line was automatically added by installing Rustup.
