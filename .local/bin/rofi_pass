@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Backup clipboard contents, otherwise they will be lost.
+clipboard_backup="$(wl-paste)"
+
+# Get the path to all the non-hidden files in password directory.
+# The path names will be displayed to the user for picking one of them.
+readarray -t files_in_pass_dir < \
+    <(find "$PASSWORD_STORE_DIR" -type f ! -path "$PASSWORD_STORE_DIR/.*")
+
+# For every file, convert the absolute path into a relative path.
+# Using the absolute path is too repetitive, clutters the view, and makes it
+# harder for the user to pick a file path.
+files=$(
+    for file in "${files_in_pass_dir[@]}"; do
+        file_name=$(realpath --relative-to="$PASSWORD_STORE_DIR" "$file")
+        echo "${file_name%.gpg}"
+    done
+)
+
+# Display all the files and pick one of them.
+# The picked file represents the password to access.
+file=$(echo -e "$files" | rofi -dmenu -i)
+
+# Store password into clipboard. Send the standard output from `pass` to null
+# because otherwise it will be copied into the clipboard.
+wl-copy "$(pass "$file")" > /dev/null
+
+# Wait 45 seconds. The clipboard contents will be reset afterwards.
+sleep 45
+
+# Restore backed-up clipboard contents. This clears out the password from the
+# clipboard.
+wl-copy "$clipboard_backup"
