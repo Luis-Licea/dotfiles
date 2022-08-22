@@ -149,6 +149,7 @@ aur_programs=(
     # Neovim setup.
     ack                 # Perl-based grep for large heterogeneous code bases.
     neovim              # Provides improvements over Vim.
+    uctags-git          # Universal ctags (patched to allow installing alongside original ctags).
     nerd-fonts-source-code-pro # Needed by NERDTree. Can use Meslo NF instead.
 
     # LaTeX setup.

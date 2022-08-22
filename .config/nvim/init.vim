@@ -10,7 +10,9 @@ map <localleader> <c-w>
 " Save file.
 nnoremap <leader>w :write<cr>
 " Spawn a new terminal in the folder of the current file.
-noremap <leader>t :let $VIM_DIR=expand('%:p:h')<CR>:sil !alacritty --working-directory $VIM_DIR &<CR>
+noremap <leader>t :let $VIM_DIR=expand('%:p:h')<CR>:sil !setsid --fork alacritty --working-directory $VIM_DIR &<CR>
+" Spawn a new ranger terminal in the folder of the current file.
+noremap <leader>rt :let $VIM_DIR=expand('%:p:h')<CR>:sil !setsid --fork alacritty --working-directory $VIM_DIR -e ranger<CR>
 " Quit vim.
 nnoremap <leader>q :quit<cr>
 " Load .vimrc.
@@ -18,11 +20,9 @@ nnoremap <leader>so :source ~/.config/nvim/init.vim<cr>
 " Fix syntax highlighting.
 nnoremap <leader>fs :syntax sync fromstart<cr>
 " Check script to make it POSIX compliant.
-nnoremap <leader>sc :!clear && shellcheck "%"<cr>
+nnoremap <leader>sc :!shellcheck "%"<cr>
 " Remove trailing white space.
 nnoremap <leader>rw :%s/\s\+$//e<cr>
-" Remove tabs and convert them to spaces.
-nnoremap <leader>rt :retab<cr>
 " Remove swap file. Make the command long in purpose.
 nnoremap <leader>rswap :!rm '%.swp'<cr>
 " Unset the last search pattern register.
@@ -79,7 +79,7 @@ nnoremap <leader>fd :echo expand("%:p:h")<cr>
 " Copy file name to clipboard.
 nnoremap <silent> yn :let @+=expand('%:t')<cr>
 " Copy file path to clipboard.
-nnoremap <silent> yf :let @+=expand('%:p')<cr>
+nnoremap <silent> yp :let @+=expand('%:p')<cr>
 " Copy pwd to clipboard.
 nnoremap <silent> yd :let @+=expand('%:p:h')<cr>
 " Copy buffer contents to clipboard.
@@ -277,7 +277,18 @@ function! AutoRunToggle()
 endfunction
 nnoremap <leader>ct :call AutoRunToggle()<CR>
 
-function! SetCompiledLanguageVariables()
+" Function for toggling code formatting on save:
+let s:auto_format = 0
+function! AutoFormatToggle()
+    if s:auto_format  == 0
+        let s:auto_format = 1
+    else
+        let s:auto_format = 0
+    endif
+endfunction
+nnoremap <leader>cf :call AutoFormatToggle()<CR>
+
+function! SetCompiledLanguageVariables(language, flags)
     " Remove the parent directories and extension to get file name.
     let $file=expand('%:t:r')
 
@@ -285,16 +296,44 @@ function! SetCompiledLanguageVariables()
     " it should be executed.
     let $executable_path="/tmp/" . $file
 
-    " C++ and C compilation flags:
-    " Wall: Warn questionable or easy to avoid constructions.
-    " Wextra: Some extra warnings not enabled by -Wall.
-    " Wfloat-conversion: Warns when doubles implicitly converted to floats.
-    " Wsign-conversion: Warn implicit conversion that change integer sign.
-    " fsanitize=leak: Warns when pointers have not been freed.
-    " fsanitize=address: Warns use after free.
-    " Wpedantic: Demand strict ISO C and ISO C++; no forbidden extensions.
-    " Wconversion: Warn implicit conversions that may alter a value.
-    let flags='-std=c++17 -Wall -Wextra -Wfloat-conversion -Wsign-conversion -Wconversion -fsanitize=address -fsanitize=leak'
+    " Set the correct compiler for C, C++, Rust, etc.
+    " let $compiler="tcc"
+    if a:language == 'C'        | let $compiler='gcc'
+    elseif a:language == 'C++'  | let $compiler='g++'
+    elseif a:language == 'Rust' | let $compiler='rustc'
+    elseif a:language == 'Vala' | let $compiler='valac'
+    endif
+
+    " Set different default compilation flags for C, C++, Rust, etc.
+    if a:language == 'C' || a:language == 'C++'
+
+        " Sample CMake flags.
+        " set(CMAKE_CXX_FLAGS_DEBUG_INIT "-fsanitize=address,undefined -fsanitize-undefined-trap-on-error")
+        " set(CMAKE_EXE_LINKER_FLAGS_INIT "-fsanitize=address,undefined -static-libasan")
+        " set(CMAKE_CXX_FLAGS_INIT "-Werror -Wall -Wextra -Wpedantic")
+        " # toolchain file for use with gcov
+        " set(CMAKE_CXX_FLAGS_INIT "--coverage -fno-exceptions -g")
+
+        " C++ and C compilation flags:
+        " Wall: Warn questionable or easy to avoid constructions.
+        " Wextra: Some extra warnings not enabled by -Wall.
+        " Wfloat-conversion: Warns when doubles implicitly converted to floats.
+        " Wsign-conversion: Warn implicit conversion that change integer sign.
+        " Wshadow: Find errors particularly regarding unique_lock<mutex>(my_mutex);
+        " fsanitize=address: Warns use after free.
+        " fsanitize=leak: Warns when pointers have not been freed.
+        " fsanitize=undefined: Detects undefined behavior.
+        " fsanitize-address-use-after-scope: Catches references to temporary
+        "   values. The value may be gone before the reference is accessed.
+        " Wpedantic: Demand strict ISO C and ISO C++; no forbidden extensions.
+        " Wconversion: Warn implicit conversions that may alter a value.
+        let $flags=a:flags . ' -Wall -Wextra -Wfloat-conversion -Wshadow
+                    \ -Wsign-conversion -Wconversion
+                    \ -fsanitize=address,leak,undefined
+                    \ -fsanitize-address-use-after-scope'
+    elseif a:language == 'Rust'
+        let $flags=a:flags
+    endif
 endfunction
 
 " Benchmark the execution time of compiled binary.
@@ -304,81 +343,95 @@ endfunction
 " Call the function by simply typing :Time.
 command Time call Time_cpp_c_rs()
 
+" -g: Include debugging information.
+let $debug_flag = ''
+function! DebugToggle()
+    if $debug_flag == ''
+        let $debug_flag = '-g'
+    else
+        let $debug_flag = ''
+    endif
+endfunction
+nnoremap <leader>cd :call DebugToggle()<CR>
+
 function! Run()
     " Save file.
     w!
     " Compile and execute program in tmp folder.
-    !$compiler $flags "%" -o "$executable_path" && "$executable_path"
+    !eval $compiler $debug_flag $flags "%" -o "$executable_path" && "$executable_path"
+endfunction
+
+function! Interpret(language)
+    " Save file.
+    w!
+    " Use the correct interpreter for each language.
+    if a:language == 'Python'   | !python3 "%"
+    elseif a:language == 'Java' | !java "%"
+    elseif a:language == 'Bash' | !bash "%"
+    endif
 endfunction
 
 " Run C code in Vim.
-    function! RunC()
-        let $compiler="gcc" | call Run()
-    endfunction
-
     aug CGroup
         " Clear previous group auto commands to avoid duplicate definitions.
         au!
-        au FileType c map <buffer> <F5> :call RunC()<cr>
-        au FileType c imap <buffer> <F5> <esc>:call RunC()<cr>
-        au FileType c call SetCompiledLanguageVariables()
-        au BufWritePost *.c if s:auto_run == 1 | call RunC() | endif
+        au FileType c map <buffer> <F5> :call Run()<cr>
+        au FileType c imap <buffer> <F5> <esc>:call Run()<cr>
+        au FileType c call SetCompiledLanguageVariables('C', '')
+        au BufWritePost *.c if s:auto_run == 1 | call Run() | endif
     aug end
 
 " Run C++ code in Vim.
-
-    " Define a function for compiling cpp files.
-    function! RunCpp()
-        let $compiler="g++" | call Run()
-    endfunction
-
     aug CppGroup
         au!
-        au FileType cpp map <buffer> <F5> :call RunCpp()<cr>
-        au FileType cpp imap <buffer> <F5> <esc>:call RunCpp()<cr>
+        au FileType cpp map <buffer> <F5> :call Run()<cr>
+        au FileType cpp imap <buffer> <F5> <esc>:call Run()<cr>
         au FileType cpp set shiftwidth=2 | set softtabstop=2  | set tabstop=2
-        au BufWritePost *.cpp if s:auto_run == 1 | call RunCpp() | endif
-        au BufWritePre *.cpp call SetCompiledLanguageVariables()
+        au BufWritePost *.cpp if s:auto_run == 1 | call Run() | endif
+        au FileType cpp call SetCompiledLanguageVariables('C++', '-std=c++17')
     aug end
 
 " Run Python code in Vim (edit and insert modes).
-    function! RunPy()
-        w! | exec '!python3 "%"'
-    endfunction
     aug PyGroup
         au!
-        au FileType python map <buffer> <F5> :call RunPy()<cr>
-        au FileType python imap <buffer> <F5> <esc>:call RunPy()<cr>
-        au BufWritePost *.py if s:auto_run == 1 | call RunPy() | endif
+        au FileType python map <buffer> <F5> :call Interpret('Python')<cr>
+        au FileType python imap <buffer> <F5> <esc>:call Interpret('Python')<cr>
+        au BufWritePost *.py if s:auto_run == 1 | call Interpret('Python') | endif
+    aug end
+
+" Run Java code in Vim.
+    aug JavaGroup
+        au!
+        au FileType java map <buffer> <F5> :call Interpret('Java')<cr>
+        au FileType java imap <buffer> <F5> <esc>:call Interpret('Java')<cr>
+        au BufWritePost *.java if s:auto_run == 1 | call Interpret('Java') | endif
     aug end
 
 " Run Rust code in Vim.
-    function! RunRs()
-        w!
-        " -g: Include debugging information.
-        !rustc -g "%" -o "$executable_path" && "$executable_path"
-    endfunction
     aug RsGroup
         au!
-        au FileType rust map <buffer> <F5> :call RunRs()<cr>
-        au FileType rust imap <buffer> <F5> <esc>:call RunRs()<cr>
-        au BufWritePost *.rs if s:auto_run == 1 | call RunRs() | endif
-        au BufWritePre *.rs call SetCompiledLanguageVariables()
+        au FileType rust map <buffer> <F5> :call Run()<cr>
+        au FileType rust imap <buffer> <F5> <esc>:call Run()<cr>
+        au FileType rust call SetCompiledLanguageVariables('Rust', '')
+        au BufWritePost *.rs if s:auto_run == 1 | call Run() | endif
     aug end
 
 " Run bash code in Vim.
-    function! RunSh()
-        w!
-        exec '!bash "%"'
-    endfunction
-
     aug ShGroup
         au!
-        au FileType sh map <buffer> <F5> :call RunSh()<cr>
-        au FileType sh imap <buffer> <F5> <esc>:call RunSh()<cr>
-        au BufWritePost *.sh if s:auto_run == 1 | call RunSh() | endif
+        au FileType sh map <buffer> <F5> :call Interpret('Bash')<cr>
+        au FileType sh imap <buffer> <F5> <esc>:call Interpret('Bash')<cr>
+        au BufWritePost *.sh if s:auto_run == 1 | call Interpret('Bash') | endif
     aug end
 
+" Run Rust code in Vim.
+    aug ValaGroup
+        au!
+        au FileType vala map <buffer> <F5> :call Run()<cr>
+        au FileType vala imap <buffer> <F5> <esc>:call Run()<cr>
+        au FileType vala call SetCompiledLanguageVariables('Vala', '')
+        au BufWritePost *.vala if s:auto_run == 1 | call Run() | endif
+    aug end
 
 " Spell check and wrap commit messages.
 au! Filetype gitcommit setlocal spell textwidth=72
@@ -454,18 +507,30 @@ aug end
 " Scratchpads.
 "-------------------------------------------------------------------------------
 " Execute files named "scratchpad" each time they are saved.
-au! BufEnter scratchpad.* call AutoRunToggle()
+au! BufEnter scratchpad.* call AutoRunToggle() | call AutoFormatToggle()
 
 "-------------------------------------------------------------------------------
 " Templates for new files that do not exist.
 "-------------------------------------------------------------------------------
+function! LoadTemplate(name)
+    " The place where the templates are saved.
+    let s:template_dir=expand('~/.config/nvim/templates/')
+    " Get path to template file.
+    let s:templae_path=s:template_dir . fnameescape(a:name)
+    " Load the template into the current file.
+    exe "0r " . s:templae_path
+endfunction
+
 aug TemplateGroup
     au!
-    au BufNewFile  *.c     0r ~/.config/nvim/templates/skeleton.c
-    au BufNewFile  *.cpp   0r ~/.config/nvim/templates/skeleton.cpp
-    au BufNewFile  *.html  0r ~/.config/nvim/templates/skeleton.html
-    au BufNewFile  *.py    0r ~/.config/nvim/templates/skeleton.py
-    au BufNewFile  *.sh    0r ~/.config/nvim/templates/skeleton.sh
+    au BufNewFile *.c            call LoadTemplate('skeleton.c')
+    au BufNewFile *.cpp          call LoadTemplate('skeleton.cpp')
+    au BufNewFile *.html         call LoadTemplate('skeleton.html')
+    au BufNewFile *.py           call LoadTemplate('skeleton.py')
+    au BufNewFile *.sh           call LoadTemplate('skeleton.sh')
+    au BufNewFile CMakeLists.txt call LoadTemplate('CMakeLists.txt')
+    au BufNewFile cmake_uninstall.cmake.in call
+                \ LoadTemplate('cmake_uninstall.cmake.in')
 aug end
 
 "-------------------------------------------------------------------------------
@@ -504,6 +569,8 @@ call plug#begin()
     Plug 'junegunn/fzf.vim'
     " Easily align tables, or text by symbols like , ; = & etc.
     Plug 'junegunn/vim-easy-align'
+    " Show indentation lines.
+    Plug 'lukas-reineke/indent-blankline.nvim'
     " Install and update language servers using LspInstallServer.
     Plug 'mattn/vim-lsp-settings'
     " Nice start screen. NOTE: Put before vim-devicons, or icons won't load.
@@ -534,6 +601,8 @@ call plug#begin()
     Plug 'vim-airline/vim-airline' | Plug 'ryanoasis/vim-devicons'
     " A powerful autopair plugin for Neovim that supports multiple characters.
     Plug 'windwp/nvim-autopairs'
+    " Tagbar: a class outline viewer for Vim.
+    Plug 'preservim/tagbar' " Requires universal ctags.
 call plug#end()
 
 " Load autopair plugin.
@@ -700,18 +769,20 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> gs <plug>(lsp-document-symbol-search)
     nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
     nmap <buffer> gr <plug>(lsp-references)
-    nmap <buffer> gi <plug>(lsp-implementation)
+    " nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> <leader>gi <plug>(lsp-implementation)
     nmap <buffer> gt <plug>(lsp-type-definition)
     nmap <buffer> <leader>rn <plug>(lsp-rename)
     nmap <buffer> [g <plug>(lsp-previous-diagnostic)
     nmap <buffer> ]g <plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
+
     inoremap <buffer> <expr><c-f> lsp#scroll(+4)
     inoremap <buffer> <expr><c-d> lsp#scroll(-4)
 
     let g:lsp_format_sync_timeout = 1000
     " Start formatting server when the file is opened.
-    au! BufWritePre *.py,*.cpp,*.c,*.rs call execute('LspDocumentFormatSync')
+    au! BufWritePre *.py,*.cpp,*.rs,*.c if s:auto_format == 1 | call execute('LspDocumentFormatSync') | endif
 
     " refer to doc to add more commands
 endfunction
