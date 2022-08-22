@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# s - stardict for rofi
+
+# Get a temp file name to store definition.
+# Get word definition and store it in temp file.
+# Open the definition in a terminal.
+# Remove the temp file.
+definition_temp_file=$(mktemp) \
+    && sdcv -eu WordNet "$1" > "$definition_temp_file"  \
+    && alacritty -e w3m "$definition_temp_file" \
+    && rm "$definition_temp_file"
+
+    # && alacritty -e less "$definition_temp_file" \
