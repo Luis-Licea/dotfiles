@@ -102,8 +102,8 @@ plugins=(git vi-mode copypath copyfile)
 # Disable loading Ranger's global configuration files.
 export RANGER_LOAD_DEFAULT_RC=FALSE
 
-# Stay in current folder when exiting ranger.
-alias ranger='source ranger'
+# Stay in current folder when exiting ranger. Show ranger nested level at exit.
+alias ranger='source ranger && echo "Level ${RANGER_LEVEL:-0}"'
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -145,12 +145,14 @@ alias neomuttconfig="$EDITOR ~/.config/mutt/"
 alias neomuttmsmtpconfig="$EDITOR ~/.config/msmtp/config"
 alias waybarconfig="$EDITOR ~/.config/waybar/"
 alias dwlconfig="$EDITOR ~/.config/dwl/"
+alias gitconfig="$EDITOR ~/.config/git/config"
 
 alias passconfig="cd ~/.local/share/pass"
 alias passbackup="cp -iur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8/primary/pass/"
 alias passdiff="kdeconnect-cli --refresh && diff -q ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/"
 
 alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
+alias rsscratch="cargo new /tmp/rsscratch & cd /tmp/rsscratch && nvim . && cd -"
 alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"
 alias bashscratch="cd /tmp && nvim scratchpad.sh && cd -"
 alias txtscratch="cd /tmp && nvim scratchpad.txt && cd -"
@@ -164,13 +166,15 @@ alias passbgui="gitui -d "$HOME/.local/share/pass/.backup/.git" \
 
 alias e='exit'
 alias h='helix'
+alias r='ranger'
 alias c='codium .'
 alias d='sdcv -u WordNet'
 alias de='sdcv -eu WordNet'
 alias t="sdcv -u 'Moby Thesaurus II'"
-alias n='alacritty &'
+alias n='setsid --fork alacritty &'
 alias cheat='cht.sh'
 alias swaylock='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
+alias playmusic='setsid -f mpv /run/media/luis/DATA/Music/* --shuffle'
 export bgs='/usr/share/backgrounds/nordic-wallpapers/'
 
 ZSH_CACHE_DIR=$HOME/.cache/oh-my-zsh
