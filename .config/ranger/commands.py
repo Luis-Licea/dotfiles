@@ -60,3 +60,29 @@ class my_edit(Command):
         # This is a generic tab-completion function that iterates through the
         # content of the current directory.
         return self._tab_directory_content()
+
+
+# Open a new terminal in the current directory.
+class n(Command):
+    """:n
+
+    Open another terminal in the current window.
+    """
+
+    # The execute method is called when you run this command in ranger.
+    def execute(self):
+        #  Open a new terminal in the current working directory.
+        self.fm.execute_command("setsid --fork alacritty &")
+
+
+# Open a new ranger instance in the current directory, in a new terminal.
+class nr(Command):
+    """:nr
+
+    Open a new ranger instance in the current directory, in a new terminal.
+    """
+
+    # The execute method is called when you run this command in ranger.
+    def execute(self):
+        #  Open a new terminal in the current working directory.
+        self.fm.execute_command("setsid --fork alacritty -e ranger &")
