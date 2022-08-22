@@ -11,4 +11,3 @@ definition_temp_file=$(mktemp) \
     && alacritty -e w3m "$definition_temp_file" \
     && rm "$definition_temp_file"
 
-    # && alacritty -e less "$definition_temp_file" \

@@ -22,6 +22,17 @@ files=$(
 # The picked file represents the password to access.
 file=$(echo -e "$files" | rofi -dmenu -i)
 
+# This command can only be called from the terminal.
+# If editing a password:
+if [ "$1" = "edit" ]; then
+    # Launch a new terminal and edit the selected file.
+    # setsid --fork alacritty -e pass edit "$file"
+    pass edit "$file"
+
+    # Exit successfully. No need to copy selected file.
+    exit 0
+fi
+
 # Store password into clipboard. Send the standard output from `pass` to null
 # because otherwise it will be copied into the clipboard.
 wl-copy "$(pass "$file")" > /dev/null
