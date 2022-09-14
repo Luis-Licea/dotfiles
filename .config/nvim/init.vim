@@ -10,9 +10,13 @@ map <localleader> <c-w>
 " Save file.
 nnoremap <leader>w :write<cr>
 " Spawn a new terminal in the folder of the current file.
-noremap <leader>t :let $VIM_DIR=expand('%:p:h')<CR>:sil !setsid --fork alacritty --working-directory $VIM_DIR &<CR>
+noremap <leader>t :let $VIM_DIR=expand('%:p:h')<cr>:sil !setsid --fork alacritty --working-directory $VIM_DIR &<cr>
 " Spawn a new ranger terminal in the folder of the current file.
-noremap <leader>rt :let $VIM_DIR=expand('%:p:h')<CR>:sil !setsid --fork alacritty --working-directory $VIM_DIR -e ranger<CR>
+noremap <leader>rt :let $VIM_DIR=expand('%:p:h')<cr>:sil !setsid --fork alacritty --working-directory $VIM_DIR -e ranger<cc>
+" Open tag bar and close it after selecting a tag.
+noremap <leader>ta :TagbarOpenAutoClose<cr>
+" Find current file in tree.
+nnoremap <leader>tf :NERDTreeFind<cr>
 " Quit vim.
 nnoremap <leader>q :quit<cr>
 " Load .vimrc.
@@ -275,7 +279,7 @@ function! AutoRunToggle()
         let s:auto_run = 0
     endif
 endfunction
-nnoremap <leader>ct :call AutoRunToggle()<CR>
+nnoremap <leader>ct :call AutoRunToggle()<cr>
 
 " Function for toggling code formatting on save:
 let s:auto_format = 0
@@ -286,7 +290,7 @@ function! AutoFormatToggle()
         let s:auto_format = 0
     endif
 endfunction
-nnoremap <leader>cf :call AutoFormatToggle()<CR>
+nnoremap <leader>cf :call AutoFormatToggle()<cr>
 
 function! SetCompiledLanguageVariables(language, flags)
     " Remove the parent directories and extension to get file name.
@@ -352,7 +356,7 @@ function! DebugToggle()
         let $debug_flag = ''
     endif
 endfunction
-nnoremap <leader>cd :call DebugToggle()<CR>
+nnoremap <leader>cd :call DebugToggle()<cr>
 
 function! Run()
     " Save file.
@@ -368,15 +372,32 @@ function! Interpret(language)
     if a:language == 'Python'   | !python3 "%"
     elseif a:language == 'Java' | !java "%"
     elseif a:language == 'Bash' | !bash "%"
+    elseif a:language == 'JavaScript' | !node "%"
     endif
 endfunction
+
+" Run GL Shader Language in Vim.
+    aug GLSLGroup
+        " Verify on save: glslangValidator Color.frag
+        "
+        " Specifies the type of shader to be created. Must be one of
+        " GL_COMPUTE_SHADER, GL_VERTEX_SHADER, GL_TESS_CONTROL_SHADER,
+        " GL_TESS_EVALUATION_SHADER, GL_GEOMETRY_SHADER, or
+        " GL_FRAGMENT_SHADER.
+        "
+        " au! BufNewFile,BufRead *.vert,*.tesc,*.tese,*.glsl,*.geom,*.frag,*.comp,
+                    " \*.rgen,*.rmiss,*.rchit,*.rahit,*.rint,*.rcall set filetype=glsl
+
+        au!
+        " Validate GLSL code.
+        au BufWritePost *.vert,*.tesc,*.tese,*.glsl,*.geom,*.frag,*.comp
+                    \ if s:auto_run == 1 | exe "!glslangValidator '%'" | endif
+    aug end
 
 " Run C code in Vim.
     aug CGroup
         " Clear previous group auto commands to avoid duplicate definitions.
         au!
-        au FileType c map <buffer> <F5> :call Run()<cr>
-        au FileType c imap <buffer> <F5> <esc>:call Run()<cr>
         au FileType c call SetCompiledLanguageVariables('C', '')
         au BufWritePost *.c if s:auto_run == 1 | call Run() | endif
     aug end
@@ -384,8 +405,6 @@ endfunction
 " Run C++ code in Vim.
     aug CppGroup
         au!
-        au FileType cpp map <buffer> <F5> :call Run()<cr>
-        au FileType cpp imap <buffer> <F5> <esc>:call Run()<cr>
         au FileType cpp set shiftwidth=2 | set softtabstop=2  | set tabstop=2
         au BufWritePost *.cpp if s:auto_run == 1 | call Run() | endif
         au FileType cpp call SetCompiledLanguageVariables('C++', '-std=c++17')
@@ -394,41 +413,37 @@ endfunction
 " Run Python code in Vim (edit and insert modes).
     aug PyGroup
         au!
-        au FileType python map <buffer> <F5> :call Interpret('Python')<cr>
-        au FileType python imap <buffer> <F5> <esc>:call Interpret('Python')<cr>
         au BufWritePost *.py if s:auto_run == 1 | call Interpret('Python') | endif
     aug end
 
 " Run Java code in Vim.
     aug JavaGroup
         au!
-        au FileType java map <buffer> <F5> :call Interpret('Java')<cr>
-        au FileType java imap <buffer> <F5> <esc>:call Interpret('Java')<cr>
         au BufWritePost *.java if s:auto_run == 1 | call Interpret('Java') | endif
     aug end
 
 " Run Rust code in Vim.
     aug RsGroup
         au!
-        au FileType rust map <buffer> <F5> :call Run()<cr>
-        au FileType rust imap <buffer> <F5> <esc>:call Run()<cr>
         au FileType rust call SetCompiledLanguageVariables('Rust', '')
         au BufWritePost *.rs if s:auto_run == 1 | call Run() | endif
     aug end
 
-" Run bash code in Vim.
+" Run Bash code in Vim.
     aug ShGroup
         au!
-        au FileType sh map <buffer> <F5> :call Interpret('Bash')<cr>
-        au FileType sh imap <buffer> <F5> <esc>:call Interpret('Bash')<cr>
         au BufWritePost *.sh if s:auto_run == 1 | call Interpret('Bash') | endif
+    aug end
+
+" Run JavaScript code in Vim.
+    aug JSGroup
+        au!
+        au BufWritePost *.js,*.mjs if s:auto_run == 1 | call Interpret('JavaScript') | endif
     aug end
 
 " Run Rust code in Vim.
     aug ValaGroup
         au!
-        au FileType vala map <buffer> <F5> :call Run()<cr>
-        au FileType vala imap <buffer> <F5> <esc>:call Run()<cr>
         au FileType vala call SetCompiledLanguageVariables('Vala', '')
         au BufWritePost *.vala if s:auto_run == 1 | call Run() | endif
     aug end
@@ -591,6 +606,8 @@ call plug#begin()
     Plug 'scrooloose/nerdtree'
     " Provide syntax-highlight for nerd tree icons.
     Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+    " Add OpenGL Shader Language support.
+    Plug 'tikhomirov/vim-glsl'
     " Use dark color scheme inspired on Visual Studio Code.
     Plug 'tomasiser/vim-code-dark'
     " Surround words in parenthesis, quotations, etc., more easily.
@@ -599,6 +616,8 @@ call plug#begin()
     " NOTE: Use a patched font such as nerd-fonts-source-code-pro.
     " NOTE: Icons will not display unless airline loads before dev icons.
     Plug 'vim-airline/vim-airline' | Plug 'ryanoasis/vim-devicons'
+    " Add Doxygen support.
+    Plug 'vim-scripts/DoxygenToolkit.vim'
     " A powerful autopair plugin for Neovim that supports multiple characters.
     Plug 'windwp/nvim-autopairs'
     " Tagbar: a class outline viewer for Vim.
@@ -609,6 +628,11 @@ call plug#end()
 lua << EOF
 require("nvim-autopairs").setup {}
 EOF
+
+"-------------------------------------------------------------------------------
+" Switch between files and headers: c -> h and cpp -> hpp.
+"-------------------------------------------------------------------------------
+command! A LspDocumentSwitchSourceHeader
 
 "-------------------------------------------------------------------------------
 " Md-vim settings.
@@ -703,7 +727,8 @@ nnoremap <leader>nf :NERDTreeFind<cr>
 nnoremap <leader>nr :NERDTreeRefreshRoot<cr>
 " Show hidden files by default.
 let NERDTreeShowHidden=1
-
+" Close Nerd tree after opening a file.
+let g:NERDTreeQuitOnOpen = 1
 "-------------------------------------------------------------------------------
 " Vim-Devicons settings.
 "-------------------------------------------------------------------------------
@@ -782,7 +807,7 @@ function! s:on_lsp_buffer_enabled() abort
 
     let g:lsp_format_sync_timeout = 1000
     " Start formatting server when the file is opened.
-    au! BufWritePre *.py,*.cpp,*.rs,*.c if s:auto_format == 1 | call execute('LspDocumentFormatSync') | endif
+    au! BufWritePre *.py,*.cpp,*.hpp,*.rs,*.c,*.h if s:auto_format == 1 | call execute('LspDocumentFormatSync') | endif
 
     " refer to doc to add more commands
 endfunction
