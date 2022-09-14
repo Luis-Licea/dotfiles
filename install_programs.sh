@@ -7,7 +7,17 @@
 pacman_programs=(
 
     # Development tools.
+    kwin-bismuth-bin    # KDE tiling window manager.
+    include-what-you-use # A tool for use with clang to analyze #includes in C and C++ source files
+    tesseract-data-eng  # Tesseract OCR data eng.
+    cppcheck            # A tool for static C/C++ code analysis
+    gocr                # OCR (Optical Character Recognition) program, which converts scanned images of text back to text files
+    gtk4                # GObject-based multi-platform GUI toolkit
+    gtk4-demos          # GObject-based multi-platform GUI toolkit (demo applications)
+    gtk4-docs           # GObject-based multi-platform GUI toolkit (documentation)
+    rustup              # The Rust toolchain installer.
     pax                 # Portable Archive Interchange - the POSIX standard archive tool for cpio and tar formats
+    atool               # A script for managing file archives of various types.
     gnupg               # Complete and free implementation of the OpenPGP standard
     kgpg                # A GnuPG frontend
     gtest               # Google Test - C++ testing utility.
@@ -20,10 +30,12 @@ pacman_programs=(
     shellcheck          # Shell script analysis tool.
     sourcetrail         # A cross-platform source explorer for C/C++ and Java.
     tldr                # Simplified man pages.
-    vscodium            # Free/Libre Open Source Software Binaries of VSCode.
+    vscodium-bin        # Free/Libre Open Source Software Binaries of VSCode.
     hub                 # CLI interface for Github.
     python-pip          # Intall pip3. NOTE: install virtualenv with `pip3 install virtualenv`.
     pandoc-bin          # Pandoc executable only, without 750MB Haskell depends/makedepends.
+    tcc                 # Tiny C Compiler.
+    opengl-man-pages    # OpenGL Man Pages - OpenGL 4.x.
 
     # Music player.
     mpd                 # Flexible, powerful, server for playing music.
@@ -36,12 +48,14 @@ pacman_programs=(
     mpv-mpris           # MPRIS plugin for mpv.
 
     # Miscellaneous.
+    languagetool        # An open source language checker.
     termdown            # Countdown timer and stopwatch in your terminal.
     calibre             # Ebook management application
     termshark           # Terminal UI for tshark, inspired by Wireshark.
     newsboat            # An RSS/Atom feed reader for text terminals
     kdeconnect          # Adds communication between KDE and your smartphone.
 
+    kitty               # A modern, hackable, featureful, OpenGL-based terminal emulator.
     sshfs               # For kdeconnect. FUSE client based on the SSH File Transfer Protocol.
     sddm                # QML based X11 and Wayland display manager.
     zathura             # Minimalistic document viewer.
@@ -79,6 +93,7 @@ pacman_programs=(
 
     # System
     p7zip               # Command line archiver with high compression ratio.
+    simple-scan         # Simple scanning utility.
 
     # Vim setup.
     xclip               # Allows nvim to access Xorg system clipboard.
@@ -113,9 +128,12 @@ aur_programs=(
 
     # Dictionaries and spell checkers.
     sdcv                # StarDict Console Version.
+    sdtui-git           # StarDict TUI and GUI
     stardict-wordnet    # WordNet dictionary for StarDict.
     stardict-dictd-moby-thesaurus       # Moby Thesaurus II (English) for StarDict
     stardict-wikt-en-all                # English Wiktionary All Languages for StarDict
+    stardict-dictd_www.dict.org_gcide   # Collab. Internat. Dict. of English for stardict et al.
+
     write-good          # Naive linter for English prose.
     aspell              # A spell checker designed to eventually replace Ispell
     aspell-en           # English dictionary for aspell
@@ -136,7 +154,7 @@ aur_programs=(
     shortwave           # Online radio.
     gnome-todo          # Keeps track of todo notes.
     khronos             # Simple activity time tracker.
-    goldendict-git      # Feature rich dictionary.
+    goldendict-webengine-git # A feature-rich dictionary supporting multiple dictionary formats.
     ttf-ms-fonts        # Supports Times New Roman fonts.
     htop-vim            # Interactive process viewer with a Vim keybindings.
     dolvim              # Dolphin but Vim. NOTE: Enable Git, Show Hidden files in Context Menu.
