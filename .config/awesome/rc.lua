@@ -48,8 +48,8 @@ end
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xterm"
-editor = os.getenv("EDITOR") or "nano"
+terminal = "alacritty"
+editor = os.getenv("EDITOR") or "nvim"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -61,19 +61,19 @@ modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
-    awful.layout.suit.floating,
+    -- awful.layout.suit.floating,
     awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
-    awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
-    awful.layout.suit.spiral,
-    awful.layout.suit.spiral.dwindle,
-    awful.layout.suit.max,
-    awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier,
-    awful.layout.suit.corner.nw,
+    -- awful.layout.suit.tile.left,
+    -- awful.layout.suit.tile.bottom,
+    -- awful.layout.suit.tile.top,
+    -- awful.layout.suit.fair,
+    -- awful.layout.suit.fair.horizontal,
+    -- awful.layout.suit.spiral,
+    -- awful.layout.suit.spiral.dwindle,
+    -- awful.layout.suit.max,
+    -- awful.layout.suit.max.fullscreen,
+    -- awful.layout.suit.magnifier,
+    -- awful.layout.suit.corner.nw,
     -- awful.layout.suit.corner.ne,
     -- awful.layout.suit.corner.sw,
     -- awful.layout.suit.corner.se,
@@ -107,7 +107,7 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock()
+mytextclock = wibox.widget.textclock(" %a, %b %e | %m-%d-%Y | %l:%M %p ")
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -274,7 +274,7 @@ globalkeys = gears.table.join(
         {description = "go back", group = "client"}),
 
     -- Standard program
-    awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
+    awful.key({ modkey, "Shift"   }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey, "Control" }, "r", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
@@ -326,16 +326,32 @@ globalkeys = gears.table.join(
               {description = "lua execute prompt", group = "awesome"}),
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"})
+              {description = "show the menubar", group = "launcher"}),
+    -- Custom Show/hide statusbar
+    awful.key({ modkey }, "b",
+        function ()
+            myscreen = awful.screen.focused()
+            myscreen.mywibox.visible = not myscreen.mywibox.visible
+        end,
+    {description = "toggle statusbar", group = "awesome"})
 )
 
 clientkeys = gears.table.join(
-    awful.key({ modkey,           }, "f",
+    -- awful.key({ modkey,           }, "f",
+        -- function (c)
+            -- c.fullscreen = not c.fullscreen
+            -- c:raise()
+        -- end,
+        -- {description = "toggle fullscreen", group = "client"}),
+    awful.key({ modkey, "Shift"    }, "f",
         function (c)
-            c.fullscreen = not c.fullscreen
-            c:raise()
+            if awful.layout.getname() == "fullscreen" then
+                awful.layout.set(awful.layout.suit.tile)
+            else
+                awful.layout.set(awful.layout.suit.max.fullscreen)
+            end
         end,
-        {description = "toggle fullscreen", group = "client"}),
+        {description = "toggle fullscreen", group = "layout"}),
     awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end,
               {description = "close", group = "client"}),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ,
@@ -344,33 +360,66 @@ clientkeys = gears.table.join(
               {description = "move to master", group = "client"}),
     awful.key({ modkey,           }, "o",      function (c) c:move_to_screen()               end,
               {description = "move to screen", group = "client"}),
-    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
-              {description = "toggle keep on top", group = "client"}),
-    awful.key({ modkey,           }, "n",
+    -- Custom
+    awful.key({ modkey,           }, "f",
         function (c)
-            -- The client currently has the input focus, so it cannot be
-            -- minimized, since minimized clients can't have the focus.
-            c.minimized = true
-        end ,
-        {description = "minimize", group = "client"}),
+            if awful.layout.getname() == "floating" then
+                awful.layout.set(awful.layout.suit.tile)
+            else
+                awful.layout.set(awful.layout.suit.floating)
+            end
+        end,
+        {description = "toggle floating", group = "layout"}),
+    awful.key({ modkey, "Control" }, "t", function (c) awful.titlebar.toggle(c) end,
+        {description = "toggle title bar", group = 'client'}),
+    awful.key({ modkey, "Shift"}, "t",      function (c) c.ontop = not c.ontop            end,
+              {description = "toggle keep on top", group = "client"}),
+    -- awful.key({ modkey,           }, "n",
+        -- function (c)
+            -- -- The client currently has the input focus, so it cannot be
+            -- -- minimized, since minimized clients can't have the focus.
+            -- c.minimized = true
+        -- end ,
+        -- {description = "minimize", group = "client"}),
+    -- awful.key({ modkey,           }, "m",
+        -- function (c)
+            -- c.maximized = not c.maximized
+            -- c:raise()
+        -- end ,
+        -- {description = "(un)maximize", group = "client"}),
     awful.key({ modkey,           }, "m",
         function (c)
-            c.maximized = not c.maximized
-            c:raise()
+            if awful.layout.getname() == "max" then
+                awful.layout.set(awful.layout.suit.tile)
+            else
+                awful.layout.set(awful.layout.suit.max)
+            end
+        end,
+        {description = "toggle maximize", group = "layout"}),
+    -- awful.key({ modkey, "Control" }, "m",
+        -- function (c)
+            -- c.maximized_vertical = not c.maximized_vertical
+            -- c:raise()
+        -- end ,
+        -- {description = "(un)maximize vertically", group = "client"}),
+    -- awful.key({ modkey, "Shift"   }, "m",
+        -- function (c)
+            -- c.maximized_horizontal = not c.maximized_horizontal
+            -- c:raise()
+        -- end ,
+        -- {description = "(un)maximize horizontally", group = "client"}),
+
+    -- Custom multimedia keys:
+    awful.key({ }, "XF86AudioRaiseVolume",
+        function ()
+            awful.util.spawn("amixer -D pulse sset Master 5%+")
         end ,
-        {description = "(un)maximize", group = "client"}),
-    awful.key({ modkey, "Control" }, "m",
-        function (c)
-            c.maximized_vertical = not c.maximized_vertical
-            c:raise()
+        {description = "Raise volume", group = "system"}),
+    awful.key({ }, "XF86AudioLowerVolume",
+        function ()
+            awful.util.spawn("amixer -D pulse sset Master 5%-")
         end ,
-        {description = "(un)maximize vertically", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "m",
-        function (c)
-            c.maximized_horizontal = not c.maximized_horizontal
-            c:raise()
-        end ,
-        {description = "(un)maximize horizontally", group = "client"})
+        {description = "Lower volume", group = "system"})
 )
 
 -- Bind all key numbers to tags.
@@ -490,7 +539,7 @@ awful.rules.rules = {
 
     -- Add titlebars to normal clients and dialogs
     { rule_any = {type = { "normal", "dialog" }
-      }, properties = { titlebars_enabled = true }
+      }, properties = { titlebars_enabled = false }
     },
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
@@ -562,3 +611,14 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
+
+-- Custom gap:
+-- beautiful.useless_gap = 5
+-- Custom auto-start programs:
+awful.spawn.with_shell("nitrogen --restore")
+awful.spawn.with_shell("compton")
+
+-- {{{ Disable status bar at startup.
+myscreen = awful.screen.focused()
+myscreen.mywibox.visible = not myscreen.mywibox.visible
+-- }}}}
