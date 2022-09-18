@@ -7,6 +7,8 @@
 pacman_programs=(
 
     # Development tools.
+    awesome             # Highly configurable framework window manager
+    zsh-syntax-highlighting # Fish shell like syntax highlighting for Zsh
     kwin-bismuth-bin    # KDE tiling window manager.
     include-what-you-use # A tool for use with clang to analyze #includes in C and C++ source files
     tesseract-data-eng  # Tesseract OCR data eng.

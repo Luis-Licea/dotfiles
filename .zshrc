@@ -9,7 +9,7 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-ZSH=/usr/share/oh-my-zsh/
+ZSH=/usr/share/oh-my-zsh
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -21,7 +21,7 @@ POWERLEVEL10k_DIR=zsh-theme-powerlevel10k
 if [[ "$TERM" == "linux" ]]; then
     # If using the tty, load a simple theme.
     ZSH_THEME="half-life"
-elif [[ -d "$ZSH../$POWERLEVEL10k_DIR" ]] && [[ "$TERM" != "linux" ]]; then
+elif [[ -d "$ZSH/../$POWERLEVEL10k_DIR" ]] && [[ "$TERM" != "linux" ]]; then
     # Must be a path relative to themes folder in $ZSH folder.
     ZSH_THEME=../../$POWERLEVEL10k_DIR/powerlevel10k
 else
@@ -89,15 +89,22 @@ zstyle ':omz:update' frequency 13
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vi-mode copypath copyfile)
-
+plugins=(git vi-mode pass) # colored-man-pages
 
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+# Use ctrl+hjkl to navigate tab completion options in terminal.
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+bindkey -M menuselect '^h' vi-backward-char
+bindkey -M menuselect '^k' vi-up-line-or-history
+bindkey -M menuselect '^l' vi-forward-char
+bindkey -M menuselect '^j' vi-down-line-or-history
 
 # Disable loading Ranger's global configuration files.
 export RANGER_LOAD_DEFAULT_RC=FALSE
@@ -127,10 +134,12 @@ export VISUAL="$EDITOR"
 #
 # Example aliases
 alias zshconfig="$EDITOR ~/.zshrc"
+alias awesomeconfig="$EDITOR ~/.config/awesome/rc.lua"
 alias nvimconfig="$EDITOR ~/.config/nvim/init.vim"
 alias nvimswap="cd ~/.local/share/nvim/swap/"
 alias alacrittyconfig="$EDITOR ~/.config/alacritty/alacritty.yml"
 alias rangerconfig="$EDITOR ~/.config/ranger/"
+alias rangercache="cd ~/.cache/ranger/"
 alias vscodiumconfig="$EDITOR ~/.config/VSCodium/User/"
 alias picomconfig="$EDITOR ~/.config/picom/picom.conf"
 alias mostconfig="$EDITOR ~/.config/mostrc"
@@ -151,10 +160,11 @@ alias passconfig="cd ~/.local/share/pass"
 alias passbackup="cp -iur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8/primary/pass/"
 alias passdiff="kdeconnect-cli --refresh && diff -q ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/"
 
-alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
-alias rsscratch="cargo new /tmp/rsscratch & cd /tmp/rsscratch && nvim . && cd -"
-alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"
 alias bashscratch="cd /tmp && nvim scratchpad.sh && cd -"
+alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
+alias jsscratch="cd /tmp && nvim scratchpad.js && cd -"
+alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"
+alias rsscratch="cargo new /tmp/rsscratch & cd /tmp/rsscratch && nvim . && cd -"
 alias txtscratch="cd /tmp && nvim scratchpad.txt && cd -"
 
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME"
@@ -186,3 +196,6 @@ source $ZSH/oh-my-zsh.sh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Add syntax highlighting.
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
