@@ -167,7 +167,7 @@ aur_programs=(
     zsh-theme-powerlevel10k # Theme for Zsh.
 
     # Neovim setup.
-    ack                 # Perl-based grep for large heterogeneous code bases.
+    silver-searcher-git # The Silver Searcher: Better than ack and grep.
     neovim              # Provides improvements over Vim.
     uctags-git          # Universal ctags (patched to allow installing alongside original ctags).
     nerd-fonts-source-code-pro # Needed by NERDTree. Can use Meslo NF instead.

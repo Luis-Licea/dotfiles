@@ -572,7 +572,8 @@ function! InstallVimPlug()
     !curl -fLo $install_path --create-dirs  $vim_plug_repo
 endfunction
 
-" Install plugins by running :PlugInstall.
+" Install plugins by running :PlugInstall. Default path is
+" ~/.local/share/nvim/plugged.
 call plug#begin()
     " Use dark color scheme for Vim.
     Plug 'dracula/vim'
@@ -584,13 +585,15 @@ call plug#begin()
     Plug 'junegunn/fzf.vim'
     " Easily align tables, or text by symbols like , ; = & etc.
     Plug 'junegunn/vim-easy-align'
+    " Fuzzy finder for files, buffers, mru files, and tags.
+    Plug 'kien/ctrlp.vim'
     " Show indentation lines.
     Plug 'lukas-reineke/indent-blankline.nvim'
     " Install and update language servers using LspInstallServer.
     Plug 'mattn/vim-lsp-settings'
     " Nice start screen. NOTE: Put before vim-devicons, or icons won't load.
     Plug 'mhinz/vim-startify'
-    " Search tool. NOTE: Install the ack grep utility first.
+    " Search tool. NOTE: Install the ag (silver-searcher grep) utility first.
     Plug 'mileszs/ack.vim'
     " Provide asynchronous autocomplete using language servers.
     Plug 'prabirshrestha/asyncomplete-lsp.vim'
@@ -630,6 +633,57 @@ require("nvim-autopairs").setup {}
 EOF
 
 "-------------------------------------------------------------------------------
+" CtrlP settings.
+"-------------------------------------------------------------------------------
+" Run :CtrlP or :CtrlP [starting-directory] to invoke CtrlP in find file mode.
+" Run :CtrlPBuffer or :CtrlPMRU to invoke CtrlP in find buffer or find MRU file mode.
+" Run :CtrlPMixed to search in Files, Buffers and MRU files at the same time.
+"
+" Check :help ctrlp-commands and :help ctrlp-extensions for other commands.
+" Once CtrlP is open:
+"
+" Press <F5> to purge the cache for the current directory to get new files, remove deleted files and apply new ignore options.
+" Press <c-f> and <c-b> to cycle between modes.
+" Press <c-d> to switch to filename only search instead of full path.
+" Press <c-r> to switch to regexp mode.
+" Use <c-j>, <c-k> or the arrow keys to navigate the result list.
+" Use <c-t> or <c-v>, <c-x> to open the selected entry in a new tab or in a new split.
+" Use <c-n>, <c-p> to select the next/previous string in the prompt's history.
+" Use <c-y> to create a new file and its parent directories.
+" Use <c-z> to mark/unmark multiple files and <c-o> to open them.
+"
+ "Run :help ctrlp-mappings or submit ? in CtrlP for more mapping help.
+"
+" Submit two or more dots .. to go up the directory tree by one or multiple levels.
+" End the input string with a colon : followed by a command to execute it on the opening file(s):
+" Use :25 to jump to line 25.
+" Use :diffthis when opening multiple files to run :diffthis on the first 4 files
+
+" Set silver-searcher for faster searches if available.
+if executable("ag")
+    set grepprg=ag\ --nogroup\ --nocolor
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
+
+" Show hidden files.
+" let g:ctrlp_show_hidden = 1
+
+" Ignore these files from searchers.
+" set wildignore+=*.so,*/,*/.sass-cache/*,*/node_modules/*,*/.git/*
+
+" let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+" let g:ctrlp_custom_ignore = {
+  " \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  " \ 'file': '\v\.(exe|so|dll)$|\v(node_modules)*',
+  " \ }
+
+" set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.yardoc/*,*.exe,*.so,*.dat
+" let g:ctrlp_custom_ignore = {
+    " \'dir': '\v[\/](node_modules|target|dist)|(\.(swp|ico|git|svn))$',
+    " \'file': '\v\.(dll|min.js|min.css|jpg|png|mp4)$'
+" \}
+
+"-------------------------------------------------------------------------------
 " Switch between files and headers: c -> h and cpp -> hpp.
 "-------------------------------------------------------------------------------
 command! A LspDocumentSwitchSourceHeader
@@ -667,6 +721,7 @@ let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_frontmatter = 1  " for YAML format
 let g:vim_markdown_toml_frontmatter = 1  " for TOML format
 let g:vim_markdown_json_frontmatter = 1  " for JSON format
+
 "-------------------------------------------------------------------------------
 " Startify settings.
 "-------------------------------------------------------------------------------
@@ -682,9 +737,13 @@ let g:startify_lists = [
     \ { 'header': ['   MRU'],            'type': 'files' },
     \ { 'header': ['   MRU '. getcwd()], 'type': 'dir' },
     \ ]
+
 "-------------------------------------------------------------------------------
 "  Ack settings.
 "-------------------------------------------------------------------------------
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
 " Open ack finder. The ! means not to jump to the first occurrence.
 nnoremap <leader>a :tab split<cr>:Ack! ""<Left>
 " Search word under cursor. The ! means not to jump to the first occurrence.
@@ -729,6 +788,7 @@ nnoremap <leader>nr :NERDTreeRefreshRoot<cr>
 let NERDTreeShowHidden=1
 " Close Nerd tree after opening a file.
 let g:NERDTreeQuitOnOpen = 1
+
 "-------------------------------------------------------------------------------
 " Vim-Devicons settings.
 "-------------------------------------------------------------------------------
