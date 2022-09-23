@@ -272,185 +272,191 @@ au! BufWritePost .Xresources exec '!xrdb && xrdb -merge ~/.Xresources'
 "-------------------------------------------------------------------------------
 " Function for toggling auto compilation on save:
 let s:auto_run = 0
-function! AutoRunToggle()
+function! ToggleAutoRun()
     if s:auto_run  == 0
         let s:auto_run = 1
     else
         let s:auto_run = 0
     endif
 endfunction
-nnoremap <leader>ct :call AutoRunToggle()<cr>
+nnoremap <leader>ct :call ToggleAutoRun()<cr>
 
 " Function for toggling code formatting on save:
 let s:auto_format = 0
-function! AutoFormatToggle()
+function! ToggleAutoFormat()
     if s:auto_format  == 0
         let s:auto_format = 1
     else
         let s:auto_format = 0
     endif
 endfunction
-nnoremap <leader>cf :call AutoFormatToggle()<cr>
+nnoremap <leader>cf :call ToggleAutoFormat()<cr>
 
-function! SetCompiledLanguageVariables(language, flags)
-    " Remove the parent directories and extension to get file name.
-    let $file=expand('%:t:r')
-
-    " Define the path where the compiled executable will be placed, and where
-    " it should be executed.
-    let $executable_path="/tmp/" . $file
-
-    " Set the correct compiler for C, C++, Rust, etc.
-    " let $compiler="tcc"
-    if a:language == 'C'        | let $compiler='gcc'
-    elseif a:language == 'C++'  | let $compiler='g++'
-    elseif a:language == 'Rust' | let $compiler='rustc'
-    elseif a:language == 'Vala' | let $compiler='valac'
-    endif
-
-    " Set different default compilation flags for C, C++, Rust, etc.
-    if a:language == 'C' || a:language == 'C++'
-
-        " Sample CMake flags.
-        " set(CMAKE_CXX_FLAGS_DEBUG_INIT "-fsanitize=address,undefined -fsanitize-undefined-trap-on-error")
-        " set(CMAKE_EXE_LINKER_FLAGS_INIT "-fsanitize=address,undefined -static-libasan")
-        " set(CMAKE_CXX_FLAGS_INIT "-Werror -Wall -Wextra -Wpedantic")
-        " # toolchain file for use with gcov
-        " set(CMAKE_CXX_FLAGS_INIT "--coverage -fno-exceptions -g")
-
-        " C++ and C compilation flags:
-        " Wall: Warn questionable or easy to avoid constructions.
-        " Wextra: Some extra warnings not enabled by -Wall.
-        " Wfloat-conversion: Warns when doubles implicitly converted to floats.
-        " Wsign-conversion: Warn implicit conversion that change integer sign.
-        " Wshadow: Find errors particularly regarding unique_lock<mutex>(my_mutex);
-        " fsanitize=address: Warns use after free.
-        " fsanitize=leak: Warns when pointers have not been freed.
-        " fsanitize=undefined: Detects undefined behavior.
-        " fsanitize-address-use-after-scope: Catches references to temporary
-        "   values. The value may be gone before the reference is accessed.
-        " Wpedantic: Demand strict ISO C and ISO C++; no forbidden extensions.
-        " Wconversion: Warn implicit conversions that may alter a value.
-        let $flags=a:flags . ' -Wall -Wextra -Wfloat-conversion -Wshadow
-                    \ -Wsign-conversion -Wconversion
-                    \ -fsanitize=address,leak,undefined
-                    \ -fsanitize-address-use-after-scope'
-    elseif a:language == 'Rust'
-        let $flags=a:flags
+" Whether to include debugging information.
+let s:is_debug = 0
+function! ToggleDebug()
+    if s:is_debug  == 0
+        let s:is_debug = 1
+    else
+        let s:is_debug = 0
     endif
 endfunction
+nnoremap <leader>cd :call ToggleDebug()<cr>
 
 " Benchmark the execution time of compiled binary.
 function! Time_cpp_c_rs()
-    !/usr/bin/time -p bash -c "for ((i=1;i<=1000;i++)); do \"$executable_path\" > /dev/null; done"
+    " Remove the parent directories and extension to get file name.
+    let l:file=expand('%:t:r')
+
+    " Define the path where the compiled executable will be placed, and where
+    " it should be executed.
+    let l:executable_path='/tmp/' . l:file
+
+    " Run the file.
+    exe printf('!/usr/bin/time -p bash -c "for ((i=1;i<=1000;i++)); do \"%s\" > /dev/null; done"', l:executable_path)
 endfunction
 " Call the function by simply typing :Time.
 command Time call Time_cpp_c_rs()
 
-" -g: Include debugging information.
-let $debug_flag = ''
-function! DebugToggle()
-    if $debug_flag == ''
-        let $debug_flag = '-g'
-    else
-        let $debug_flag = ''
+" Another compiler for c is tcc.
+let s:ft2compiler = {
+            \'c'            : 'gcc',
+            \'cpp'          : 'g++',
+            \'rust'         : 'rustc',
+            \'vala'         : 'valac',
+            \}
+
+" Validate GLSL code: vert, tesc, tese, glsl, geom, frag, comp.
+let s:ft2interpreter = {
+            \'python'       : 'python3',
+            \'java'         : "java",
+            \'sh'           : "bash",
+            \'javascript'   : "node",
+            \'glsl'         : "glslangValidator",
+            \}
+
+" Sample CMake flags.
+" set(CMAKE_CXX_FLAGS_DEBUG_INIT "-fsanitize=address,undefined -fsanitize-undefined-trap-on-error")
+" set(CMAKE_EXE_LINKER_FLAGS_INIT "-fsanitize=address,undefined -static-libasan")
+" set(CMAKE_CXX_FLAGS_INIT "-Werror -Wall -Wextra -Wpedantic")
+" # toolchain file for use with gcov
+" set(CMAKE_CXX_FLAGS_INIT "--coverage -fno-exceptions -g")
+
+" C++ and C compilation flags:
+" Wall: Warn questionable or easy to avoid constructions.
+" Wextra: Some extra warnings not enabled by -Wall.
+" Wfloat-conversion: Warns when doubles implicitly converted to floats.
+" Wsign-conversion: Warn implicit conversion that change integer sign.
+" Wshadow: Find errors particularly regarding unique_lock<mutex>(my_mutex);
+" Wpedantic: Demand strict ISO C and ISO C++; no forbidden extensions.
+" Wconversion: Warn implicit conversions that may alter a value.
+let s:cflags=' -Wall -Wextra -Wfloat-conversion -Wshadow
+            \ -Wsign-conversion -Wconversion '
+
+" g: Produce debugging info for GDB.
+" fsanitize=address: Warns use after free.
+" fsanitize=leak: Warns when pointers have not been freed.
+" fsanitize=undefined: Detects undefined behavior.
+" fsanitize-address-use-after-scope: Catches references to temporary
+"   values. The value may be gone before the reference is accessed.
+let s:debug_flags=' -g -fsanitize=address,leak,undefined
+            \ -fsanitize-address-use-after-scope '
+
+let s:ft2flags = {
+            \'c'          : s:cflags,
+            \'cpp'        : s:cflags . '-std=c++17',
+            \}
+
+let s:ft2debugflags = {
+            \'c'          : s:debug_flags,
+            \'cpp'        : s:debug_flags,
+            \'rust'       :'-g'
+            \}
+
+function! SetupLanguageBindings(ft2compiler, ft2interpreter)
+    " If the file type is supported:
+    if has_key(a:ft2compiler, &ft) || has_key(a:ft2interpreter, &ft)
+        " Set key bindings to run the program.
+        map <buffer> <F5> :call Run()<cr>
+        imap <buffer> <F5> <esc>:call Run()<cr>
+        return
     endif
 endfunction
-nnoremap <leader>cd :call DebugToggle()<cr>
+
+call SetupLanguageBindings(s:ft2compiler, s:ft2compiler)
 
 function! Run()
-    " Save file.
-    w!
     " Compile and execute program in tmp folder.
-    !eval $compiler $debug_flag $flags "%" -o "$executable_path" && "$executable_path"
-endfunction
 
-function! Interpret(language)
-    " Save file.
-    w!
-    " Use the correct interpreter for each language.
-    if a:language == 'Python'   | !python3 "%"
-    elseif a:language == 'Java' | !java "%"
-    elseif a:language == 'Bash' | !bash "%"
-    elseif a:language == 'JavaScript' | !node "%"
+    " If the interpreted language is supported:
+    if has_key(s:ft2interpreter, &filetype)
+        " Get the interpreter.
+        let l:interpreter=s:ft2interpreter[&filetype]
+
+        " Get the file path.
+        let l:path=expand('%')
+
+        " Run the file.
+        exe printf("!%s %s", l:interpreter, l:path)
+    endif
+
+    " If the compiled language is supported:
+    if has_key(s:ft2compiler, &filetype)
+        " Compile the file based on its type.
+        " Set the correct compiler for C, C++, Rust, etc.
+        let l:compiler=s:ft2compiler[&filetype]
+
+        " Get the absolute file to the file.
+        let l:path=expand('%')
+
+        " Remove the parent directories and extension to get file name.
+        let l:file=expand('%:t:r')
+
+        " Define the path where the compiled executable will be placed, and
+        " where it should be executed.
+        let l:executable_path="/tmp/" . l:file
+
+        " By default do not pass additional compilation flags.
+        let l:flags = ''
+
+        " If the language has additional compilation flags:
+        if has_key(s:ft2flags, &filetype)
+            " Pass the additional compilation flags.
+            let l:flags = s:ft2flags[&filetype]
+        endif
+
+        " If the language has debug flags, and debugging is enabled:
+        if has_key(s:ft2debugflags, &filetype) && s:is_debug
+            " Pass the additional compilation flags.
+            let l:flags = s:ft2debugflags[&filetype] . ' ' . l:flags
+        endif
+
+        " Compile and run the file.
+        exe printf('!%s %s %s -o "%s" && "%s"', l:compiler, l:flags, l:path,
+                    \l:executable_path, l:executable_path)
     endif
 endfunction
 
-" Run GL Shader Language in Vim.
-    aug GLSLGroup
-        " Verify on save: glslangValidator Color.frag
-        "
-        " Specifies the type of shader to be created. Must be one of
-        " GL_COMPUTE_SHADER, GL_VERTEX_SHADER, GL_TESS_CONTROL_SHADER,
-        " GL_TESS_EVALUATION_SHADER, GL_GEOMETRY_SHADER, or
-        " GL_FRAGMENT_SHADER.
-        "
-        " au! BufNewFile,BufRead *.vert,*.tesc,*.tese,*.glsl,*.geom,*.frag,*.comp,
-                    " \*.rgen,*.rmiss,*.rchit,*.rahit,*.rint,*.rcall set filetype=glsl
-
+" For all programs.
+    aug Program
         au!
-        " Validate GLSL code.
-        au BufWritePost *.vert,*.tesc,*.tese,*.glsl,*.geom,*.frag,*.comp
-                    \ if s:auto_run == 1 | exe "!glslangValidator '%'" | endif
+        au BufWritePost * if s:auto_run == 1 | call Run() | endif
     aug end
 
-" Run C code in Vim.
-    aug CGroup
-        " Clear previous group auto commands to avoid duplicate definitions.
-        au!
-        au FileType c call SetCompiledLanguageVariables('C', '')
-        au BufWritePost *.c if s:auto_run == 1 | call Run() | endif
-    aug end
-
-" Run C++ code in Vim.
+" C++ code settings.
     aug CppGroup
         au!
         au FileType cpp set shiftwidth=2 | set softtabstop=2  | set tabstop=2
-        au BufWritePost *.cpp if s:auto_run == 1 | call Run() | endif
-        au FileType cpp call SetCompiledLanguageVariables('C++', '-std=c++17')
     aug end
 
-" Run Python code in Vim (edit and insert modes).
-    aug PyGroup
-        au!
-        au BufWritePost *.py if s:auto_run == 1 | call Interpret('Python') | endif
-    aug end
-
-" Run Java code in Vim.
-    aug JavaGroup
-        au!
-        au BufWritePost *.java if s:auto_run == 1 | call Interpret('Java') | endif
-    aug end
-
-" Run Rust code in Vim.
-    aug RsGroup
-        au!
-        au FileType rust call SetCompiledLanguageVariables('Rust', '')
-        au BufWritePost *.rs if s:auto_run == 1 | call Run() | endif
-    aug end
-
-" Run Bash code in Vim.
-    aug ShGroup
-        au!
-        au BufWritePost *.sh if s:auto_run == 1 | call Interpret('Bash') | endif
-    aug end
-
-" Run JavaScript code in Vim.
+" JavaScript code settings.
     aug JSGroup
         au!
-        au BufWritePost *.js,*.mjs if s:auto_run == 1 | call Interpret('JavaScript') | endif
-    aug end
-
-" Run Rust code in Vim.
-    aug ValaGroup
-        au!
-        au FileType vala call SetCompiledLanguageVariables('Vala', '')
-        au BufWritePost *.vala if s:auto_run == 1 | call Run() | endif
+        au BufEnter *.mjs set filetype=javascript
     aug end
 
 " Spell check and wrap commit messages.
 au! Filetype gitcommit setlocal spell textwidth=72
-
 "-------------------------------------------------------------------------------
 " Latex auto compilation.
 "-------------------------------------------------------------------------------
@@ -522,7 +528,7 @@ aug end
 " Scratchpads.
 "-------------------------------------------------------------------------------
 " Execute files named "scratchpad" each time they are saved.
-au! BufEnter scratchpad.* call AutoRunToggle() | call AutoFormatToggle()
+au! BufEnter scratchpad.* call ToggleAutoRun() | call ToggleAutoFormat()
 
 "-------------------------------------------------------------------------------
 " Templates for new files that do not exist.
