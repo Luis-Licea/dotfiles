@@ -143,4 +143,28 @@
         "key": "ctrl+k",
         "command": "-extension.vim_ctrl+k",
     },
+    {
+        // Go one page up.
+        "key": "ctrl+j",
+        "command": "cursorPageDown",
+        "when": "textInputFocus && !suggestWidgetVisible"
+    },
+    {
+        // Disable because it conflicts with ctrl+j.
+        "key": "pagedown",
+        "command": "-cursorPageDown",
+        "when": "textInputFocus"
+    },
+    {
+        // Go one page down.
+        "key": "ctrl+k",
+        "command": "cursorPageUp",
+        "when": "textInputFocus && !suggestWidgetVisible"
+    },
+    {
+        // Disable because it conflicts with ctrl+k.
+        "key": "pageup",
+        "command": "-cursorPageUp",
+        "when": "textInputFocus"
+    },
 ]

@@ -19,6 +19,8 @@
   "editor.fontFamily": "'MesloLGS NF', 'monospace', monospace",
   // Show leading and trailing spaces and tabs.
   "editor.renderWhitespace": "boundary",
+  // Show ASCII characters that may be mistaken for spaces.
+  "editor.renderControlCharacters": true,
   // Do not show the menu bar when pressing alt.
   "window.customMenuBarAltFocus": false,
   // Do not show menu bar when pressing alt-f, alt-e, alt-s, etc.
@@ -30,21 +32,68 @@
     "*.drawio.png": "hediet.vscode-drawio",
     "*.drawio.svg": "hediet.vscode-drawio"
   },
-  // Do not search text in these directories.
-  "search.exclude": {
+  // Do not watch, show, or search these directories.
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/tmp/**": true,
     "**/.git": true,
     "**/.svn": true,
     "**/.hg": true,
-    "**/CSV": true,
+    "**/CVS": true,
     "**/.DS_Store": true,
-    "**/Thumbs.db": true,
-    "**/.ccls-cache": true
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/dist/**": true,
+    "**/log/**": true,
+    "**/logs/**": true,
+    "**/.fdk/**": true
   },
+  "files.exclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/tmp/**": true,
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/dist/**": true,
+    "**/log/**": true,
+    "**/.fdk/**": true
+  },
+  "search.exclude": {
+    "**/.ccls-cache": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/tmp/**": true,
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/dist/**": true,
+    "**/log/**": true,
+  },
+
+  //  ____  _             _
+  // |  _ \| |_   _  __ _(_)_ __  ___
+  // | |_) | | | | |/ _` | | '_ \/ __|
+  // |  __/| | |_| | (_| | | | | \__ \
+  // |_|   |_|\__,_|\__, |_|_| |_|___/
+  //                |___/
+
   // Formatter for each file type.
   "[cpp]": {
     "editor.defaultFormatter": "xaver.clang-format"
   },
-  "code-runner.saveFileBeforeRun": true,
   "[javascript]": {
     "editor.defaultFormatter": "xaver.clang-format"
   },
@@ -57,13 +106,6 @@
   "[scss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-
-  //  ____  _             _
-  // |  _ \| |_   _  __ _(_)_ __  ___
-  // | |_) | | | | |/ _` | | '_ \/ __|
-  // |  __/| | |_| | (_| | | | | \__ \
-  // |_|   |_|\__,_|\__, |_|_| |_|___/
-  //                |___/
 
   //  Open pdf previews on a tab.
   "latex-workshop.view.pdf.viewer": "tab",
@@ -87,6 +129,10 @@
     "/home/luis/Code/",
   ],
 
+  // Code Runner.
+  "code-runner.saveFileBeforeRun": true,
+
+  // GitLens.
   "gitlens.currentLine.enabled": false,
   "gitlens.hovers.currentLine.over": "line",
   "gitlens.codeLens.enabled": false,
