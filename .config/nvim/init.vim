@@ -1,199 +1,8 @@
-"-------------------------------------------------------------------------------
-" Ungrouped Mappings. NOTE: Do not place comments in the same line as mappings.
-"-------------------------------------------------------------------------------
-" Leader Mapping.
-let mapleader="\<space>"
-" localleader Mapping.
-let maplocalleader=","
-" Map localleader to CTRL-W.
-map <localleader> <c-w>
-" Save file.
-nnoremap <leader>w :write<cr>
-" Spawn a new terminal in the folder of the current file.
-noremap <leader>t :let $VIM_DIR=expand('%:p:h')<cr>:sil !setsid --fork alacritty --working-directory $VIM_DIR &<cr>
-" Spawn a new ranger terminal in the folder of the current file.
-noremap <leader>rt :let $VIM_DIR=expand('%:p:h')<cr>:sil !setsid --fork alacritty --working-directory $VIM_DIR -e ranger<cc>
-" Open tag bar and close it after selecting a tag.
-noremap <leader>ta :TagbarOpenAutoClose<cr>
-" Find current file in tree.
-nnoremap <leader>tf :NERDTreeFind<cr>
-" Quit vim.
-nnoremap <leader>q :quit<cr>
-" Load .vimrc.
-nnoremap <leader>so :source ~/.config/nvim/init.vim<cr>
-" Fix syntax highlighting.
-nnoremap <leader>fs :syntax sync fromstart<cr>
-" Check script to make it POSIX compliant.
-nnoremap <leader>sc :!shellcheck "%"<cr>
-" Remove trailing white space.
-nnoremap <leader>rw :%s/\s\+$//e<cr>
-" Remove swap file. Make the command long in purpose.
-nnoremap <leader>rswap :!rm '%.swp'<cr>
-" Unset the last search pattern register.
-nnoremap <silent> <esc> :nohl<cr><cr>
-"-------------------------------------------------------------------------------
-" Command mode mappings.
-"-------------------------------------------------------------------------------
-" Move up autocomplete options in Command mode.
-cnoremap <c-k> <c-p>
-" Move down autocomplete options in Command mode.
-cnoremap <c-j> <c-n>
+lua << EOF
+    require('config')
+EOF
 
-"-------------------------------------------------------------------------------
-" Insert mode mappings.
-"-------------------------------------------------------------------------------
-" Move up autocomplete options in insert mode.
-inoremap <c-k> <c-p>
-" Move down autocomplete options in insert mode.
-inoremap <c-j> <c-n>
-
-"-------------------------------------------------------------------------------
-" Normal mode mappings. Fast movement.
-"-------------------------------------------------------------------------------
-" Move a page up.
-nnoremap <c-k> <c-u>
-" Move a page down.
-nnoremap <c-j> <c-d>
-
-"-------------------------------------------------------------------------------
-" Resize Window mappings.
-"-------------------------------------------------------------------------------
-" Increase height by N lines.
-noremap <up> 4<c-w>+
-" Decrease height by N lines.
-noremap <down> 4<c-w>-
-" Increase width by N lines.
-noremap <right> 4<c-w>>
-" Decrease width by N lines.
-noremap <left> 4<c-w><
-
-"-------------------------------------------------------------------------------
-" File mappings. Prefix f means "file".
-"-------------------------------------------------------------------------------
-" Print file name.
-nnoremap <leader>fn :echo expand('%:t')<cr>
-" Print file path (full).
-nnoremap <leader>fp :echo expand("%:p")<cr>
-" Print file directory.
-nnoremap <leader>fd :echo expand("%:p:h")<cr>
-
-"-------------------------------------------------------------------------------
-" Yank mappings. Prefix y means "yank".
-"-------------------------------------------------------------------------------
-" Copy file name to clipboard.
-nnoremap <silent> yn :let @+=expand('%:t')<cr>
-" Copy file path to clipboard.
-nnoremap <silent> yp :let @+=expand('%:p')<cr>
-" Copy pwd to clipboard.
-nnoremap <silent> yd :let @+=expand('%:p:h')<cr>
-" Copy buffer contents to clipboard.
-nnoremap <silent> yb :%y<cr>
-
-"-------------------------------------------------------------------------------
-" Switch mappings. Prefix s means "switch".
-"-------------------------------------------------------------------------------
-" Switch relative numbers.
-nnoremap <leader>sr :set relativenumber!<cr>
-" Switch numbered lines.
-nnoremap <leader>sn :set number!<cr>
-" Switch paste.
-nnoremap <leader>sp :set paste!<cr>
-" Switch automatic indentation.
-nnoremap <leader>sa :set autoindent!<cr>
-" Switch wrap.
-nnoremap <leader>sw :set wrap!<cr>
-" Switch highlight search.
-nnoremap <leader>sh :set hlsearch!<cr>
-
-"-------------------------------------------------------------------------------
-" Spellcheck mappings. Prefix s means "spell".
-"-------------------------------------------------------------------------------
-" Switch spellcheck for English.
-nnoremap <leader>sse :setlocal spell spelllang=en<cr>
-" Switch spellcheck for Spanish.
-nnoremap <leader>sss :setlocal spell spelllang=es<cr>
-" Switch spellcheck for Russian.
-nnoremap <leader>ssr :setlocal spell spelllang=ru<cr>
-" Switch spellcheck.
-nnoremap <leader>sso :setlocal spell!<cr>
-
-"-------------------------------------------------------------------------------
-" Buffer mappings. Prefix b means "buffer".
-"-------------------------------------------------------------------------------
-" Go to the next buffer.
-nnoremap L :bn<cr>
-" Go to the previous buffer.
-nnoremap H :bp<cr>
-" Go to the next buffer.
-nnoremap <leader>bn :bn<cr>
-" Go to the previous buffer.
-nnoremap <leader>bp :bp<cr>
-" Go back (to last) buffer.
-nnoremap <leader>bb :b#<cr>
-" Show open buffers.
-nnoremap <leader>bs :buffers<cr>
-" Delete (close) buffer from buffers list.
-nnoremap <leader>bd :bd<cr>
-
-"-------------------------------------------------------------------------------
-" Window mappings.
-"-------------------------------------------------------------------------------
-" Move cursor to the left window.
-nnoremap <leader>h <c-w>h
-" Move cursor to the window below.
-nnoremap <leader>j <c-w>j
-" Move cursor to the window above.
-nnoremap <leader>k <c-w>k
-" Move cursor to the right window.
-nnoremap <leader>l <c-w>l
-" Remaping localleader to CTRL-W enabled the following mappings.
-" <localleader>= - make all windows equal height & width
-" <localleader>h - move cursor to the left window
-" <localleader>j - move cursor to the window below
-" <localleader>k - move cursor to the window above
-" <localleader>l - move cursor to the right window
-" <localleader>q - quit a window
-" <localleader>r - rotate windows upwards N times
-" <localleader>w - switch windows
-" <localleader>x - exchange current window with next one
-" <localleader>s - split window
-" <localleader>v - split window vertically
-" Split window (add for responsiveness).
-" nnoremap <localleader>s :sp<cr>
-" Split window vertically (add for responsiveness).
-" nnoremap <localleader>v :vsp<cr>
-
-"-------------------------------------------------------------------------------
-" Embedded terminal settings and mappings.
-"-------------------------------------------------------------------------------
-" Move cursor to the left window.
-tnoremap <localleader>h <c-\><c-n><cr><c-w>h
-" Move cursor to the window above.
-tnoremap <localleader>j <c-\><c-n><cr><c-w>j
-" Move cursor to the window below.
-tnoremap <localleader>k <c-\><c-n><cr><c-w>k
-" Move cursor to the right window.
-tnoremap <localleader>l <c-\><c-n><cr><c-w>l
-aug TermOpenGroup
-    " Clear previous group auto commands to avoid duplicate definitions.
-    au!
-    " Turn off spelling in terminal.
-    au TermOpen * setlocal nospell
-    " Disable line numbering in terminal.
-    au TermOpen * setlocal nonumber
-    " Press escape twice to exit. Add only to zsh because it conflicts with fzf.
-    au TermOpen * if expand('%:t') == "zsh" | tnoremap <c-q> <c-\><c-n> | endif
-aug end
-
-"-------------------------------------------------------------------------------
-" Interface.
-"-------------------------------------------------------------------------------
-set background=dark         " Tell Vim if the background is light or dark.
-set clipboard=unnamedplus   " Share clipboard with operating system.
-set colorcolumn=81          " Reminder to keep lines at most 80 characters long.
-set encoding=utf-8          " Set encoding to UTF-8 to recognize Greek/Cyrillic.
-set incsearch               " Show search results as you type.
-set mouse=a                 " Enable mouse wheel in all Vim modes.
+set mouse=n                 " Enable mouse wheel in normal modes.
 set nocompatible            " Not compatible with Vi (embrace the future).
 set number                  " Enable line numbers.
 set ruler                   " Set the ruler to see the line and column.
@@ -222,7 +31,6 @@ set autoread                    " Auto reload changed files.
 set history=100                 " History file is at most 20 lines.
 set ignorecase smartcase        " Search queries intelligently set case.
 set list                        " Show tabs and trailing spaces.
-set listchars=tab:◃―▹,trail:●   " Define tab and trailing space characters.
 set spell                       " Set spelling on.
 
 "-------------------------------------------------------------------------------
@@ -316,7 +124,7 @@ function! Time_cpp_c_rs()
     exe printf('!/usr/bin/time -p bash -c "for ((i=1;i<=1000;i++)); do \"%s\" > /dev/null; done"', l:executable_path)
 endfunction
 " Call the function by simply typing :Time.
-command Time call Time_cpp_c_rs()
+command! Time call Time_cpp_c_rs()
 
 " Another compiler for c is tcc.
 let s:ft2compiler = {
@@ -330,6 +138,7 @@ let s:ft2compiler = {
 let s:ft2interpreter = {
             \'python'       : 'python3',
             \'java'         : "java",
+            \'lua'          : "lua",
             \'sh'           : "bash",
             \'javascript'   : "node",
             \'glsl'         : "glslangValidator",
@@ -633,11 +442,10 @@ call plug#begin()
     Plug 'preservim/tagbar' " Requires universal ctags.
 call plug#end()
 
-" Load autopair plugin.
 lua << EOF
-require("nvim-autopairs").setup {}
+    -- Load autopair plugin.
+    require("nvim-autopairs").setup {}
 EOF
-
 "-------------------------------------------------------------------------------
 " CtrlP settings.
 "-------------------------------------------------------------------------------
