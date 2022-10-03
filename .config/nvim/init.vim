@@ -2,47 +2,86 @@ lua << EOF
     require('config')
 EOF
 
-set mouse=n                 " Enable mouse wheel in normal modes.
-set nocompatible            " Not compatible with Vi (embrace the future).
-set number                  " Enable line numbers.
-set ruler                   " Set the ruler to see the line and column.
-set showcmd                 " Show commands as they are typed on the banner.
-set termguicolors           " Support true color in vim.
+"-------------------------------------------------------------------------------
+" Tab settings.
+"-------------------------------------------------------------------------------
+" Open the current buffer in a new tab.
+nnoremap <leader>tn :tabnew %<cr>
+" Close the tab.
+nnoremap <leader>tc :tabclose<cr>
+
+" Go to tab by number.
+noremap <leader>1 1gt
+noremap <leader>2 2gt
+noremap <leader>3 3gt
+noremap <leader>4 4gt
+noremap <leader>5 5gt
+noremap <leader>6 6gt
+noremap <leader>7 7gt
+noremap <leader>8 8gt
+noremap <leader>9 9gt
+noremap <leader>0 :tablast<cr>
 
 "-------------------------------------------------------------------------------
-" Tabs & spaces.
+" Row and column movement settings.
 "-------------------------------------------------------------------------------
-set backspace=2             " Enable backspace when using gVim.
-set expandtab               " Tells vim to replace tabs with spaces.
-set shiftwidth=4            " Control how text is indented when using << and >>.
-set softtabstop=4           " Mixes tabs and spaces unless equal to tabstop.
-set tabstop=4               " Tell vim how many columns a tab counts for.
+" Move the cursor to the column. E.g., 50% is the middle of the line.
+function! GoToBufferColumn(percent)
+    let l:visible_columns = virtcol('$')
+    let l:column = l:visible_columns*a:percent/100
+    call cursor(0, l:column)
+endfunction
 
-"-------------------------------------------------------------------------------
-" Indentation.
-"-------------------------------------------------------------------------------
-set autoindent              " Automatic indentation when going to next line.
-set cindent                 " Add indentation when S or cc is pressed.
+" Move the cursor to the row. E.g., 50% is the middle of visible buffer.
+function! GoToVisibleBufferRow(percent)
+    let l:visible_rows = line('w$') - line('w0')
+    let l:first_row = line('w0')
+    let l:row = l:first_row + l:visible_rows*a:percent/100
+    call cursor(l:row, 0)
+endfunction
 
-"-------------------------------------------------------------------------------
-" Other.
-"-------------------------------------------------------------------------------
-set autoread                    " Auto reload changed files.
-set history=100                 " History file is at most 20 lines.
-set ignorecase smartcase        " Search queries intelligently set case.
-set list                        " Show tabs and trailing spaces.
-set spell                       " Set spelling on.
+" Move the cursor to the row. E.g., 50% is the middle of the buffer.
+function! GoToBufferRow(percent)
+    let l:all_rows = line('$')
+    let l:row =  l:all_rows*a:percent/100
+    call cursor(l:row + 1, 0)
+endfunction
 
-"-------------------------------------------------------------------------------
-" File finder.
-"-------------------------------------------------------------------------------
-set path+=**                " Looks into subfolders to find and open a file.
-                            " :find filename - finds the file in subfolders.
-                            " Press Tab for suggesting files.
-                            " Use * as a wild card for beginnings or endings.
-set wildmenu                " Display all matching files when tab is pressed.
-                            " :b filename - goes to other buffers.
-                            " Can use Tab or specify unique filename substring.
+" Move across line characters in increments.
+nnoremap ,1 :call GoToBufferColumn(0)<cr>
+nnoremap ,2 :call GoToBufferColumn(11)<cr>
+nnoremap ,3 :call GoToBufferColumn(22)<cr>
+nnoremap ,4 :call GoToBufferColumn(33)<cr>
+nnoremap ,5 :call GoToBufferColumn(44)<cr>
+nnoremap ,6 :call GoToBufferColumn(55)<cr>
+nnoremap ,7 :call GoToBufferColumn(66)<cr>
+nnoremap ,8 :call GoToBufferColumn(77)<cr>
+nnoremap ,9 :call GoToBufferColumn(88)<cr>
+nnoremap ,0 :call GoToBufferColumn(100)<cr>
+
+" Move across the visible buffer rows in increments.
+nnoremap ;1 :call GoToVisibleBufferRow(0)<cr>
+nnoremap ;2 :call GoToVisibleBufferRow(11)<cr>
+nnoremap ;3 :call GoToVisibleBufferRow(22)<cr>
+nnoremap ;4 :call GoToVisibleBufferRow(33)<cr>
+nnoremap ;5 :call GoToVisibleBufferRow(44)<cr>
+nnoremap ;6 :call GoToVisibleBufferRow(55)<cr>
+nnoremap ;7 :call GoToVisibleBufferRow(66)<cr>
+nnoremap ;8 :call GoToVisibleBufferRow(77)<cr>
+nnoremap ;9 :call GoToVisibleBufferRow(88)<cr>
+nnoremap ;0 :call GoToVisibleBufferRow(100)<cr>
+
+" Move across buffer rows in increments.
+nnoremap g1 :call GoToBufferRow(0)<cr>
+nnoremap g2 :call GoToBufferRow(11)<cr>
+nnoremap g3 :call GoToBufferRow(22)<cr>
+nnoremap g4 :call GoToBufferRow(33)<cr>
+nnoremap g5 :call GoToBufferRow(44)<cr>
+nnoremap g6 :call GoToBufferRow(55)<cr>
+nnoremap g7 :call GoToBufferRow(66)<cr>
+nnoremap g8 :call GoToBufferRow(77)<cr>
+nnoremap g9 :call GoToBufferRow(88)<cr>
+nnoremap g0 :call GoToBufferRow(100)<cr>
 
 "-------------------------------------------------------------------------------
 " Colors and Formatting.
@@ -275,7 +314,7 @@ function! SetLaTeXVariables()
     " cut: Split the line using the ":" character, and get the second field.
     " xargs: Remove leading whitespace.
     " tr: Remove newline character by using tr.
-    " At the end we get a jobname with no loeading spaces; can be many words.
+    " At the end we get a jobname with no loading spaces; can be many words.
     let $jobname=system('cat ' . expand('%') . ' | grep --max-count=1 "%*jobname:" | cut -d: -f2 | xargs | tr -d "\n"')
 endfunction
 
@@ -396,8 +435,6 @@ call plug#begin()
     Plug 'godlygeek/tabular' | Plug 'elzr/vim-json' | Plug 'preservim/vim-markdown'
     " Nerd tree system file operations. Access it using "m" key in nerd tree.
     Plug 'ivalkeen/nerdtree-execute'
-    " Fuzzy finder for searching files.
-    Plug 'junegunn/fzf.vim'
     " Easily align tables, or text by symbols like , ; = & etc.
     Plug 'junegunn/vim-easy-align'
     " Fuzzy finder for files, buffers, mru files, and tags.
@@ -440,12 +477,38 @@ call plug#begin()
     Plug 'windwp/nvim-autopairs'
     " Tagbar: a class outline viewer for Vim.
     Plug 'preservim/tagbar' " Requires universal ctags.
+    " Add window-tiling manager functionality.
+    Plug 'luis-licea/dwm.vim'
 call plug#end()
 
 lua << EOF
     -- Load autopair plugin.
     require("nvim-autopairs").setup {}
 EOF
+
+"-------------------------------------------------------------------------------
+" DWM settings.
+"-------------------------------------------------------------------------------
+" Do not use default DWM key mappings.
+let g:dwm_map_keys=0
+
+" Open the current buffer in a new window.
+nmap <silent> <c-n> :call DWM_New()<cr>
+" Close window.
+nmap <silent> <c-c> :exec DWM_Close()<cr>
+" Focus the master window.
+nmap <silent> <c-space> :exec DWM_Focus()<cr>
+
+" Next window. Move cursor clockwise to the next window
+nnoremap <c-j> <c-w>w
+" Previous window. Move cursor counter-clockwise to the previous window.
+nnoremap <c-k> <c-w>W
+
+" Increase master window size the given number of columns.
+nnoremap <silent> <c-l> :call DWM_GrowMaster(10)<CR>
+" Decrease master window size the given number of columns.
+nnoremap <silent> <c-h> :call DWM_ShrinkMaster(10)<CR>
+
 "-------------------------------------------------------------------------------
 " CtrlP settings.
 "-------------------------------------------------------------------------------
@@ -564,12 +627,6 @@ nnoremap <leader>a :tab split<cr>:Ack! ""<Left>
 nnoremap <leader>A :tab split<cr>:Ack! <c-r><c-w><cr>
 
 "-------------------------------------------------------------------------------
-"  Fuzzy finder settings.
-"-------------------------------------------------------------------------------
-" Open fuzzy finder.
-nnoremap <leader>ff :FZF<cr>
-
-"-------------------------------------------------------------------------------
 " Nerd commenter settings.
 "-------------------------------------------------------------------------------
 " Add spaces after comment delimiters.
@@ -608,7 +665,6 @@ let g:NERDTreeQuitOnOpen = 1
 "-------------------------------------------------------------------------------
 " Integrate with powerline. Adds nice colors and decorative edges to sections.
 let g:airline_powerline_fonts = 1
-
 "-------------------------------------------------------------------------------
 " Vim-code-dark settings.
 "-------------------------------------------------------------------------------
@@ -625,6 +681,12 @@ colorscheme dracula
 let g:airline_theme = 'dracula'
 " Displays all buffers in upper tab line.
 let g:airline#extensions#tabline#enabled = 1
+" Whether to show "Buffers" and "Tabs" labels in tabline.
+let g:airline#extensions#tabline#show_tab_type = 0
+" Whether to show close button next to buffer when many tabs are open.
+let g:airline#extensions#tabline#show_close_button = 0
+" Whether to display the number of open tabs.
+let g:airline#extensions#tabline#show_tab_count = 0
 
 "-------------------------------------------------------------------------------
 " Rust-vim settings.
@@ -674,7 +736,8 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> <leader>rn <plug>(lsp-rename)
     nmap <buffer> [g <plug>(lsp-previous-diagnostic)
     nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-    nmap <buffer> K <plug>(lsp-hover)
+    " nmap <buffer> K <plug>(lsp-hover)
+    nmap <buffer> <leader>k <plug>(lsp-hover)
 
     inoremap <buffer> <expr><c-f> lsp#scroll(+4)
     inoremap <buffer> <expr><c-d> lsp#scroll(-4)

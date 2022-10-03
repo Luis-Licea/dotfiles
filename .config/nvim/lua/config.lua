@@ -16,6 +16,9 @@ end
 local function nnoremap(shortcut, command, options)
     keymap('n', shortcut, command, {noremap = true})
 end
+local function nmap(shortcut, command, options)
+    keymap('n', shortcut, command)
+end
 local function cnoremap(shortcut, command, options)
     keymap('c', shortcut, command, {noremap = true})
 end
@@ -31,17 +34,15 @@ end
 -- Leader Mapping.
 vim.g.mapleader = " "
 -- Local Leader Mapping.
-vim.g.maplocalleader=","
+vim.g.maplocalleader=";"
 -- Map localleader to CTRL-W.
 map('<localleader>', '<c-w>')
 -- Save file.
 nnoremap('<leader>w', ':write<cr>')
 -- Spawn a new terminal in the folder of the current file.
-nnoremap('<leader>t', ':let $VIM_DIR=expand("%:p:h")<cr>:sil !setsid --fork \
-    alacritty --working-directory $VIM_DIR &<cr>')
+nnoremap('<leader>t', ':let $VIM_DIR=expand("%:p:h")<cr>:sil !setsid --fork alacritty --working-directory $VIM_DIR &<cr>')
 -- Spawn a new ranger terminal in the folder of the current file.
-nnoremap('<leader>rt', ':let $VIM_DIR=expand("%:p:h")<cr>:sil !setsid --fork \
-    alacritty --working-directory $VIM_DIR -e ranger<cc>')
+nnoremap('<leader>rt', ':let $VIM_DIR=expand("%:p:h")<cr>:sil !setsid --fork alacritty --working-directory $VIM_DIR -e ranger<cc>')
 -- Open tag bar and close it after selecting a tag.
 nnoremap('<leader>ta', ':TagbarOpenAutoClose<cr>')
 -- Find current file in tree.
@@ -80,21 +81,21 @@ inoremap('<c-j>', '<c-n>')
 -- Normal mode mappings. Fast movement.
 -- -----------------------------------------------------------------------------
 -- Move a page up.
-nnoremap('<c-k>', '<c-u>')
+nnoremap('<s-k>', '<pageup>')
 -- Move a page down.
-nnoremap('<c-j>', '<c-d>')
+nnoremap('<s-j>', '<pagedown>')
 
 -- -----------------------------------------------------------------------------
 -- Resize Window mappings.
 -- -----------------------------------------------------------------------------
 -- Increase height by N lines.
-nnoremap('<up>', '4<c-w>+')
+nnoremap('<up>', '10<c-w>+')
 -- Decrease height by N lines.
-nnoremap('<down>', '4<c-w>-')
+nnoremap('<down>', '10<c-w>-')
 -- Increase width by N lines.
-nnoremap('<right>', '4<c-w>>')
+nnoremap('<right>', '10<c-w>>')
 -- Decrease width by N lines.
-nnoremap('<left>', '4<c-w><')
+nnoremap('<left>', '10<c-w><')
 
 -- -----------------------------------------------------------------------------
 -- File mappings. Prefix f means "file".
@@ -138,13 +139,13 @@ nnoremap('<leader>sh', 'set hlsearch!<cr>')
 -- Spellcheck mappings. Prefix s means "spell".
 -- -----------------------------------------------------------------------------
 -- Switch spellcheck for English.
-nnoremap('<leader>sse', 'setlocal spell spelllang=en<cr>')
+nnoremap('<leader>sse', ':setlocal spell! spelllang=en<cr>')
 -- Switch spellcheck for Spanish.
-nnoremap('<leader>sss', 'setlocal spell spelllang=es<cr>')
+nnoremap('<leader>sss', ':setlocal spell! spelllang=es<cr>')
 -- Switch spellcheck for Russian.
-nnoremap('<leader>ssr', 'setlocal spell spelllang=ru<cr>')
+nnoremap('<leader>ssr', ':setlocal spell! spelllang=ru<cr>')
 -- Switch spellcheck.
-nnoremap('<leader>sso', 'setlocal spell!<cr>')
+nnoremap('<leader>ss', ':setlocal spell!<cr>')
 
 -- -----------------------------------------------------------------------------
 -- Buffer mappings. Prefix b means "buffer".
@@ -154,15 +155,15 @@ nnoremap('L', ':bn<cr>')
 -- Go to the previous buffer.
 nnoremap('H', ':bp<cr>')
 -- Go to the next buffer.
-nnoremap('<leader>bn', 'bn<cr>')
+nnoremap('<leader>bn', ':bn<cr>')
 -- Go to the previous buffer.
-nnoremap('<leader>bp', 'bp<cr>')
+nnoremap('<leader>bp', ':bp<cr>')
 -- Go back (to last) buffer.
-nnoremap('<leader>bb', 'b#<cr>')
+nnoremap('<leader>bb', ':b#<cr>')
 -- Show open buffers.
-nnoremap('<leader>bs', 'buffers<cr>')
+nnoremap('<leader>bs', ':buffers<cr>')
 -- Delete (close) buffer from buffers list.
-nnoremap('<leader>bd', 'bd<cr>')
+nnoremap('<leader>bd', ':bd<cr>')
 
 -- -----------------------------------------------------------------------------
 -- Window mappings.
@@ -291,10 +292,52 @@ local buffer_check = vim.api.nvim_create_augroup('Check Buffer', {
 vim.o.clipboard = 'unnamedplus'
 -- Reminder to keep lines at most 80 characters long.
 vim.o.colorcolumn = '81'
+-- Enable mouse wheel in normal modes.
+vim.o.mouse = 'n'
+-- Enable line numbers.
+vim.o.number = true
+-- Support true color in vim.
+vim.o.termguicolors = true
+
+--------------------------------------------------------------------------------
+-- Tabs & spaces.
+--------------------------------------------------------------------------------
+-- Tells vim to replace tabs with spaces.
+vim.o.expandtab = true
+-- Control how text is indented when using << and >>.
+vim.o.shiftwidth = 4
+-- Mixes tabs and spaces unless equal to tabstop.
+vim.o.softtabstop = 4
+-- Tell vim how many columns a tab counts for.
+vim.o.tabstop = 4
+
+--------------------------------------------------------------------------------
+-- Indentation.
+--------------------------------------------------------------------------------
+-- Add indentation when S or cc is pressed.
+vim.o.cindent = true
 
 --------------------------------------------------------------------------------
 -- Other.
 --------------------------------------------------------------------------------
+-- Open history file using :q.
+vim.o.history = 200
+-- Ignore case in search patterns.
+vim.o.ignorecase = true
+-- Search queries intelligently using case. Only used if ignorecase is on.
+vim.o.smartcase = vim.o.ignorecase
+-- Set spelling on.
+vim.o.spell = true
 -- Define tab and trailing space characters.
 vim.opt.listchars = { tab = '◃―▹', trail = '●' }
+-- Show tabs and trailing spaces.
+vim.o.list = true
+
+--------------------------------------------------------------------------------
+-- File finder.
+--------------------------------------------------------------------------------
+-- Looks into subfolders to find and open a file. :find filename - finds the
+-- file in subfolders. Press Tab for suggesting files. Use * as a wild card for
+-- beginnings or endings.
+vim.o.path = vim.o.path .. '**'
 
