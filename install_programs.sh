@@ -7,6 +7,9 @@
 pacman_programs=(
 
     # Development tools.
+    neovide             # No Nonsense Neovim Client in Rust.
+    nethogs             # A net top tool which displays traffic used per process instead of per IP or interface.
+    tig                 # Text-mode interface for Git.
     awesome             # Highly configurable framework window manager
     zsh-syntax-highlighting # Fish shell like syntax highlighting for Zsh
     kwin-bismuth-bin    # KDE tiling window manager.
@@ -84,6 +87,7 @@ pacman_programs=(
     thunderbird         # Email client.
     yt-dlp              # ty-dlp fork with added features and patches.
     clipgrab            # A video downloader and converter for YouTube, Veoh, DailyMotion, MyVideo, ...
+    nitrogen            # Background browser and setter for X windows.
 
     most                # A terminal pager similar to 'more' and 'less'. NOTE: Set PAGER=most in .zshrc.
     trash-cli           # Command line trashcan (recycle bin) interface.
@@ -229,6 +233,11 @@ pretty=(
     pfetch      # A pretty system information tool written in POSIX sh.
     cbonsai     # A bonsai tree generator, written in C using ncurses.
     pipes.sh    # Animated pipes terminal screensaver.
+)
+
+# Use in Ubuntu 18.04 where.
+npm=(
+    sudo npm i -g @funboxteam/languagetool-node # An open source language checker.
 )
 
 # Install using plasma-discover.

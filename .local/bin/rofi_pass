@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# Backup clipboard contents, otherwise they will be lost.
-clipboard_backup="$(wl-paste)"
+if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+    # Backup clipboard contents, otherwise they will be lost.
+    clipboard_backup="$(wl-paste)"
+fi
 
 # Get the path to all the non-hidden files in password directory.
 # The path names will be displayed to the user for picking one of them.
@@ -33,13 +35,16 @@ if [ "$1" = "edit" ]; then
     exit 0
 fi
 
-# Store password into clipboard. Send the standard output from `pass` to null
-# because otherwise it will be copied into the clipboard.
-wl-copy "$(pass "$file")" > /dev/null
+if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+    # Store password into clipboard. Send the standard output from `pass` to null
+    # because otherwise it will be copied into the clipboard. We don't want
+    # error messages. Then get first line, the password, from output.
+    wl-copy "$(pass "$file" | head -n 1)" > /dev/null
 
-# Wait 45 seconds. The clipboard contents will be reset afterwards.
-sleep 45
+    # Wait 45 seconds. The clipboard contents will be reset afterwards.
+    sleep 45
 
-# Restore backed-up clipboard contents. This clears out the password from the
-# clipboard.
-wl-copy "$clipboard_backup"
+    # Restore backed-up clipboard contents. This clears out the password from the
+    # clipboard.
+    wl-copy "$clipboard_backup"
+fi

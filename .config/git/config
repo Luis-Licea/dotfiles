@@ -26,3 +26,16 @@
     ; Notes: When using git reset, use --soft instead of --hard to change the
     ; git state without modifying any files or work.
 
+    ; Other commands.
+    ; git fetch remote master
+    ; git pull remote master
+    ; git reset remote/master
+    ; git reset --soft remote/master
+    ;
+    ; To open a PR, it is necessary to first push changes to origin, but that
+    ; may delete old commits if --force is used. Using a branch may seem the
+    ; only way to open a PR. The solution is to rebase your work on top of
+    ; master. Alternatively create a new branch based on master, and
+    ; cherry-pick the one fix commit.
+    ; git cherry-pick deadbeefyourfixcommit
+

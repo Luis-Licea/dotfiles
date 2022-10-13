@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Set the background.
+    # Get path to a random background and set the background.
+    swaybg -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png &
+
+# Show the status bar.
+    waybar &
+
 # Set a low volume at login to protect hearing.
     amixer -D pulse sset Master 15%
 
@@ -14,14 +21,4 @@
 
 # Run dunst as a notification daemon.
     dunst &
-
-# Set the background.
-    # Get path to a random background and set the background.
-    find /usr/share/backgrounds/suckless-wallpapers \
-    | shuf -n 1 \
-    | xargs swaybg -i &
-
-# Show the status bar.
-    waybar &
-
 

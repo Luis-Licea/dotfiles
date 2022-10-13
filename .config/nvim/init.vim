@@ -2,6 +2,38 @@ lua << EOF
     require('config')
 EOF
 
+
+"" Auto start NERD tree when opening a directory
+"autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | wincmd p | endif
+"
+"" Auto start NERD tree if no files are specified
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | exe 'NERDTree' | endif
+"
+"" Let quit work as expected if after entering :q the only window left open is NERD Tree itself
+"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+"" improved keyboard support for navigation (especially terminal)
+"" https://neovim.io/doc/user/nvim_terminal_emulator.html
+"tnoremap <Esc> <C-\><C-n>
+"tnoremap <A-h> <C-\><C-n><C-w>h
+"tnoremap <A-j> <C-\><C-n><C-w>j
+"tnoremap <A-k> <C-\><C-n><C-w>k
+"tnoremap <A-l> <C-\><C-n><C-w>l
+"nnoremap <A-h> <C-w>h
+"nnoremap <A-j> <C-w>j
+"nnoremap <A-k> <C-w>k
+"nnoremap <A-l> <C-w>l
+
+"" Start terminal in insert mode
+"au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+"nnoremap <silent> <leader>tt :terminal<CR>
+"nnoremap <silent> <leader>tv :vnew<CR>:terminal<CR>
+"nnoremap <silent> <leader>th :new<CR>:terminal<CR>
+"tnoremap <C-x> <C-\><C-n><C-w>q
+"
+"
+
 "-------------------------------------------------------------------------------
 " Tab settings.
 "-------------------------------------------------------------------------------
@@ -22,66 +54,66 @@ noremap <leader>8 8gt
 noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
 
-"-------------------------------------------------------------------------------
-" Row and column movement settings.
-"-------------------------------------------------------------------------------
-" Move the cursor to the column. E.g., 50% is the middle of the line.
-function! GoToBufferColumn(percent)
-    let l:visible_columns = virtcol('$')
-    let l:column = l:visible_columns*a:percent/100
-    call cursor(0, l:column)
-endfunction
-
-" Move the cursor to the row. E.g., 50% is the middle of visible buffer.
-function! GoToVisibleBufferRow(percent)
-    let l:visible_rows = line('w$') - line('w0')
-    let l:first_row = line('w0')
-    let l:row = l:first_row + l:visible_rows*a:percent/100
-    call cursor(l:row, 0)
-endfunction
-
-" Move the cursor to the row. E.g., 50% is the middle of the buffer.
-function! GoToBufferRow(percent)
-    let l:all_rows = line('$')
-    let l:row =  l:all_rows*a:percent/100
-    call cursor(l:row + 1, 0)
-endfunction
-
-" Move across line characters in increments.
-nnoremap ,1 :call GoToBufferColumn(0)<cr>
-nnoremap ,2 :call GoToBufferColumn(11)<cr>
-nnoremap ,3 :call GoToBufferColumn(22)<cr>
-nnoremap ,4 :call GoToBufferColumn(33)<cr>
-nnoremap ,5 :call GoToBufferColumn(44)<cr>
-nnoremap ,6 :call GoToBufferColumn(55)<cr>
-nnoremap ,7 :call GoToBufferColumn(66)<cr>
-nnoremap ,8 :call GoToBufferColumn(77)<cr>
-nnoremap ,9 :call GoToBufferColumn(88)<cr>
-nnoremap ,0 :call GoToBufferColumn(100)<cr>
-
-" Move across the visible buffer rows in increments.
-nnoremap ;1 :call GoToVisibleBufferRow(0)<cr>
-nnoremap ;2 :call GoToVisibleBufferRow(11)<cr>
-nnoremap ;3 :call GoToVisibleBufferRow(22)<cr>
-nnoremap ;4 :call GoToVisibleBufferRow(33)<cr>
-nnoremap ;5 :call GoToVisibleBufferRow(44)<cr>
-nnoremap ;6 :call GoToVisibleBufferRow(55)<cr>
-nnoremap ;7 :call GoToVisibleBufferRow(66)<cr>
-nnoremap ;8 :call GoToVisibleBufferRow(77)<cr>
-nnoremap ;9 :call GoToVisibleBufferRow(88)<cr>
-nnoremap ;0 :call GoToVisibleBufferRow(100)<cr>
-
-" Move across buffer rows in increments.
-nnoremap g1 :call GoToBufferRow(0)<cr>
-nnoremap g2 :call GoToBufferRow(11)<cr>
-nnoremap g3 :call GoToBufferRow(22)<cr>
-nnoremap g4 :call GoToBufferRow(33)<cr>
-nnoremap g5 :call GoToBufferRow(44)<cr>
-nnoremap g6 :call GoToBufferRow(55)<cr>
-nnoremap g7 :call GoToBufferRow(66)<cr>
-nnoremap g8 :call GoToBufferRow(77)<cr>
-nnoremap g9 :call GoToBufferRow(88)<cr>
-nnoremap g0 :call GoToBufferRow(100)<cr>
+""-------------------------------------------------------------------------------
+"" Row and column movement settings.
+""-------------------------------------------------------------------------------
+"" Move the cursor to the column. E.g., 50% is the middle of the line.
+"function! GoToBufferColumn(percent)
+"    let l:visible_columns = virtcol('$')
+"    let l:column = l:visible_columns*a:percent/100
+"    call cursor(0, l:column)
+"endfunction
+"
+"" Move the cursor to the row. E.g., 50% is the middle of visible buffer.
+"function! GoToVisibleBufferRow(percent)
+"    let l:visible_rows = line('w$') - line('w0')
+"    let l:first_row = line('w0')
+"    let l:row = l:first_row + l:visible_rows*a:percent/100
+"    call cursor(l:row, 0)
+"endfunction
+"
+"" Move the cursor to the row. E.g., 50% is the middle of the buffer.
+"function! GoToBufferRow(percent)
+"    let l:all_rows = line('$')
+"    let l:row =  l:all_rows*a:percent/100
+"    call cursor(l:row + 1, 0)
+"endfunction
+"
+"" Move across line characters in increments.
+"nnoremap ,1 :call GoToBufferColumn(0)<cr>
+"nnoremap ,2 :call GoToBufferColumn(11)<cr>
+"nnoremap ,3 :call GoToBufferColumn(22)<cr>
+"nnoremap ,4 :call GoToBufferColumn(33)<cr>
+"nnoremap ,5 :call GoToBufferColumn(44)<cr>
+"nnoremap ,6 :call GoToBufferColumn(55)<cr>
+"nnoremap ,7 :call GoToBufferColumn(66)<cr>
+"nnoremap ,8 :call GoToBufferColumn(77)<cr>
+"nnoremap ,9 :call GoToBufferColumn(88)<cr>
+"nnoremap ,0 :call GoToBufferColumn(100)<cr>
+"
+"" Move across the visible buffer rows in increments.
+"nnoremap ;1 :call GoToVisibleBufferRow(0)<cr>
+"nnoremap ;2 :call GoToVisibleBufferRow(11)<cr>
+"nnoremap ;3 :call GoToVisibleBufferRow(22)<cr>
+"nnoremap ;4 :call GoToVisibleBufferRow(33)<cr>
+"nnoremap ;5 :call GoToVisibleBufferRow(44)<cr>
+"nnoremap ;6 :call GoToVisibleBufferRow(55)<cr>
+"nnoremap ;7 :call GoToVisibleBufferRow(66)<cr>
+"nnoremap ;8 :call GoToVisibleBufferRow(77)<cr>
+"nnoremap ;9 :call GoToVisibleBufferRow(88)<cr>
+"nnoremap ;0 :call GoToVisibleBufferRow(100)<cr>
+"
+"" Move across buffer rows in increments.
+"nnoremap g1 :call GoToBufferRow(0)<cr>
+"nnoremap g2 :call GoToBufferRow(11)<cr>
+"nnoremap g3 :call GoToBufferRow(22)<cr>
+"nnoremap g4 :call GoToBufferRow(33)<cr>
+"nnoremap g5 :call GoToBufferRow(44)<cr>
+"nnoremap g6 :call GoToBufferRow(55)<cr>
+"nnoremap g7 :call GoToBufferRow(66)<cr>
+"nnoremap g8 :call GoToBufferRow(77)<cr>
+"nnoremap g9 :call GoToBufferRow(88)<cr>
+"nnoremap g0 :call GoToBufferRow(100)<cr>
 
 "-------------------------------------------------------------------------------
 " Colors and Formatting.
@@ -90,17 +122,6 @@ nnoremap g0 :call GoToBufferRow(100)<cr>
 syntax enable
 " Enable auto indentation and plugins based on file type.
 filetype indent plugin on
-
-"-------------------------------------------------------------------------------
-" Remember file position.
-"-------------------------------------------------------------------------------
-aug RememberFilePositionGroup
-    " Clear previous group auto commands to avoid duplicate definitions.
-    au!
-    " Jump to the last position when reopening a file.
-    au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-    \| exe "normal! g'\"" | endif
-aug end
 
 "-------------------------------------------------------------------------------
 " Vim Terminal.
@@ -177,6 +198,7 @@ let s:ft2compiler = {
 let s:ft2interpreter = {
             \'python'       : 'python3',
             \'java'         : "java",
+            \'groovy'       : "groovy",
             \'lua'          : "lua",
             \'sh'           : "bash",
             \'javascript'   : "node",
@@ -403,90 +425,6 @@ aug TemplateGroup
 aug end
 
 "-------------------------------------------------------------------------------
-" Vim-plug settings.
-"-------------------------------------------------------------------------------
-" Install Vim-plug by running :call InstallVimPlug.
-function! InstallVimPlug()
-    " Download plugin from junegunn/vim-plug/master/plug.vim.
-    let $vim_plug_repo='https://raw.githubusercontent.com/
-                \junegunn/vim-plug/master/plug.vim'
-    " If using Neovim:
-    if has('nvim')
-        " Set installation path to the nvim directory.
-        let $install_path='${XDG_DATA_HOME:-$HOME/.local/share}
-            \/nvim/site/autoload/plug.vim'
-    else
-        " Else set installation path to the .vim directory.
-        let install_path='~/.vim/autoload/plug.vim'
-    endif
-
-    " Download Vim Plug. The flags tell curl to fail on an empty download, to
-    " follow redirects, and to output the download to a file rather than to
-    " the terminal.
-    !curl -fLo $install_path --create-dirs  $vim_plug_repo
-endfunction
-
-" Install plugins by running :PlugInstall. Default path is
-" ~/.local/share/nvim/plugged.
-call plug#begin()
-    " Use dark color scheme for Vim.
-    Plug 'dracula/vim'
-    " Tabular for tables. Vim-json for conceal. Both needed by vim-markdown.
-    Plug 'godlygeek/tabular' | Plug 'elzr/vim-json' | Plug 'preservim/vim-markdown'
-    " Nerd tree system file operations. Access it using "m" key in nerd tree.
-    Plug 'ivalkeen/nerdtree-execute'
-    " Easily align tables, or text by symbols like , ; = & etc.
-    Plug 'junegunn/vim-easy-align'
-    " Fuzzy finder for files, buffers, mru files, and tags.
-    Plug 'kien/ctrlp.vim'
-    " Show indentation lines.
-    Plug 'lukas-reineke/indent-blankline.nvim'
-    " Install and update language servers using LspInstallServer.
-    Plug 'mattn/vim-lsp-settings'
-    " Nice start screen. NOTE: Put before vim-devicons, or icons won't load.
-    Plug 'mhinz/vim-startify'
-    " Search tool. NOTE: Install the ag (silver-searcher grep) utility first.
-    Plug 'mileszs/ack.vim'
-    " Provide asynchronous autocomplete using language servers.
-    Plug 'prabirshrestha/asyncomplete-lsp.vim'
-    " Provide asynchronous autocomplete.
-    Plug 'prabirshrestha/asyncomplete.vim'
-    " Automatically setup language servers.
-    Plug 'prabirshrestha/vim-lsp'
-    " Comment and uncomment code sections more easily witch cc, uc, and ci.
-    Plug 'preservim/nerdcommenter'
-    " Provide Cargo commands, and Rust syntax highlighting and formatting.
-    Plug 'rust-lang/rust.vim'
-    " File explorer sidebar.
-    Plug 'scrooloose/nerdtree'
-    " Provide syntax-highlight for nerd tree icons.
-    Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-    " Add OpenGL Shader Language support.
-    Plug 'tikhomirov/vim-glsl'
-    " Use dark color scheme inspired on Visual Studio Code.
-    Plug 'tomasiser/vim-code-dark'
-    " Surround words in parenthesis, quotations, etc., more easily.
-    Plug 'tpope/vim-surround'
-    " Prettify status line. Add icons to status line and nerd tree.
-    " NOTE: Use a patched font such as nerd-fonts-source-code-pro.
-    " NOTE: Icons will not display unless airline loads before dev icons.
-    Plug 'vim-airline/vim-airline' | Plug 'ryanoasis/vim-devicons'
-    " Add Doxygen support.
-    Plug 'vim-scripts/DoxygenToolkit.vim'
-    " A powerful autopair plugin for Neovim that supports multiple characters.
-    Plug 'windwp/nvim-autopairs'
-    " Tagbar: a class outline viewer for Vim.
-    Plug 'preservim/tagbar' " Requires universal ctags.
-    " Add window-tiling manager functionality.
-    Plug 'luis-licea/dwm.vim'
-call plug#end()
-
-lua << EOF
-    -- Load autopair plugin.
-    require("nvim-autopairs").setup {}
-EOF
-
-"-------------------------------------------------------------------------------
 " DWM settings.
 "-------------------------------------------------------------------------------
 " Do not use default DWM key mappings.
@@ -563,41 +501,7 @@ endif
 "-------------------------------------------------------------------------------
 " Switch between files and headers: c -> h and cpp -> hpp.
 "-------------------------------------------------------------------------------
-command! A LspDocumentSwitchSourceHeader
-
-"-------------------------------------------------------------------------------
-" Md-vim settings.
-"-------------------------------------------------------------------------------
-aug MdGroup
-    au!
-    " Create a binding for formatting tables.
-    au BufReadPost *.md nnoremap <buffer><leader>fo :TableFormat()<cr>
-    " au FileType cpp set shiftwidth=2 | set softtabstop=2  | set tabstop=2
-    " Create a binding for formatting (renumbering) ordered lists.
-    au BufReadPost *.md nnoremap <buffer><leader>fl :call MdFixOrderedList()<cr>
-    " View compiled markdown pdf.
-    au BufReadPost *.md nnoremap <buffer><leader>cv :silent !zathura "/tmp/%<.pdf" &<cr>
-    " Auto compile the markdown file after saving if auto compilation is enabled.
-    au BufWritePost *.md if s:auto_run == 1 | sil exec '!pandoc "%" -o "/tmp/%<.pdf"' | endif
-aug end
-
-" Disable header folding.
-let g:vim_markdown_folding_disabled = 1
-
-" Conceal ~~this~~ and *this* and `this` and more.
-let g:vim_markdown_conceal = 1
-
-" disable math tex conceal feature
-let g:tex_conceal = ""
-let g:vim_markdown_math = 1
-
-" Stop adding annoying indentation.
-let g:vim_markdown_new_list_item_indent = 0
-
-" support front matter of various format
-let g:vim_markdown_frontmatter = 1  " for YAML format
-let g:vim_markdown_toml_frontmatter = 1  " for TOML format
-let g:vim_markdown_json_frontmatter = 1  " for JSON format
+command! A  ClangdSwitchSourceHeader
 
 "-------------------------------------------------------------------------------
 " Startify settings.
@@ -605,14 +509,13 @@ let g:vim_markdown_json_frontmatter = 1  " for JSON format
 " Automatically save session when leaving. Use :SSave to crate a session.
 let g:startify_session_persistence = 1
 " Do not open blank windows when loading the session.
-set sessionoptions=curdir,folds,help,tabpages,winpos ",blank
+set sessionoptions=curdir,folds,help,tabpages,winpos,blank
 " Do not show cowsay as part of the quote. It takes a lot of space.
-let g:startify_custom_header = 'startify#pad(startify#fortune#quote())'
+" let g:startify_custom_header = 'startify#pad(startify#fortune#quote())'
 " Place sessions section first because that is what I access most often.
 let g:startify_lists = [
     \ { 'header': ['   Sessions'],       'type': 'sessions' },
     \ { 'header': ['   MRU'],            'type': 'files' },
-    \ { 'header': ['   MRU '. getcwd()], 'type': 'dir' },
     \ ]
 
 "-------------------------------------------------------------------------------
@@ -645,32 +548,11 @@ map <c-_> <plug>NERDCommenterToggle
 " [N]<leader>cy " NERDCommenterYank Yank lines and then comment cc them.
 
 "-------------------------------------------------------------------------------
-" Nerd tree mappings. Prefix n means "nerd".
-"-------------------------------------------------------------------------------
-" Go to project root.
-nnoremap <leader>nt :NERDTree<cr>
-" Switch sidebar tree.
-nnoremap <leader>nn :NERDTreeToggle<cr>
-" Find current file in tree.
-nnoremap <leader>nf :NERDTreeFind<cr>
-" Refresh files
-nnoremap <leader>nr :NERDTreeRefreshRoot<cr>
-" Show hidden files by default.
-let NERDTreeShowHidden=1
-" Close Nerd tree after opening a file.
-let g:NERDTreeQuitOnOpen = 1
-
-"-------------------------------------------------------------------------------
-" Vim-Devicons settings.
-"-------------------------------------------------------------------------------
-" Integrate with powerline. Adds nice colors and decorative edges to sections.
-let g:airline_powerline_fonts = 1
-"-------------------------------------------------------------------------------
 " Vim-code-dark settings.
 "-------------------------------------------------------------------------------
 " Set the color scheme. The schemes codedark and dracula are plugins.
 " colorscheme codedark
-colorscheme dracula
+" colorscheme dracula
 " Make the background transparent.
 " highlight normal guibg=none ctermbg=none
 
@@ -678,7 +560,8 @@ colorscheme dracula
 " Vim-airline settings.
 "-------------------------------------------------------------------------------
 " let g:airline_theme = 'codedark'
-let g:airline_theme = 'dracula'
+" let g:airline_theme = 'dracula'
+"let g:airline_theme = 'codedark'
 " Displays all buffers in upper tab line.
 let g:airline#extensions#tabline#enabled = 1
 " Whether to show "Buffers" and "Tabs" labels in tabline.
@@ -689,6 +572,16 @@ let g:airline#extensions#tabline#show_close_button = 0
 let g:airline#extensions#tabline#show_tab_count = 0
 
 "-------------------------------------------------------------------------------
+" Conflict Marker.
+"-------------------------------------------------------------------------------
+" Place after colorscheme or custom colors will be overriden.
+highlight ConflictMarkerBegin guibg=#2f7366
+highlight ConflictMarkerOurs guibg=#2e5049
+highlight ConflictMarkerTheirs guibg=#344f69
+highlight ConflictMarkerEnd guibg=#2f628e
+highlight ConflictMarkerCommonAncestorsHunk guibg=#754a81
+
+"-------------------------------------------------------------------------------
 " Rust-vim settings.
 "-------------------------------------------------------------------------------
 " Format Rust file using rustfmt each time the file is saved.
@@ -697,71 +590,39 @@ let g:rustfmt_autosave = 1
 " Also provide RustTest, RustEmitIr, RustEmitAsm, RustFmt, Ctest, Cbuild.
 
 "-------------------------------------------------------------------------------
-" Rusty-tags settings (Installed using `cargo install rusty-tags`).
-"-------------------------------------------------------------------------------
-" Looks for tags in current directory's rusty-tags.vi folder to the root.
-" au BufRead *.rs :setlocal tags=./rusty-tags.vi;/
-" au BufWritePost *.rs :sil! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
-" TODO Set shortcut to make tag, jump to tag, and split window and go to tag.
-
-"-------------------------------------------------------------------------------
 " Vim-lsp mappings. Prefix g means "go".
 "-------------------------------------------------------------------------------
-" Install Rust server.
-" rustup component add rls rust-analysis rust-src
-" Run :LspInstallServer inside a corresponding file.
+"function! s:on_lsp_buffer_enabled() abort
+"    setlocal omnifunc=lsp#complete
+"    setlocal signcolumn=yes
+"    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+"    nmap <buffer> gd <plug>(lsp-definition)
+"    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+"    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+"    nmap <buffer> gr <plug>(lsp-references)
+"    " nmap <buffer> gi <plug>(lsp-implementation)
+"    nmap <buffer> <leader>gi <plug>(lsp-implementation)
+"    nmap <buffer> gt <plug>(lsp-type-definition)
+"    nmap <buffer> <leader>rn <plug>(lsp-rename)
+"    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+"    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+"    " nmap <buffer> K <plug>(lsp-hover)
+"    nmap <buffer> <leader>k <plug>(lsp-hover)
+"
+"    inoremap <buffer> <expr><c-f> lsp#scroll(+4)
+"    inoremap <buffer> <expr><c-d> lsp#scroll(-4)
+"
+"    let g:lsp_format_sync_timeout = 1000
+"    " Start formatting server when the file is opened.
+"    au! BufWritePre *.py,*.cpp,*.hpp,*.rs,*.c,*.h if s:auto_format == 1 | call execute('LspDocumentFormatSync') | endif
+"
+"    " refer to doc to add more commands
+"endfunction
+"
+"aug lsp_install
+"    " Clear previous group auto commands to avoid duplicate definitions.
+"    au!
+"    " Call s:on_lsp_buffer_enabled only for languages with registered servers.
+"    au User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+"aug end
 
-" Install Python server.
-" pip3 install python-language-server
-" apt-get install python3-venv
-" Run :LspInstallServer inside a corresponding file.
-
-" Install C++ server.
-" Run :LspInstallServer inside a corresponding file.Fix the errors as follows:
-" sudo update-alternatives --install /lib/x86_64-linux-gnu/libz3.so.4.8 libz3.4.8 /lib/x86_64-linux-gnu/libz3.so.4 100
-" I knew that libz3.so.4 already existed on my system because I found it using sudo find / -xdev -name 'libz3*'.
-" Run :LspInstallServer inside a corresponding file.
-
-function! s:on_lsp_buffer_enabled() abort
-    setlocal omnifunc=lsp#complete
-    setlocal signcolumn=yes
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-    nmap <buffer> gd <plug>(lsp-definition)
-    nmap <buffer> gs <plug>(lsp-document-symbol-search)
-    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-    nmap <buffer> gr <plug>(lsp-references)
-    " nmap <buffer> gi <plug>(lsp-implementation)
-    nmap <buffer> <leader>gi <plug>(lsp-implementation)
-    nmap <buffer> gt <plug>(lsp-type-definition)
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-    " nmap <buffer> K <plug>(lsp-hover)
-    nmap <buffer> <leader>k <plug>(lsp-hover)
-
-    inoremap <buffer> <expr><c-f> lsp#scroll(+4)
-    inoremap <buffer> <expr><c-d> lsp#scroll(-4)
-
-    let g:lsp_format_sync_timeout = 1000
-    " Start formatting server when the file is opened.
-    au! BufWritePre *.py,*.cpp,*.hpp,*.rs,*.c,*.h if s:auto_format == 1 | call execute('LspDocumentFormatSync') | endif
-
-    " refer to doc to add more commands
-endfunction
-
-aug lsp_install
-    " Clear previous group auto commands to avoid duplicate definitions.
-    au!
-    " Call s:on_lsp_buffer_enabled only for languages with registered servers.
-    au User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-aug end
-
-"-------------------------------------------------------------------------------
-" Asyncomplete mappings.
-"-------------------------------------------------------------------------------
-" Next suggestion using Tab.
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-" Previous suggestion using Shift+Tab.
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" Close pop-up using the Enter key.
-inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"

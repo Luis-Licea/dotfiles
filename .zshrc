@@ -9,7 +9,11 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-ZSH=/usr/share/oh-my-zsh
+if [ -d "/usr/share/oh-my-zsh" ]; then
+    ZSH=/usr/share/oh-my-zsh
+elif [  -d "$HOME/.oh-my-zsh" ]; then
+    ZSH="$HOME/.oh-my-zsh"
+fi
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -163,9 +167,11 @@ alias passdiff="kdeconnect-cli --refresh && diff -q ~/.local/share/pass/ /run/us
 alias bashscratch="cd /tmp && nvim scratchpad.sh && cd -"
 alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
 alias jsscratch="cd /tmp && nvim scratchpad.js && cd -"
+alias luascratch="cd /tmp && nvim scratchpad.lua && cd -"
 alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"
 alias rsscratch="cargo new /tmp/rsscratch & cd /tmp/rsscratch && nvim . && cd -"
 alias txtscratch="cd /tmp && nvim scratchpad.txt && cd -"
+alias groovyscratch="cd /tmp && nvim scratchpad.groovy && cd -"
 
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME"
 alias dotfilesui="gitui -d $HOME/.config/dotfiles/ -w $HOME"
@@ -197,5 +203,17 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Add syntax highlighting.
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Syntax highlighting script name.
+ZSH_SYNTAX_HIGHLIGHTING="zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+# Possible installation directories.
+for installation_dir in '/usr/share' '/usr/share/zsh/plugins'; do
+    # If the directory and script exist:
+    if [ -f "$installation_dir/$ZSH_SYNTAX_HIGHLIGHTING" ]; then
+        # Add syntax highlighting.
+        source "$installation_dir/$ZSH_SYNTAX_HIGHLIGHTING"
+    fi
+done
+
+# For executing Groovy code:
+# java -XshowSettings:properties 2>&1 | grep java.home | xargs | cut -d' ' -f3
+export JAVA_HOME='/usr/lib/jvm/java-11-openjdk'
