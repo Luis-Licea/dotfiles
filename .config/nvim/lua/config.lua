@@ -303,6 +303,7 @@ local buffer_check = vim.api.nvim_create_augroup('Check Buffer', {
                 -- vim.cmd('silent! foldopen') -- Open folds. They are annoying.
             end
         end })
+
 --------------------------------------------------------------------------------
 -- Interface.
 --------------------------------------------------------------------------------
@@ -364,10 +365,11 @@ vim.o.path = vim.o.path .. '**'
 --------------------------------------------------------------------------------
 -- Function to auto-install packer if necessary.
 local ensure_packer = function()
-  local fn = vim.fn
-  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-  if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+  local install_path = vim.fn.stdpath('data')
+    ..'/site/pack/packer/start/packer.nvim'
+  if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+    vim.fn.system({'git', 'clone', '--depth', '1',
+        'https://github.com/wbthomason/packer.nvim', install_path})
     vim.cmd [[packadd packer.nvim]]
     return true
   end
@@ -384,15 +386,14 @@ require('packer').startup(function()
     use 'dracula/vim'
     use 'folke/tokyonight.nvim'
     -- Markdown syntax highlighting.
-    use {
-        'preservim/vim-markdown',
+    use { 'preservim/vim-markdown',
         requires = {
             -- Vim-json for conceal.
             'elzr/vim-json',
             -- Tabular for auto-formatting tables.
-            'godlygeek/tabular'
-        }
-    }
+            'godlygeek/tabular' } }
+    -- For luasnip users.
+    use {'saadparwaiz1/cmp_luasnip', requires = 'L3MON4D3/LuaSnip'}
     -- Easily align tables, or text by symbols like , ; = & etc.
     use 'junegunn/vim-easy-align'
     use 'simrat39/symbols-outline.nvim'
@@ -410,45 +411,37 @@ require('packer').startup(function()
     use 'preservim/nerdcommenter'
     -- Provide Cargo commands, and Rust syntax highlighting and formatting.
     use 'rust-lang/rust.vim'
-    use {
-        'goolord/alpha-nvim',
-        -- NOTE: Use a patched font such as MesloLGS NF.
-        requires = { 'kyazdani42/nvim-web-devicons' },
+    -- NOTE: Nvim-web-devicons requires a patched font such as MesloLGS NF.
+    use { 'goolord/alpha-nvim', requires = 'kyazdani42/nvim-web-devicons',
         config = function ()
-            require'alpha'.setup(require'alpha.themes.startify'.config)
-        end
-    }
-    use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+            require('alpha').setup(require('alpha.themes.startify').config)
+        end }
+    -- Fancy debug adapter UI provider.
+    use { "rcarriga/nvim-dap-ui", requires = 'mfussenegger/nvim-dap' }
     -- use 'rhysd/conflict-marker.vim'
-    use 'onsails/lspkind.nvim'
+    -- Intelligent search.
     use 'ggandor/lightspeed.nvim'
     -- Provide richer syntax highlighting and only spell-check comments.
-    use 'nvim-treesitter/nvim-treesitter'
-    use 'nvim-treesitter/nvim-treesitter-context'
+    use { 'nvim-treesitter/nvim-treesitter',
+        requires = 'nvim-treesitter/nvim-treesitter-context' }
+    -- Session manager for recently opened files.
     use 'Shatur/neovim-session-manager'
-    use {
-      'nvim-telescope/telescope.nvim', tag = '0.1.0',
-    -- or                            , branch = '0.1.x',
-      requires = { 'nvim-lua/plenary.nvim' }
-    }
-    use 'nvim-telescope/telescope-ui-select.nvim'
-
-    use {
-        'cljoly/telescope-repo.nvim',
-        requires = {
-            {'nvim-lua/plenary.nvim'},
-            {'nvim-telescope/telescope.nvim'},
-        }
-    }
-
-    use { "nvim-telescope/telescope-file-browser.nvim" }
-    use {
-      'kyazdani42/nvim-tree.lua',
+    -- NOTE: Install fd and ripgrep. Rich fuzzy finder.
+    use { 'nvim-telescope/telescope.nvim', tag = '0.1.0',
       requires = {
-        'kyazdani42/nvim-web-devicons', -- optional, for file icons
-      },
-      -- tag = 'nightly' -- optional, updated every week. (see issue #1193)
-    }
+            'kyazdani42/nvim-web-devicons',
+            'nvim-lua/plenary.nvim',
+            'nvim-treesitter/nvim-treesitter' } }
+    use 'nvim-telescope/telescope-ui-select.nvim'
+    -- NOTE: Install fd and glow. Git repo searcher and opener.
+    use { 'cljoly/telescope-repo.nvim',
+        requires = 'nvim-telescope/telescope.nvim' }
+    -- File browser with Telescope previews.
+    use { "nvim-telescope/telescope-file-browser.nvim",
+        requires = 'nvim-telescope/telescope.nvim' }
+    -- Side-tab file tree.
+    use { 'kyazdani42/nvim-tree.lua',
+        requires = 'kyazdani42/nvim-web-devicons' }
     -- Add OpenGL Shader Language support.
     use 'tikhomirov/vim-glsl'
     -- Use dark color scheme inspired on Visual Studio Code.
@@ -456,30 +449,26 @@ require('packer').startup(function()
     -- Surround words in parenthesis, quotations, etc., more easily.
     use 'tpope/vim-surround'
     -- Prettify status line.
-    use 'feline-nvim/feline.nvim'
-    use 'stumash/snowball.nvim'
-
-    -- use {
-      -- 'nvim-lualine/lualine.nvim',
-      -- requires = { 'kyazdani42/nvim-web-devicons', opt = true }
-    -- }
-
+    use {'feline-nvim/feline.nvim', requires = 'stumash/snowball.nvim' }
+    -- use { 'nvim-lualine/lualine.nvim',
+      -- requires = { 'kyazdani42/nvim-web-devicons', opt = true } }
+    -- Highlight colors such as #315fff or #f8f.
     use 'norcalli/nvim-colorizer.lua'
+    -- Git stager and commiter.
     use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
+    -- Git diff viewer.
     use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
-    use {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'}
-
+    -- View open buffers and tabs in the top row.
+    use { 'akinsho/bufferline.nvim', tag = "v2.*",
+        requires = 'kyazdani42/nvim-web-devicons'}
     -- Add Doxygen support.
     use 'vim-scripts/DoxygenToolkit.vim'
-    -- A powerful autopair plugin for Neovim that supports multiple characters.
-    use {
-        "windwp/nvim-autopairs",
-        config = require("nvim-autopairs").setup()
-    }
+    -- Auto close open brackets, parenthesis, quotes, etc.
+    use { "windwp/nvim-autopairs",
+        config = function() require("nvim-autopairs").setup {} end }
     -- Install language servers, formatters, linters, and debug adapters.
-    use {
-        "williamboman/mason.nvim",
-        config = require("mason").setup({
+    use { "williamboman/mason.nvim",
+        config = function() require("mason").setup {
             ui = {
                 icons = {
                     package_installed = "✓",
@@ -487,25 +476,21 @@ require('packer').startup(function()
                     package_uninstalled = "✗"
                 }
             }
-        })
+        }
+        end
     }
-    use {
-        'jose-elias-alvarez/null-ls.nvim',
-        requires = { 'nvim-lua/plenary.nvim' }
-    }
-    -- Tagbar: a class outline viewer for Vim.
-    use 'preservim/tagbar' -- Requires universal ctags.
+    use { 'jose-elias-alvarez/null-ls.nvim', requires = 'nvim-lua/plenary.nvim' }
+    --  NOTE: Requires universal ctags. Tagbar: a class outline viewer for Vim.
+    use 'preservim/tagbar'
     -- Add window-tiling manager functionality.
     use 'luis-licea/dwm.vim'
     -- Add git decorations for modified lines, +, -, ~, etc.
-    use {
-        'lewis6991/gitsigns.nvim',
-        config = require('gitsigns').setup()
-    }
+    use { 'lewis6991/gitsigns.nvim',
+        config = function() require('gitsigns').setup() end }
     -- Completion plugin.
-    use {
-        'hrsh7th/nvim-cmp',
+    use { 'hrsh7th/nvim-cmp',
         requires =  {
+            -- Completion sources.
             'hrsh7th/cmp-cmdline',
             'hrsh7th/cmp-buffer',
             'hrsh7th/cmp-nvim-lsp',
@@ -514,13 +499,12 @@ require('packer').startup(function()
             'hrsh7th/cmp-path',
             'hrsh7th/cmp-calc',
             'f3fora/cmp-spell',
-            'hrsh7th/cmp-emoji'
-        }
-    }
+            'hrsh7th/cmp-emoji',
+
+            -- Icons before source names.
+            'onsails/lspkind.nvim' } }
     -- Auto-install packer if necessary.
-    if packer_bootstrap then
-        require('packer').sync()
-    end
+    if packer_bootstrap then require('packer').sync() end
 end)
 
 local neogit = require('neogit')
@@ -530,7 +514,6 @@ neogit.setup {}
 -- tokyonight tokyonight-night tokyonight-storm tokyonight-day tokyonight-moon
 vim.cmd[[colorscheme tokyonight-moon]]
 
--- Highlight colors such as #315fff or #f8f.
 require('colorizer').setup()
 
 vim.cmd([[
@@ -639,7 +622,7 @@ require 'nvim-treesitter.configs'.setup {
     auto_install = true,
 
     -- List of parsers to ignore installing (for "all")
-    ignore_install = { "javascript" },
+    -- ignore_install = { "javascript" },
 
     -- If you need to change the installation directory of the parsers (see -> Advanced Setup)
     -- parser_install_dir = "/some/path/to/store/parsers",
@@ -978,61 +961,48 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
     vim.keymap.set('n', '<c-a>', vim.lsp.buf.code_action, bufopts)
     -- vim.keymap.set('n', '<space>f', function() vim.lsp.buf.formatting{ async = true } end, bufopts)
-    vim.keymap.set('v', '<leader>f', vim.lsp.buf.range_formatting, bufopts)
+    -- vim.keymap.set('x', '<leader>f', vim.lsp.buf.range_formatting, bufopts)
+    vim.keymap.set('x', '<leader>f', vim.lsp.buf.range_formatting, bufopts)
     vim.keymap.set('x', '<leader>c', function() vim.lsp.buf.range_code_action() end, bufopts)
     -- lua vim.lsp.buf.range_formatting()
 end
 
-
 --------------------------------------------------------------------------------
 -- Language servers.
 --------------------------------------------------------------------------------
-require('lspconfig')['pyright'].setup{
-    on_attach = on_attach,
+local servers = {
+    'bashls',
+    'clangd',
+    'cssls',
+    'dockerls',
+    'eslint',
+    'groovyls',
+    'html',
+    'jdtls',
+    'jsonls',
+    'marksman',
+    'phpactor',
+    'pyright',
+    'rust_analyzer',
+    'sqls',
+    'taplo',
 }
 
-require('lspconfig').rust_analyzer.setup {
-    on_attach = on_attach,
-}
+-- Enable (broadcasting) snippet capability for completion.
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-require('lspconfig').clangd.setup{
-    on_attach = on_attach
-}
+for _, server in ipairs(servers) do
+    require('lspconfig')[server].setup{
+        on_attach = on_attach,
+        capabilities = capabilities,
+    }
+end
 
-require('lspconfig').eslint.setup{
-    on_attach = on_attach,
-}
-
-require('lspconfig').jdtls.setup{
-    on_attach = on_attach,
-}
-
-require('lspconfig').phpactor.setup {
-    on_attach = on_attach,
-}
-
-require('lspconfig').bashls.setup {
-    on_attach = on_attach,
-}
-
-require('lspconfig').groovyls.setup{
-    on_attach = on_attach,
-}
-require('lspconfig').sqls.setup {
-    on_attach = on_attach,
-    -- cmd = {"sqls", "-config", "~/.config/sqls/config.yml"}
-}
-
-require('lspconfig').marksman.setup{
-    on_attach = on_attach,
-}
-
-require('lspconfig').taplo.setup{
-    on_attach = on_attach,
-}
 
 require('lspconfig').yamlls.setup {
     on_attach = on_attach,
+    capabilities = capabilities,
     settings = {
         yaml = {
             schemas = {
@@ -1044,8 +1014,9 @@ require('lspconfig').yamlls.setup {
     }
 }
 
-require 'lspconfig'.sumneko_lua.setup {
+require('lspconfig').sumneko_lua.setup {
     on_attach = on_attach,
+    capabilities = capabilities,
     settings = {
         Lua = {
             runtime = {
@@ -1070,30 +1041,6 @@ require 'lspconfig'.sumneko_lua.setup {
     },
 }
 
--- Enable (broadcasting) snippet capability for completion
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-
-require('lspconfig').jsonls.setup{
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
-
-require('lspconfig').html.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
-
-require('lspconfig').cssls.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
-
-require('lspconfig').dockerls.setup {
-    on_attach = on_attach,
-    capabilities = capabilities
-}
-
 --------------------------------------------------------------------------------
 -- Completion.
 --------------------------------------------------------------------------------
@@ -1101,8 +1048,13 @@ local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
-local cmp = require('cmp')
-if cmp then cmp.setup {
+require('cmp').setup {
+    snippet = {
+      -- NOTE: You must specify a snippet engine.
+      expand = function(args)
+        require('luasnip').lsp_expand(args.body)
+      end,
+    },
     formatting = {
         format = function(entry, vim_item)
 
@@ -1114,11 +1066,12 @@ if cmp then cmp.setup {
             vim_item.menu = ({
                 -- buffer = "[Buffer]",
                 nvim_lsp = "[LSP]",
+                luasnip = "[Snip]",
                 nvim_lua = "[Lua]",
                 look = "[Look]",
                 path = "[Path]",
                 calc = "[Calc]",
-                cmdline = "[Cmdline]",
+                -- cmdline = "[Cmdline]",
                 -- spell = "[Spell]",
                 emoji = "[Emoji]"
             })[entry.source.name]
@@ -1128,14 +1081,14 @@ if cmp then cmp.setup {
     },
     mapping = {
 
-        ['<C-k>'] = cmp.mapping.select_prev_item(),
-        ['<C-j>'] = cmp.mapping.select_next_item(),
-        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-f>'] = cmp.mapping.scroll_docs(4),
-        ['<C-Space>'] = cmp.mapping.complete(),
-        -- ['<Esc>'] = cmp.mapping.close(),
+        ['<C-k>'] = require('cmp').mapping.select_prev_item(),
+        ['<C-j>'] = require('cmp').mapping.select_next_item(),
+        ['<C-d>'] = require('cmp').mapping.scroll_docs(-4),
+        ['<C-f>'] = require('cmp').mapping.scroll_docs(4),
+        ['<C-Space>'] = require('cmp').mapping.complete(),
+        -- ['<Esc>'] = require('cmp').mapping.close(),
 
-        ["<Esc>"] = cmp.mapping(function(fallback)
+        ["<Esc>"] = require('cmp').mapping(function(fallback)
             if vim.fn.pumvisible() == 1 then
                 vim.fn.feedkeys(t("<Esc><Esc>"), "n")
             else
@@ -1143,10 +1096,11 @@ if cmp then cmp.setup {
             end
         end, {"i"}), -- Only apply in insert mode, not "s".
 
-        ['<CR>'] = cmp.mapping.confirm({
-            behavior = cmp.ConfirmBehavior.Insert,
+        ['<CR>'] = require('cmp').mapping.confirm({
+            behavior = require('cmp').ConfirmBehavior.Insert,
             select = true
         }),
+
     },
     sources = {
         -- {name = 'buffer'},
@@ -1155,11 +1109,30 @@ if cmp then cmp.setup {
         {name = "look"},
         {name = "path"},
         {name = "calc"},
-        {name = "cmdline"},
+        -- {name = "cmdline"},
         -- {name = "spell"},
+        {name = "luasnip"},
         {name = "emoji"}
     },
     completion = {completeopt = 'menu,menuone,noinsert'}
 }
-end
+
+-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+require('cmp').setup.cmdline({ '/', '?' }, {
+    mapping = require('cmp').mapping.preset.cmdline(),
+    sources = {
+        { name = 'buffer' }
+    }
+})
+
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+require('cmp').setup.cmdline(':', {
+    mapfing = require('cmp').mapping.preset.cmdline(),
+    sources = require('cmp').config.sources({
+        { name = 'path' }
+    }, {
+        { name = 'cmdline' }
+    })
+})
 

@@ -2,6 +2,7 @@ lua << EOF
     require('config')
 EOF
 
+set autochdir
 
 "" Auto start NERD tree when opening a directory
 "autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | wincmd p | endif
