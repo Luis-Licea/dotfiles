@@ -2,8 +2,6 @@ lua << EOF
     require('config')
 EOF
 
-set autochdir
-
 "" Auto start NERD tree when opening a directory
 "autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | wincmd p | endif
 "
@@ -430,6 +428,7 @@ aug end
 "-------------------------------------------------------------------------------
 " Do not use default DWM key mappings.
 let g:dwm_map_keys=0
+let g:dwm_auto_arrange=0
 
 " Open the current buffer in a new window.
 nmap <silent> <c-n> :call DWM_New()<cr>
@@ -448,6 +447,14 @@ nnoremap <silent> <c-l> :call DWM_GrowMaster(10)<CR>
 " Decrease master window size the given number of columns.
 nnoremap <silent> <c-h> :call DWM_ShrinkMaster(10)<CR>
 
+function! ToggleAutoRearrange()
+    if g:dwm_auto_arrange  == 0
+        let g:dwm_auto_arrange = 1
+    else
+        let g:dwm_auto_arrange = 0
+    endif
+endfunction
+nnoremap <leader>cr :call ToggleAutoArrange()<cr>
 "-------------------------------------------------------------------------------
 " CtrlP settings.
 "-------------------------------------------------------------------------------

@@ -7,6 +7,7 @@
 pacman_programs=(
 
     # Development tools.
+    keychain            # A front-end to ssh-agent, allowing one long-running ssh-agent process per system, rather than per login
     neovide             # No Nonsense Neovim Client in Rust.
     nethogs             # A net top tool which displays traffic used per process instead of per IP or interface.
     tig                 # Text-mode interface for Git.

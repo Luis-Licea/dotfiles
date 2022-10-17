@@ -314,7 +314,7 @@ vim.o.colorcolumn = '81'
 -- Enable mouse wheel in normal modes.
 vim.o.mouse = 'a'
 -- Enable line numbers.
-vim.o.number = true
+-- vim.o.number = true
 -- Support true color in vim.
 vim.o.termguicolors = true
 
@@ -384,7 +384,12 @@ require('packer').startup(function()
     use 'wbthomason/packer.nvim'
     -- Use dark color scheme for Vim.
     use 'dracula/vim'
+    -- Tokyo night color scheme.
     use 'folke/tokyonight.nvim'
+    -- Vim-json for conceal.
+    use 'elzr/vim-json'
+    -- Tabular for auto-formatting tables.
+    use 'godlygeek/tabular'
     -- Markdown syntax highlighting.
     use { 'preservim/vim-markdown',
         requires = {
@@ -392,13 +397,13 @@ require('packer').startup(function()
             'elzr/vim-json',
             -- Tabular for auto-formatting tables.
             'godlygeek/tabular' } }
-    -- For luasnip users.
+    -- Code snippets. Needed by cmp-vim.
+    use 'L3MON4D3/LuaSnip'
+    -- Code snippet auto completion.
     use {'saadparwaiz1/cmp_luasnip', requires = 'L3MON4D3/LuaSnip'}
     -- Easily align tables, or text by symbols like , ; = & etc.
     use 'junegunn/vim-easy-align'
     use 'simrat39/symbols-outline.nvim'
-    -- Fuzzy finder for files, buffers, mru files, and tags.
-    use 'kien/ctrlp.vim'
     -- Show indentation lines.
     use 'lukas-reineke/indent-blankline.nvim'
     -- Nice start screen.
@@ -412,20 +417,25 @@ require('packer').startup(function()
     -- Provide Cargo commands, and Rust syntax highlighting and formatting.
     use 'rust-lang/rust.vim'
     -- NOTE: Nvim-web-devicons requires a patched font such as MesloLGS NF.
+    use 'kyazdani42/nvim-web-devicons'
     use { 'goolord/alpha-nvim', requires = 'kyazdani42/nvim-web-devicons',
         config = function ()
             require('alpha').setup(require('alpha.themes.startify').config)
         end }
     -- Fancy debug adapter UI provider.
+    use 'mfussenegger/nvim-dap'
     use { "rcarriga/nvim-dap-ui", requires = 'mfussenegger/nvim-dap' }
     -- use 'rhysd/conflict-marker.vim'
     -- Intelligent search.
     use 'ggandor/lightspeed.nvim'
     -- Provide richer syntax highlighting and only spell-check comments.
+    use 'nvim-treesitter/nvim-treesitter-context'
     use { 'nvim-treesitter/nvim-treesitter',
         requires = 'nvim-treesitter/nvim-treesitter-context' }
     -- Session manager for recently opened files.
     use 'Shatur/neovim-session-manager'
+    -- Supporting functionality.
+    use 'nvim-lua/plenary.nvim'
     -- NOTE: Install fd and ripgrep. Rich fuzzy finder.
     use { 'nvim-telescope/telescope.nvim', tag = '0.1.0',
       requires = {
@@ -437,7 +447,9 @@ require('packer').startup(function()
     use { 'cljoly/telescope-repo.nvim',
         requires = 'nvim-telescope/telescope.nvim' }
     -- File browser with Telescope previews.
-    use { "nvim-telescope/telescope-file-browser.nvim",
+    -- use { "nvim-telescope/telescope-file-browser.nvim",
+    use { "Luis-Licea/telescope-file-browser.nvim",
+        branch = 'feature-toggle-respect-gitignore',
         requires = 'nvim-telescope/telescope.nvim' }
     -- Side-tab file tree.
     use { 'kyazdani42/nvim-tree.lua',
@@ -448,6 +460,8 @@ require('packer').startup(function()
     use 'tomasiser/vim-code-dark'
     -- Surround words in parenthesis, quotations, etc., more easily.
     use 'tpope/vim-surround'
+    -- Show trailing spaces and mixed indents in Feline.
+    use 'stumash/snowball.nvim'
     -- Prettify status line.
     use {'feline-nvim/feline.nvim', requires = 'stumash/snowball.nvim' }
     -- use { 'nvim-lualine/lualine.nvim',
@@ -486,7 +500,8 @@ require('packer').startup(function()
     use 'luis-licea/dwm.vim'
     -- Add git decorations for modified lines, +, -, ~, etc.
     use { 'lewis6991/gitsigns.nvim',
-        config = function() require('gitsigns').setup() end }
+        -- config = function() require('gitsigns').setup() end
+    }
     -- Completion plugin.
     use { 'hrsh7th/nvim-cmp',
         requires =  {
@@ -506,6 +521,46 @@ require('packer').startup(function()
     -- Auto-install packer if necessary.
     if packer_bootstrap then require('packer').sync() end
 end)
+
+require('gitsigns').setup{
+  on_attach = function(bufnr)
+    local gs = package.loaded.gitsigns
+
+    local function mapb(mode, l, r, opts)
+      opts = opts or {}
+      opts.buffer = bufnr
+      vim.keymap.set(mode, l, r, opts)
+    end
+
+    -- Navigation
+    mapb('n', ']c', function()
+      if vim.wo.diff then return ']c' end
+      vim.schedule(function() gs.next_hunk() end)
+      return '<Ignore>'
+    end, {expr=true})
+
+    mapb('n', '[c', function()
+      if vim.wo.diff then return '[c' end
+      vim.schedule(function() gs.prev_hunk() end)
+      return '<Ignore>'
+    end, {expr=true})
+
+    -- Actions
+    mapb({'n', 'v'}, '<leader>hs', ':Gitsigns stage_hunk<CR>')
+    mapb({'n', 'v'}, '<leader>hr', ':Gitsigns reset_hunk<CR>')
+    mapb('n', '<leader>hS', gs.stage_buffer)
+    mapb('n', '<leader>hu', gs.undo_stage_hunk)
+    mapb('n', '<leader>hR', gs.reset_buffer)
+    mapb('n', '<leader>hp', gs.preview_hunk)
+    mapb('n', '<leader>hb', function() gs.blame_line{full=true} end)
+    mapb('n', '<leader>tb', gs.toggle_current_line_blame)
+    mapb('n', '<leader>hd', gs.diffthis)
+    mapb('n', '<leader>hD', function() gs.diffthis('~') end)
+    mapb('n', '<leader>td', gs.toggle_deleted)
+    -- Text object
+    mapb({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+  end
+}
 
 local neogit = require('neogit')
 neogit.setup {}
@@ -530,7 +585,8 @@ aug MdGroup
     " View compiled markdown pdf.
     au BufReadPost *.md nnoremap <buffer><leader>cv :silent !zathura "/tmp/%<.pdf" &<cr>
     " Auto compile the markdown file after saving if auto compilation is enabled.
-    au BufWritePost *.md if s:auto_run == 1 | sil exec '!pandoc "%" -o "/tmp/%<.pdf"' | endif
+    " FIX: s:auto_run is not found because it is in the init.vim.
+    " au BufWritePost *.md if s:auto_run == 1 | sil exec '!pandoc "%" -o "/tmp/%<.pdf"' | endif
 aug end
 
 " Disable header folding.
@@ -660,17 +716,10 @@ require 'nvim-treesitter.configs'.setup {
 -- Telescope.
 --------------------------------------------------------------------------------
 local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>te', builtin.find_files, {noremap = true})
 vim.keymap.set('n', '<leader>tl', builtin.live_grep, {noremap = true})
 vim.keymap.set('n', '<leader>tb', builtin.buffers, {noremap = true})
 vim.keymap.set('n', '<leader>th', builtin.help_tags, {noremap = true})
-vim.keymap.set('n', '<leader>ts', builtin.git_status, {noremap = true})
-
---------------------------------------------------------------------------------
--- Telescope file browser.
---------------------------------------------------------------------------------
-require("telescope").load_extension("file_browser")
-vim.keymap.set('n', '<leader>tf', ':Telescope file_browser<cr>', {noremap = true})
+vim.keymap.set('n', '<leader>tg', builtin.git_status, {noremap = true})
 
 --------------------------------------------------------------------------------
 -- Telescope ui-select.
@@ -685,10 +734,46 @@ require("telescope").setup {
                 ["<C-k>"] = actions.move_selection_previous,
                 ["<C-h>"] = actions.preview_scrolling_up,
                 ["<C-l>"] = actions.preview_scrolling_down,
+            },
+            n = {
+                ["<C-j>"] = actions.move_selection_next,
+                ["<C-k>"] = actions.move_selection_previous,
+                ["<C-h>"] = actions.preview_scrolling_up,
+                ["<C-l>"] = actions.preview_scrolling_down,
             }
         },
     },
+    pickers = {
+        find_files = {
+            -- Use the current file's folder as cwd.
+            cwd = vim.fn.expand("%:h"),
+            -- Show hidden?
+            hidden = true,
+            -- Show files in gitignore?
+            no_ignore = true,
+            -- Show files in parent folder gitignores?
+            no_ignore_parent = true,
+            -- mappings = {
+            -- n = {
+                -- ["kj"] = "close",
+            -- },
+        },
+        git_files = {
+            -- Show files that are not tracked?
+            show_untracked=true,
+        }
+    },
     extensions = {
+        file_browser = {
+            -- Show file_browser instead of netrw.
+            hijack_netrw = true,
+            -- Use the current file's folder as cwd.
+            cwd=vim.fn.expand('%:h'),
+            -- Show hidden files? <C-h>/h
+            -- hidden = true,
+            -- Show files in gitignore? <C-u>/u
+            -- respect_gitignore = false,
+        },
         ["ui-select"] = {
             -- Impoves the looks of `lua vim.lsp.buf.code_action()`.
             require("telescope.themes").get_dropdown {
@@ -698,7 +783,26 @@ require("telescope").setup {
     }
 }
 
+--------------------------------------------------------------------------------
+-- Telescope UI-select.
+--------------------------------------------------------------------------------
 require("telescope").load_extension("ui-select")
+
+--------------------------------------------------------------------------------
+-- Telescope file browser.
+--------------------------------------------------------------------------------
+require("telescope").load_extension("file_browser")
+vim.keymap.set("n", "<space>tf",
+    require('telescope').extensions.file_browser.file_browser, {noremap = true})
+
+-- Find files in git repo if possible, else find files like normal.
+local project_files = function()
+    local opts = {}
+    local ok = pcall(require"telescope.builtin".git_files, opts)
+    if not ok then require"telescope.builtin".find_files(opts) end
+end
+
+vim.keymap.set('n', '<leader>te', project_files, {noremap = true})
 
 --------------------------------------------------------------------------------
 -- Telescope repo. Find git repositories.
@@ -762,6 +866,7 @@ nnoremap('<leader>nn', ':NvimTreeFindFile<cr>')
 -- Close tree after opening a file.
 
 require("nvim-tree").setup {
+    -- open_on_setup = true, -- Use tree on empty buffers, like `nvim .`.
     actions = {
         open_file = {
             quit_on_open = true, -- Close tree after picking a file.
@@ -772,9 +877,6 @@ require("nvim-tree").setup {
         }
     }
 }
-
--- Open tree automatically when executing `nvim .`.
--- require("nvim-tree").open_replacing_current_buffer()
 
 --------------------------------------------------------------------------------
 -- Feline.
@@ -928,10 +1030,11 @@ require("symbols-outline").setup(
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap=true, silent=true }
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
--- vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+vim.keymap.set('n', '<leader>d', vim.diagnostic.setloclist, opts)
+vim.keymap.set('n', '<leader>D', vim.diagnostic.setqflist, opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -945,7 +1048,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
     -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-    vim.keymap.set('n', '<space>k', vim.lsp.buf.hover, bufopts)
+    vim.keymap.set('n', '<space>K', vim.lsp.buf.hover, bufopts)
 
     vim.keymap.set('n', '<space>gi', vim.lsp.buf.implementation, bufopts)
     -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
@@ -975,7 +1078,8 @@ local servers = {
     'clangd',
     'cssls',
     'dockerls',
-    'eslint',
+    -- 'eslint',   -- Needs configuration.
+    'tsserver', -- Works better for individual files.
     'groovyls',
     'html',
     'jdtls',
@@ -998,7 +1102,6 @@ for _, server in ipairs(servers) do
         capabilities = capabilities,
     }
 end
-
 
 require('lspconfig').yamlls.setup {
     on_attach = on_attach,
@@ -1077,15 +1180,14 @@ require('cmp').setup {
             })[entry.source.name]
             return vim_item
         end
-
     },
     mapping = {
-
         ['<C-k>'] = require('cmp').mapping.select_prev_item(),
         ['<C-j>'] = require('cmp').mapping.select_next_item(),
         ['<C-d>'] = require('cmp').mapping.scroll_docs(-4),
         ['<C-f>'] = require('cmp').mapping.scroll_docs(4),
         ['<C-Space>'] = require('cmp').mapping.complete(),
+        ['<C-e>'] = require('cmp').mapping.close(),
         -- ['<Esc>'] = require('cmp').mapping.close(),
 
         ["<Esc>"] = require('cmp').mapping(function(fallback)
@@ -1100,7 +1202,6 @@ require('cmp').setup {
             behavior = require('cmp').ConfirmBehavior.Insert,
             select = true
         }),
-
     },
     sources = {
         -- {name = 'buffer'},
@@ -1114,25 +1215,46 @@ require('cmp').setup {
         {name = "luasnip"},
         {name = "emoji"}
     },
-    completion = {completeopt = 'menu,menuone,noinsert'}
+    completion = {completeopt = 'menu,menuone,noinsert,noselect'}
+}
+
+-- local entries = { entries = { name = 'wildmenu', separator = ' ' } }
+-- local entries  = { name = 'custom', selection_order = 'near_cursor' }
+local entries  = { name = 'custom' }
+local mappings = {
+    ['<C-j>'] = { c = require('cmp').mapping.select_next_item() },
+    ['<C-k>'] = { c = require('cmp').mapping.select_prev_item() },
+    ['<Tab>'] = { c = require('cmp').mapping.select_next_item() },
+    ['<S-Tab>'] = { c = require('cmp').mapping.select_prev_item() },
+    -- ['<CR>'] = { c = require('cmp').mapping.confirm({
+        -- behavior = require('cmp').ConfirmBehavior.Insert,
+        -- select = true
+    -- })},
+    ['<Esc>'] = { c = require('cmp').mapping.close(),}
+    -- ['<Tab>'] = { c = require('cmp').mapping.confirm({
+        -- behavior = require('cmp').ConfirmBehavior.Insert,
+        -- select = true
+    -- })},
 }
 
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
 require('cmp').setup.cmdline({ '/', '?' }, {
-    mapping = require('cmp').mapping.preset.cmdline(),
+    view = { entries = entries },
+    mapping = require('cmp').mapping.preset.cmdline(mappings),
     sources = {
         { name = 'buffer' }
-    }
+    },
+    completion = {completeopt = 'menu,menuone,noinsert,noselect'}
 })
-
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 require('cmp').setup.cmdline(':', {
-    mapfing = require('cmp').mapping.preset.cmdline(),
+    view = { entries = entries },
+    mapping = require('cmp').mapping.preset.cmdline(mappings),
     sources = require('cmp').config.sources({
         { name = 'path' }
     }, {
         { name = 'cmdline' }
-    })
+    }),
+    completion = {completeopt = 'menu,menuone,noinsert,noselect'}
 })
-
