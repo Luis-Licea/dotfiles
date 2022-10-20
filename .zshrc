@@ -128,6 +128,7 @@ else
 fi
 export VISUAL="$EDITOR"
 
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -217,6 +218,9 @@ done
 # For executing Groovy code:
 # java -XshowSettings:properties 2>&1 | grep java.home | xargs | cut -d' ' -f3
 export JAVA_HOME='/usr/lib/jvm/java-11-openjdk'
+
+# Add Mason servers for Neovim.
+export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
 
 # Only enter SSH password once.
 # keychain --quiet --eval id_rsa > /dev/null

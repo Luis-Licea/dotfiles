@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Make history backup.
+history="$HOME/.local/share/zathura/history"
+history_backup="$HOME/.local/share/zathura/history_backup"
+mv "$history" "$history_backup"
+
+# Open document.
+zathura "$1"
+
+# Shred history.
+shred -xu "$history"
+
+# Backup history file.
+mv "$history_backup" "$history"
