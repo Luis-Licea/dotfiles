@@ -57,8 +57,17 @@ if console then
     nnoremap('<leader>rt', new_ranger)
 end
 
+local function OpenTagBar()
+    local tagbarLanguages = { cmake = true, tex = true}
+    if tagbarLanguages[vim.bo.filetype] then
+        vim.cmd("call tagbar#OpenWindow('fcj')")
+    else
+        require'symbols-outline'.toggle_outline()
+    end
+end
+
 -- Open tag bar and close it after selecting a tag.
-nnoremap('<leader>ta', ':TagbarOpenAutoClose<cr>')
+vim.keymap.set('n', '<leader>ta', OpenTagBar, {noremap = true})
 -- Quit vim.
 nnoremap('<leader>q', ':quit<cr>')
 -- Load .vimrc.
@@ -447,7 +456,7 @@ require('packer').startup(function()
     use { 'cljoly/telescope-repo.nvim',
         requires = 'nvim-telescope/telescope.nvim' }
     -- File browser with Telescope previews.
-    -- use { "nvim-telescope/telescope-file-browser.nvim",
+    -- use { "nvim-telescope/telescope-file-browser.nvim" }
     use { "Luis-Licea/telescope-file-browser.nvim",
         branch = 'feature-toggle-respect-gitignore',
         requires = 'nvim-telescope/telescope.nvim' }
@@ -900,26 +909,12 @@ require('feline').setup {
 --------------------------------------------------------------------------------
 require('bufferline').setup {
     options = {
-        -- max_name_length = 18,
-        -- max_prefix_length = 15, -- prefix used when a buffer is de-duplicated
-        -- truncate_names = true -- whether or not tab names should be truncated
-        -- tab_size = 18,
-        -- diagnostics = false | "nvim_lsp" | "coc",
+        numbers = "ordinal",
         diagnostics = "nvim_lsp",
-        -- diagnostics_update_in_insert = false,
-        -- The diagnostics indicator can be set to nil to keep the buffer name highlight but delete the highlighting
-        -- diagnostics_indicator = function(count, level, diagnostics_dict, context)
-            -- return "("..count..")"
-        -- end,
         show_buffer_close_icons = false,
         show_close_icon = false,
         -- show_tab_indicators = true | false,
-        -- show_duplicate_prefix = true | false, -- whether to show duplicate buffer prefix
-        -- persist_buffer_sort = true, -- whether or not custom sorted buffers should persist
-        -- can also be a table containing 2 custom separators
-        -- [focused and unfocused]. eg: { '|', '|' }
         -- separator_style = "slant" | "thick" | "thin" | { 'any', 'any' },
-        separator_style = 'thin',
         -- enforce_regular_tabs = false | true,
         -- always_show_bufferline = true | false,
         always_show_bufferline = true,
@@ -969,7 +964,7 @@ local opts = {
       -- 'Field',
       -- 'Constructor',
 
-      -- 'Enum',
+      'Enum',
       -- 'Interface',
       -- 'Function',
 
@@ -982,7 +977,7 @@ local opts = {
       -- 'Object',
       -- 'Key',
       -- 'Null',
-      -- 'EnumMember',
+      'EnumMember',
       -- 'Struct',
       -- 'Event',
       -- 'Operator',
@@ -1021,7 +1016,7 @@ local opts = {
 }
 
 require("symbols-outline").setup(
--- opts
+    opts
 )
 
 --------------------------------------------------------------------------------
@@ -1089,7 +1084,10 @@ local servers = {
     'pyright',
     'rust_analyzer',
     'sqls',
+    'cmake',
     'taplo',
+    'ltex',
+    -- 'texlab',
 }
 
 -- Enable (broadcasting) snippet capability for completion.

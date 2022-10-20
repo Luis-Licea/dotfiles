@@ -1,16 +1,16 @@
 lua << EOF
-    require('config')
+    require'config'
 EOF
 
 "" Auto start NERD tree when opening a directory
-"autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | wincmd p | endif
+"autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') | exe 'NERDTree' argv()[0] | wincmd p | ene | wincmd p | endif
 "
 "" Auto start NERD tree if no files are specified
 "autocmd StdinReadPre * let s:std_in=1
-"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | exe 'NERDTree' | endif
+"autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | exe 'NERDTree' | endif
 "
 "" Let quit work as expected if after entering :q the only window left open is NERD Tree itself
-"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"autocmd bufenter * if (winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree()) | q | endif
 
 "" improved keyboard support for navigation (especially terminal)
 "" https://neovim.io/doc/user/nvim_terminal_emulator.html
@@ -30,8 +30,6 @@ EOF
 "nnoremap <silent> <leader>tv :vnew<CR>:terminal<CR>
 "nnoremap <silent> <leader>th :new<CR>:terminal<CR>
 "tnoremap <C-x> <C-\><C-n><C-w>q
-"
-"
 
 "-------------------------------------------------------------------------------
 " Tab settings.
@@ -42,16 +40,27 @@ nnoremap <leader>tn :tabnew %<cr>
 nnoremap <leader>tc :tabclose<cr>
 
 " Go to tab by number.
-noremap <leader>1 1gt
-noremap <leader>2 2gt
-noremap <leader>3 3gt
-noremap <leader>4 4gt
-noremap <leader>5 5gt
-noremap <leader>6 6gt
-noremap <leader>7 7gt
-noremap <leader>8 8gt
-noremap <leader>9 9gt
-noremap <leader>0 :tablast<cr>
+noremap <localleader>1 1gt
+noremap <localleader>2 2gt
+noremap <localleader>3 3gt
+noremap <localleader>4 4gt
+noremap <localleader>5 5gt
+noremap <localleader>6 6gt
+noremap <localleader>7 7gt
+noremap <localleader>8 8gt
+noremap <localleader>9 9gt
+noremap <localleader>0 :tablast<cr>
+
+nnoremap <leader>1 <cmd>lua require("bufferline").go_to_buffer(1, true)<cr>
+nnoremap <leader>2 <cmd>lua require("bufferline").go_to_buffer(2, true)<cr>
+nnoremap <leader>3 <cmd>lua require("bufferline").go_to_buffer(3, true)<cr>
+nnoremap <leader>4 <cmd>lua require("bufferline").go_to_buffer(4, true)<cr>
+nnoremap <leader>5 <cmd>lua require("bufferline").go_to_buffer(5, true)<cr>
+nnoremap <leader>6 <cmd>lua require("bufferline").go_to_buffer(6, true)<cr>
+nnoremap <leader>7 <cmd>lua require("bufferline").go_to_buffer(7, true)<cr>
+nnoremap <leader>8 <cmd>lua require("bufferline").go_to_buffer(8, true)<cr>
+nnoremap <leader>9 <cmd>lua require("bufferline").go_to_buffer(9, true)<cr>
+nnoremap <leader>0 <cmd>lua require("bufferline").go_to_buffer(10, true)<cr>
 
 ""-------------------------------------------------------------------------------
 "" Row and column movement settings.
@@ -63,13 +72,6 @@ noremap <leader>0 :tablast<cr>
 "    call cursor(0, l:column)
 "endfunction
 "
-"" Move the cursor to the row. E.g., 50% is the middle of visible buffer.
-"function! GoToVisibleBufferRow(percent)
-"    let l:visible_rows = line('w$') - line('w0')
-"    let l:first_row = line('w0')
-"    let l:row = l:first_row + l:visible_rows*a:percent/100
-"    call cursor(l:row, 0)
-"endfunction
 "
 "" Move the cursor to the row. E.g., 50% is the middle of the buffer.
 "function! GoToBufferRow(percent)
@@ -90,18 +92,7 @@ noremap <leader>0 :tablast<cr>
 "nnoremap ,9 :call GoToBufferColumn(88)<cr>
 "nnoremap ,0 :call GoToBufferColumn(100)<cr>
 "
-"" Move across the visible buffer rows in increments.
-"nnoremap ;1 :call GoToVisibleBufferRow(0)<cr>
-"nnoremap ;2 :call GoToVisibleBufferRow(11)<cr>
-"nnoremap ;3 :call GoToVisibleBufferRow(22)<cr>
-"nnoremap ;4 :call GoToVisibleBufferRow(33)<cr>
-"nnoremap ;5 :call GoToVisibleBufferRow(44)<cr>
-"nnoremap ;6 :call GoToVisibleBufferRow(55)<cr>
-"nnoremap ;7 :call GoToVisibleBufferRow(66)<cr>
-"nnoremap ;8 :call GoToVisibleBufferRow(77)<cr>
-"nnoremap ;9 :call GoToVisibleBufferRow(88)<cr>
-"nnoremap ;0 :call GoToVisibleBufferRow(100)<cr>
-"
+
 "" Move across buffer rows in increments.
 "nnoremap g1 :call GoToBufferRow(0)<cr>
 "nnoremap g2 :call GoToBufferRow(11)<cr>
@@ -439,8 +430,10 @@ nmap <silent> <c-space> :exec DWM_Focus()<cr>
 
 " Next window. Move cursor clockwise to the next window
 nnoremap <c-j> <c-w>w
+nnoremap <Tab> <c-w>w
 " Previous window. Move cursor counter-clockwise to the previous window.
 nnoremap <c-k> <c-w>W
+nnoremap <S-Tab> <c-w>W
 
 " Increase master window size the given number of columns.
 nnoremap <silent> <c-l> :call DWM_GrowMaster(10)<CR>
