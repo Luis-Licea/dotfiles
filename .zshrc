@@ -167,10 +167,10 @@ alias passdiff="kdeconnect-cli --refresh && diff -q ~/.local/share/pass/ /run/us
 
 alias bashscratch="cd /tmp && nvim scratchpad.sh && cd -"
 alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
-alias jsscratch="cd /tmp && nvim scratchpad.js && cd -"
+alias jsscratch="cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && nvim scratchpad.js || nvim scratchpad.js && cd -"
 alias luascratch="cd /tmp && nvim scratchpad.lua && cd -"
 alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"
-alias rsscratch="cargo new /tmp/rsscratch & cd /tmp/rsscratch && nvim . && cd -"
+alias rsscratch="cd /tmp && [ ! -d rsscratch ] && cargo new rsscratch && nvim rsscratch/src/main.rs || nvim /tmp/rsscratch/src/main.rs && cd -"
 alias txtscratch="cd /tmp && nvim scratchpad.txt && cd -"
 alias groovyscratch="cd /tmp && nvim scratchpad.groovy && cd -"
 
