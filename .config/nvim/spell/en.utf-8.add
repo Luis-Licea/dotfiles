@@ -55,3 +55,8 @@ window
 Lualine
 lualine
 falsey
+Neovim
+gitignore
+cwd
+netrw
+lua

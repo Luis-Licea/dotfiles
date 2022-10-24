@@ -83,6 +83,50 @@ nnoremap('<leader>rswap', ':!rm "%.swp"<cr>')
 -- Unset the last search pattern register.
 nnoremap('<esc>', ':nohl<cr>', { silent = true })
 
+--------------------------------------------------------------------------------
+-- Tab, window, and buffer navigation.
+--------------------------------------------------------------------------------
+-- Open the current buffer in a new tab.
+nnoremap('<leader>tn', ':tabnew %<cr>')
+-- Close the tab.
+nnoremap('<leader>tc', ':tabclose<cr>')
+
+-- Go to tab by number.
+nnoremap('<localleader>1', '1gt')
+nnoremap('<localleader>2', '2gt')
+nnoremap('<localleader>3', '3gt')
+nnoremap('<localleader>4', '4gt')
+nnoremap('<localleader>5', '5gt')
+nnoremap('<localleader>6', '6gt')
+nnoremap('<localleader>7', '7gt')
+nnoremap('<localleader>8', '8gt')
+nnoremap('<localleader>9', '9gt')
+nnoremap('<localleader>0', ':tablast<cr>')
+
+-- Go to window by number.
+nnoremap('g1', ':call win_gotoid(win_getid(1))<cr>')
+nnoremap('g2', ':call win_gotoid(win_getid(2))<cr>')
+nnoremap('g3', ':call win_gotoid(win_getid(3))<cr>')
+nnoremap('g4', ':call win_gotoid(win_getid(4))<cr>')
+nnoremap('g5', ':call win_gotoid(win_getid(5))<cr>')
+nnoremap('g6', ':call win_gotoid(win_getid(6))<cr>')
+nnoremap('g7', ':call win_gotoid(win_getid(7))<cr>')
+nnoremap('g8', ':call win_gotoid(win_getid(8))<cr>')
+nnoremap('g9', ':call win_gotoid(win_getid(9))<cr>')
+nnoremap('g0', ':call win_gotoid(win_getid(10))<cr>')
+
+-- Go to buffer by number.
+nnoremap('<leader>1', ':lua require("bufferline").go_to_buffer(1, true)<cr>')
+nnoremap('<leader>2', ':lua require("bufferline").go_to_buffer(2, true)<cr>')
+nnoremap('<leader>3', ':lua require("bufferline").go_to_buffer(3, true)<cr>')
+nnoremap('<leader>4', ':lua require("bufferline").go_to_buffer(4, true)<cr>')
+nnoremap('<leader>5', ':lua require("bufferline").go_to_buffer(5, true)<cr>')
+nnoremap('<leader>6', ':lua require("bufferline").go_to_buffer(6, true)<cr>')
+nnoremap('<leader>7', ':lua require("bufferline").go_to_buffer(7, true)<cr>')
+nnoremap('<leader>8', ':lua require("bufferline").go_to_buffer(8, true)<cr>')
+nnoremap('<leader>9', ':lua require("bufferline").go_to_buffer(9, true)<cr>')
+nnoremap('<leader>0', ':lua require("bufferline").go_to_buffer(10, true)<cr>')
+
 -- -----------------------------------------------------------------------------
 -- Command mode mappings.
 -- -----------------------------------------------------------------------------
@@ -103,9 +147,9 @@ inoremap('<c-j>', '<c-n>')
 -- Normal mode mappings. Fast movement.
 -- -----------------------------------------------------------------------------
 -- Move a page up.
-nnoremap('<s-k>', '<pageup>')
+nnoremap('<s-k>', '<c-u><c-u>')
 -- Move a page down.
-nnoremap('<s-j>', '<pagedown>')
+nnoremap('<s-j>', '<c-d><c-d>')
 
 -- -----------------------------------------------------------------------------
 -- Resize Window mappings.
@@ -182,34 +226,6 @@ nnoremap('<leader>bs', ':buffers<cr>')
 nnoremap('<leader>bd', ':bd<cr>')
 
 -- -----------------------------------------------------------------------------
--- Window mappings.
--- -----------------------------------------------------------------------------
--- Move cursor to the left window.
-nnoremap('<leader>h', '<c-w>h')
--- Move cursor to the window below.
-nnoremap('<leader>j', '<c-w>j')
--- Move cursor to the window above.
-nnoremap('<leader>k', '<c-w>k')
--- Move cursor to the right window.
-nnoremap('<leader>l', '<c-w>l')
--- Remaping localleader to CTRL-W enabled the following mappings.
--- <localleader>= - make all windows equal height & width
--- <localleader>h - move cursor to the left window
--- <localleader>j - move cursor to the window below
--- <localleader>k - move cursor to the window above
--- <localleader>l - move cursor to the right window
--- <localleader>q - quit a window
--- <localleader>r - rotate windows upwards N times
--- <localleader>w - switch windows
--- <localleader>x - exchange current window with next one
--- <localleader>s - split window
--- <localleader>v - split window vertically
--- Split window (add for responsiveness).
--- nnoremap <localleader>s :sp<cr>
--- Split window vertically (add for responsiveness).
--- nnoremap <localleader>v :vsp<cr>
-
--- -----------------------------------------------------------------------------
 -- Embedded terminal settings and mappings.
 -- -----------------------------------------------------------------------------
 -- Move cursor to the left window.
@@ -272,12 +288,6 @@ local buffer_check = vim.api.nvim_create_augroup('Check Buffer', {
         pattern  = '*',
         callback = function() vim.highlight.on_yank{timeout=150} end})
 
-    -- -- sync clipboards because I'm easily confused
-    -- vim.api.nvim_create_autocmd('TextYankPost', {
-        -- group    = 'bufcheck',
-        -- pattern  = '*',
-        -- callback = function() fn.setreg('+', fn.getreg('*')) end })
-
     -- Start terminal in insert mode.
     vim.api.nvim_create_autocmd('TermOpen',     {
         group    = buffer_check,
@@ -287,18 +297,8 @@ local buffer_check = vim.api.nvim_create_augroup('Check Buffer', {
     -- Start git messages in insert mode.
     vim.api.nvim_create_autocmd('FileType',     {
         group    = buffer_check,
-        -- pattern  = { 'gitcommit', 'gitrebase', },
         pattern  = { 'gitcommit', },
         command  = 'startinsert | 1'})
-
-   -- -- pager mappings for Manual
-   -- vim.api.nvim_create_autocmd('FileType',     {
-        -- group    = 'bufcheck',
-        -- pattern  = 'man',
-        -- callback = function()
-          -- vim.keymap.set('n', '<enter>'    , 'K'    , {buffer=true})
-          -- vim.keymap.set('n', '<backspace>', '<c-o>', {buffer=true})
-          -- end })
 
     -- Remember file position.
    vim.api.nvim_create_autocmd('BufReadPost',  {
@@ -322,8 +322,6 @@ vim.o.clipboard = 'unnamedplus'
 vim.o.colorcolumn = '81'
 -- Enable mouse wheel in normal modes.
 vim.o.mouse = 'a'
--- Enable line numbers.
--- vim.o.number = true
 -- Support true color in vim.
 vim.o.termguicolors = true
 
@@ -415,10 +413,6 @@ require('packer').startup(function()
     use 'simrat39/symbols-outline.nvim'
     -- Show indentation lines.
     use 'lukas-reineke/indent-blankline.nvim'
-    -- Nice start screen.
-    -- use 'mhinz/vim-startify'
-    -- Search tool. NOTE: Install the ag (silver-searcher grep) utility first.
-    use 'mileszs/ack.vim'
     -- Configurations for Nvim LSP.
     use 'neovim/nvim-lspconfig'
     -- Comment and uncomment code sections more easily witch cc, uc, and ci.
@@ -427,14 +421,10 @@ require('packer').startup(function()
     use 'rust-lang/rust.vim'
     -- NOTE: Nvim-web-devicons requires a patched font such as MesloLGS NF.
     use 'kyazdani42/nvim-web-devicons'
-    use { 'goolord/alpha-nvim', requires = 'kyazdani42/nvim-web-devicons',
-        config = function ()
-            require('alpha').setup(require('alpha.themes.startify').config)
-        end }
-    -- Fancy debug adapter UI provider.
+    -- Debug Adapter Protocol.
     use 'mfussenegger/nvim-dap'
+    -- Fancy debug adapter UI provider.
     use { "rcarriga/nvim-dap-ui", requires = 'mfussenegger/nvim-dap' }
-    -- use 'rhysd/conflict-marker.vim'
     -- Intelligent search.
     use 'ggandor/lightspeed.nvim'
     -- Provide richer syntax highlighting and only spell-check comments.
@@ -456,13 +446,10 @@ require('packer').startup(function()
     use { 'cljoly/telescope-repo.nvim',
         requires = 'nvim-telescope/telescope.nvim' }
     -- File browser with Telescope previews.
-    -- use { "nvim-telescope/telescope-file-browser.nvim" }
-    use { "Luis-Licea/telescope-file-browser.nvim",
-        branch = 'feature-toggle-respect-gitignore',
-        requires = 'nvim-telescope/telescope.nvim' }
+    use { "nvim-telescope/telescope-file-browser.nvim" }
     -- Side-tab file tree.
-    use { 'kyazdani42/nvim-tree.lua',
-        requires = 'kyazdani42/nvim-web-devicons' }
+    -- use { 'kyazdani42/nvim-tree.lua',
+        -- requires = 'kyazdani42/nvim-web-devicons' }
     -- Add OpenGL Shader Language support.
     use 'tikhomirov/vim-glsl'
     -- Use dark color scheme inspired on Visual Studio Code.
@@ -473,14 +460,10 @@ require('packer').startup(function()
     use 'stumash/snowball.nvim'
     -- Prettify status line.
     use {'feline-nvim/feline.nvim', requires = 'stumash/snowball.nvim' }
-    -- use { 'nvim-lualine/lualine.nvim',
-      -- requires = { 'kyazdani42/nvim-web-devicons', opt = true } }
     -- Highlight colors such as #315fff or #f8f.
     use 'norcalli/nvim-colorizer.lua'
     -- Git stager and commiter.
     use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
-    -- Git diff viewer.
-    use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
     -- View open buffers and tabs in the top row.
     use { 'akinsho/bufferline.nvim', tag = "v2.*",
         requires = 'kyazdani42/nvim-web-devicons'}
@@ -617,25 +600,16 @@ let g:vim_markdown_toml_frontmatter = 1  " for TOML format
 let g:vim_markdown_json_frontmatter = 1  " for JSON format
 ]])
 
--- local dap = require('dap')
--- dap.adapters.python = {
-  -- type = 'executable';
-  -- command = '/home/luis/.local/share/nvim/mason/bin/debugpy-adapter';
-  -- args = { '-m', 'debugpy.adapter' };
--- }
-
+--------------------------------------------------------------------------------
+-- DAP: Debug Adapter Protocol
+--------------------------------------------------------------------------------
 require("dapui").setup()
-local dap = require('dap')
+local dap, dapui = require("dap"), require("dapui")
 dap.adapters.python = {
   type = 'executable';
-  -- command = os.getenv('HOME') .. '/.virtualenvs/tools/bin/python';
-  -- command = '/usr/bin/python3';
-  command = '/home/luis/.local/share/nvim/mason/bin/debugpy-adapter'
-  -- args = { '-m', 'debugpy.adapter' };
+  command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/debugpy-adapter'
 }
 
--- local dap, dapui = require("dap"), require("dapui")
-local dapui = require("dapui")
 dap.listeners.after.event_initialized["dapui_config"] = function()
   dapui.open({})
 end
@@ -646,14 +620,12 @@ dap.listeners.before.event_exited["dapui_config"] = function()
   dapui.close({})
 end
 
--- local dap = require('dap')
 dap.configurations.python = {
   {
     type = 'python';
     request = 'launch';
     name = "Launch file";
     program = "${file}";
-    -- program = "/home/luis/.local/share/nvim/mason/bin/debugpy";
     pythonPath = function()
       return '/usr/bin/python3'
     end;
@@ -669,6 +641,7 @@ dap.configurations.python = {
         -- require("null-ls").builtins.diagnostics.eslint,
         -- require("null-ls").builtins.diagnostics.selene,
         -- require("null-ls").builtins.completion.spell,
+        -- require("null-ls").builtins.code_actions.gitsigns,
     -- },
 -- }
 
@@ -733,6 +706,20 @@ vim.keymap.set('n', '<leader>tg', builtin.git_status, {noremap = true})
 --------------------------------------------------------------------------------
 -- Telescope ui-select.
 --------------------------------------------------------------------------------
+-- Custom function for telescope file browser.
+local fb_actions = require "telescope".extensions.file_browser.actions
+local action_state = require "telescope.actions.state"
+--- Toggle files and folders in `.gitignore` for |telescope-file-browser.picker.file_browser|.
+---@param prompt_bufnr number: The prompt bufnr
+fb_actions.toggle_gitignore = function(prompt_bufnr)
+-- local toggle_gitignore = function(prompt_bufnr)
+-- local function toggle_gitignore(prompt_bufnr)
+  local current_picker = action_state.get_current_picker(prompt_bufnr)
+  local finder = current_picker.finder
+  finder.respect_gitignore = not finder.respect_gitignore
+  current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi })
+end
+
 -- Set vim.ui.select to telescope. This affects SessionManager.
 local actions = require "telescope.actions"
 require("telescope").setup {
@@ -760,12 +747,8 @@ require("telescope").setup {
             hidden = true,
             -- Show files in gitignore?
             no_ignore = true,
-            -- Show files in parent folder gitignores?
+            -- Show files in parent folder gitignore?
             no_ignore_parent = true,
-            -- mappings = {
-            -- n = {
-                -- ["kj"] = "close",
-            -- },
         },
         git_files = {
             -- Show files that are not tracked?
@@ -778,13 +761,19 @@ require("telescope").setup {
             hijack_netrw = true,
             -- Use the current file's folder as cwd.
             cwd=vim.fn.expand('%:h'),
-            -- Show hidden files? <C-h>/h
-            -- hidden = true,
-            -- Show files in gitignore? <C-u>/u
-            -- respect_gitignore = false,
+            mappings = {
+                -- Show hidden files? <C-h>/h
+                -- Show files in .gitignore? <C-u>/u
+                ["n"] = {
+                    ["<u>"] = fb_actions.toggle_gitignore,
+                },
+                ["i"] = {
+                    ["<C-u>"] = fb_actions.toggle_gitignore,
+                }
+            }
         },
         ["ui-select"] = {
-            -- Impoves the looks of `lua vim.lsp.buf.code_action()`.
+            -- Improves the looks of `lua vim.lsp.buf.code_action()`.
             require("telescope.themes").get_dropdown {
               -- even more opts
             }
@@ -843,51 +832,6 @@ require('session_manager').setup({
 })
 
 --------------------------------------------------------------------------------
--- Vim-Startify.
---------------------------------------------------------------------------------
--- Define the following functions as a work-around to use nvim-web-devicons.
--- In Lua.
-function _G.webDevIcons(path)
-  local filename = vim.fn.fnamemodify(path, ':t')
-  local extension = vim.fn.fnamemodify(path, ':e')
-  return require'nvim-web-devicons'.get_icon(filename, extension, { default = true })
-end
-
--- In VimScript.
-vim.cmd([[
-    function! StartifyEntryFormat() abort
-        return 'v:lua.webDevIcons(absolute_path) . " " . entry_path'
-    endfunction
-]])
-
---------------------------------------------------------------------------------
--- Nvim tree mappings. Prefix n means "Nvim".
---------------------------------------------------------------------------------
--- Disable netrw at the very start of your init.lua (strongly advised).
-vim.g.loaded = 1
-vim.g.loaded_netrwPlugin = 1
--- Go to project root.
-nnoremap('<leader>no', ':NvimTreeOpen<cr>')
--- Switch sidebar tree.
-nnoremap('<leader>nt', ':NvimTreeToggle<cr>')
--- Find current file in tree.
-nnoremap('<leader>nn', ':NvimTreeFindFile<cr>')
--- Close tree after opening a file.
-
-require("nvim-tree").setup {
-    -- open_on_setup = true, -- Use tree on empty buffers, like `nvim .`.
-    actions = {
-        open_file = {
-            quit_on_open = true, -- Close tree after picking a file.
-            resize_window = false, -- It messes up DWM window sizes.
-            window_picker = {
-                enable = false, -- Don't ask for window when opening new buffer.
-            },
-        }
-    }
-}
-
---------------------------------------------------------------------------------
 -- Feline.
 --------------------------------------------------------------------------------
 local snowball = require('snowball')
@@ -898,11 +842,6 @@ require('feline').setup {
        require('feline.default_components').statusline.icons
    )),
 }
-
---------------------------------------------------------------------------------
--- Lualine.
---------------------------------------------------------------------------------
--- require('lualine').setup()
 
 --------------------------------------------------------------------------------
 -- Bufferline.
@@ -916,8 +855,6 @@ require('bufferline').setup {
         -- show_tab_indicators = true | false,
         -- separator_style = "slant" | "thick" | "thin" | { 'any', 'any' },
         -- enforce_regular_tabs = false | true,
-        -- always_show_bufferline = true | false,
-        always_show_bufferline = true,
     }
 }
 
@@ -968,13 +905,13 @@ local opts = {
       -- 'Interface',
       -- 'Function',
 
-      -- 'Variable',
-      -- 'Constant',
+      'Variable',
+      'Constant',
       -- 'String',
-      -- 'Number',
-      -- 'Boolean',
+      'Number',
+      'Boolean',
       -- 'Array',
-      -- 'Object',
+      'Object',
       -- 'Key',
       -- 'Null',
       'EnumMember',
@@ -985,34 +922,34 @@ local opts = {
       -- 'Component',
       -- 'Fragment',
   },
-  symbols = {
-    File = {icon = "", hl = "TSURI"},
-    Module = {icon = "", hl = "TSNamespace"},
-    Namespace = {icon = "", hl = "TSNamespace"},
-    Package = {icon = "", hl = "TSNamespace"},
-    Class = {icon = "𝓒", hl = "TSType"},
-    Method = {icon = "ƒ", hl = "TSMethod"},
-    Property = {icon = "", hl = "TSMethod"},
-    Field = {icon = "", hl = "TSField"},
-    Constructor = {icon = "", hl = "TSConstructor"},
-    Enum = {icon = "ℰ", hl = "TSType"},
-    Interface = {icon = "ﰮ", hl = "TSType"},
-    Function = {icon = "", hl = "TSFunction"},
-    Variable = {icon = "", hl = "TSConstant"},
-    Constant = {icon = "", hl = "TSConstant"},
-    String = {icon = "𝓐", hl = "TSString"},
-    Number = {icon = "#", hl = "TSNumber"},
-    Boolean = {icon = "⊨", hl = "TSBoolean"},
-    Array = {icon = "", hl = "TSConstant"},
-    Object = {icon = "⦿", hl = "TSType"},
-    Key = {icon = "🔐", hl = "TSType"},
-    Null = {icon = "NULL", hl = "TSType"},
-    EnumMember = {icon = "", hl = "TSField"},
-    Struct = {icon = "𝓢", hl = "TSType"},
-    Event = {icon = "🗲", hl = "TSType"},
-    Operator = {icon = "+", hl = "TSOperator"},
-    TypeParameter = {icon = "𝙏", hl = "TSParameter"}
-  }
+  -- symbols = {
+    -- File = {icon = "", hl = "TSURI"},
+    -- Module = {icon = "", hl = "TSNamespace"},
+    -- Namespace = {icon = "", hl = "TSNamespace"},
+    -- Package = {icon = "", hl = "TSNamespace"},
+    -- Class = {icon = "𝓒", hl = "TSType"},
+    -- Method = {icon = "ƒ", hl = "TSMethod"},
+    -- Property = {icon = "", hl = "TSMethod"},
+    -- Field = {icon = "", hl = "TSField"},
+    -- Constructor = {icon = "", hl = "TSConstructor"},
+    -- Enum = {icon = "ℰ", hl = "TSType"},
+    -- Interface = {icon = "ﰮ", hl = "TSType"},
+    -- Function = {icon = "", hl = "TSFunction"},
+    -- Variable = {icon = "", hl = "TSConstant"},
+    -- Constant = {icon = "", hl = "TSConstant"},
+    -- String = {icon = "𝓐", hl = "TSString"},
+    -- Number = {icon = "#", hl = "TSNumber"},
+    -- Boolean = {icon = "⊨", hl = "TSBoolean"},
+    -- Array = {icon = "", hl = "TSConstant"},
+    -- Object = {icon = "⦿", hl = "TSType"},
+    -- Key = {icon = "🔐", hl = "TSType"},
+    -- Null = {icon = "NULL", hl = "TSType"},
+    -- EnumMember = {icon = "", hl = "TSField"},
+    -- Struct = {icon = "𝓢", hl = "TSType"},
+    -- Event = {icon = "🗲", hl = "TSType"},
+    -- Operator = {icon = "+", hl = "TSOperator"},
+    -- TypeParameter = {icon = "𝙏", hl = "TSParameter"}
+  -- }
 }
 
 require("symbols-outline").setup(

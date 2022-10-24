@@ -2,122 +2,19 @@ lua << EOF
     require'config'
 EOF
 
-"" Auto start NERD tree when opening a directory
-"autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') | exe 'NERDTree' argv()[0] | wincmd p | ene | wincmd p | endif
-"
-"" Auto start NERD tree if no files are specified
-"autocmd StdinReadPre * let s:std_in=1
-"autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | exe 'NERDTree' | endif
-"
-"" Let quit work as expected if after entering :q the only window left open is NERD Tree itself
-"autocmd bufenter * if (winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree()) | q | endif
-
-"" improved keyboard support for navigation (especially terminal)
-"" https://neovim.io/doc/user/nvim_terminal_emulator.html
-"tnoremap <Esc> <C-\><C-n>
-"tnoremap <A-h> <C-\><C-n><C-w>h
-"tnoremap <A-j> <C-\><C-n><C-w>j
-"tnoremap <A-k> <C-\><C-n><C-w>k
-"tnoremap <A-l> <C-\><C-n><C-w>l
-"nnoremap <A-h> <C-w>h
-"nnoremap <A-j> <C-w>j
-"nnoremap <A-k> <C-w>k
-"nnoremap <A-l> <C-w>l
-
-"" Start terminal in insert mode
-"au BufEnter * if &buftype == 'terminal' | :startinsert | endif
-"nnoremap <silent> <leader>tt :terminal<CR>
-"nnoremap <silent> <leader>tv :vnew<CR>:terminal<CR>
-"nnoremap <silent> <leader>th :new<CR>:terminal<CR>
-"tnoremap <C-x> <C-\><C-n><C-w>q
-
-"-------------------------------------------------------------------------------
-" Tab settings.
-"-------------------------------------------------------------------------------
-" Open the current buffer in a new tab.
-nnoremap <leader>tn :tabnew %<cr>
-" Close the tab.
-nnoremap <leader>tc :tabclose<cr>
-
-" Go to tab by number.
-noremap <localleader>1 1gt
-noremap <localleader>2 2gt
-noremap <localleader>3 3gt
-noremap <localleader>4 4gt
-noremap <localleader>5 5gt
-noremap <localleader>6 6gt
-noremap <localleader>7 7gt
-noremap <localleader>8 8gt
-noremap <localleader>9 9gt
-noremap <localleader>0 :tablast<cr>
-
-nnoremap <leader>1 <cmd>lua require("bufferline").go_to_buffer(1, true)<cr>
-nnoremap <leader>2 <cmd>lua require("bufferline").go_to_buffer(2, true)<cr>
-nnoremap <leader>3 <cmd>lua require("bufferline").go_to_buffer(3, true)<cr>
-nnoremap <leader>4 <cmd>lua require("bufferline").go_to_buffer(4, true)<cr>
-nnoremap <leader>5 <cmd>lua require("bufferline").go_to_buffer(5, true)<cr>
-nnoremap <leader>6 <cmd>lua require("bufferline").go_to_buffer(6, true)<cr>
-nnoremap <leader>7 <cmd>lua require("bufferline").go_to_buffer(7, true)<cr>
-nnoremap <leader>8 <cmd>lua require("bufferline").go_to_buffer(8, true)<cr>
-nnoremap <leader>9 <cmd>lua require("bufferline").go_to_buffer(9, true)<cr>
-nnoremap <leader>0 <cmd>lua require("bufferline").go_to_buffer(10, true)<cr>
-
-""-------------------------------------------------------------------------------
-"" Row and column movement settings.
-""-------------------------------------------------------------------------------
-"" Move the cursor to the column. E.g., 50% is the middle of the line.
-"function! GoToBufferColumn(percent)
-"    let l:visible_columns = virtcol('$')
-"    let l:column = l:visible_columns*a:percent/100
-"    call cursor(0, l:column)
-"endfunction
-"
-"
-"" Move the cursor to the row. E.g., 50% is the middle of the buffer.
-"function! GoToBufferRow(percent)
-"    let l:all_rows = line('$')
-"    let l:row =  l:all_rows*a:percent/100
-"    call cursor(l:row + 1, 0)
-"endfunction
-"
-"" Move across line characters in increments.
-"nnoremap ,1 :call GoToBufferColumn(0)<cr>
-"nnoremap ,2 :call GoToBufferColumn(11)<cr>
-"nnoremap ,3 :call GoToBufferColumn(22)<cr>
-"nnoremap ,4 :call GoToBufferColumn(33)<cr>
-"nnoremap ,5 :call GoToBufferColumn(44)<cr>
-"nnoremap ,6 :call GoToBufferColumn(55)<cr>
-"nnoremap ,7 :call GoToBufferColumn(66)<cr>
-"nnoremap ,8 :call GoToBufferColumn(77)<cr>
-"nnoremap ,9 :call GoToBufferColumn(88)<cr>
-"nnoremap ,0 :call GoToBufferColumn(100)<cr>
-"
-
-"" Move across buffer rows in increments.
-"nnoremap g1 :call GoToBufferRow(0)<cr>
-"nnoremap g2 :call GoToBufferRow(11)<cr>
-"nnoremap g3 :call GoToBufferRow(22)<cr>
-"nnoremap g4 :call GoToBufferRow(33)<cr>
-"nnoremap g5 :call GoToBufferRow(44)<cr>
-"nnoremap g6 :call GoToBufferRow(55)<cr>
-"nnoremap g7 :call GoToBufferRow(66)<cr>
-"nnoremap g8 :call GoToBufferRow(77)<cr>
-"nnoremap g9 :call GoToBufferRow(88)<cr>
-"nnoremap g0 :call GoToBufferRow(100)<cr>
-
-"-------------------------------------------------------------------------------
-" Colors and Formatting.
-"-------------------------------------------------------------------------------
-" Enable code syntax highlighting.
-syntax enable
-" Enable auto indentation and plugins based on file type.
-filetype indent plugin on
-
 "-------------------------------------------------------------------------------
 " Vim Terminal.
 "-------------------------------------------------------------------------------
 " Close tab immediately after closing terminal.
 " au! TermClose * :q
+
+" Start terminal in insert mode
+" au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+
+" nnoremap <silent> <leader>tt :terminal<CR>
+" nnoremap <silent> <leader>tv :vnew<CR>:terminal<CR>
+" nnoremap <silent> <leader>th :new<CR>:terminal<CR>
+" tnoremap <C-x> <C-\><C-n><C-w>q
 
 "-------------------------------------------------------------------------------
 " Auto-apply Xresources.
@@ -430,10 +327,9 @@ nmap <silent> <c-space> :exec DWM_Focus()<cr>
 
 " Next window. Move cursor clockwise to the next window
 nnoremap <c-j> <c-w>w
-nnoremap <Tab> <c-w>w
+
 " Previous window. Move cursor counter-clockwise to the previous window.
 nnoremap <c-k> <c-w>W
-nnoremap <S-Tab> <c-w>W
 
 " Increase master window size the given number of columns.
 nnoremap <silent> <c-l> :call DWM_GrowMaster(10)<CR>
@@ -448,56 +344,6 @@ function! ToggleAutoRearrange()
     endif
 endfunction
 nnoremap <leader>cr :call ToggleAutoArrange()<cr>
-"-------------------------------------------------------------------------------
-" CtrlP settings.
-"-------------------------------------------------------------------------------
-" Run :CtrlP or :CtrlP [starting-directory] to invoke CtrlP in find file mode.
-" Run :CtrlPBuffer or :CtrlPMRU to invoke CtrlP in find buffer or find MRU file mode.
-" Run :CtrlPMixed to search in Files, Buffers and MRU files at the same time.
-"
-" Check :help ctrlp-commands and :help ctrlp-extensions for other commands.
-" Once CtrlP is open:
-"
-" Press <F5> to purge the cache for the current directory to get new files, remove deleted files and apply new ignore options.
-" Press <c-f> and <c-b> to cycle between modes.
-" Press <c-d> to switch to filename only search instead of full path.
-" Press <c-r> to switch to regexp mode.
-" Use <c-j>, <c-k> or the arrow keys to navigate the result list.
-" Use <c-t> or <c-v>, <c-x> to open the selected entry in a new tab or in a new split.
-" Use <c-n>, <c-p> to select the next/previous string in the prompt's history.
-" Use <c-y> to create a new file and its parent directories.
-" Use <c-z> to mark/unmark multiple files and <c-o> to open them.
-"
- "Run :help ctrlp-mappings or submit ? in CtrlP for more mapping help.
-"
-" Submit two or more dots .. to go up the directory tree by one or multiple levels.
-" End the input string with a colon : followed by a command to execute it on the opening file(s):
-" Use :25 to jump to line 25.
-" Use :diffthis when opening multiple files to run :diffthis on the first 4 files
-
-" Set silver-searcher for faster searches if available.
-if executable("ag")
-    set grepprg=ag\ --nogroup\ --nocolor
-    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-endif
-
-" Show hidden files.
-" let g:ctrlp_show_hidden = 1
-
-" Ignore these files from searchers.
-" set wildignore+=*.so,*/,*/.sass-cache/*,*/node_modules/*,*/.git/*
-
-" let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
-" let g:ctrlp_custom_ignore = {
-  " \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-  " \ 'file': '\v\.(exe|so|dll)$|\v(node_modules)*',
-  " \ }
-
-" set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.yardoc/*,*.exe,*.so,*.dat
-" let g:ctrlp_custom_ignore = {
-    " \'dir': '\v[\/](node_modules|target|dist)|(\.(swp|ico|git|svn))$',
-    " \'file': '\v\.(dll|min.js|min.css|jpg|png|mp4)$'
-" \}
 
 "-------------------------------------------------------------------------------
 " Switch between files and headers: c -> h and cpp -> hpp.
@@ -507,28 +353,8 @@ command! A  ClangdSwitchSourceHeader
 "-------------------------------------------------------------------------------
 " Startify settings.
 "-------------------------------------------------------------------------------
-" Automatically save session when leaving. Use :SSave to crate a session.
-let g:startify_session_persistence = 1
 " Do not open blank windows when loading the session.
 set sessionoptions=curdir,folds,help,tabpages,winpos,blank
-" Do not show cowsay as part of the quote. It takes a lot of space.
-" let g:startify_custom_header = 'startify#pad(startify#fortune#quote())'
-" Place sessions section first because that is what I access most often.
-let g:startify_lists = [
-    \ { 'header': ['   Sessions'],       'type': 'sessions' },
-    \ { 'header': ['   MRU'],            'type': 'files' },
-    \ ]
-
-"-------------------------------------------------------------------------------
-"  Ack settings.
-"-------------------------------------------------------------------------------
-if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
-endif
-" Open ack finder. The ! means not to jump to the first occurrence.
-nnoremap <leader>a :tab split<cr>:Ack! ""<Left>
-" Search word under cursor. The ! means not to jump to the first occurrence.
-nnoremap <leader>A :tab split<cr>:Ack! <c-r><c-w><cr>
 
 "-------------------------------------------------------------------------------
 " Nerd commenter settings.
@@ -556,31 +382,6 @@ map <c-_> <plug>NERDCommenterToggle
 " colorscheme dracula
 " Make the background transparent.
 " highlight normal guibg=none ctermbg=none
-
-"-------------------------------------------------------------------------------
-" Vim-airline settings.
-"-------------------------------------------------------------------------------
-" let g:airline_theme = 'codedark'
-" let g:airline_theme = 'dracula'
-"let g:airline_theme = 'codedark'
-" Displays all buffers in upper tab line.
-let g:airline#extensions#tabline#enabled = 1
-" Whether to show "Buffers" and "Tabs" labels in tabline.
-let g:airline#extensions#tabline#show_tab_type = 0
-" Whether to show close button next to buffer when many tabs are open.
-let g:airline#extensions#tabline#show_close_button = 0
-" Whether to display the number of open tabs.
-let g:airline#extensions#tabline#show_tab_count = 0
-
-"-------------------------------------------------------------------------------
-" Conflict Marker.
-"-------------------------------------------------------------------------------
-" Place after colorscheme or custom colors will be overriden.
-highlight ConflictMarkerBegin guibg=#2f7366
-highlight ConflictMarkerOurs guibg=#2e5049
-highlight ConflictMarkerTheirs guibg=#344f69
-highlight ConflictMarkerEnd guibg=#2f628e
-highlight ConflictMarkerCommonAncestorsHunk guibg=#754a81
 
 "-------------------------------------------------------------------------------
 " Rust-vim settings.
