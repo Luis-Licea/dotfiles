@@ -17,25 +17,8 @@ EOF
 " tnoremap <C-x> <C-\><C-n><C-w>q
 
 "-------------------------------------------------------------------------------
-" Auto-apply Xresources.
-"-------------------------------------------------------------------------------
-" Apply .Xresources file after editing the file.
-au! BufWritePost .Xresources exec '!xrdb && xrdb -merge ~/.Xresources'
-
-"-------------------------------------------------------------------------------
 " Auto compilation settings.
 "-------------------------------------------------------------------------------
-" Function for toggling auto compilation on save:
-let s:auto_run = 0
-function! ToggleAutoRun()
-    if s:auto_run  == 0
-        let s:auto_run = 1
-    else
-        let s:auto_run = 0
-    endif
-endfunction
-nnoremap <leader>ct :call ToggleAutoRun()<cr>
-
 " Function for toggling code formatting on save:
 let s:auto_format = 0
 function! ToggleAutoFormat()
@@ -194,26 +177,9 @@ function! Run()
     endif
 endfunction
 
-" For all programs.
-    aug Program
-        au!
-        au BufWritePost * if s:auto_run == 1 | call Run() | endif
-    aug end
 
-" C++ code settings.
-    aug CppGroup
-        au!
-        au FileType cpp set shiftwidth=2 | set softtabstop=2  | set tabstop=2
-    aug end
 
-" JavaScript code settings.
-    aug JSGroup
-        au!
-        au BufEnter *.mjs set filetype=javascript
-    aug end
 
-" Spell check and wrap commit messages.
-au! Filetype gitcommit setlocal spell textwidth=72
 "-------------------------------------------------------------------------------
 " Latex auto compilation.
 "-------------------------------------------------------------------------------
@@ -261,56 +227,6 @@ function! OpenLaTeXPDF(viewer)
     endif
 endfunction
 
-aug LaTeXGroup
-    " Clear previous group auto commands to avoid duplicate definitions.
-    au!
-    " Define variables for compiling file into a PDF.
-    au FileType tex call SetLaTeXVariables()
-    " Compile the file in the same directory and watch for changes ever 10 seconds.
-    au FileType tex nnoremap <buffer> <leader>co :call RunLaTeX()<cr>
-    " Clean all files except the compiled pdf.
-    au FileType tex nnoremap <buffer> <leader>cr :call CleanLaTeX()<cr>
-    " Open the compiled LaTeX pdf with the specified viewer.
-    au FileType tex nnoremap <buffer> <leader>cv :sil call OpenLaTeXPDF("zathura")<cr>
-    " Compile LaTeX document every time after saving.
-    au BufWritePost *.tex if s:auto_run == 1 | call RunLaTeX() | endif
-    " Clean the all files except the compiled pdf when exiting.
-    au VimLeavePre *.tex :call CleanLaTeX()
-aug end
-
-" Compile the file in the same directory and watch for changes ever 10 seconds.
-" nnoremap <leader>co :sil exec '!watch -n 10 rubber --pdf --shell-escape --synctex --inplace "%"'<cr>
-
-"-------------------------------------------------------------------------------
-" Scratchpads.
-"-------------------------------------------------------------------------------
-" Execute files named "scratchpad" each time they are saved.
-au! BufEnter scratchpad.* call ToggleAutoRun() | call ToggleAutoFormat()
-
-"-------------------------------------------------------------------------------
-" Templates for new files that do not exist.
-"-------------------------------------------------------------------------------
-function! LoadTemplate(name)
-    " The place where the templates are saved.
-    let s:template_dir=expand('~/.config/nvim/templates/')
-    " Get path to template file.
-    let s:templae_path=s:template_dir . fnameescape(a:name)
-    " Load the template into the current file.
-    exe "0r " . s:templae_path
-endfunction
-
-aug TemplateGroup
-    au!
-    au BufNewFile *.c            call LoadTemplate('skeleton.c')
-    au BufNewFile *.cpp          call LoadTemplate('skeleton.cpp')
-    au BufNewFile *.html         call LoadTemplate('skeleton.html')
-    au BufNewFile *.py           call LoadTemplate('skeleton.py')
-    au BufNewFile *.sh           call LoadTemplate('skeleton.sh')
-    au BufNewFile CMakeLists.txt call LoadTemplate('CMakeLists.txt')
-    au BufNewFile cmake_uninstall.cmake.in call
-                \ LoadTemplate('cmake_uninstall.cmake.in')
-aug end
-
 "-------------------------------------------------------------------------------
 " DWM settings.
 "-------------------------------------------------------------------------------
@@ -343,18 +259,12 @@ function! ToggleAutoRearrange()
         let g:dwm_auto_arrange = 0
     endif
 endfunction
-nnoremap <leader>cr :call ToggleAutoArrange()<cr>
+nnoremap <leader>cr :call ToggleAutoRearrange()<cr>
 
 "-------------------------------------------------------------------------------
 " Switch between files and headers: c -> h and cpp -> hpp.
 "-------------------------------------------------------------------------------
 command! A  ClangdSwitchSourceHeader
-
-"-------------------------------------------------------------------------------
-" Startify settings.
-"-------------------------------------------------------------------------------
-" Do not open blank windows when loading the session.
-set sessionoptions=curdir,folds,help,tabpages,winpos,blank
 
 "-------------------------------------------------------------------------------
 " Nerd commenter settings.
@@ -427,4 +337,3 @@ let g:rustfmt_autosave = 1
 "    " Call s:on_lsp_buffer_enabled only for languages with registered servers.
 "    au User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 "aug end
-

@@ -60,3 +60,6 @@ gitignore
 cwd
 netrw
 lua
+Gitsigns
+
+

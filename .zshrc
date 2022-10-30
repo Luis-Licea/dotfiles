@@ -125,7 +125,8 @@ else
   alias vim='nvim --noplugin'
   alias edit=$EDITOR
   alias page=$PAGER
-  alias em='emacsclient --create-frame'
+  alias ema='emacsclient --create-frame'
+  alias em='setsid --fork emacsclient --create-frame && exit'
 fi
 export VISUAL="$EDITOR"
 
@@ -168,6 +169,7 @@ alias passdiff="kdeconnect-cli --refresh && diff -q ~/.local/share/pass/ /run/us
 
 alias bashscratch="cd /tmp && nvim scratchpad.sh && cd -"
 alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
+alias cscratch="cd /tmp && nvim scratchpad.c && cd -"
 alias jsscratch="cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && nvim scratchpad.js || nvim scratchpad.js && cd -"
 alias luascratch="cd /tmp && nvim scratchpad.lua && cd -"
 alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"

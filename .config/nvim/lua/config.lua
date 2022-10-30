@@ -7,14 +7,13 @@ local function dict_append(dict1, dict2)
 end
 
 local function keymap(mode, shortcut, command, options)
-    local default_options = {}
-    dict_append(default_options, options)
-    vim.api.nvim_set_keymap(mode, shortcut, command, default_options)
+    vim.keymap.set(mode, shortcut, command, options)
 end
 
 local function map(shortcut, command, options)
     keymap('', shortcut, command, options)
 end
+
 local function nnoremap(shortcut, command, options)
     local default_options = {noremap = true}
     dict_append(default_options, options)
@@ -29,6 +28,7 @@ end
 local function tnoremap(shortcut, command)
     keymap('t', shortcut, command, {noremap = true})
 end
+
 --------------------------------------------------------------------------------
 -- Ungrouped Mappings.
 --------------------------------------------------------------------------------
@@ -82,6 +82,9 @@ nnoremap('<leader>rw', ':%s/\\s\\+$//e<cr>')
 nnoremap('<leader>rswap', ':!rm "%.swp"<cr>')
 -- Unset the last search pattern register.
 nnoremap('<esc>', ':nohl<cr>', { silent = true })
+-- Paste last thing yanked, not deleted.
+nnoremap(',p', '"0p')
+nnoremap(',P', '"0P')
 
 --------------------------------------------------------------------------------
 -- Tab, window, and buffer navigation.
@@ -211,9 +214,9 @@ nnoremap('<leader>ssr', ':setlocal spell! spelllang=ru spell?<cr>')
 -- Buffer mappings. Prefix b means "buffer".
 -- -----------------------------------------------------------------------------
 -- Go to the next buffer.
-nnoremap('L', ':bn<cr>')
+nnoremap('<Tab>', ':bn<cr>')
 -- Go to the previous buffer.
-nnoremap('H', ':bp<cr>')
+nnoremap('<S-Tab>', ':bp<cr>')
 -- Go to the next buffer.
 nnoremap('<leader>bn', ':bn<cr>')
 -- Go to the previous buffer.
@@ -239,21 +242,18 @@ tnoremap('<localleader>l', '<c-\\><c-n><cr><c-w>l')
 -- Escape window.
 tnoremap('<Esc><Esc>', '<c-\\><c-n><cr>')
 
-local when_term_opens = vim.api.nvim_create_augroup("When Terminal Opens", {
-    -- Clear previous group auto commands to avoid duplicate definitions.
-    clear = true
-})
+local term_opnes_group = vim.api.nvim_create_augroup("Terminal Opens Group", {})
 
     -- Turn off spelling in terminal.
     vim.api.nvim_create_autocmd('TermOpen', {
-        group = when_term_opens,
+        group = term_opnes_group,
         pattern = '*',
         command = 'setlocal nospell'
     })
 
     -- Disable line numbering in terminal.
     vim.api.nvim_create_autocmd('TermOpen', {
-        group = when_term_opens,
+        group = term_opnes_group,
         pattern = '*',
         command = 'setlocal nonumber'
     })
@@ -261,48 +261,47 @@ local when_term_opens = vim.api.nvim_create_augroup("When Terminal Opens", {
     -- Press escape twice to exit. Add only to zsh because it conflicts with fzf.
     -- Press ctrl+q to scroll freely in terminal, as opposed to ctrl+\ ctrl+n.
     vim.api.nvim_create_autocmd('TermOpen', {
-       group = when_term_opens,
+       group = term_opnes_group,
        pattern = '*',
        command = 'if expand("%:t") == "zsh" | tnoremap <c-q> <c-\\><c-n> | endif'
    })
 
-local buffer_check = vim.api.nvim_create_augroup('Check Buffer', {
-    clear = true
-})
+local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
 
     -- Resize windows equally when the window size changes. Useful for DWM.
     vim.api.nvim_create_autocmd('VimResized', {
-        group = buffer_check,
+        group = buffer_check_group,
         pattern = '*',
         command = 'wincmd ='
     })
     -- Reload config file on change.
     vim.api.nvim_create_autocmd('BufWritePost', {
-        group    = buffer_check,
+        group    = buffer_check_group,
         pattern  = vim.env.MYVIMRC,
         command  = 'source %'})
 
     -- Highlight yanks.
     vim.api.nvim_create_autocmd('TextYankPost', {
-        group    = buffer_check,
+        group    = buffer_check_group,
         pattern  = '*',
         callback = function() vim.highlight.on_yank{timeout=150} end})
 
     -- Start terminal in insert mode.
     vim.api.nvim_create_autocmd('TermOpen',     {
-        group    = buffer_check,
+        group    = buffer_check_group,
         pattern  = '*',
         command  = 'startinsert | set winfixheight'})
 
     -- Start git messages in insert mode.
+    -- Spell check and wrap commit messages.
     vim.api.nvim_create_autocmd('FileType',     {
-        group    = buffer_check,
+        group    = buffer_check_group,
         pattern  = { 'gitcommit', },
-        command  = 'startinsert | 1'})
+        command  = 'startinsert | 1 | setlocal spell textwidth=72'})
 
     -- Remember file position.
-   vim.api.nvim_create_autocmd('BufReadPost',  {
-        group    = buffer_check,
+    vim.api.nvim_create_autocmd('BufReadPost',  {
+        group    = buffer_check_group,
         pattern  = '*',
         callback = function()
             if vim.fn.line("'\"") > 0 and vim.fn.line("'\"") <= vim.fn.line("$") then
@@ -312,6 +311,204 @@ local buffer_check = vim.api.nvim_create_augroup('Check Buffer', {
                 -- vim.cmd('silent! foldopen') -- Open folds. They are annoying.
             end
         end })
+
+local xresources_group = vim.api.nvim_create_augroup('Xresources Group', {})
+    -- Apply .Xresources file after editing the file.
+   vim.api.nvim_create_autocmd('BufWritePost',  {
+        group    = xresources_group,
+        pattern  = '.Xresources',
+        callback = function()
+            vim.fn.execute('!xrdb && xrdb -merge ~/.Xresources')
+        end })
+
+local cpp_group = vim.api.nvim_create_augroup('C++ Group', {})
+
+    -- C++ code settings.
+    vim.api.nvim_create_autocmd('FileType',  {
+        group    = cpp_group,
+        pattern  = 'cpp',
+        callback = function()
+            vim.cmd('set shiftwidth=2 | set softtabstop=2  | set tabstop=2')
+        end })
+
+--------------------------------------------------------------------------------
+-- Load templates for newly created files.
+--------------------------------------------------------------------------------
+local template_group = vim.api.nvim_create_augroup('Template Group', {})
+
+    local function LoadTemplate(templateName)
+        -- " The place where the templates are saved.
+        local templateDir = vim.fn.expand('~/.config/nvim/templates/')
+        -- " Get path to template file.
+        local templatePath = templateDir .. vim.fn.fnameescape(templateName)
+        -- " Load the template into the current file.
+        vim.fn.execute('0r ' .. templatePath)
+    end
+
+    local function LoadTemplateFromType()
+        local type2template = {
+            c = "skeleton.c",
+            cpp = "skeleton.cpp",
+            html = "skeleton.html",
+            sh = "skeleton.sh",
+            python = "skeleton.py",
+            CMakeLists = "CMakeLists.txt",
+            cmake_uninstall = "cmake_uninstall.cmake.in"
+        }
+
+        -- Get the file name root (one extension removed).
+        local fileName = vim.fn.expand("%:r")
+        -- Get the file extension only.
+        local extension = vim.fn.expand("%:e")
+        -- Try to find a valid template using the file name or the file type.
+        local template = type2template[fileName] or type2template[extension]
+        -- Load the template if it could be found.
+        if template then LoadTemplate(template) end
+    end
+
+    -- C++ code settings.
+    vim.api.nvim_create_autocmd('BufNewFile',  {
+        group    = template_group,
+        pattern  = '*',
+        callback = LoadTemplateFromType })
+
+--------------------------------------------------------------------------------
+-- Auto compilation settings.
+--------------------------------------------------------------------------------
+-- Function for toggling auto compilation on save:
+HasAutoRun = false;
+function ToggleHasAutoRun()
+    HasAutoRun = not HasAutoRun;
+end
+nnoremap('<leader>ct', ':lua ToggleHasAutoRun()<cr>')
+
+-- Function for toggling code formatting on save:
+HasAutoFormat = false;
+function ToggleHasAutoFormat()
+    HasAutoFormat = not HasAutoFormat;
+end
+nnoremap('<leader>cf', ':lua ToggleHasAutoFormat()<cr>')
+
+local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
+    clear = true
+})
+
+    -- For all programs.
+    vim.api.nvim_create_autocmd('BufWritePost', {
+        group = auto_run_group,
+        pattern = '*',
+        callback = function()
+            if HasAutoFormat then vim.lsp.buf.format() end
+            if HasAutoRun then vim.cmd('call Run()') end
+        end
+    })
+
+    -- Execute files named "scratchpad" each time they are saved.
+    vim.api.nvim_create_autocmd('BufEnter', {
+        group = auto_run_group,
+        pattern = 'scratchpad.*',
+        callback = function()
+            ToggleHasAutoFormat()
+            ToggleHasAutoRun()
+        end
+    })
+
+--------------------------------------------------------------------------------
+-- Markdown.
+--------------------------------------------------------------------------------
+local md_group = vim.api.nvim_create_augroup('Markdown Group', {
+    clear = true
+})
+    -- Auto compile markdown file after saving if auto compilation is enabled.
+    vim.api.nvim_create_autocmd('BufWritePost', {
+        group = md_group,
+        pattern = '*.md',
+        callback = function()
+            if HasAutoRun then
+                vim.fn.execute('!pandoc "%" -o "/tmp/%<.pdf"')
+            end
+        end
+    })
+
+    -- View pdf files.
+    function LaunchViewer()
+        vim.fn.execute('!zathura "/tmp/%<.pdf" &')
+    end
+
+    -- View compiled markdown pdf.
+    vim.api.nvim_create_autocmd('BufReadPost', {
+        group = md_group,
+        pattern = '*.md',
+        callback = function()
+            nnoremap('<leader>cv', ':lua LaunchViewer()<cr>', {buffer = true})
+        end
+    })
+
+    -- Create a binding for formatting tables.
+    vim.api.nvim_create_autocmd('BufReadPost', {
+        group = md_group,
+        pattern = '*.md',
+        callback = function()
+            nnoremap('<leader>fo', ':TableFormat<cr>', {buffer = true})
+        end
+    })
+
+--------------------------------------------------------------------------------
+-- LaTeX auto commands.
+--------------------------------------------------------------------------------
+local latex_group = vim.api.nvim_create_augroup('LaTeX Group', {
+    clear = true
+})
+
+    -- Define variables for compiling file into a PDF.
+    vim.api.nvim_create_autocmd('FileType', {
+        group = latex_group,
+        pattern = 'tex',
+        callback = function() vim.cmd('call SetLaTeXVariables()') end
+    })
+
+    -- Compile the file in the same directory and watch for changes ever 10 seconds.
+    -- nnoremap <leader>co :sil exec
+    -- '!watch -n 10 rubber --pdf --shell-escape --synctex --inplace "%"'<cr>
+    vim.api.nvim_create_autocmd('FileType', {
+        group = latex_group,
+        pattern = 'tex',
+        callback = function()
+            nnoremap('<leader>co', ':call RunLaTeX()<cr>', {buffer = true})
+        end
+    })
+
+    -- Clean all files except the compiled pdf.
+    vim.api.nvim_create_autocmd('FileType', {
+        group = latex_group,
+        pattern = 'tex',
+        callback = function()
+            nnoremap('<leader>cr', ':call CleanLaTeX()<cr>', {buffer = true})
+        end
+    })
+
+    -- Open the compiled LaTeX pdf with the specified viewer.
+    vim.api.nvim_create_autocmd('FileType', {
+        group = latex_group,
+        pattern = 'tex',
+        callback = function()
+            nnoremap('<leader>cv', ':sil call OpenLaTeXPDF("zathura")<cr>', {buffer = true})
+        end
+    })
+
+    -- Compile LaTeX document every time after saving.
+    vim.api.nvim_create_autocmd('BufWritePost', {
+        group = latex_group,
+        pattern = '*.tex',
+        callback = function() if HasAutoRun then vim.cmd('call RunLaTeX()') end end
+    })
+
+    -- Clean the all files except the compiled pdf when exiting.
+    vim.api.nvim_create_autocmd('VimLeavePre', {
+        group = latex_group,
+        pattern = '*.tex',
+        callback = function() vim.cmd('call CleanLaTeX()') end
+    })
 
 --------------------------------------------------------------------------------
 -- Interface.
@@ -393,10 +590,6 @@ require('packer').startup(function()
     use 'dracula/vim'
     -- Tokyo night color scheme.
     use 'folke/tokyonight.nvim'
-    -- Vim-json for conceal.
-    use 'elzr/vim-json'
-    -- Tabular for auto-formatting tables.
-    use 'godlygeek/tabular'
     -- Markdown syntax highlighting.
     use { 'preservim/vim-markdown',
         requires = {
@@ -404,12 +597,13 @@ require('packer').startup(function()
             'elzr/vim-json',
             -- Tabular for auto-formatting tables.
             'godlygeek/tabular' } }
-    -- Code snippets. Needed by cmp-vim.
-    use 'L3MON4D3/LuaSnip'
     -- Code snippet auto completion.
-    use {'saadparwaiz1/cmp_luasnip', requires = 'L3MON4D3/LuaSnip'}
+    use {'saadparwaiz1/cmp_luasnip',
+        -- Code snippets. Needed by cmp-vim.
+        requires = 'L3MON4D3/LuaSnip'}
     -- Easily align tables, or text by symbols like , ; = & etc.
     use 'junegunn/vim-easy-align'
+    -- Tagbar for class and function outlines.
     use 'simrat39/symbols-outline.nvim'
     -- Show indentation lines.
     use 'lukas-reineke/indent-blankline.nvim'
@@ -420,16 +614,16 @@ require('packer').startup(function()
     -- Provide Cargo commands, and Rust syntax highlighting and formatting.
     use 'rust-lang/rust.vim'
     -- NOTE: Nvim-web-devicons requires a patched font such as MesloLGS NF.
-    use 'kyazdani42/nvim-web-devicons'
-    -- Debug Adapter Protocol.
-    use 'mfussenegger/nvim-dap'
+    -- use 'kyazdani42/nvim-web-devicons'
     -- Fancy debug adapter UI provider.
-    use { "rcarriga/nvim-dap-ui", requires = 'mfussenegger/nvim-dap' }
+    use { "rcarriga/nvim-dap-ui",
+        -- Debug Adapter Protocol.
+        requires = 'mfussenegger/nvim-dap' }
     -- Intelligent search.
     use 'ggandor/lightspeed.nvim'
     -- Provide richer syntax highlighting and only spell-check comments.
-    use 'nvim-treesitter/nvim-treesitter-context'
     use { 'nvim-treesitter/nvim-treesitter',
+        -- Show context in first line. Know what class or function you are in.
         requires = 'nvim-treesitter/nvim-treesitter-context' }
     -- Session manager for recently opened files.
     use 'Shatur/neovim-session-manager'
@@ -446,27 +640,41 @@ require('packer').startup(function()
     use { 'cljoly/telescope-repo.nvim',
         requires = 'nvim-telescope/telescope.nvim' }
     -- File browser with Telescope previews.
-    use { "nvim-telescope/telescope-file-browser.nvim" }
-    -- Side-tab file tree.
-    -- use { 'kyazdani42/nvim-tree.lua',
-        -- requires = 'kyazdani42/nvim-web-devicons' }
+    use "nvim-telescope/telescope-file-browser.nvim"
     -- Add OpenGL Shader Language support.
     use 'tikhomirov/vim-glsl'
     -- Use dark color scheme inspired on Visual Studio Code.
     use 'tomasiser/vim-code-dark'
     -- Surround words in parenthesis, quotations, etc., more easily.
-    use 'tpope/vim-surround'
-    -- Show trailing spaces and mixed indents in Feline.
-    use 'stumash/snowball.nvim'
+    use {'tpope/vim-surround',
+        -- Surround word on cursor with backticks.
+        config = function() nnoremap('<leader>`', 'ysiw`') end }
     -- Prettify status line.
-    use {'feline-nvim/feline.nvim', requires = 'stumash/snowball.nvim' }
+    use {'feline-nvim/feline.nvim',
+        -- Show trailing spaces and mixed indents in Feline.
+        requires = 'stumash/snowball.nvim' }
     -- Highlight colors such as #315fff or #f8f.
-    use 'norcalli/nvim-colorizer.lua'
-    -- Git stager and commiter.
-    use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
+    use {'norcalli/nvim-colorizer.lua', 
+        config = function() require('colorizer').setup() end}
     -- View open buffers and tabs in the top row.
     use { 'akinsho/bufferline.nvim', tag = "v2.*",
-        requires = 'kyazdani42/nvim-web-devicons'}
+        config = function()
+            require('bufferline').setup {
+                options = {
+                    numbers = "ordinal",
+                    diagnostics = "nvim_lsp",
+                    show_buffer_close_icons = false,
+                    show_close_icon = false,
+                }
+            }
+        end,
+        requires = 'kyazdani42/nvim-web-devicons'
+    }
+    -- Git stager and commiter.
+    use { 'TimUntersberger/neogit',
+        -- Fix compatibility with Bufferline plugin.
+        commit = '4cc4476acbbc772f29fd6c1ccee43f58a29a1b13',
+        requires = 'nvim-lua/plenary.nvim' }
     -- Add Doxygen support.
     use 'vim-scripts/DoxygenToolkit.vim'
     -- Auto close open brackets, parenthesis, quotes, etc.
@@ -485,15 +693,27 @@ require('packer').startup(function()
         }
         end
     }
-    use { 'jose-elias-alvarez/null-ls.nvim', requires = 'nvim-lua/plenary.nvim' }
+    use { 'jose-elias-alvarez/null-ls.nvim',
+        requires = 'nvim-lua/plenary.nvim',
+        config = function()
+            require("null-ls").setup {
+                sources = {
+                    require("null-ls").builtins.formatting.black,
+                    -- require("null-ls").builtins.formatting.stylua,
+                    -- require("null-ls").builtins.diagnostics.eslint,
+                    -- require("null-ls").builtins.diagnostics.selene,
+                    -- require("null-ls").builtins.completion.spell,
+                    -- require("null-ls").builtins.code_actions.gitsigns,
+                },
+            }
+        end
+    }
     --  NOTE: Requires universal ctags. Tagbar: a class outline viewer for Vim.
     use 'preservim/tagbar'
     -- Add window-tiling manager functionality.
     use 'luis-licea/dwm.vim'
     -- Add git decorations for modified lines, +, -, ~, etc.
-    use { 'lewis6991/gitsigns.nvim',
-        -- config = function() require('gitsigns').setup() end
-    }
+    use 'lewis6991/gitsigns.nvim'
     -- Completion plugin.
     use { 'hrsh7th/nvim-cmp',
         requires =  {
@@ -509,11 +729,16 @@ require('packer').startup(function()
             'hrsh7th/cmp-emoji',
 
             -- Icons before source names.
-            'onsails/lspkind.nvim' } }
+            'onsails/lspkind.nvim'
+        }
+    }
     -- Auto-install packer if necessary.
     if packer_bootstrap then require('packer').sync() end
 end)
 
+--------------------------------------------------------------------------------
+-- Gitsigns.
+--------------------------------------------------------------------------------
 require('gitsigns').setup{
   on_attach = function(bufnr)
     local gs = package.loaded.gitsigns
@@ -554,14 +779,9 @@ require('gitsigns').setup{
   end
 }
 
-local neogit = require('neogit')
-neogit.setup {}
-
 -- There are also colorschemes for the different styles:
 -- tokyonight tokyonight-night tokyonight-storm tokyonight-day tokyonight-moon
 vim.cmd[[colorscheme tokyonight-moon]]
-
-require('colorizer').setup()
 
 vim.cmd([[
 "-------------------------------------------------------------------------------
@@ -631,19 +851,6 @@ dap.configurations.python = {
     end;
   },
 }
-
---------------------------------------------------------------------------------
--- Null-ls.
---------------------------------------------------------------------------------
--- require("null-ls").setup {
-    -- sources = {
-        -- require("null-ls").builtins.formatting.stylua,
-        -- require("null-ls").builtins.diagnostics.eslint,
-        -- require("null-ls").builtins.diagnostics.selene,
-        -- require("null-ls").builtins.completion.spell,
-        -- require("null-ls").builtins.code_actions.gitsigns,
-    -- },
--- }
 
 --------------------------------------------------------------------------------
 -- Nvim-treesitter.
@@ -843,52 +1050,36 @@ require('feline').setup {
    )),
 }
 
---------------------------------------------------------------------------------
--- Bufferline.
---------------------------------------------------------------------------------
-require('bufferline').setup {
-    options = {
-        numbers = "ordinal",
-        diagnostics = "nvim_lsp",
-        show_buffer_close_icons = false,
-        show_close_icon = false,
-        -- show_tab_indicators = true | false,
-        -- separator_style = "slant" | "thick" | "thin" | { 'any', 'any' },
-        -- enforce_regular_tabs = false | true,
-    }
-}
-
 local opts = {
-  highlight_hovered_item = true,
-  show_guides = true,
-  auto_preview = false,
-  position = 'right',
-  relative_width = true,
-  width = 25,
-  auto_close = false,
-  show_numbers = false,
-  show_relative_numbers = false,
-  show_symbol_details = true,
-  preview_bg_highlight = 'Pmenu',
-  autofold_depth = nil,
-  auto_unfold_hover = true,
-  fold_markers = { '', '' },
-  wrap = false,
-  keymaps = { -- These keymaps can be a string or a table for multiple keys
-    close = {"<Esc>", "q"},
-    goto_location = "<Cr>",
-    focus_location = "o",
-    hover_symbol = "<C-space>",
-    toggle_preview = "K",
-    rename_symbol = "r",
-    code_actions = "a",
-    fold = "h",
-    unfold = "l",
-    fold_all = "W",
-    unfold_all = "E",
-    fold_reset = "R",
-  },
-  lsp_blacklist = {},
+  -- highlight_hovered_item = true,
+  -- show_guides = true,
+  -- auto_preview = false,
+  -- position = 'right',
+  -- relative_width = true,
+  -- width = 25,
+  -- auto_close = false,
+  -- show_numbers = false,
+  -- show_relative_numbers = false,
+  -- show_symbol_details = true,
+  -- preview_bg_highlight = 'Pmenu',
+  -- autofold_depth = nil,
+  -- auto_unfold_hover = true,
+  -- wrap = false,
+  -- keymaps = { -- These keymaps can be a string or a table for multiple keys
+    -- close = {"<Esc>", "q"},
+    -- goto_location = "<Cr>",
+    -- focus_location = "o",
+    -- hover_symbol = "<C-space>",
+    -- toggle_preview = "K",
+    -- rename_symbol = "r",
+    -- code_actions = "a",
+    -- fold = "h",
+    -- unfold = "l",
+    -- fold_all = "W",
+    -- unfold_all = "E",
+    -- fold_reset = "R",
+  -- },
+  -- lsp_blacklist = {},
   symbol_blacklist = {
       -- 'File',
       -- 'Module',
@@ -1016,7 +1207,7 @@ local servers = {
     'html',
     'jdtls',
     'jsonls',
-    'marksman',
+    'marksman', -- Markdown
     'phpactor',
     'pyright',
     'rust_analyzer',
