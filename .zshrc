@@ -142,7 +142,7 @@ export VISUAL="$EDITOR"
 # Example aliases
 alias zshconfig="$EDITOR ~/.zshrc"
 alias awesomeconfig="$EDITOR ~/.config/awesome/rc.lua"
-alias nvimconfig="$EDITOR ~/.config/nvim/lua/config.lua"
+alias nvimconfig="$EDITOR ~/.config/nvim/init.lua"
 alias nvimswap="cd ~/.local/share/nvim/swap/"
 alias alacrittyconfig="$EDITOR ~/.config/alacritty/alacritty.yml"
 alias rangerconfig="$EDITOR ~/.config/ranger/"
