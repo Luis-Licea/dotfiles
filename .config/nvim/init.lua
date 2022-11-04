@@ -314,6 +314,13 @@ local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
             end
         end })
 
+    -- Turn off syntax highlighting that conflicts with treesitter.
+    vim.api.nvim_create_autocmd('BufEnter', {
+        group = markdown_group,
+        pattern = {'*.md', '*.js'},
+        callback = function() vim.bo.syntax='OFF' end
+    })
+
 local xresources_group = vim.api.nvim_create_augroup('Xresources Group', {})
     -- Apply .Xresources file after editing the file.
    vim.api.nvim_create_autocmd('BufWritePost',  {
@@ -418,12 +425,12 @@ local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
 --------------------------------------------------------------------------------
 -- Markdown.
 --------------------------------------------------------------------------------
-local md_group = vim.api.nvim_create_augroup('Markdown Group', {
+local markdown_group = vim.api.nvim_create_augroup('Markdown Group', {
     clear = true
 })
     -- Auto compile markdown file after saving if auto compilation is enabled.
     vim.api.nvim_create_autocmd('BufWritePost', {
-        group = md_group,
+        group = markdown_group,
         pattern = '*.md',
         callback = function()
             if HasAutoRun then
@@ -437,20 +444,13 @@ local md_group = vim.api.nvim_create_augroup('Markdown Group', {
         vim.fn.execute('!zathura "/tmp/%<.pdf" &')
     end
 
-    -- View compiled markdown pdf.
     vim.api.nvim_create_autocmd('BufReadPost', {
-        group = md_group,
+        group = markdown_group,
         pattern = '*.md',
         callback = function()
+            -- View compiled markdown pdf.
             nnoremap('<leader>cv', ':lua LaunchViewer()<cr>', {buffer = true})
-        end
-    })
-
-    -- Create a binding for formatting tables.
-    vim.api.nvim_create_autocmd('BufReadPost', {
-        group = md_group,
-        pattern = '*.md',
-        callback = function()
+            -- Create a binding for formatting tables.
             nnoremap('<leader>fo', ':TableFormat<cr>', {buffer = true})
         end
     })
@@ -593,7 +593,12 @@ require('packer').startup(function()
     -- Use dark color scheme for Vim.
     use 'dracula/vim'
     -- Tokyo night color scheme.
-    use 'folke/tokyonight.nvim'
+    use {'folke/tokyonight.nvim',
+        config = function()
+            require("tokyonight").setup({ style = "moon" })
+            require("tokyonight").colorscheme()
+        end
+    }
     -- Markdown syntax highlighting.
     use { 'preservim/vim-markdown',
         requires = {
@@ -615,6 +620,13 @@ require('packer').startup(function()
     use 'neovim/nvim-lspconfig'
     -- Comment and uncomment code sections more easily witch cc, uc, and ci.
     use 'preservim/nerdcommenter'
+    -- Add JSDoc, Doxygen, etc support.
+    use { "danymat/neogen",
+        config = function() require('neogen').setup {} end,
+        requires = "nvim-treesitter/nvim-treesitter",
+        -- Uncomment next line if you want to follow only stable versions
+        tag = "*"
+    }
     -- Provide Cargo commands, and Rust syntax highlighting and formatting.
     use 'rust-lang/rust.vim'
     -- NOTE: Nvim-web-devicons requires a patched font such as MesloLGS NF.
@@ -832,14 +844,12 @@ require('packer').startup(function()
         commit = '4cc4476acbbc772f29fd6c1ccee43f58a29a1b13',
         cmd = "Neogit",
         requires = 'nvim-lua/plenary.nvim' }
-    -- Add Doxygen support.
-    use 'vim-scripts/DoxygenToolkit.vim'
     -- Auto close open brackets, parenthesis, quotes, etc.
     use { "windwp/nvim-autopairs",
         config = function() require("nvim-autopairs").setup {} end }
     -- Install language servers, formatters, linters, and debug adapters.
     use { "williamboman/mason.nvim",
-        cmd = "Mason",
+        cmd = {"Mason", "MasonInstall", "MasonUninstall"},
         config = function() require("mason").setup {
             ui = {
                 icons = {
@@ -937,10 +947,6 @@ require('gitsigns').setup{
   end
 }
 
--- There are also colorschemes for the different styles:
--- tokyonight tokyonight-night tokyonight-storm tokyonight-day tokyonight-moon
-vim.cmd[[colorscheme tokyonight-moon]]
-
 --------------------------------------------------------------------------------
 -- Nvim-treesitter.
 --------------------------------------------------------------------------------
@@ -989,6 +995,8 @@ require 'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = true,
     },
 }
+require'nvim-treesitter.install'.compilers = {"tcc"}
+-- require 'nvim-treesitter.install'.compilers = { "clang++" }
 
 --------------------------------------------------------------------------------
 -- Session Manager.
@@ -1711,4 +1719,3 @@ let g:rustfmt_autosave = 1
 "    au User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 "aug end
 ]]
-

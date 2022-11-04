@@ -120,7 +120,8 @@ alias ranger='source ranger && echo "Level ${RANGER_LEVEL:-0}"'
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR=nvim
 else
-  export PAGER=nvimpager
+  export MANPAGER=nvimpager
+  export PAGER=most
   export EDITOR=nvim
   alias vim='nvim --noplugin'
   alias edit=$EDITOR
