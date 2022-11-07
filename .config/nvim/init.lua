@@ -270,7 +270,7 @@ local term_opnes_group = vim.api.nvim_create_augroup("Terminal Opens Group", {})
 
 local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
 
-    -- Resize windows equally when the window size changes. Useful for DWM.
+    -- Resize windows equally when the window size changes.
     vim.api.nvim_create_autocmd('VimResized', {
         group = buffer_check_group,
         pattern = '*',
@@ -316,9 +316,15 @@ local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
 
     -- Turn off syntax highlighting that conflicts with treesitter.
     vim.api.nvim_create_autocmd('BufEnter', {
-        group = markdown_group,
-        pattern = {'*.md', '*.js'},
-        callback = function() vim.bo.syntax='OFF' end
+        group = buffer_check_group,
+        pattern = "*",
+        callback = function()
+            local should_ignore = { lua = true, markdown = true, javascript = true,
+                sh = true, json = true, yaml = true, python = true, c = true}
+            if should_ignore[vim.bo.filetype] then
+                vim.bo.syntax = false
+            end
+        end
     })
 
 local xresources_group = vim.api.nvim_create_augroup('Xresources Group', {})
@@ -360,7 +366,9 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
             cpp = "skeleton.cpp",
             html = "skeleton.html",
             sh = "skeleton.sh",
-            python = "skeleton.py",
+            py = "skeleton.py",
+            mocha = "mocha.mjs",
+            mjs = "skeleton.mjs",
             CMakeLists = "CMakeLists.txt",
             cmake_uninstall = "cmake_uninstall.cmake.in"
         }
@@ -375,12 +383,36 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
         if template then LoadTemplate(template) end
     end
 
+    --- Return whether the file has a hash-bang.
+    ---@return boolean True if the file has a hash-bang, false otherwise.
+    local function FileHasHashBang()
+        -- If the first 2 characters are a hashbang, make file executable.
+        return string.sub(vim.fn.getline(0,1)[1], 1, 2) == "#!"
+    end
+
+    --- Return whether the current file is executable.
+    ---@return boolean True if the file is executable by all users.
+    function FileIsExecutable()
+        -- Get permissions string including parenthesis, e.g. "drwxrwxrwx".
+        local permissions = vim.fn.system({'stat', '--printf="%A"',
+            vim.fn.fnameescape(vim.fn.expand("%"))})
+        -- The eleventh character in the permissions "drwxrwxrwx" represents
+        -- whether the file is executable by all users.
+        return string.sub(permissions, 11, 11) == "x"
+    end
+
     -- C++ code settings.
     vim.api.nvim_create_autocmd('BufNewFile',  {
         group    = template_group,
         pattern  = '*',
-        callback = LoadTemplateFromType })
-
+        callback = function()
+            LoadTemplateFromType()
+            if FileHasHashBang() then
+                vim.cmd("silent! write")
+                vim.cmd("silent! !chmod +x '%'")
+            end
+        end
+    })
 --------------------------------------------------------------------------------
 -- Auto compilation settings.
 --------------------------------------------------------------------------------
@@ -408,7 +440,13 @@ local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
         pattern = '*',
         callback = function()
             if HasAutoFormat then vim.lsp.buf.format() end
-            if HasAutoRun then vim.cmd('call Run()') end
+            if HasAutoRun then
+                if FileHasHashBang() and FileIsExecutable() then
+                    vim.cmd("!./" .. vim.fn.fnameescape(vim.fn.expand("%")))
+                else
+                    vim.cmd('call Run()')
+                end
+            end
         end
     })
 
@@ -590,8 +628,6 @@ local use = require('packer').use
 require('packer').startup(function()
     -- Packer plugin manager.
     use 'wbthomason/packer.nvim'
-    -- Use dark color scheme for Vim.
-    use 'dracula/vim'
     -- Tokyo night color scheme.
     use {'folke/tokyonight.nvim',
         config = function()
@@ -622,7 +658,7 @@ require('packer').startup(function()
     use 'preservim/nerdcommenter'
     -- Add JSDoc, Doxygen, etc support.
     use { "danymat/neogen",
-        config = function() require('neogen').setup {} end,
+        config = function() require('neogen').setup { snippet_engine = "luasnip" } end,
         requires = "nvim-treesitter/nvim-treesitter",
         -- Uncomment next line if you want to follow only stable versions
         tag = "*"
@@ -631,43 +667,21 @@ require('packer').startup(function()
     use 'rust-lang/rust.vim'
     -- NOTE: Nvim-web-devicons requires a patched font such as MesloLGS NF.
     -- use 'kyazdani42/nvim-web-devicons'
-    -- Fancy debug adapter UI provider.
-    use { "rcarriga/nvim-dap-ui",
-        -- Debug Adapter Protocol.
-        requires = 'mfussenegger/nvim-dap',
-        opt = true,
-        cmd = "DapToggleBreakpoint",
-        config = function()
-            require("dapui").setup()
-            local dap, dapui = require("dap"), require("dapui")
-            dap.adapters.python = {
-              type = 'executable';
-              command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/debugpy-adapter'
-            }
-
-            dap.listeners.after.event_initialized["dapui_config"] = function()
-              dapui.open({})
-            end
-            dap.listeners.before.event_terminated["dapui_config"] = function()
-              dapui.close({})
-            end
-            dap.listeners.before.event_exited["dapui_config"] = function()
-              dapui.close({})
-            end
-
-            dap.configurations.python = {
-              {
-                type = 'python';
-                request = 'launch';
-                name = "Launch file";
-                program = "${file}";
-                pythonPath = function()
-                  return '/usr/bin/python3'
-                end;
-              },
-            }
-
-        end
+    -- Fancy debug adapter UI provider and Debug Adapter Protocol.
+    use { "rcarriga/nvim-dap-ui", requires = 'mfussenegger/nvim-dap' }
+    -- Window picker for using with Dap UI because it opens many windows.
+    use {'https://gitlab.com/yorickpeterse/nvim-window',
+        config = function() require('nvim-window').setup({
+            -- The characters available for hinting windows.
+            chars = {
+                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'k', 'l','m',
+                'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+            },
+            -- The border style to use for the floating window.
+            border = 'rounded'
+        })
+        end,
+        nnoremap('<leader><leader>', require("nvim-window").pick)
     }
     -- Intelligent search.
     use 'ggandor/lightspeed.nvim'
@@ -798,13 +812,10 @@ require('packer').startup(function()
             --------------------------------------------------------------------------------
             -- Telescope repo. Find git repositories.
             --------------------------------------------------------------------------------
-            if vim.fn.executable('fd') == 1 and vim.fn.executable('glow') == 1 then
-                require('telescope').load_extension('repo')
-                vim.keymap.set('n', '<leader>tr', ':Telescope repo list<cr>', {noremap = true})
-            else
-                print("Error: fd or glow is not installed.")
-            end
-
+            -- Using nvimpager as the pager does not work, use less or most.
+            if vim.fn.executable('less') then vim.fn.setenv("PAGER", "less -r") end
+            require('telescope').load_extension('repo')
+            vim.keymap.set('n', '<leader>tr', ':Telescope repo list<cr>', {noremap = true})
         end
     }
     use 'nvim-telescope/telescope-ui-select.nvim'
@@ -815,8 +826,6 @@ require('packer').startup(function()
     use "nvim-telescope/telescope-file-browser.nvim"
     -- Add OpenGL Shader Language support.
     use 'tikhomirov/vim-glsl'
-    -- Use dark color scheme inspired on Visual Studio Code.
-    use 'tomasiser/vim-code-dark'
     -- Prettify status line.
     use {'feline-nvim/feline.nvim',
         -- Show trailing spaces and mixed indents in Feline.
@@ -872,14 +881,14 @@ require('packer').startup(function()
                     -- require("null-ls").builtins.diagnostics.selene,
                     -- require("null-ls").builtins.completion.spell,
                     -- require("null-ls").builtins.code_actions.gitsigns,
+                    require("null-ls").builtins.code_actions.gitsigns,
+                    require("null-ls").builtins.code_actions.shellcheck,
                 },
             }
         end
     }
     --  NOTE: Requires universal ctags. Tagbar: a class outline viewer for Vim.
     use 'preservim/tagbar'
-    -- Add window-tiling manager functionality.
-    -- use 'luis-licea/dwm.vim'
     -- Add git decorations for modified lines, +, -, ~, etc.
     use 'lewis6991/gitsigns.nvim'
     -- Completion plugin.
@@ -948,8 +957,41 @@ require('gitsigns').setup{
 }
 
 --------------------------------------------------------------------------------
+-- DAP and DAPUI.
+--------------------------------------------------------------------------------
+require("dapui").setup()
+local dap, dapui = require("dap"), require("dapui")
+dap.adapters.python = {
+  type = 'executable';
+  command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/debugpy-adapter'
+}
+
+dap.listeners.after.event_initialized["dapui_config"] = function()
+  dapui.open({})
+end
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  dapui.close({})
+end
+dap.listeners.before.event_exited["dapui_config"] = function()
+  dapui.close({})
+end
+
+dap.configurations.python = {
+  {
+    type = 'python';
+    request = 'launch';
+    name = "Launch file";
+    program = "${file}";
+    pythonPath = function() return 'python3' end;
+  },
+}
+--------------------------------------------------------------------------------
 -- Nvim-treesitter.
 --------------------------------------------------------------------------------
+--{{ For work.
+require 'nvim-treesitter.install'.compilers = { "clang", "tcc", "gcc", "zig", "cc" }
+require'nvim-treesitter.install'.prefer_git = true
+--}}
 require 'nvim-treesitter.configs'.setup {
     -- A list of parser names, or "all"
     -- ensure_installed = { "c", "lua", "rust" },
@@ -962,7 +1004,7 @@ require 'nvim-treesitter.configs'.setup {
     auto_install = true,
 
     -- List of parsers to ignore installing (for "all")
-    -- ignore_install = { "javascript" },
+    -- ignore_install = { "haskell" },
 
     -- If you need to change the installation directory of the parsers (see -> Advanced Setup)
     -- parser_install_dir = "/some/path/to/store/parsers",
@@ -995,8 +1037,6 @@ require 'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = true,
     },
 }
-require'nvim-treesitter.install'.compilers = {"tcc"}
--- require 'nvim-treesitter.install'.compilers = { "clang++" }
 
 --------------------------------------------------------------------------------
 -- Session Manager.
@@ -1163,13 +1203,12 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
     vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
+    vim.keymap.set('x', '<leader>ca', vim.lsp.buf.code_action, bufopts)
+    vim.keymap.set('n', '<C-.>', vim.lsp.buf.code_action, bufopts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
     vim.keymap.set('n', '<c-a>', vim.lsp.buf.code_action, bufopts)
-    -- vim.keymap.set('n', '<space>f', function() vim.lsp.buf.formatting{ async = true } end, bufopts)
-    -- vim.keymap.set('x', '<leader>f', vim.lsp.buf.range_formatting, bufopts)
-    vim.keymap.set('x', '<leader>f', vim.lsp.buf.range_formatting, bufopts)
-    vim.keymap.set('x', '<leader>c', function() vim.lsp.buf.range_code_action() end, bufopts)
-    -- lua vim.lsp.buf.range_formatting()
+    -- Use gq for LPS formatting and gw for regular formatting.
+    vim.keymap.set('x', '<leader>f', vim.lsp.buf.format, bufopts)
 end
 
 --------------------------------------------------------------------------------
@@ -1611,36 +1650,11 @@ endfunction
 "-------------------------------------------------------------------------------
 " DWM settings.
 "-------------------------------------------------------------------------------
-" Do not use default DWM key mappings.
-let g:dwm_map_keys=0
-let g:dwm_auto_arrange=0
-
-" Open the current buffer in a new window.
-nmap <silent> <c-n> :call DWM_New()<cr>
-" Close window.
-nmap <silent> <c-c> :exec DWM_Close()<cr>
-" Focus the master window.
-nmap <silent> <c-space> :exec DWM_Focus()<cr>
-
 " Next window. Move cursor clockwise to the next window
 nnoremap <c-j> <c-w>w
 
 " Previous window. Move cursor counter-clockwise to the previous window.
 nnoremap <c-k> <c-w>W
-
-" Increase master window size the given number of columns.
-nnoremap <silent> <c-l> :call DWM_GrowMaster(10)<CR>
-" Decrease master window size the given number of columns.
-nnoremap <silent> <c-h> :call DWM_ShrinkMaster(10)<CR>
-
-function! ToggleAutoRearrange()
-    if g:dwm_auto_arrange  == 0
-        let g:dwm_auto_arrange = 1
-    else
-        let g:dwm_auto_arrange = 0
-    endif
-endfunction
-nnoremap <leader>cr :call ToggleAutoRearrange()<cr>
 
 "-------------------------------------------------------------------------------
 " Switch between files and headers: c -> h and cpp -> hpp.
@@ -1664,15 +1678,6 @@ map <c-_> <plug>NERDCommenterToggle
 " [N]<leader>cs " NERDCommenterSexy Pretty block formatted layout.
 " [N]<leader>cu " NERDCommenterUncomment Uncomment lines.
 " [N]<leader>cy " NERDCommenterYank Yank lines and then comment cc them.
-
-"-------------------------------------------------------------------------------
-" Vim-code-dark settings.
-"-------------------------------------------------------------------------------
-" Set the color scheme. The schemes codedark and dracula are plugins.
-" colorscheme codedark
-" colorscheme dracula
-" Make the background transparent.
-" highlight normal guibg=none ctermbg=none
 
 "-------------------------------------------------------------------------------
 " Rust-vim settings.

@@ -149,6 +149,7 @@ local tasklist_buttons = gears.table.join(
                                               awful.client.focus.byidx(-1)
                                           end))
 
+-- beautiful.wallpaper = awful.util.get_configuration_dir() .. "path/to/wallpaper.png"
 local function set_wallpaper(s)
     -- Wallpaper
     if beautiful.wallpaper then
@@ -627,4 +628,4 @@ awful.spawn.with_shell("emacs --daemon")
 -- {{{ Disable status bar at startup.
 myscreen = awful.screen.focused()
 myscreen.mywibox.visible = not myscreen.mywibox.visible
--- }}}}
+-- }}}
