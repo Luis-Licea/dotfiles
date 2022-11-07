@@ -17,7 +17,7 @@ Checkout the content from the bare repository to '$HOME':
 dotfiles checkout
 ```
 
-View tracked files and changes that need to be commited:
+View tracked files and changes that need to be committed:
 ```bash
 dotfilesui
 ```

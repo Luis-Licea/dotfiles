@@ -320,7 +320,7 @@ local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
         pattern = "*",
         callback = function()
             local should_ignore = { lua = true, markdown = true, javascript = true,
-                sh = true, json = true, yaml = true, python = true, c = true}
+                sh = true, json = true, yaml = true, python = true, c = true, cpp = true}
             if should_ignore[vim.bo.filetype] then
                 vim.bo.syntax = false
             end
@@ -628,6 +628,22 @@ local use = require('packer').use
 require('packer').startup(function()
     -- Packer plugin manager.
     use 'wbthomason/packer.nvim'
+    use { 'numToStr/Comment.nvim',
+        config = function() require'Comment'.setup{
+            -- LHS of toggle mappings in NORMAL mode.
+            toggler = {
+                line = '<C-_>', -- Line-comment toggle keymap.
+                block = 'gbc', -- Block-comment toggle keymap.
+            },
+            -- LHS of operator-pending mappings in NORMAL and VISUAL mode.
+            opleader = {
+                line = '<C-_>', -- Line-comment keymap.
+                block = 'gb', -- Block-comment keymap.
+            },
+            -- Enable keybindings: `false` to not create mappings
+            mappings = { basic = true, extra = false }
+        } end
+    }
     -- Tokyo night color scheme.
     use {'folke/tokyonight.nvim',
         config = function()
@@ -706,6 +722,7 @@ require('packer').startup(function()
             vim.keymap.set('n', '<leader>tb', builtin.buffers, {noremap = true})
             vim.keymap.set('n', '<leader>th', builtin.help_tags, {noremap = true})
             vim.keymap.set('n', '<leader>tg', builtin.git_status, {noremap = true})
+            vim.keymap.set('n', '<localleader><localleader>', ':Telescope<cr>', {noremap = true})
 
             --------------------------------------------------------------------------------
             -- Telescope ui-select.
@@ -815,7 +832,7 @@ require('packer').startup(function()
             -- Using nvimpager as the pager does not work, use less or most.
             if vim.fn.executable('less') then vim.fn.setenv("PAGER", "less -r") end
             require('telescope').load_extension('repo')
-            vim.keymap.set('n', '<leader>tr', ':Telescope repo list<cr>', {noremap = true})
+            vim.keymap.set('n', '<leader>tr', require'telescope'.extensions.repo.list, {noremap = true})
         end
     }
     use 'nvim-telescope/telescope-ui-select.nvim'
@@ -1194,6 +1211,9 @@ local on_attach = function(client, bufnr)
 
     vim.keymap.set('n', '<space>gi', vim.lsp.buf.implementation, bufopts)
     -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set('n', 'gs', vim.lsp.buf.document_symbol, bufopts)
+    vim.keymap.set('n', 'gS', vim.lsp.buf.workspace_symbol, bufopts)
     vim.keymap.set('n', '<leader><s-s>', vim.lsp.buf.signature_help, bufopts)
     -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
     -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
@@ -1421,16 +1441,6 @@ vim.cmd[[
 "-------------------------------------------------------------------------------
 " Auto compilation settings.
 "-------------------------------------------------------------------------------
-" Function for toggling code formatting on save:
-let s:auto_format = 0
-function! ToggleAutoFormat()
-    if s:auto_format  == 0
-        let s:auto_format = 1
-    else
-        let s:auto_format = 0
-    endif
-endfunction
-" nnoremap <leader>cf :call ToggleAutoFormat()<cr>
 
 " Whether to include debugging information.
 let s:is_debug = 0
@@ -1662,65 +1672,10 @@ nnoremap <c-k> <c-w>W
 command! A  ClangdSwitchSourceHeader
 
 "-------------------------------------------------------------------------------
-" Nerd commenter settings.
-"-------------------------------------------------------------------------------
-" Add spaces after comment delimiters.
-let g:NERDSpaceDelims = 1
-" Map Ctrl+/ to toggle comment.
-map <c-_> <plug>NERDCommenterToggle
-" <leader>c$ " NERDCommenteToEOL Comment current line from cursor to line end.
-" <leader>cA " NERDCommenterAppend Add comments to line end go to insert mode.
-" <leader>ca " NERDCommenterAltDelims Switches to alternative set of delimiters.
-" [N]<leader>cb " NERDCommenterAlignBoth Same as cc but aligned on both sides.
-" [N]<leader>cl " NERDCommenterAlignLeft Same as cc but aligned to left side.
-" [N]<leader>cm " NERDCommenterMinimal Only use one set of multipart delimiters.
-" [N]<leader>cn " NERDCommenterNested Same as cc but forces nesting.
-" [N]<leader>cs " NERDCommenterSexy Pretty block formatted layout.
-" [N]<leader>cu " NERDCommenterUncomment Uncomment lines.
-" [N]<leader>cy " NERDCommenterYank Yank lines and then comment cc them.
-
-"-------------------------------------------------------------------------------
 " Rust-vim settings.
 "-------------------------------------------------------------------------------
 " Format Rust file using rustfmt each time the file is saved.
 let g:rustfmt_autosave = 1
 " TODO Provide RustRun and Crun mapping to run single files or cargo files.
 " Also provide RustTest, RustEmitIr, RustEmitAsm, RustFmt, Ctest, Cbuild.
-
-"-------------------------------------------------------------------------------
-" Vim-lsp mappings. Prefix g means "go".
-"-------------------------------------------------------------------------------
-"function! s:on_lsp_buffer_enabled() abort
-"    setlocal omnifunc=lsp#complete
-"    setlocal signcolumn=yes
-"    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-"    nmap <buffer> gd <plug>(lsp-definition)
-"    nmap <buffer> gs <plug>(lsp-document-symbol-search)
-"    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-"    nmap <buffer> gr <plug>(lsp-references)
-"    " nmap <buffer> gi <plug>(lsp-implementation)
-"    nmap <buffer> <leader>gi <plug>(lsp-implementation)
-"    nmap <buffer> gt <plug>(lsp-type-definition)
-"    nmap <buffer> <leader>rn <plug>(lsp-rename)
-"    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-"    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-"    " nmap <buffer> K <plug>(lsp-hover)
-"    nmap <buffer> <leader>k <plug>(lsp-hover)
-"
-"    inoremap <buffer> <expr><c-f> lsp#scroll(+4)
-"    inoremap <buffer> <expr><c-d> lsp#scroll(-4)
-"
-"    let g:lsp_format_sync_timeout = 1000
-"    " Start formatting server when the file is opened.
-"    au! BufWritePre *.py,*.cpp,*.hpp,*.rs,*.c,*.h if s:auto_format == 1 | call execute('LspDocumentFormatSync') | endif
-"
-"    " refer to doc to add more commands
-"endfunction
-"
-"aug lsp_install
-"    " Clear previous group auto commands to avoid duplicate definitions.
-"    au!
-"    " Call s:on_lsp_buffer_enabled only for languages with registered servers.
-"    au User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-"aug end
 ]]
