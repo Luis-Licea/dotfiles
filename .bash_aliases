@@ -35,6 +35,7 @@ export RANGER_LOAD_DEFAULT_RC=FALSE
 # Stay in current folder when exiting ranger. Show ranger nested level at exit.
 alias ranger='source ranger && echo "Level ${RANGER_LEVEL:-0}"'
 
+alias shellconfig="$EDITOR ~/.bash_aliases"
 alias zshconfig="$EDITOR ~/.zshrc"
 alias awesomeconfig="$EDITOR ~/.config/awesome/rc.lua"
 alias nvimconfig="$EDITOR ~/.config/nvim/init.lua"
@@ -66,8 +67,8 @@ alias bashscratch="cd /tmp && nvim scratchpad.sh && cd -"
 alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
 alias cscratch="cd /tmp && nvim scratchpad.c && cd -"
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
-alias jsscratch="cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s /usr/lib/node_modules/ node_modules && nvim scratchpad.mjs || nvim scratchpad.mjs && cd -"
-alias mochascratch="cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s /usr/lib/node_modules/ node_modules && nvim mocha.mjs || nvim mocha.mjs && cd -"
+alias jsscratch="cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s /usr/lib/node_modules/ node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && nvim scratchpad.mjs || nvim scratchpad.mjs && cd -"
+alias mochascratch="cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s /usr/lib/node_modules/ node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && nvim mocha.mjs || nvim mocha.mjs && cd -"
 alias luascratch="cd /tmp && nvim scratchpad.lua && cd -"
 alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"
 alias rsscratch="cd /tmp && [ ! -d rsscratch ] && cargo new rsscratch && nvim rsscratch/src/main.rs || nvim /tmp/rsscratch/src/main.rs && cd -"
