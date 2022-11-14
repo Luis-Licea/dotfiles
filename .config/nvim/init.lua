@@ -132,33 +132,35 @@ nnoremap('<leader>8', ':lua require("bufferline").go_to_buffer(8, true)<cr>')
 nnoremap('<leader>9', ':lua require("bufferline").go_to_buffer(9, true)<cr>')
 nnoremap('<leader>0', ':lua require("bufferline").go_to_buffer(10, true)<cr>')
 
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Command mode mappings.
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Move up autocomplete options in Command mode.
 cnoremap('<c-k>', '<c-p>')
 -- Move down autocomplete options in Command mode.
 cnoremap('<c-j>', '<c-n>')
+-- Leave command mode without executing command.
+cnoremap('<esc>', '<c-c>')
 
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Insert mode mappings.
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Move up autocomplete options in insert mode.
 inoremap('<c-k>', '<c-p>')
 -- Move down autocomplete options in insert mode.
 inoremap('<c-j>', '<c-n>')
 
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Normal mode mappings. Fast movement.
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Move a page up.
 nnoremap('<s-k>', '<c-u><c-u>')
 -- Move a page down.
 nnoremap('<s-j>', '<c-d><c-d>')
 
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Resize Window mappings.
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Increase height by N lines.
 nnoremap('<up>', '10<c-w>+')
 -- Decrease height by N lines.
@@ -168,9 +170,9 @@ nnoremap('<right>', '10<c-w>>')
 -- Decrease width by N lines.
 nnoremap('<left>', '10<c-w><')
 
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- File mappings. Prefix f means "file".
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Print file name.
 nnoremap('<leader>fn', ':echo expand("%:t")<cr>')
 -- Print file path (full).
@@ -178,21 +180,21 @@ nnoremap('<leader>fp', ':echo expand("%:p")<cr>')
 -- Print file directory.
 nnoremap('<leader>fd', ':echo expand("%:p:h")<cr>')
 
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Yank mappings. Prefix y means "yank".
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Copy file name to clipboard.
-nnoremap('yn', ':let @+=expand("%:t")<cr>')
+nnoremap('yn', ':let @+=expand("%:t") | echo "Yanked file:" @+<cr>')
 -- Copy file path to clipboard.
-nnoremap('yp', ':let @+=expand("%:p")<cr>')
+nnoremap('yp', ':let @+=expand("%:p") | echo "Yanked path:" @+<cr>')
 -- Copy pwd to clipboard.
-nnoremap('yd', ':let @+=expand("%:p:h")<cr>')
+nnoremap('yd', ':let @+=expand("%:p:h") | echo "Yanked cwd:" @+<cr>')
 -- Copy buffer contents to clipboard.
 nnoremap('yb', ':%y<cr>')
 
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Switch mappings. Prefix s means "switch".
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Switch numbered lines.
 nnoremap('<leader>sn', ':set number! number?<cr>')
 -- Switch automatic indentation.
@@ -202,9 +204,9 @@ nnoremap('<leader>sw', ':set wrap! wrap?<cr>')
 -- Switch highlight search.
 nnoremap('<leader>sh', ':set hlsearch! hlsearch?<cr>')
 
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Spellcheck mappings. Prefix s means "spell".
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Switch spellcheck for English.
 nnoremap('<leader>sse', ':setlocal spell! spelllang=en spell?<cr>')
 -- Switch spellcheck for Spanish.
@@ -212,9 +214,9 @@ nnoremap('<leader>sss', ':setlocal spell! spelllang=es spell?<cr>')
 -- Switch spellcheck for Russian.
 nnoremap('<leader>ssr', ':setlocal spell! spelllang=ru spell?<cr>')
 
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Buffer mappings. Prefix b means "buffer".
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Go to the next buffer.
 nnoremap('<Tab>', ':bn<cr>')
 -- Go to the previous buffer.
@@ -230,9 +232,9 @@ nnoremap('<leader>bs', ':buffers<cr>')
 -- Delete (close) buffer from buffers list.
 nnoremap('<leader>bd', ':bd<cr>')
 
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Embedded terminal settings and mappings.
--- -----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Move cursor to the left window.
 tnoremap('<localleader>h', '<c-\\><c-n><cr><c-w>h')
 -- Move cursor to the window above.
@@ -377,6 +379,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
         local fileName = vim.fn.expand("%:r")
         -- Get the file extension only.
         local extension = vim.fn.expand("%:e")
+
         -- Try to find a valid template using the file name or the file type.
         local template = type2template[fileName] or type2template[extension]
         -- Load the template if it could be found.
@@ -391,11 +394,13 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
     end
 
     --- Return whether the current file is executable.
+    ---@param path An optional path to the file to check.
     ---@return boolean True if the file is executable by all users.
-    function FileIsExecutable()
+    function FileIsExecutable(path)
+        -- If the path is not defined, use the path to the current file.
+        if not path then path = vim.fn.fnameescape(vim.fn.expand("%")) end
         -- Get permissions string including parenthesis, e.g. "drwxrwxrwx".
-        local permissions = vim.fn.system({'stat', '--printf="%A"',
-            vim.fn.fnameescape(vim.fn.expand("%"))})
+        local permissions = vim.fn.system({'stat', '--printf="%A"', path})
         -- The eleventh character in the permissions "drwxrwxrwx" represents
         -- whether the file is executable by all users.
         return string.sub(permissions, 11, 11) == "x"
@@ -417,17 +422,13 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
 -- Auto compilation settings.
 --------------------------------------------------------------------------------
 -- Function for toggling auto compilation on save:
-HasAutoRun = false;
-function ToggleHasAutoRun()
-    HasAutoRun = not HasAutoRun;
-end
+HasAutoRun = false
+function ToggleHasAutoRun() HasAutoRun = not HasAutoRun; end
 nnoremap('<leader>ct', ':lua ToggleHasAutoRun()<cr>')
 
 -- Function for toggling code formatting on save:
-HasAutoFormat = false;
-function ToggleHasAutoFormat()
-    HasAutoFormat = not HasAutoFormat;
-end
+HasAutoFormat = false
+function ToggleHasAutoFormat() HasAutoFormat = not HasAutoFormat; end
 nnoremap('<leader>cf', ':lua ToggleHasAutoFormat()<cr>')
 
 local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
@@ -442,9 +443,10 @@ local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
             if HasAutoFormat then vim.lsp.buf.format() end
             if HasAutoRun then
                 if FileHasHashBang() and FileIsExecutable() then
+                    -- Fix bug that freezes program when hash-bang is removed.
                     vim.cmd("!./" .. vim.fn.fnameescape(vim.fn.expand("%")))
                 else
-                    vim.cmd('call Run()')
+                    Run()
                 end
             end
         end
@@ -500,39 +502,21 @@ local latex_group = vim.api.nvim_create_augroup('LaTeX Group', {
     clear = true
 })
 
-    -- Define variables for compiling file into a PDF.
-    vim.api.nvim_create_autocmd('FileType', {
-        group = latex_group,
-        pattern = 'tex',
-        callback = function() vim.cmd('call SetLaTeXVariables()') end
-    })
-
     -- Compile the file in the same directory and watch for changes ever 10 seconds.
-    -- nnoremap <leader>co :sil exec
+    -- nnoremap <leader>co :sil exec \
     -- '!watch -n 10 rubber --pdf --shell-escape --synctex --inplace "%"'<cr>
     vim.api.nvim_create_autocmd('FileType', {
         group = latex_group,
         pattern = 'tex',
         callback = function()
-            nnoremap('<leader>co', ':call RunLaTeX()<cr>', {buffer = true})
-        end
-    })
-
-    -- Clean all files except the compiled pdf.
-    vim.api.nvim_create_autocmd('FileType', {
-        group = latex_group,
-        pattern = 'tex',
-        callback = function()
-            nnoremap('<leader>cr', ':call CleanLaTeX()<cr>', {buffer = true})
-        end
-    })
-
-    -- Open the compiled LaTeX pdf with the specified viewer.
-    vim.api.nvim_create_autocmd('FileType', {
-        group = latex_group,
-        pattern = 'tex',
-        callback = function()
-            nnoremap('<leader>cv', ':sil call OpenLaTeXPDF("zathura")<cr>', {buffer = true})
+            -- Define variables for compiling file into a PDF.
+            SetLaTeXVariables()
+            -- Compile the file in the same directory.
+            nnoremap('<leader>co', RunLaTeX, {buffer = true})
+            -- Clean all files except the compiled pdf.
+            nnoremap('<leader>cr', CleanLaTeX, {buffer = true})
+            -- Open the compiled LaTeX pdf with the specified viewer.
+            nnoremap('<leader>cv', ':lua OpenLaTeXPDF("zathura")<cr>', {buffer = true})
         end
     })
 
@@ -540,14 +524,14 @@ local latex_group = vim.api.nvim_create_augroup('LaTeX Group', {
     vim.api.nvim_create_autocmd('BufWritePost', {
         group = latex_group,
         pattern = '*.tex',
-        callback = function() if HasAutoRun then vim.cmd('call RunLaTeX()') end end
+        callback = function() if HasAutoRun then RunLaTeX() end end
     })
 
     -- Clean the all files except the compiled pdf when exiting.
     vim.api.nvim_create_autocmd('VimLeavePre', {
         group = latex_group,
         pattern = '*.tex',
-        callback = function() vim.cmd('call CleanLaTeX()') end
+        callback = function() CleanLaTeX() end
     })
 
 --------------------------------------------------------------------------------
@@ -628,6 +612,7 @@ local use = require('packer').use
 require('packer').startup(function()
     -- Packer plugin manager.
     use 'wbthomason/packer.nvim'
+    -- Context-aware comment plugin.
     use { 'numToStr/Comment.nvim',
         config = function() require'Comment'.setup{
             -- LHS of toggle mappings in NORMAL mode.
@@ -668,8 +653,6 @@ require('packer').startup(function()
     use 'simrat39/symbols-outline.nvim'
     -- Show indentation lines.
     use 'lukas-reineke/indent-blankline.nvim'
-    -- Configurations for Nvim LSP.
-    use 'neovim/nvim-lspconfig'
     -- Comment and uncomment code sections more easily witch cc, uc, and ci.
     use 'preservim/nerdcommenter'
     -- Add JSDoc, Doxygen, etc support.
@@ -700,7 +683,7 @@ require('packer').startup(function()
         nnoremap('<leader><leader>', require("nvim-window").pick)
     }
     -- Intelligent search.
-    use 'ggandor/lightspeed.nvim'
+    -- use 'ggandor/lightspeed.nvim'
     -- Provide richer syntax highlighting and only spell-check comments.
     use { 'nvim-treesitter/nvim-treesitter',
         -- Show context in first line. Know what class or function you are in.
@@ -722,6 +705,8 @@ require('packer').startup(function()
             vim.keymap.set('n', '<leader>tb', builtin.buffers, {noremap = true})
             vim.keymap.set('n', '<leader>th', builtin.help_tags, {noremap = true})
             vim.keymap.set('n', '<leader>tg', builtin.git_status, {noremap = true})
+            vim.keymap.set('n', '<leader>tr', builtin.resume, {noremap = true})
+            vim.keymap.set('n', 'z=', builtin.spell_suggest, {noremap = true})
             vim.keymap.set('n', '<localleader><localleader>', ':Telescope<cr>', {noremap = true})
 
             --------------------------------------------------------------------------------
@@ -832,7 +817,7 @@ require('packer').startup(function()
             -- Using nvimpager as the pager does not work, use less or most.
             if vim.fn.executable('less') then vim.fn.setenv("PAGER", "less -r") end
             require('telescope').load_extension('repo')
-            vim.keymap.set('n', '<leader>tr', require'telescope'.extensions.repo.list, {noremap = true})
+            vim.keymap.set('n', '<leader>tp', require'telescope'.extensions.repo.list, {noremap = true})
         end
     }
     use 'nvim-telescope/telescope-ui-select.nvim'
@@ -848,7 +833,7 @@ require('packer').startup(function()
         -- Show trailing spaces and mixed indents in Feline.
         requires = 'stumash/snowball.nvim' }
     -- Highlight colors such as #315fff or #f8f.
-    use {'norcalli/nvim-colorizer.lua', 
+    use {'norcalli/nvim-colorizer.lua',
         config = function() require('colorizer').setup() end}
     -- View open buffers and tabs in the top row.
     use { 'akinsho/bufferline.nvim', tag = "v2.*",
@@ -875,7 +860,6 @@ require('packer').startup(function()
         config = function() require("nvim-autopairs").setup {} end }
     -- Install language servers, formatters, linters, and debug adapters.
     use { "williamboman/mason.nvim",
-        cmd = {"Mason", "MasonInstall", "MasonUninstall"},
         config = function() require("mason").setup {
             ui = {
                 icons = {
@@ -887,17 +871,27 @@ require('packer').startup(function()
         }
         end
     }
+    -- Configurations for Nvim LSP.
+    use "williamboman/mason-lspconfig.nvim"
+    -- Ensure lspconfig servers are installed.
+    use {"neovim/nvim-lspconfig",
+        config = function() require("mason-lspconfig").setup({
+            -- Install servers set up via lspconfig.
+            automatic_installation = true,
+        }) end
+    }
     use { 'jose-elias-alvarez/null-ls.nvim',
         requires = 'nvim-lua/plenary.nvim',
         config = function()
             require("null-ls").setup {
                 sources = {
+                    -- require("null-ls").builtins.hover.dictionary,
+                    -- require("null-ls").builtins.diagnostics.trail_space,
                     require("null-ls").builtins.formatting.black,
                     -- require("null-ls").builtins.formatting.stylua,
                     -- require("null-ls").builtins.diagnostics.eslint,
                     -- require("null-ls").builtins.diagnostics.selene,
                     -- require("null-ls").builtins.completion.spell,
-                    -- require("null-ls").builtins.code_actions.gitsigns,
                     require("null-ls").builtins.code_actions.gitsigns,
                     require("null-ls").builtins.code_actions.shellcheck,
                 },
@@ -1002,6 +996,7 @@ dap.configurations.python = {
     pythonPath = function() return 'python3' end;
   },
 }
+
 --------------------------------------------------------------------------------
 -- Nvim-treesitter.
 --------------------------------------------------------------------------------
@@ -1192,6 +1187,8 @@ local opts = { noremap=true, silent=true }
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+-- nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+-- nmap <buffer> ]g <plug>(lsp-next-diagnostic)
 vim.keymap.set('n', '<leader>d', vim.diagnostic.setloclist, opts)
 vim.keymap.set('n', '<leader>D', vim.diagnostic.setqflist, opts)
 
@@ -1235,24 +1232,25 @@ end
 -- Language servers.
 --------------------------------------------------------------------------------
 local servers = {
-    'bashls',
-    'clangd',
-    'cssls',
-    'dockerls',
-    -- 'eslint',   -- Needs configuration.
-    'tsserver', -- Works better for individual files.
-    'groovyls',
-    'html',
-    'jdtls',
-    'jsonls',
+    'awk_ls', -- AWK
+    'bashls', -- Bash
+    'clangd', -- C/C++
+    'cssls', -- CSS
+    -- 'dockerls', -- Docker
+    'eslint',   -- Needs configuration.
+    -- 'tsserver', -- Works better for individual files.
+    -- 'groovyls', -- Groovy
+    'html', -- HTML
+    -- 'jdtls',
+    'jsonls', -- JSON
     'marksman', -- Markdown
-    'phpactor',
+    -- 'phpactor', -- PHP
     'pyright',
-    'rust_analyzer',
-    'sqls',
+    -- 'rust_analyzer', -- Rust
+    -- 'sqls', -- SQL
     'cmake',
-    'taplo',
-    'ltex',
+    -- 'taplo', -- TOML
+    -- 'ltex',
     -- 'texlab',
 }
 
@@ -1423,259 +1421,296 @@ require('cmp').setup.cmdline(':', {
     completion = {completeopt = 'menu,menuone,noinsert,noselect'}
 })
 
-vim.cmd[[
-"-------------------------------------------------------------------------------
-" Vim Terminal.
-"-------------------------------------------------------------------------------
-" Close tab immediately after closing terminal.
-" au! TermClose * :q
+--------------------------------------------------------------------------------
+-- Auto compilation settings.
+--------------------------------------------------------------------------------
+-- Whether to include debugging information.
+-- let s:is_debug = 0
+HasAutoDebug = false
+function ToggleHasAutoDebug() HasAutoDebug = not HasAutoDebug end
+nnoremap('<leader>cd', ':lua ToggleHasAutoDebug()<cr>')
 
-" Start terminal in insert mode
-" au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+local function makelist(str)
+  local t = {}
+  for quoted, non_quoted in ('""'..str):gmatch'(%b"")([^"]*)' do
+    table.insert(t, quoted ~= '""' and quoted:sub(2,-2) or nil)
+    for word in non_quoted:gmatch'%S+' do
+      table.insert(t, word)
+    end
+  end
+  return t
+end
 
-" nnoremap <silent> <leader>tt :terminal<CR>
-" nnoremap <silent> <leader>tv :vnew<CR>:terminal<CR>
-" nnoremap <silent> <leader>th :new<CR>:terminal<CR>
-" tnoremap <C-x> <C-\><C-n><C-w>q
+-- Benchmark the execution time of compiled binary.
+function TimeCompiledBinary(opts)
 
-"-------------------------------------------------------------------------------
-" Auto compilation settings.
-"-------------------------------------------------------------------------------
+    local executable_path = opts
+    local runner = ''
+    if opts.args then
+        local arguments = makelist(opts.args)
+        local executable_path = arguments[1]
+        local runner = arguments[2] or 'sh'
+    end
 
-" Whether to include debugging information.
-let s:is_debug = 0
-function! ToggleDebug()
-    if s:is_debug  == 0
-        let s:is_debug = 1
+    local program = string.format([[
+        for ((i=1;i<=1000;i++)); do
+            # Execute the program.
+            %s "%s" > /dev/null
+        done
+    ]], runner, executable_path)
+
+    print(program)
+
+    --  Run the file.
+    local stdout = vim.fn.system({'/usr/bin/time', '-p', 'bash', '-c', program})
+    print(stdout)
+end
+
+-- Call the function by simply typing :Time.
+vim.api.nvim_create_user_command('Time',
+    function()
+        -- Remove the parent directories and extension to get file name.
+        local file = vim.fn.expand('%:t:r')
+
+        -- Define the path where the compiled executable will be placed, and
+        -- where it should be executed.
+        local executable_path = '/tmp/' .. file
+        TimeCompiledBinary(executable_path)
+    end,
+    {nargs = 0}
+ )
+
+vim.api.nvim_create_user_command('TimeFile', TimeCompiledBinary, {
+    nargs = 1,
+    complete = function(ArgLead, CmdLine, CursorPos)
+        -- return completion candidates as a list-like table
+        return { vim.fn.expand('%:p:r'), vim.fn.expand('%:p'), vim.fn.expand('%') }
+    end,
+    desc = 'Execute the given file'
+})
+
+-- Another compiler for c is tcc.
+local ft2compiler = {
+    c    = 'gcc',
+    cpp  = 'g++',
+    rust = 'rustc',
+    vala = 'valac',
+}
+
+-- Validate GLSL code: vert, tesc, tese, glsl, geom, frag, comp.
+local ft2interpreter = {
+    python     = 'python3',
+    java       = "java",
+    groovy     = "groovy",
+    lua        = "lua",
+    sh         = "bash",
+    javascript = "node",
+    glsl       = "glslangValidator",
+}
+
+-- Sample CMake flags.
+-- set(CMAKE_CXX_FLAGS_DEBUG_INIT "-fsanitize=address,undefined -fsanitize-undefined-trap-on-error")
+-- set(CMAKE_EXE_LINKER_FLAGS_INIT "-fsanitize=address,undefined -static-libasan")
+-- set(CMAKE_CXX_FLAGS_INIT "-Werror -Wall -Wextra -Wpedantic")
+-- # toolchain file for use with gcov
+-- set(CMAKE_CXX_FLAGS_INIT "--coverage -fno-exceptions -g")
+--
+-- C++ and C compilation flags:
+-- Wall: Warn questionable or easyadfjgffa to avoid constructions.
+-- Wextra: Some extra warnings not enabled by -Wall.
+-- Wfloat-conversion: Warns when doubles implicitly converted to floats.
+-- Wsign-conversion: Warn implicit conversion that change integer sign.
+-- Wshadow: Find errors particularly regarding unique_lock<mutex>(my_mutex);
+-- Wpedantic: Demand strict ISO C and ISO C++; no forbidden extensions.
+-- Wconversion: Warn implicit conversions that may alter a value.
+local cflags = {
+    '-Wall',
+    '-Wextra',
+    -- TODO Remove wfloat-conversion as it conflicts with old c compiler.
+    '-Wfloat-conversion',
+    '-Wshadow',
+    '-Wsign-conversion',
+    '-Wconversion'
+}
+
+-- g: Produce debugging info for GDB.
+-- fsanitize=address: Warns use after free.
+-- fsanitize=leak: Warns when pointers have not been freed.
+-- fsanitize=undefined: Detects undefined behavior.
+-- fsanitize-address-use-after-scope: Catches references to temporary
+--   values. The value may be gone before the reference is accessed.
+local debug_flags = {
+    '-g',
+    '-fsanitize=address,leak,undefined',
+    '-fsanitize-address-use-after-scope',
+}
+
+local ft2flags = {
+    c   = {unpack(cflags)},
+    cpp = {unpack(cflags), '-std=c++17'},
+}
+
+local ft2debugflags = {
+    c    = {unpack(debug_flags)},
+    cpp  = {unpack(debug_flags)},
+    rust = {'-g'}
+}
+
+function Run()
+    -- Compile and execute program in tmp folder.
+
+    -- If the interpreted language is supported:
+    if ft2interpreter[vim.bo.filetype] then
+        -- Get the interpreter.
+        local interpreter = ft2interpreter[vim.bo.filetype]
+
+        -- Get the file path.
+        local path = vim.fn.fnameescape(vim.fn.expand('%:p'))
+
+        -- Run the file.
+        vim.cmd(('!%s %s'):format(interpreter, path))
+    end
+
+    if ft2compiler[vim.bo.filetype] then
+        -- Get the interpreter.
+        local compiler = ft2compiler[vim.bo.filetype]
+
+        -- Get the file path.
+        local path = vim.fn.expand('%:p')
+
+        -- Remove the parent directories and extension to get file name.
+        local file = vim.fn.expand('%:t:r')
+
+        -- Define the path where the compiled executable will be placed, and
+        -- where it should be executed.
+        local executable_path = '/tmp/' .. file
+
+        -- By default do not pass additional compilation flags.
+        local flags = {}
+
+        -- If the language has additional compilation flags:
+        if ft2flags[vim.bo.filetype] then
+            -- Pass the additional compilation flags.
+            flags = ft2flags[vim.bo.filetype]
+        end
+
+        -- If the language has debug flags, and debugging is enabled:
+        if ft2debugflags[vim.bo.filetype] and HasAutoDebug then
+            -- Pass the additional compilation flags.
+            flags = {unpack(ft2debugflags[vim.bo.filetype]), unpack(flags)}
+        end
+
+        -- Compile and run the file.
+        vim.cmd(('!%s %s %s -o "%s" && "%s"'):format(compiler,
+            table.concat(flags, ' '), path, executable_path, executable_path))
+    end
+end
+
+--------------------------------------------------------------------------------
+-- Md-vim settings.
+--------------------------------------------------------------------------------
+-- Disable header folding.
+vim.g['vim_markdown_folding_disabled'] = 1
+
+-- Conceal ~~this~~ and *this* and `this` and more.
+vim.g['vim_markdown_conceal'] = 1
+
+-- Disable math tex conceal feature.
+vim.g['tex_conceal'] = ""
+vim.g['vim_markdown_math'] = 1
+
+-- Stop adding annoying indentation.
+vim.g['vim_markdown_new_list_item_indent'] = 0
+
+-- Support front matter of various format.
+vim.g['vim_markdown_frontmatter'] = 1 -- for YAML format
+vim.g['vim_markdown_toml_frontmatter'] = 1  -- for TOML format
+vim.g['vim_markdown_json_frontmatter'] = 1  -- for JSON format
+
+--------------------------------------------------------------------------------
+-- Rust-vim settings.
+--------------------------------------------------------------------------------
+-- Format Rust file using rustfmt each time the file is saved.
+-- let g:rustfmt_autosave = 1
+-- TODO Provide RustRun and Crun mapping to run single files or cargo files.
+-- Also provide RustTest, RustEmitIr, RustEmitAsm, RustFmt, Ctest, Cbuild.
+vim.g['rustfmt_autosave'] = 1
+
+--------------------------------------------------------------------------------
+-- Latex auto compilation.
+--------------------------------------------------------------------------------
+function SetLaTeXVariables()
+    -- Flags used by all rubber commands.
+    RubberCompFlags = {'rubber', '--shell-escape', '--synctex', '--inplace'}
+
+    -- grep: Look for first line that contains "% jobname:". Ignore whitespace.
+    local jobname_line = vim.fn.system({'grep', '--max-count=1', '%*jobname:',
+        vim.fn.expand('%')})
+    -- Ignore surrounding whitespace. Match any characters such that the last
+    -- one is not whitespace. The job name can be many words long.
+    LatexJobName = jobname_line:gmatch('.*jobname:%s*(.*%S)%s*')()
+end
+
+function RunLaTeX()
+    if LatexJobName then
+        -- Compile using the jobname.
+        local stdout = vim.fn.system({unpack(RubberCompFlags), '--pdf',
+            '--jobname', LatexJobName, vim.fn.expand('%')})
+        print(stdout)
     else
-        let s:is_debug = 0
-    endif
-endfunction
-nnoremap <leader>cd :call ToggleDebug()<cr>
+        -- If there is no jobname, compile using the default file name.
+        local stdout = vim.fn.system({unpack(RubberCompFlags), '--pdf',
+            vim.fn.expand('%')})
+        print(stdout)
+    end
+end
 
-" Benchmark the execution time of compiled binary.
-function! Time_cpp_c_rs()
-    " Remove the parent directories and extension to get file name.
-    let l:file=expand('%:t:r')
+function CleanLaTeX()
+    -- Clean files matching the current file's name by using the same flags
+    -- used for compilation in addition to --clean flag. Do not include --pdf
+    -- flag as not to remove the output pdf.
+    local rubber_clean_flags = {'--clean', vim.fn.expand('%')}
+    if LatexJobName then
+        -- Clean files matching the job name.
+        rubber_clean_flags = {'--clean', '--jobname', LatexJobName,
+            vim.fn.expand('%')}
+    end
+    vim.fn.system({unpack(RubberCompFlags), unpack(rubber_clean_flags)})
+end
 
-    " Define the path where the compiled executable will be placed, and where
-    " it should be executed.
-    let l:executable_path='/tmp/' . l:file
+function OpenLaTeXPDF(viewer)
+    -- Get current file's root name (without extension) and add .pdf.
+    local jobname = vim.fn.expand('%:p:r.pdf')
+    if LatexJobName then
+        -- Get current file's head (last path component removed) and add .pdf.
+        jobname = vim.fn.expand('%:p:h') .. '/' .. LatexJobName .. '.pdf'
+    end
+    print("Viewing " .. jobname)
+    vim.fn.system({'setsid', '--fork', viewer, jobname})
+end
 
-    " Run the file.
-    exe printf('!/usr/bin/time -p bash -c "for ((i=1;i<=1000;i++)); do \"%s\" > /dev/null; done"', l:executable_path)
-endfunction
-" Call the function by simply typing :Time.
-command! Time call Time_cpp_c_rs()
+--------------------------------------------------------------------------------
+-- Window settings.
+--------------------------------------------------------------------------------
+-- Next window. Move cursor clockwise to the next window
+nnoremap('<c-j>', '<c-w>w')
 
-" Another compiler for c is tcc.
-let s:ft2compiler = {
-            \'c'            : 'gcc',
-            \'cpp'          : 'g++',
-            \'rust'         : 'rustc',
-            \'vala'         : 'valac',
-            \}
+-- Previous window. Move cursor counter-clockwise to the previous window.
+nnoremap('<c-k>', '<c-w>W')
 
-" Validate GLSL code: vert, tesc, tese, glsl, geom, frag, comp.
-let s:ft2interpreter = {
-            \'python'       : 'python3',
-            \'java'         : "java",
-            \'groovy'       : "groovy",
-            \'lua'          : "lua",
-            \'sh'           : "bash",
-            \'javascript'   : "node",
-            \'glsl'         : "glslangValidator",
-            \}
+--------------------------------------------------------------------------------
+-- Switch between files and headers: c -> h and cpp -> hpp.
+--------------------------------------------------------------------------------
+-- Attach when working with clangd.
+vim.api.nvim_create_user_command('C', 'ClangdSwitchSourceHeader', {nargs = 0})
 
-" Sample CMake flags.
-" set(CMAKE_CXX_FLAGS_DEBUG_INIT "-fsanitize=address,undefined -fsanitize-undefined-trap-on-error")
-" set(CMAKE_EXE_LINKER_FLAGS_INIT "-fsanitize=address,undefined -static-libasan")
-" set(CMAKE_CXX_FLAGS_INIT "-Werror -Wall -Wextra -Wpedantic")
-" # toolchain file for use with gcov
-" set(CMAKE_CXX_FLAGS_INIT "--coverage -fno-exceptions -g")
-
-" C++ and C compilation flags:
-" Wall: Warn questionable or easy to avoid constructions.
-" Wextra: Some extra warnings not enabled by -Wall.
-" Wfloat-conversion: Warns when doubles implicitly converted to floats.
-" Wsign-conversion: Warn implicit conversion that change integer sign.
-" Wshadow: Find errors particularly regarding unique_lock<mutex>(my_mutex);
-" Wpedantic: Demand strict ISO C and ISO C++; no forbidden extensions.
-" Wconversion: Warn implicit conversions that may alter a value.
-let s:cflags=' -Wall -Wextra -Wfloat-conversion -Wshadow
-            \ -Wsign-conversion -Wconversion '
-
-" g: Produce debugging info for GDB.
-" fsanitize=address: Warns use after free.
-" fsanitize=leak: Warns when pointers have not been freed.
-" fsanitize=undefined: Detects undefined behavior.
-" fsanitize-address-use-after-scope: Catches references to temporary
-"   values. The value may be gone before the reference is accessed.
-let s:debug_flags=' -g -fsanitize=address,leak,undefined
-            \ -fsanitize-address-use-after-scope '
-
-let s:ft2flags = {
-            \'c'          : s:cflags,
-            \'cpp'        : s:cflags . '-std=c++17',
-            \}
-
-let s:ft2debugflags = {
-            \'c'          : s:debug_flags,
-            \'cpp'        : s:debug_flags,
-            \'rust'       :'-g'
-            \}
-
-function! SetupLanguageBindings(ft2compiler, ft2interpreter)
-    " If the file type is supported:
-    if has_key(a:ft2compiler, &ft) || has_key(a:ft2interpreter, &ft)
-        " Set key bindings to run the program.
-        map <buffer> <F5> :call Run()<cr>
-        imap <buffer> <F5> <esc>:call Run()<cr>
-        return
-    endif
-endfunction
-
-call SetupLanguageBindings(s:ft2compiler, s:ft2compiler)
-
-function! Run()
-    " Compile and execute program in tmp folder.
-
-    " If the interpreted language is supported:
-    if has_key(s:ft2interpreter, &filetype)
-        " Get the interpreter.
-        let l:interpreter=s:ft2interpreter[&filetype]
-
-        " Get the file path.
-        let l:path=expand('%')
-
-        " Run the file.
-        exe printf("!%s %s", l:interpreter, l:path)
-    endif
-
-    " If the compiled language is supported:
-    if has_key(s:ft2compiler, &filetype)
-        " Compile the file based on its type.
-        " Set the correct compiler for C, C++, Rust, etc.
-        let l:compiler=s:ft2compiler[&filetype]
-
-        " Get the absolute file to the file.
-        let l:path=expand('%')
-
-        " Remove the parent directories and extension to get file name.
-        let l:file=expand('%:t:r')
-
-        " Define the path where the compiled executable will be placed, and
-        " where it should be executed.
-        let l:executable_path="/tmp/" . l:file
-
-        " By default do not pass additional compilation flags.
-        let l:flags = ''
-
-        " If the language has additional compilation flags:
-        if has_key(s:ft2flags, &filetype)
-            " Pass the additional compilation flags.
-            let l:flags = s:ft2flags[&filetype]
-        endif
-
-        " If the language has debug flags, and debugging is enabled:
-        if has_key(s:ft2debugflags, &filetype) && s:is_debug
-            " Pass the additional compilation flags.
-            let l:flags = s:ft2debugflags[&filetype] . ' ' . l:flags
-        endif
-
-        " Compile and run the file.
-        exe printf('!%s %s %s -o "%s" && "%s"', l:compiler, l:flags, l:path,
-                    \l:executable_path, l:executable_path)
-    endif
-endfunction
-
-"-------------------------------------------------------------------------------
-" Md-vim settings.
-"-------------------------------------------------------------------------------
-" Disable header folding.
-let g:vim_markdown_folding_disabled = 1
-
-" Conceal ~~this~~ and *this* and `this` and more.
-let g:vim_markdown_conceal = 1
-
-" disable math tex conceal feature
-let g:tex_conceal = ""
-let g:vim_markdown_math = 1
-
-" Stop adding annoying indentation.
-let g:vim_markdown_new_list_item_indent = 0
-
-" support front matter of various format
-let g:vim_markdown_frontmatter = 1  " for YAML format
-let g:vim_markdown_toml_frontmatter = 1  " for TOML format
-let g:vim_markdown_json_frontmatter = 1  " for JSON format
-
-"-------------------------------------------------------------------------------
-" Latex auto compilation.
-"-------------------------------------------------------------------------------
-function! SetLaTeXVariables()
-    let $rubber_flags='--shell-escape --synctex --inplace'
-    " grep: Look for first line that contains "% jobname:". Ignore whitespace.
-    " cut: Split the line using the ":" character, and get the second field.
-    " xargs: Remove leading whitespace.
-    " tr: Remove newline character by using tr.
-    " At the end we get a jobname with no loading spaces; can be many words.
-    let $jobname=system('cat ' . expand('%') . ' | grep --max-count=1 "%*jobname:" | cut -d: -f2 | xargs | tr -d "\n"')
-endfunction
-
-function! RunLaTeX()
-    if $jobname == ""
-        " If there is no jobname, compile using the default file name.
-        !eval rubber --pdf $rubber_flags "%"
-    else
-        " Else compile using the jobname.
-        !eval rubber --pdf $rubber_flags --jobname \"$jobname\" '%'
-    endif
-endfunction
-
-function! CleanLaTeX()
-    " Use the same flags used for compilation in addition to --clean flag.
-    " Do not include --pdf flag as not to remove the output pdf.
-    if $jobname == ""
-        " Clean files matching the current file's name.
-        !eval rubber $rubber_flags --clean '%'
-    else
-        " Clean files matching the job name.
-        !eval rubber $rubber_flags --clean --jobname \"$jobname\" '%'
-    endif
-endfunction
-
-function! OpenLaTeXPDF(viewer)
-    " Assign viewer to a shell variable.
-    let $viewer=a:viewer
-    if $jobname == ""
-        " Get current file's root name (without extension) and add .pdf.
-        !$viewr "%:p:r.pdf" &
-    else
-        " Get current file's head (last path component removed) and add .pdf.
-        !$viewer "%:p:h/$jobname.pdf" &
-    endif
-endfunction
-
-"-------------------------------------------------------------------------------
-" DWM settings.
-"-------------------------------------------------------------------------------
-" Next window. Move cursor clockwise to the next window
-nnoremap <c-j> <c-w>w
-
-" Previous window. Move cursor counter-clockwise to the previous window.
-nnoremap <c-k> <c-w>W
-
-"-------------------------------------------------------------------------------
-" Switch between files and headers: c -> h and cpp -> hpp.
-"-------------------------------------------------------------------------------
-command! A  ClangdSwitchSourceHeader
-
-"-------------------------------------------------------------------------------
-" Rust-vim settings.
-"-------------------------------------------------------------------------------
-" Format Rust file using rustfmt each time the file is saved.
-let g:rustfmt_autosave = 1
-" TODO Provide RustRun and Crun mapping to run single files or cargo files.
-" Also provide RustTest, RustEmitIr, RustEmitAsm, RustFmt, Ctest, Cbuild.
-]]
+--------------------------------------------------------------------------------
+-- Vim Terminal.
+--------------------------------------------------------------------------------
+-- Close tab immediately after closing terminal.
+-- au! TermClose * :q
+--
+-- nnoremap <silent> <leader>tt :terminal<CR>
+-- nnoremap <silent> <leader>tv :vnew<CR>:terminal<CR>
+-- nnoremap <silent> <leader>th :new<CR>:terminal<CR>
+-- tnoremap <C-x> <C-\><C-n><C-w>q
