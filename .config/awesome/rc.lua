@@ -325,9 +325,16 @@ globalkeys = gears.table.join(
                   }
               end,
               {description = "lua execute prompt", group = "awesome"}),
-    -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"}),
+    -- Menu bar
+    -- awful.key({ modkey }, "p", function() menubar.show() end,
+              -- {description = "show the menu bar", group = "launcher"}),
+    -- Execute Rofi if it is available!
+    awful.key({modkey, }, "p", function()
+            awful.spawn.with_shell("rofi -show run -show-icons -disable-history")
+        end, {description = "run programs", group = "launcher"}),
+    awful.key({ modkey, "Shift"}, "p", function()
+            awful.spawn.with_shell("rofi -show drun -show-icons -disable-history")
+        end, {description = "show the menubar", group = "launcher"}),
     -- Custom Show/hide statusbar
     awful.key({ modkey }, "b",
         function ()
