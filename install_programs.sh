@@ -265,6 +265,8 @@ vscodium_extensions=(
 
 pip3_programs=(
     cppman      # C++ man page documentation.
+    cmake-format # Source code formatter for CMake list files.
+    cmakelint # CMake files and reports style issues
 )
 
 # List of installers that I hope existed.

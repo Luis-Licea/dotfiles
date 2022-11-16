@@ -34,9 +34,9 @@ end
 -- Ungrouped Mappings.
 --------------------------------------------------------------------------------
 -- Leader Mapping.
-vim.g.mapleader = " "
+vim.g.mapleader = ' '
 -- Local Leader Mapping.
-vim.g.maplocalleader=";"
+vim.g.maplocalleader = ';'
 -- Map localleader to CTRL-W.
 map('<localleader>', '<c-w>')
 -- Save file.
@@ -45,7 +45,7 @@ nnoremap('<leader>w', ':write<cr>')
 
 local console = nil
 if vim.fn.executable('alacritty') == 1 then
-    console="alacritty --working-directory"
+    console='alacritty --working-directory'
 elseif vim.fn.executable('konsole') == 1 then
     console="konsole --workdir"
 end
@@ -363,25 +363,38 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
     end
 
     local function LoadTemplateFromType()
-        local type2template = {
+        local templates = {
+            ".eslintrc.yml",
+            ".stylua.toml",
+            "CMakeLists.txt",
+            "cmake_uninstall.cmake.in",
+            "mocha.mjs",
+        }
+
+        local type2skeleton = {
             c = "skeleton.c",
             cpp = "skeleton.cpp",
             html = "skeleton.html",
-            sh = "skeleton.sh",
-            py = "skeleton.py",
-            mocha = "mocha.mjs",
             mjs = "skeleton.mjs",
-            CMakeLists = "CMakeLists.txt",
-            cmake_uninstall = "cmake_uninstall.cmake.in"
+            py = "skeleton.py",
+            sh = "skeleton.sh",
         }
 
-        -- Get the file name root (one extension removed).
-        local fileName = vim.fn.expand("%:r")
+        -- Get the file name.
+        local fileName = vim.fn.expand("%")
         -- Get the file extension only.
         local extension = vim.fn.expand("%:e")
+        -- The template to load.
+        local template = nil
+
+        -- If a matching file exists, use it as a template.
+        for _, templateName in pairs(templates) do
+            if fileName == templateName then template = templateName end
+        end
 
         -- Try to find a valid template using the file name or the file type.
-        local template = type2template[fileName] or type2template[extension]
+        if not template then template = type2skeleton[extension] end
+
         -- Load the template if it could be found.
         if template then LoadTemplate(template) end
     end
@@ -423,24 +436,30 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
 --------------------------------------------------------------------------------
 -- Function for toggling auto compilation on save:
 HasAutoRun = false
-function ToggleHasAutoRun() HasAutoRun = not HasAutoRun; end
+function ToggleHasAutoRun() HasAutoRun = not HasAutoRun end
 nnoremap('<leader>ct', ':lua ToggleHasAutoRun()<cr>')
 
 -- Function for toggling code formatting on save:
 HasAutoFormat = false
-function ToggleHasAutoFormat() HasAutoFormat = not HasAutoFormat; end
+function ToggleHasAutoFormat() HasAutoFormat = not HasAutoFormat end
 nnoremap('<leader>cf', ':lua ToggleHasAutoFormat()<cr>')
 
 local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
     clear = true
 })
 
-    -- For all programs.
+    -- Format document before saving.
+    vim.api.nvim_create_autocmd('BufWritePre', {
+        group = auto_run_group,
+        pattern = '*',
+        callback = function() if HasAutoFormat then vim.lsp.buf.format() end end
+    })
+
+    -- Run the document after saving it.
     vim.api.nvim_create_autocmd('BufWritePost', {
         group = auto_run_group,
         pattern = '*',
         callback = function()
-            if HasAutoFormat then vim.lsp.buf.format() end
             if HasAutoRun then
                 if FileHasHashBang() and FileIsExecutable() then
                     -- Fix bug that freezes program when hash-bang is removed.
@@ -653,8 +672,6 @@ require('packer').startup(function()
     use 'simrat39/symbols-outline.nvim'
     -- Show indentation lines.
     use 'lukas-reineke/indent-blankline.nvim'
-    -- Comment and uncomment code sections more easily witch cc, uc, and ci.
-    use 'preservim/nerdcommenter'
     -- Add JSDoc, Doxygen, etc support.
     use { "danymat/neogen",
         config = function() require('neogen').setup { snippet_engine = "luasnip" } end,
@@ -885,16 +902,57 @@ require('packer').startup(function()
         config = function()
             require("null-ls").setup {
                 sources = {
+                    ------------------------------------------------------------
+                    -- Problematic.
+                    ------------------------------------------------------------
+                    -- Is not very useful.
+                    -- require("null-ls").builtins.hover.printenv,
+                    -- Refactoring for JavaScript and TypeScript, but doesn't work.
+                    -- require("null-ls").builtins.code_actions.refactoring,
+                    -- Useful but may leak information.
                     -- require("null-ls").builtins.hover.dictionary,
+                    -- No visible changes.
+                    -- require("null-ls").builtins.code_actions.cspell,
+                    -- For Markdown and LaTeX: Not very useful.
+                    -- require("null-ls").builtins.diagnostics.proselint,
+                    -- require("null-ls").builtins.code_actions.proselint,
+                    -- This functionality is provided by the "snowball" plugin.
                     -- require("null-ls").builtins.diagnostics.trail_space,
-                    require("null-ls").builtins.formatting.black,
-                    -- require("null-ls").builtins.formatting.stylua,
-                    -- require("null-ls").builtins.diagnostics.eslint,
+                    -- I don't even know what this does.
+                    -- require("null-ls").builtins.code_actions.ltrs,
+                    -- Not mature. Use StyLua.
                     -- require("null-ls").builtins.diagnostics.selene,
-                    -- require("null-ls").builtins.completion.spell,
+                    -- Tags need to be manually created with ctags -R.
+                    -- require("null-ls").builtins.completion.tags,
+                    -- Already provided by cmp_luasnip and luasnip plugins.
+                    -- require("null-ls").builtins.completion.luasnip,
+
+                    ------------------------------------------------------------
+                    -- Useful.
+                    ------------------------------------------------------------
+                    -- Provide text auto completion.
+                    require("null-ls").builtins.completion.spell,
+                    -- Add action to preview, reset, select, and stage hunks.
                     require("null-ls").builtins.code_actions.gitsigns,
+                    -- Auto-complete CMake commands and keywords.
+                    require("null-ls").builtins.diagnostics.cmake_lint,
+                    -- Show messages when bad indentation occurs.
+                    require("null-ls").builtins.formatting.cmake_format,
+                    -- Add code actions since they aren't provided by the LSP.
                     require("null-ls").builtins.code_actions.shellcheck,
+                    -- Format Lua files based on .stylua.toml file.
+                    require("null-ls").builtins.formatting.stylua,
+                    -- Format Python code and comments consistently.
+                    require("null-ls").builtins.formatting.black,
                 },
+                -- Set correct encoding to avoid gitsigns warning: multiple
+                -- different client offset_encodings detected for buffer, this
+                -- is not supported yet.
+                on_init = function(new_client, _)
+                    if vim.bo.filetype == 'cpp' then
+                        new_client.offset_encoding = 'utf-8'
+                    end
+                end,
             }
         end
     }
@@ -1237,8 +1295,8 @@ local servers = {
     'clangd', -- C/C++
     'cssls', -- CSS
     -- 'dockerls', -- Docker
-    'eslint',   -- Needs configuration.
-    -- 'tsserver', -- Works better for individual files.
+    'eslint',   -- JavaScript, TypeScript; Needs .eslintrc.yml.
+    -- 'tsserver', -- JavaScript, TypeScript; Works well for individual files.
     -- 'groovyls', -- Groovy
     'html', -- HTML
     -- 'jdtls',
@@ -1610,22 +1668,22 @@ end
 -- Md-vim settings.
 --------------------------------------------------------------------------------
 -- Disable header folding.
-vim.g['vim_markdown_folding_disabled'] = 1
+vim.g.vim_markdown_folding_disabled = 1
 
 -- Conceal ~~this~~ and *this* and `this` and more.
-vim.g['vim_markdown_conceal'] = 1
+vim.g.vim_markdown_conceal = 1
 
 -- Disable math tex conceal feature.
-vim.g['tex_conceal'] = ""
-vim.g['vim_markdown_math'] = 1
+vim.g.tex_conceal = ""
+vim.g.vim_markdown_math= 1
 
 -- Stop adding annoying indentation.
-vim.g['vim_markdown_new_list_item_indent'] = 0
+vim.g.vim_markdown_new_list_item_indent = 0
 
 -- Support front matter of various format.
-vim.g['vim_markdown_frontmatter'] = 1 -- for YAML format
-vim.g['vim_markdown_toml_frontmatter'] = 1  -- for TOML format
-vim.g['vim_markdown_json_frontmatter'] = 1  -- for JSON format
+vim.g.vim_markdown_frontmatter = 1 -- for YAML format
+vim.g.vim_markdown_toml_frontmatter = 1  -- for TOML format
+vim.g.vim_markdown_json_frontmatter = 1  -- for JSON format
 
 --------------------------------------------------------------------------------
 -- Rust-vim settings.
@@ -1634,7 +1692,7 @@ vim.g['vim_markdown_json_frontmatter'] = 1  -- for JSON format
 -- let g:rustfmt_autosave = 1
 -- TODO Provide RustRun and Crun mapping to run single files or cargo files.
 -- Also provide RustTest, RustEmitIr, RustEmitAsm, RustFmt, Ctest, Cbuild.
-vim.g['rustfmt_autosave'] = 1
+vim.g.rustfmt_autosave = 1
 
 --------------------------------------------------------------------------------
 -- Latex auto compilation.
@@ -1702,7 +1760,7 @@ nnoremap('<c-k>', '<c-w>W')
 -- Switch between files and headers: c -> h and cpp -> hpp.
 --------------------------------------------------------------------------------
 -- Attach when working with clangd.
-vim.api.nvim_create_user_command('C', 'ClangdSwitchSourceHeader', {nargs = 0})
+vim.api.nvim_create_user_command('C', 'ClangdSwitchSourceHeader', { nargs = 0 })
 
 --------------------------------------------------------------------------------
 -- Vim Terminal.
