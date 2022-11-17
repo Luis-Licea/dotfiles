@@ -926,6 +926,8 @@ require('packer').startup(function()
                     -- require("null-ls").builtins.completion.tags,
                     -- Already provided by cmp_luasnip and luasnip plugins.
                     -- require("null-ls").builtins.completion.luasnip,
+                    -- Does not have as many options as shfmt.
+                    -- require("null-ls").builtins.formatting.beautysh,
 
                     ------------------------------------------------------------
                     -- Useful.
@@ -944,6 +946,8 @@ require('packer').startup(function()
                     require("null-ls").builtins.formatting.stylua,
                     -- Format Python code and comments consistently.
                     require("null-ls").builtins.formatting.black,
+                    -- Formats Bash scripts and ensures consistent indentation.
+                    require("null-ls").builtins.formatting.shfmt.with({ extra_args = {"-i", "4"}}),
                 },
                 -- Set correct encoding to avoid gitsigns warning: multiple
                 -- different client offset_encodings detected for buffer, this
@@ -1284,6 +1288,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', '<c-a>', vim.lsp.buf.code_action, bufopts)
     -- Use gq for LPS formatting and gw for regular formatting.
     vim.keymap.set('x', '<leader>f', vim.lsp.buf.format, bufopts)
+    vim.api.nvim_create_user_command('FormatDocument', function() vim.lsp.buf.format() end, { nargs = 0 })
 end
 
 --------------------------------------------------------------------------------
