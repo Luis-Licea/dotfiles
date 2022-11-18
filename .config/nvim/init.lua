@@ -42,7 +42,6 @@ map('<localleader>', '<c-w>')
 -- Save file.
 nnoremap('<leader>w', ':write<cr>')
 -- nnoremap('<leader>w', ':update<cr>')
-
 local console = nil
 if vim.fn.executable('alacritty') == 1 then
     console='alacritty --working-directory'
@@ -368,7 +367,8 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
             ".stylua.toml",
             "CMakeLists.txt",
             "cmake_uninstall.cmake.in",
-            "mocha.mjs",
+            "scratchpad_test.mjs",
+            "scratchpad_test.py",
         }
 
         local type2skeleton = {
@@ -389,7 +389,10 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
 
         -- If a matching file exists, use it as a template.
         for _, templateName in pairs(templates) do
-            if fileName == templateName then template = templateName end
+            if fileName == templateName then
+                template = templateName
+                break
+            end
         end
 
         -- Try to find a valid template using the file name or the file type.
@@ -1302,7 +1305,7 @@ local servers = {
     -- 'dockerls', -- Docker
     'eslint',   -- JavaScript, TypeScript; Needs .eslintrc.yml.
     -- 'tsserver', -- JavaScript, TypeScript; Works well for individual files.
-    -- 'groovyls', -- Groovy
+    'groovyls', -- Groovy
     'html', -- HTML
     -- 'jdtls',
     'jsonls', -- JSON
@@ -1312,7 +1315,7 @@ local servers = {
     -- 'rust_analyzer', -- Rust
     -- 'sqls', -- SQL
     'cmake',
-    -- 'taplo', -- TOML
+    'taplo', -- TOML
     -- 'ltex',
     -- 'texlab',
 }
