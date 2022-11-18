@@ -702,8 +702,8 @@ require('packer').startup(function()
         end,
         nnoremap('<leader><leader>', require("nvim-window").pick)
     }
-    -- Intelligent search.
-    -- use 'ggandor/lightspeed.nvim'
+    -- Adapter for vscode-js-debug.
+    use { "mxsdev/nvim-dap-vscode-js", requires = "mfussenegger/nvim-dap" }
     -- Provide richer syntax highlighting and only spell-check comments.
     use { 'nvim-treesitter/nvim-treesitter',
         -- Show context in first line. Know what class or function you are in.
@@ -1037,10 +1037,98 @@ require('gitsigns').setup{
 --------------------------------------------------------------------------------
 require("dapui").setup()
 local dap, dapui = require("dap"), require("dapui")
+-- MasonInstall debugpy.
 dap.adapters.python = {
   type = 'executable';
   command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/debugpy-adapter'
 }
+dap.configurations.python = {
+  {
+    type = 'python';
+    request = 'launch';
+    name = "Launch file";
+    program = "${file}";
+    pythonPath = function() return 'python3' end;
+  },
+}
+
+-- MasonInstall cpptools.
+dap.adapters.cppdbg = {
+  id = 'cppdbg',
+  type = 'executable',
+  command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/OpenDebugAD7'
+}
+
+dap.configurations.cpp = {
+  {
+    name = "Launch file",
+    type = "cppdbg",
+    request = "launch",
+    -- Manually enter executable name:
+    -- program = function()
+    --   return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    -- end,
+    program = function() return vim.fn.expand('%:p:r') end,
+    cwd = '${workspaceFolder}',
+    stopAtEntry = true,
+  },
+  {
+    name = 'Attach to gdbserver :1234',
+    type = 'cppdbg',
+    request = 'launch',
+    MIMode = 'gdb',
+    miDebuggerServerAddress = 'localhost:1234',
+    miDebuggerPath = '/usr/bin/gdb',
+    cwd = '${workspaceFolder}',
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+  },
+}
+-- Reuse configuration for C and Rust.
+dap.configurations.c = dap.configurations.cpp
+dap.configurations.rust = dap.configurations.cpp
+
+-- MasonInstall js-debug-adpater.
+require("dap-vscode-js").setup({
+    -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
+    debugger_cmd = { os.getenv('HOME') .. "/.local/share/nvim/mason/bin/js-debug-adapter" },
+    -- Which adapters to register in nvim-dap.
+    adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
+})
+
+dap.configurations.javascript = {
+    {
+        type = "pwa-node",
+        request = "launch",
+        name = "Launch file",
+        program = "${file}",
+        cwd = "${workspaceFolder}",
+    },
+    {
+        type = "pwa-node",
+        request = "attach",
+        name = "Attach",
+        processId = require 'dap.utils'.pick_process,
+        cwd = "${workspaceFolder}",
+    },
+    {
+        type = "pwa-node",
+        request = "launch",
+        name = "Debug Mocha Tests",
+        -- trace = true, -- include debugger info
+        runtimeExecutable = "node",
+        runtimeArgs = {
+            "./node_modules/mocha/bin/mocha.js",
+        },
+        program = "${file}",
+        rootPath = "${workspaceFolder}",
+        cwd = "${workspaceFolder}",
+        console = "integratedTerminal",
+        internalConsoleOptions = "neverOpen",
+    }
+}
+dap.configurations.typescript = dap.configurations.javascript
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
   dapui.open({})
@@ -1051,16 +1139,6 @@ end
 dap.listeners.before.event_exited["dapui_config"] = function()
   dapui.close({})
 end
-
-dap.configurations.python = {
-  {
-    type = 'python';
-    request = 'launch';
-    name = "Launch file";
-    program = "${file}";
-    pythonPath = function() return 'python3' end;
-  },
-}
 
 --------------------------------------------------------------------------------
 -- Nvim-treesitter.
