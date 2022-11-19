@@ -199,6 +199,15 @@ aur_programs=(
     dragon-drop # For Ranger. Drag-and-drop source for X or Wayland.
 )
 
+printer_programs=(
+    # Fix "unable to locate printer" error:
+    # Add *mdns_minimal [NOTFOUND=return]* before *resolve* in /etc/nsswitch.conf
+    # https://wiki.archlinux.org/title/Avahi#Hostname_resolution
+
+    avahi # Service Discovery for Linux using mDNS/DNS-SD
+    system-config-printer # A CUPS printer configuration tool and status applet
+)
+
 modern_unix=(
     # Install with pacman.
     bat # A cat clone with syntax highlighting and Git integration.
