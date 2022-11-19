@@ -439,6 +439,7 @@ vim.b.addCompFlags = false
 vim.b.addDebugFlags = false
 vim.b.formatOnSave = false
 vim.b.runOnSave = false
+vim.g.compPath = '/tmp/' -- Output folder for compiled binaries, pdfs, etc.
 
 -- Function for toggling auto compilation on save:
 function ToggleRunOnSave() vim.b.runOnSave = not vim.b.runOnSave end
@@ -508,14 +509,14 @@ local markdown_group = vim.api.nvim_create_augroup('Markdown Group', {
         pattern = '*.md',
         callback = function()
             if vim.b.runOnSave then
-                vim.fn.execute('!pandoc "%" -o "/tmp/%<.pdf"')
+                vim.fn.execute('!pandoc "%" -o "' .. vim.g.compPath .. '%<.pdf"')
             end
         end
     })
 
     -- View pdf files.
     function LaunchViewer()
-        vim.fn.execute('!zathura "/tmp/%<.pdf" &')
+        vim.fn.execute('!zathura "' .. vim.g.compPath .. '%<.pdf" &')
     end
 
     vim.api.nvim_create_autocmd('BufReadPost', {
@@ -1639,7 +1640,7 @@ vim.api.nvim_create_user_command('Time',
 
         -- Define the path where the compiled executable will be placed, and
         -- where it should be executed.
-        local executable_path = '/tmp/' .. file
+        local executable_path = vim.g.compPath .. file
         TimeCompiledBinary(executable_path)
     end,
     {nargs = 0}
@@ -1722,8 +1723,6 @@ local ft2debugflags = {
 }
 
 function Run()
-    -- Compile and execute program in tmp folder.
-
     -- If the interpreted language is supported:
     if ft2interpreter[vim.bo.filetype] then
         -- Get the interpreter.
@@ -1748,7 +1747,7 @@ function Run()
 
         -- Define the path where the compiled executable will be placed, and
         -- where it should be executed.
-        local executable_path = '/tmp/' .. file
+        local executable_path = vim.g.compPath .. file
 
         -- By default do not pass additional compilation flags.
         local flags = {}
