@@ -405,12 +405,15 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
     --- Return whether the file has a hash-bang.
     ---@return boolean True if the file has a hash-bang, false otherwise.
     local function FileHasHashBang()
-        -- If the first 2 characters are a hashbang, make file executable.
-        return string.sub(vim.fn.getline(0,1)[1], 1, 2) == "#!"
+        return vim.fn.getline(0,1)[1]:sub(1, 2) == "#!"
     end
 
+    --- Return the path to the executable specified by the hash-bang.
+    ---@return string The path tho the executable.
+    local function GetHashBang() return vim.fn.getline(0,1)[1]:sub(3) end
+
     --- Return whether the current file is executable.
-    ---@param path An optional path to the file to check.
+    ---@param path string An optional path to the file to check.
     ---@return boolean True if the file is executable by all users.
     function FileIsExecutable(path)
         -- If the path is not defined, use the path to the current file.
@@ -422,30 +425,38 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
         return string.sub(permissions, 11, 11) == "x"
     end
 
-    -- C++ code settings.
+    -- Load a template if one is available when creating a file.
     vim.api.nvim_create_autocmd('BufNewFile',  {
         group    = template_group,
         pattern  = '*',
-        callback = function()
-            LoadTemplateFromType()
-            if FileHasHashBang() then
-                vim.cmd("silent! write")
-                vim.cmd("silent! !chmod +x '%'")
-            end
-        end
+        callback = function() LoadTemplateFromType() end
     })
 --------------------------------------------------------------------------------
 -- Auto compilation settings.
 --------------------------------------------------------------------------------
--- Function for toggling auto compilation on save:
-HasAutoRun = false
-function ToggleHasAutoRun() HasAutoRun = not HasAutoRun end
-nnoremap('<leader>ct', ':lua ToggleHasAutoRun()<cr>')
+-- Default compilation and execution settings.
+vim.b.addCompFlags = false
+vim.b.addDebugFlags = false
+vim.b.formatOnSave = false
+vim.b.runOnSave = false
 
--- Function for toggling code formatting on save:
-HasAutoFormat = false
-function ToggleHasAutoFormat() HasAutoFormat = not HasAutoFormat end
-nnoremap('<leader>cf', ':lua ToggleHasAutoFormat()<cr>')
+-- Function for toggling auto compilation on save:
+function ToggleRunOnSave() vim.b.runOnSave = not vim.b.runOnSave end
+function ToggleFormatOnSave() vim.b.formatOnSave = not vim.b.formatOnSave end
+function ToggleAddCompFlags() vim.b.addCompFlags = not vim.b.addCompFlags end
+function ToggleAddDebugFlags() vim.b.addDebugFlags = not vim.b.addDebugFlags end
+vim.api.nvim_create_user_command('ToggleRunOnSave', ToggleRunOnSave,
+    { nargs = 0, desc = "Run the file upon saving." })
+vim.api.nvim_create_user_command('ToggleFormatOnSave', ToggleFormatOnSave,
+    { nargs = 0, desc = "Format the file upon saving." })
+vim.api.nvim_create_user_command('ToggleAddCompFlags', ToggleAddCompFlags,
+    { nargs = 0, desc = "Add compilation flags upon compilation." })
+vim.api.nvim_create_user_command('ToggleAddDebugFlags', ToggleAddDebugFlags,
+    { nargs = 0, desc = "Add debug flags upon compilation." })
+nnoremap('<leader>cr', ToggleRunOnSave)
+nnoremap('<leader>cf', ToggleFormatOnSave)
+nnoremap('<leader>cc', ToggleAddCompFlags)
+nnoremap('<leader>cd', ToggleAddDebugFlags)
 
 local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
     clear = true
@@ -455,7 +466,7 @@ local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
     vim.api.nvim_create_autocmd('BufWritePre', {
         group = auto_run_group,
         pattern = '*',
-        callback = function() if HasAutoFormat then vim.lsp.buf.format() end end
+        callback = function() if vim.b.formatOnSave then vim.lsp.buf.format() end end
     })
 
     -- Run the document after saving it.
@@ -463,10 +474,9 @@ local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
         group = auto_run_group,
         pattern = '*',
         callback = function()
-            if HasAutoRun then
-                if FileHasHashBang() and FileIsExecutable() then
-                    -- Fix bug that freezes program when hash-bang is removed.
-                    vim.cmd("!./" .. vim.fn.fnameescape(vim.fn.expand("%")))
+            if vim.b.runOnSave then
+                if FileHasHashBang() and FileIsExecutable(GetHashBang()) then
+                    vim.cmd("!".. GetHashBang() .. ' ' .. vim.fn.fnameescape(vim.fn.expand("%")))
                 else
                     Run()
                 end
@@ -475,12 +485,14 @@ local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
     })
 
     -- Execute files named "scratchpad" each time they are saved.
-    vim.api.nvim_create_autocmd('BufEnter', {
+    vim.api.nvim_create_autocmd('BufReadPost', {
         group = auto_run_group,
         pattern = 'scratchpad.*',
         callback = function()
-            ToggleHasAutoFormat()
-            ToggleHasAutoRun()
+            ToggleRunOnSave()
+            ToggleFormatOnSave()
+            ToggleAddCompFlags()
+            ToggleAddDebugFlags()
         end
     })
 
@@ -495,7 +507,7 @@ local markdown_group = vim.api.nvim_create_augroup('Markdown Group', {
         group = markdown_group,
         pattern = '*.md',
         callback = function()
-            if HasAutoRun then
+            if vim.b.runOnSave then
                 vim.fn.execute('!pandoc "%" -o "/tmp/%<.pdf"')
             end
         end
@@ -536,7 +548,7 @@ local latex_group = vim.api.nvim_create_augroup('LaTeX Group', {
             -- Compile the file in the same directory.
             nnoremap('<leader>co', RunLaTeX, {buffer = true})
             -- Clean all files except the compiled pdf.
-            nnoremap('<leader>cr', CleanLaTeX, {buffer = true})
+            nnoremap('<leader>cl', CleanLaTeX, {buffer = true})
             -- Open the compiled LaTeX pdf with the specified viewer.
             nnoremap('<leader>cv', ':lua OpenLaTeXPDF("zathura")<cr>', {buffer = true})
         end
@@ -546,7 +558,7 @@ local latex_group = vim.api.nvim_create_augroup('LaTeX Group', {
     vim.api.nvim_create_autocmd('BufWritePost', {
         group = latex_group,
         pattern = '*.tex',
-        callback = function() if HasAutoRun then RunLaTeX() end end
+        callback = function() if vim.b.runOnSave then RunLaTeX() end end
     })
 
     -- Clean the all files except the compiled pdf when exiting.
@@ -1369,7 +1381,8 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', '<c-a>', vim.lsp.buf.code_action, bufopts)
     -- Use gq for LPS formatting and gw for regular formatting.
     vim.keymap.set('x', '<leader>f', vim.lsp.buf.format, bufopts)
-    vim.api.nvim_create_user_command('FormatDocument', function() vim.lsp.buf.format() end, { nargs = 0 })
+    vim.api.nvim_create_user_command('FormatDocument', function() vim.lsp.buf.format() end,
+        { nargs = 0, desc = "Format the document to fix indentation and spacing issues" })
 end
 
 --------------------------------------------------------------------------------
@@ -1568,12 +1581,7 @@ require('cmp').setup.cmdline(':', {
 --------------------------------------------------------------------------------
 -- Auto compilation settings.
 --------------------------------------------------------------------------------
--- Whether to include debugging information.
--- let s:is_debug = 0
-HasAutoDebug = false
-function ToggleHasAutoDebug() HasAutoDebug = not HasAutoDebug end
-nnoremap('<leader>cd', ':lua ToggleHasAutoDebug()<cr>')
-
+-- Split a string of command-line arguments into a list.
 local function makelist(str)
   local t = {}
   for quoted, non_quoted in ('""'..str):gmatch'(%b"")([^"]*)' do
@@ -1583,6 +1591,19 @@ local function makelist(str)
     end
   end
   return t
+end
+
+--- Join two or more arrays and return the new array.
+---@vararg Array the arrays to merge.
+---@return Array the new array formed from all the passed arrays.
+local function tableMerge(...)
+    local result = {}
+    for _, t in ipairs({ ... }) do
+        for _, v in pairs(t) do
+            table.insert(result, v)
+        end
+    end
+    return result
 end
 
 -- Benchmark the execution time of compiled binary.
@@ -1720,10 +1741,10 @@ function Run()
         local compiler = ft2compiler[vim.bo.filetype]
 
         -- Get the file path.
-        local path = vim.fn.expand('%:p')
+        local path = vim.fn.fnameescape(vim.fn.expand('%:p'))
 
         -- Remove the parent directories and extension to get file name.
-        local file = vim.fn.expand('%:t:r')
+        local file = vim.fn.fnameescape(vim.fn.expand('%:t:r'))
 
         -- Define the path where the compiled executable will be placed, and
         -- where it should be executed.
@@ -1733,15 +1754,15 @@ function Run()
         local flags = {}
 
         -- If the language has additional compilation flags:
-        if ft2flags[vim.bo.filetype] then
+        if ft2flags[vim.bo.filetype] and vim.b.addCompFlags then
             -- Pass the additional compilation flags.
             flags = ft2flags[vim.bo.filetype]
         end
 
         -- If the language has debug flags, and debugging is enabled:
-        if ft2debugflags[vim.bo.filetype] and HasAutoDebug then
+        if ft2debugflags[vim.bo.filetype] and vim.b.addDebugFlags then
             -- Pass the additional compilation flags.
-            flags = {unpack(ft2debugflags[vim.bo.filetype]), unpack(flags)}
+            flags = tableMerge(ft2debugflags[vim.bo.filetype], flags)
         end
 
         -- Compile and run the file.
