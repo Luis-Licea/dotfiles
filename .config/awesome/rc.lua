@@ -344,6 +344,21 @@ globalkeys = gears.table.join(
     {description = "toggle statusbar", group = "awesome"})
 )
 
+-- Commands for changing volume.
+local volume = {
+    raise = "amixer -D pulse sset Master 5%+",
+    lower = "amixer -D pulse sset Master 5%-",
+    toggle = "amixer sset Master toggle",
+}
+
+-- Commands for controlling music and video players.
+local playerctl = {
+    play = "rofi_playerctl play-pause",
+    prev = "rofi_playerctl previous",
+    next = "rofi_playerctl next",
+    pick = "rofi_playerctl",
+}
+
 clientkeys = gears.table.join(
     -- awful.key({ modkey,           }, "f",
         -- function (c)
@@ -423,16 +438,58 @@ clientkeys = gears.table.join(
         -- {description = "(un)maximize horizontally", group = "client"}),
 
     -- Custom multimedia keys:
-    awful.key({ }, "XF86AudioRaiseVolume",
-        function ()
-            awful.util.spawn("amixer -D pulse sset Master 5%+")
-        end ,
-        {description = "Raise volume", group = "system"}),
+    awful.key({ }, "XF86AudioPrev",
+        function () awful.util.spawn(playerctl.prev) end,
+        {description = "Audio Prev", group = "system"}),
+
+    awful.key({ }, "XF86AudioPlay",
+        function () awful.util.spawn(playerctl.play) end,
+        {description = "Audo Play", group = "system"}),
+
+    awful.key({ }, "XF86AudioNext",
+        function () awful.util.spawn(playerctl.netxt) end,
+        {description = "Audio Next", group = "system"}),
+
+    awful.key({ }, "XF86AudioMute",
+        function () awful.util.spawn(volume.toggle) end,
+        {description = "Toggle volume", group = "system"}),
+
     awful.key({ }, "XF86AudioLowerVolume",
-        function ()
-            awful.util.spawn("amixer -D pulse sset Master 5%-")
-        end ,
-        {description = "Lower volume", group = "system"})
+        function () awful.util.spawn(volume.lower) end,
+        {description = "Lower volume", group = "system"}),
+
+    awful.key({ }, "XF86AudioRaiseVolume",
+        function () awful.util.spawn(volume.raise) end,
+        {description = "Raise volume", group = "system"}),
+
+    -- Custom: This may change for every keyboard!
+    awful.key({ "Mod4" }, "F5",
+        function () awful.util.spawn(playerctl.pick) end,
+        {description = "Audio Pick", group = "system"}),
+
+    awful.key({ "Mod4" }, "F6",
+        function () awful.util.spawn(playerctl.prev) end,
+        {description = "Audio Prev", group = "system"}),
+
+    awful.key({ "Mod4" }, "F7",
+        function () awful.util.spawn(playerctl.play) end,
+        {description = "Audo Play", group = "system"}),
+
+    awful.key({ "Mod4" }, "8",
+        function () awful.util.spawn(playerctl.netxt) end,
+        {description = "Audio Next", group = "system"}),
+
+    awful.key({ "Mod4" }, "F9",
+        function () awful.util.spawn(volume.toggle) end,
+        {description = "Toggle volume", group = "system"}),
+
+    awful.key({ "Mod4" }, "F10",
+        function () awful.util.spawn(volume.lower) end,
+        {description = "Lower volume", group = "system"}),
+
+    awful.key({ "Mod4" }, "F11",
+        function () awful.util.spawn(volume.raise) end,
+        {description = "Raise volume", group = "system"})
 )
 
 -- Bind all key numbers to tags.
