@@ -404,18 +404,18 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
 
     --- Return whether the file has a hash-bang.
     ---@return boolean True if the file has a hash-bang, false otherwise.
-    local function FileHasHashBang()
+    function FileHasHashBang()
         return vim.fn.getline(0,1)[1]:sub(1, 2) == "#!"
     end
 
     --- Return the path to the executable specified by the hash-bang.
     ---@return string The path tho the executable.
-    local function GetHashBang() return vim.fn.getline(0,1)[1]:sub(3) end
+    function GetHashBang() return vim.fn.getline(0,1)[1]:sub(3) end
 
-    --- Return whether the current file is executable.
+    --- Return whether the given path is executable.
     ---@param path string An optional path to the file to check.
-    ---@return boolean True if the file is executable by all users.
-    function FileIsExecutable(path)
+    ---@return boolean True if the path is executable by all users.
+    function IsExecutable(path)
         -- If the path is not defined, use the path to the current file.
         if not path then path = vim.fn.fnameescape(vim.fn.expand("%")) end
         -- Get permissions string including parenthesis, e.g. "drwxrwxrwx".
@@ -474,15 +474,7 @@ local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
     vim.api.nvim_create_autocmd('BufWritePost', {
         group = auto_run_group,
         pattern = '*',
-        callback = function()
-            if vim.b.runOnSave then
-                if FileHasHashBang() and FileIsExecutable(GetHashBang()) then
-                    vim.cmd("!".. GetHashBang() .. ' ' .. vim.fn.fnameescape(vim.fn.expand("%")))
-                else
-                    Run()
-                end
-            end
-        end
+        callback = function() if vim.b.runOnSave then Run() end end
     })
 
     -- Execute files named "scratchpad" each time they are saved.
@@ -1050,6 +1042,7 @@ require('gitsigns').setup{
 --------------------------------------------------------------------------------
 require("dapui").setup()
 local dap, dapui = require("dap"), require("dapui")
+
 -- MasonInstall debugpy.
 dap.adapters.python = {
   type = 'executable';
@@ -1582,9 +1575,13 @@ require('cmp').setup.cmdline(':', {
 --------------------------------------------------------------------------------
 -- Auto compilation settings.
 --------------------------------------------------------------------------------
--- Split a string of command-line arguments into a list.
-local function makelist(str)
+
+--- Split a string of command-line arguments into a list.
+---@param str The string with one or more arguments.
+---@return Array
+local function args2list(str)
   local t = {}
+  -- Balanced quotes.
   for quoted, non_quoted in ('""'..str):gmatch'(%b"")([^"]*)' do
     table.insert(t, quoted ~= '""' and quoted:sub(2,-2) or nil)
     for word in non_quoted:gmatch'%S+' do
@@ -1607,23 +1604,24 @@ local function tableMerge(...)
     return result
 end
 
--- Benchmark the execution time of compiled binary.
-function TimeCompiledBinary(opts)
+--- Benchmark the execution time of compiled binary.
+---@param times number How many times to execute the program.
+---@param executable_path string path The path to the file or binary to execute.
+---@param runner string The interpreter name.
+function BenchmarkExecutionTime(times, executable_path, runner)
+    if not times or not executable_path then return end
 
-    local executable_path = opts
-    local runner = ''
-    if opts.args then
-        local arguments = makelist(opts.args)
-        local executable_path = arguments[1]
-        local runner = arguments[2] or 'sh'
-    end
+    times = times or 10 -- Execute the program this many times.
+    -- Remove the parent directories and extension to get file name.
+    executable_path = executable_path or vim.fn.fnameescape(vim.fn.expand("%:p:r"))
+    runner = runner or ''
 
     local program = string.format([[
-        for ((i=1;i<=1000;i++)); do
+        for ((i=1;i<=%s;i++)); do
             # Execute the program.
-            %s "%s" > /dev/null
+            %s %s > /dev/null
         done
-    ]], runner, executable_path)
+    ]], times, runner, executable_path)
 
     print(program)
 
@@ -1632,28 +1630,68 @@ function TimeCompiledBinary(opts)
     print(stdout)
 end
 
--- Call the function by simply typing :Time.
+--- Convert a string into a dictionary and return the dictionary.
+---@param string string The string to convert to a dictionary.
+---@return table
+local function str2dict(string)
+    local dict = {}
+
+    -- Regex building blocks.
+    local equalsSignWithZeroOrMoreSurroundingSpaces = '%s*=%s*'
+    local oneOrMoreWordChars = '(%w+)'
+    local stringWithNoSpaces = '(%S+)'
+    local shortestStringInDoubleQuotes = '(".-")'
+    local shortestStringInSingleQuotes = "('.-')"
+
+    local dict_entry_patterns = {
+        -- "(%w+)%s*=%s*(%S+)", -- Match strings with no spaces.
+        -- '(%w+)%s*=%s*(".-")', -- Match shortest string inside double quotes.
+        -- "(%w+)%s*=%s*('.-')", -- Match shortest string inside single quotes.
+        oneOrMoreWordChars .. equalsSignWithZeroOrMoreSurroundingSpaces .. stringWithNoSpaces,
+        oneOrMoreWordChars .. equalsSignWithZeroOrMoreSurroundingSpaces .. shortestStringInDoubleQuotes,
+        oneOrMoreWordChars .. equalsSignWithZeroOrMoreSurroundingSpaces .. shortestStringInSingleQuotes,
+    }
+
+    for _, pattern in ipairs(dict_entry_patterns) do
+        for key, value in string:gmatch(pattern) do
+            dict[key] = value
+        end
+    end
+    return dict
+end
+
 vim.api.nvim_create_user_command('Time',
-    function()
-        -- Remove the parent directories and extension to get file name.
-        local file = vim.fn.expand('%:t:r')
+    function(opts)
+        local args = str2dict(opts.args)
 
-        -- Define the path where the compiled executable will be placed, and
-        -- where it should be executed.
-        local executable_path = vim.g.compPath .. file
-        TimeCompiledBinary(executable_path)
+        local times = args.times or 10
+        local executable_path = args.path or vim.fn.expand("%:p:r")
+        local runner = args.runner or ''
+
+        BenchmarkExecutionTime(times, executable_path, runner)
     end,
-    {nargs = 0}
+    {
+        nargs = '*',
+        complete = function(ArgLead, CmdLine, CursorPos)
+            -- Times to execute program.
+            local times = 1000
+            -- Remove the parent directories and extension to get file name.
+            local file = vim.fn.expand('%:t:r')
+            -- Define the path where the compiled executable will be placed, and
+            -- where it should be executed.
+            local executable_path = vim.g.compPath .. file
+            local completion_str_runner = 'times=%d runner=%s path="%s"'
+            local completion_str = 'times=%d path="%s"'
+            return {
+                completion_str_runner:format(times, GetRunner(), executable_path),
+                completion_str_runner:format(times, GetRunner(), vim.fn.expand("%:p")),
+                completion_str:format(times, vim.fn.expand("%:p")),
+                completion_str:format(times, executable_path),
+            }
+        end,
+        desc = 'Execute the given file'
+    }
  )
-
-vim.api.nvim_create_user_command('TimeFile', TimeCompiledBinary, {
-    nargs = 1,
-    complete = function(ArgLead, CmdLine, CursorPos)
-        -- return completion candidates as a list-like table
-        return { vim.fn.expand('%:p:r'), vim.fn.expand('%:p'), vim.fn.expand('%') }
-    end,
-    desc = 'Execute the given file'
-})
 
 -- Another compiler for c is tcc.
 local ft2compiler = {
@@ -1722,8 +1760,33 @@ local ft2debugflags = {
     rust = {'-g'}
 }
 
+--- Return the hash-bang, interpreter, or compiler for running the current file.
+---@return string|nil
+function GetRunner()
+    if FileHasHashBang() and GetHashBang() then
+        -- Get the hash-bang.
+        return GetHashBang()
+    elseif ft2interpreter[vim.bo.filetype] then
+        -- Get the interpreter.
+        return ft2interpreter[vim.bo.filetype]
+    elseif ft2compiler[vim.bo.filetype] then
+        -- Get the interpreter.
+        return ft2compiler[vim.bo.filetype]
+    end
+end
+
+-- TODO: Add entr command: ag -g "%" | entr "./%"
+-- Example: ag -g "/tmp/mocha.mjs" | entr npx mocha mocha.mjs
+
 function Run()
-    -- If the interpreted language is supported:
+    -- Handle files with hash-bangs.
+    if FileHasHashBang() and GetHashBang() then
+        vim.cmd("!".. GetHashBang() .. ' ' .. vim.fn.fnameescape(vim.fn.expand("%")))
+
+        return
+    end
+
+    -- Handle interpreted languages.
     if ft2interpreter[vim.bo.filetype] then
         -- Get the interpreter.
         local interpreter = ft2interpreter[vim.bo.filetype]
@@ -1733,8 +1796,11 @@ function Run()
 
         -- Run the file.
         vim.cmd(('!%s %s'):format(interpreter, path))
+
+        return
     end
 
+    -- Handle compiled languages.
     if ft2compiler[vim.bo.filetype] then
         -- Get the interpreter.
         local compiler = ft2compiler[vim.bo.filetype]
@@ -1767,6 +1833,8 @@ function Run()
         -- Compile and run the file.
         vim.cmd(('!%s %s %s -o "%s" && "%s"'):format(compiler,
             table.concat(flags, ' '), path, executable_path, executable_path))
+
+        return
     end
 end
 
