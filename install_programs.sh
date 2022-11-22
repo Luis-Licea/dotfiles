@@ -13,6 +13,7 @@ pacman_programs=(
     nethogs                 # A net top tool which displays traffic used per process instead of per IP or interface.
     tig                     # Text-mode interface for Git.
     awesome                 # Highly configurable framework window manager
+    xev                     # Print contents of X events
     zsh-syntax-highlighting # Fish shell like syntax highlighting for Zsh
     kwin-bismuth-bin        # KDE tiling window manager.
     include-what-you-use    # A tool for use with clang to analyze #includes in C and C++ source files
@@ -248,7 +249,19 @@ pretty=(
 
 # Use in Ubuntu 18.04 where.
 npm=(
-    sudo npm i -g @funboxteam/languagetool-node # An open source language checker.
+    @funboxteam/languagetool-node # An open source language checker.
+    chai@4.3.6                    # TDD assertion library.
+    mocha@10.1.0                  # Test framework.
+    write-good@1.0.8              # An open source language checker.
+    backstopjs                    # Test visual regressions.
+    chokidar                      # Monitor file system changes.
+
+    # ESLint plugins for JavaScript and TypeScript.
+    eslint-config-standard@17.0.0
+    eslint-plugin-import@2.26.0
+    eslint-plugin-n@15.5.0
+    eslint-plugin-promise@6.1.1
+    eslint@8.25.0
 )
 
 # Install using plasma-discover.
