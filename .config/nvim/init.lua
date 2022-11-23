@@ -30,6 +30,10 @@ local function tnoremap(shortcut, command)
     keymap('t', shortcut, command, {noremap = true})
 end
 
+local function MasonInstall(binaries)
+    for _, bin in ipairs(binaries) do vim.cmd('MasonInstall ' .. bin) end
+end
+
 --------------------------------------------------------------------------------
 -- Ungrouped Mappings.
 --------------------------------------------------------------------------------
@@ -956,6 +960,7 @@ require('packer').startup(function()
                     require("null-ls").builtins.formatting.black,
                     -- Formats Bash scripts and ensures consistent indentation.
                     require("null-ls").builtins.formatting.shfmt.with({ extra_args = {"-i", "4"}}),
+
                 },
                 -- Set correct encoding to avoid gitsigns warning: multiple
                 -- different client offset_encodings detected for buffer, this
@@ -966,6 +971,17 @@ require('packer').startup(function()
                     end
                 end,
             }
+            local lintersAndFormatters = {
+                'cmakelang', -- CMake linter
+                'shfmt', -- Bash formatter
+                'stylua', -- Lua formatter
+            }
+
+            vim.api.nvim_create_user_command(
+                'MasonInstallLintersAndFormatters',
+                function() MasonInstall(lintersAndFormatters) end,
+                { nargs = 0, desc = 'Install linters/formatters for CMake, Lua, Bash' }
+            )
         end
     }
     --  NOTE: Requires universal ctags. Tagbar: a class outline viewer for Vim.
@@ -1040,10 +1056,21 @@ require('gitsigns').setup{
 --------------------------------------------------------------------------------
 -- DAP and DAPUI.
 --------------------------------------------------------------------------------
+local debuggers = {
+    'debugpy', -- Python.
+    'cpptools', -- C++/C/Rust
+    'js-debug-adapter', -- JavaScript, TypeScript.
+}
+
+vim.api.nvim_create_user_command(
+    'MasonInstallDebuggers',
+    function() MasonInstall(debuggers) end,
+    { nargs = 0, desc = 'Install debuggers for C, C++, Rs, Py, JS, TS.' }
+)
+
 require("dapui").setup()
 local dap, dapui = require("dap"), require("dapui")
 
--- MasonInstall debugpy.
 dap.adapters.python = {
   type = 'executable';
   command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/debugpy-adapter'
@@ -1058,7 +1085,6 @@ dap.configurations.python = {
   },
 }
 
--- MasonInstall cpptools.
 dap.adapters.cppdbg = {
   id = 'cppdbg',
   type = 'executable',
@@ -1095,7 +1121,6 @@ dap.configurations.cpp = {
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
 
--- MasonInstall js-debug-adpater.
 require("dap-vscode-js").setup({
     -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
     debugger_cmd = { os.getenv('HOME') .. "/.local/share/nvim/mason/bin/js-debug-adapter" },
