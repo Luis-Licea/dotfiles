@@ -382,6 +382,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
             mjs = "skeleton.mjs",
             py = "skeleton.py",
             sh = "skeleton.sh",
+            confluencewiki = "skeleton.confluencewiki",
         }
 
         -- Get the file name.
@@ -643,6 +644,8 @@ local use = require('packer').use
 require('packer').startup(function()
     -- Packer plugin manager.
     use 'wbthomason/packer.nvim'
+    -- Syntax highlight Confluence wiki pages.
+    use 'dix75/jira.vim'
     -- Context-aware comment plugin.
     use { 'numToStr/Comment.nvim',
         config = function() require'Comment'.setup{

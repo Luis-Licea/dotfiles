@@ -1,0 +1,119 @@
+h1. Confluence wiki syntax
+[Syntax Guide|https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all]
+
+{code:python}
+    for i in range(10):
+        print(i)
+{code}
+
+{code:xml}
+    <test>
+        <another tag="attribute"/>
+    </test>
+{code}
+
+{code:title=Bar.java|borderStyle=solid}
+// Some comments here
+public String getFoo()
+{
+    return foo;
+}
+{code}
+
+h2. Simple lists.
+- some line \\ another line.
+- bullet
+- points
+
+h2. Bullet lists.
+* some
+* bullet
+** indented
+** bullets
+* points
+
+h2. Numbered lists.
+# a
+# numbered
+# list
+
+h2. Numbered list with alphabetic sub-lists.
+# Here's a sentence 1.
+## This is a sub-list point a.
+### Third list level i.
+### Another point at the third level ii.
+## And a second sub-list point b.
+# Here's another sentence 2.
+
+h2. Mixed lists.
+# Here 1
+#* is *
+#* an *
+# example 2
+#* of *
+#* a *
+# mixed 3
+# list 4
+
+h2. Tables
+||heading 1||heading 2||heading 3||
+|cell A1|cell A2|cell A3|
+|cell B1|cell B2|cell B3|
+
+||heading 1|col A1|col A2|col A3|
+||heading 2|col B1|col B2|col B3|
+
+h2. Text effects
+*strong*
+    Makes text strong.
+
+_emphasis_
+    Makes text emphasis..
+
+??citation??
+    Makes text in citation.
+
+-deleted-
+    Makes text as deleted (crossed out).
+
++inserted+
+    Makes text as inserted (underlined).
+
+^superscript^
+    Makes text in superscript.
+
+~subscript~
+    Makes text in subscript.
+
+{{monospaced}}
+    Makes text as monospaced.
+
+bq. Some block quoted text
+    To make an entire paragraph into a block quotation, place "bq. " before it.
+
+{quote}
+ This is another way of quoting.
+    Here is a quote.
+{quote}
+
+{color:red}
+    look ma, red text!
+{color}
+
+h2. Text breaks
+(empty line)
+    Produces a new paragraph
+
+\\
+    Creates a line break. Not often needed, most of the time the wiki renderer will guess new lines for you appropriately.
+
+----
+    Creates a horizontal ruler.
+
+---
+    Produces — symbol.
+
+--
+    Produces – symbol.
+
+vim: ft=confluencewiki
