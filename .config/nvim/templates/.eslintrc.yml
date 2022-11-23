@@ -6,8 +6,8 @@ env:
 # parser: "babel-eslint"
 extends:
   - "eslint:recommended"
-  - "plugin:promise/recommended"
-  - "plugin:import/recommended"
+  # - "plugin:promise/recommended"
+  # - "plugin:import/recommended"
   # - "plugin:n/recommended"
   # - "plugin:react/recommended"
 parserOptions:

@@ -25,6 +25,13 @@ alias ema='emacsclient --create-frame'
 alias em='setsid --fork emacsclient --create-frame && exit'
 
 ################################################################################
+# NVM.
+################################################################################
+# Node Version Manager.
+source /usr/share/nvm/init-nvm.sh
+nvm_node_modules="${NVM_BIN%/bin}/lib/node_modules"
+
+################################################################################
 # Aliases.
 ################################################################################
 
@@ -67,8 +74,8 @@ alias bashscratch="cd /tmp && nvim scratchpad.sh && cd -"
 alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
 alias cscratch="cd /tmp && nvim scratchpad.c && cd -"
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
-alias jsscratch="cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s /usr/lib/node_modules/ node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && nvim scratchpad.mjs || nvim scratchpad.mjs && cd -"
-alias jsscratchtest="cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s /usr/lib/node_modules/ node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && nvim scratchpad_test.mjs || nvim scratchpad_test.mjs && cd -"
+alias jsscratch='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && nvim scratchpad.mjs || nvim scratchpad.mjs && cd -'
+alias jsscratchtest='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && nvim scratchpad_test.mjs || nvim scratchpad_test.mjs && cd -'
 alias luascratch="cd /tmp && nvim scratchpad.lua && cd -"
 alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"
 alias pyscratchtest="cd /tmp && nvim scratchpad_test.py && cd -"

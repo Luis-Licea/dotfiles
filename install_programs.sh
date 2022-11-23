@@ -7,6 +7,7 @@
 pacman_programs=(
 
     # Development tools.
+    nvm                     # Node Version Manager.
     entr                    # Run arbitrary commands when files change.
     keychain                # A front-end to ssh-agent, allowing one long-running ssh-agent process per system, rather than per login
     neovide                 # No Nonsense Neovim Client in Rust.
