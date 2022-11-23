@@ -70,18 +70,27 @@ alias passconfig='cd ~/.local/share/pass'
 alias passbackup='cp -iur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8/primary/pass/'
 alias passdiff='kdeconnect-cli --refresh && diff -q ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/'
 
-alias bashscratch="cd /tmp && nvim scratchpad.sh && cd -"
-alias cppscratch="cd /tmp && nvim scratchpad.cpp && cd -"
-alias cscratch="cd /tmp && nvim scratchpad.c && cd -"
+scratchpad() {
+    # Go to directory, open file, go to previous directory.
+    cd /tmp && nvim "$1" && cd -
+}
+
+alias bashscratch='scratchpad scratchpad.sh'
+alias confluencescratch='scratchpad scratchpad.confluencewiki'
+alias cppscratch='scratchpad scratchpad.cpp'
+alias cscratch='scratchpad scratchpad.c'
+alias groovyscratch='scratchpad scratchpad.groovy'
+alias luascratch='scratchpad scratchpad.lua'
+alias mdscratch='scratchpad scratchpad.md'
+alias pyscratch='scratchpad scratchpad.py'
+alias pyscratchtest='scratchpad scratchpad_test.py'
+alias txtscratch='scratchpad scratchpad.txt'
+
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
 alias jsscratch='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && nvim scratchpad.mjs || nvim scratchpad.mjs && cd -'
 alias jsscratchtest='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && nvim scratchpad_test.mjs || nvim scratchpad_test.mjs && cd -'
-alias luascratch="cd /tmp && nvim scratchpad.lua && cd -"
-alias pyscratch="cd /tmp && nvim scratchpad.py && cd -"
-alias pyscratchtest="cd /tmp && nvim scratchpad_test.py && cd -"
-alias rsscratch="cd /tmp && [ ! -d rsscratch ] && cargo new rsscratch && nvim rsscratch/src/main.rs || nvim /tmp/rsscratch/src/main.rs && cd -"
-alias txtscratch="cd /tmp && nvim scratchpad.txt && cd -"
-alias groovyscratch="cd /tmp && nvim scratchpad.groovy && cd -"
+# Create cargo project rather than individual file.
+alias rsscratch='cd /tmp && [ ! -d rsscratch ] && cargo new rsscratch && nvim rsscratch/src/main.rs || nvim /tmp/rsscratch/src/main.rs && cd -'
 
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME'
 alias dotfilesui='gitui -d $HOME/.config/dotfiles/ -w $HOME'
