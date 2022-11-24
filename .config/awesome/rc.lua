@@ -149,7 +149,38 @@ local tasklist_buttons = gears.table.join(
                                               awful.client.focus.byidx(-1)
                                           end))
 
+--- Get absolute path to random wallpaper from the given directory.
+---@param wallpaper_dir string The path to the directory.
+---@return string
+function GetRandomWallpaper(wallpaper_dir)
+    -- Get the file names separated by newlines.
+    local handle = assert(io.popen(
+        'find '..wallpaper_dir..' -type f -maxdepth 1  -printf "%f\n"', 'r'))
+    local output = assert(handle:read('*a'))
+    handle:close()
+
+    -- Get all characters in each line.
+    -- local lines = output:gmatch('(.-)[\n\r]')
+    local lines = output:gmatch('(.-)[\n\r]')
+
+    -- Store the wallpaper names.
+    local wallpapers = {}
+    for line in lines do table.insert(wallpapers, line) end
+
+    -- Set seed before calling random(), which does not work after a refresh.
+    math.randomseed(os.time())
+
+    -- Get a random index in the range of the wallpaper array.
+    local wallpaper_idx = math.random(#wallpapers)
+
+    -- Get a random wallpaper from the list.
+    return wallpaper_dir .. '/' .. wallpapers[wallpaper_idx]
+end
+
 -- beautiful.wallpaper = awful.util.get_configuration_dir() .. "path/to/wallpaper.png"
+beautiful.wallpaper = GetRandomWallpaper(
+    os.getenv('HOME') .. '/Pictures/wallpapers/nordic/include')
+
 local function set_wallpaper(s)
     -- Wallpaper
     if beautiful.wallpaper then
@@ -447,7 +478,7 @@ clientkeys = gears.table.join(
         {description = "Audo Play", group = "system"}),
 
     awful.key({ }, "XF86AudioNext",
-        function () awful.util.spawn(playerctl.netxt) end,
+        function () awful.util.spawn(playerctl.next) end,
         {description = "Audio Next", group = "system"}),
 
     awful.key({ }, "XF86AudioMute",
@@ -475,8 +506,8 @@ clientkeys = gears.table.join(
         function () awful.util.spawn(playerctl.play) end,
         {description = "Audo Play", group = "system"}),
 
-    awful.key({ "Mod4" }, "8",
-        function () awful.util.spawn(playerctl.netxt) end,
+    awful.key({ "Mod4" }, "F8",
+        function () awful.util.spawn(playerctl.next) end,
         {description = "Audio Next", group = "system"}),
 
     awful.key({ "Mod4" }, "F9",
@@ -685,7 +716,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- Custom gap:
 -- beautiful.useless_gap = 5
 -- Custom auto-start programs:
-awful.spawn.with_shell("nitrogen --restore")
+-- awful.spawn.with_shell("nitrogen --restore")
 awful.spawn.with_shell("compton")
 awful.spawn.with_shell("emacs --daemon")
 
