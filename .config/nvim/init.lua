@@ -666,7 +666,16 @@ require('packer').startup(function()
     -- Tokyo night color scheme.
     use {'folke/tokyonight.nvim',
         config = function()
-            require("tokyonight").setup({ style = "moon" })
+            require("tokyonight").setup({
+                style = "moon",
+                -- Enable this to disable setting the background color.
+                transparent = true,
+                styles = {
+                    -- Background styles. Can be "dark", "transparent" or "normal".
+                    sidebars = "transparent", -- Style for sidebars.
+                    floats = "transparent", -- Style for floating windows
+                }
+            })
             require("tokyonight").colorscheme()
         end
     }
@@ -974,6 +983,7 @@ require('packer').startup(function()
                     end
                 end,
             }
+
             local lintersAndFormatters = {
                 'cmakelang', -- CMake linter
                 'shfmt', -- Bash formatter
