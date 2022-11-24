@@ -149,23 +149,27 @@ local tasklist_buttons = gears.table.join(
                                               awful.client.focus.byidx(-1)
                                           end))
 
---- Get absolute path to random wallpaper from the given directory.
----@param wallpaper_dir string The path to the directory.
+--- Get absolute path to random wallpaper from the given directories.
+---@vararg string The paths to the directories storing wallpapers.
 ---@return string
-function GetRandomWallpaper(wallpaper_dir)
-    -- Get the file names separated by newlines.
-    local handle = assert(io.popen(
-        'find '..wallpaper_dir..' -type f -maxdepth 1  -printf "%f\n"', 'r'))
-    local output = assert(handle:read('*a'))
-    handle:close()
-
-    -- Get all characters in each line.
-    -- local lines = output:gmatch('(.-)[\n\r]')
-    local lines = output:gmatch('(.-)[\n\r]')
-
-    -- Store the wallpaper names.
+function GetRandomWallpaper(...)
+    -- The absolute path to all wallpapers.
     local wallpapers = {}
-    for line in lines do table.insert(wallpapers, line) end
+
+    -- For each wallpaper directory:
+    for _, dir in ipairs({...}) do
+        -- Get the file names separated by newlines.
+        local handle = assert(io.popen(
+            'find ' .. dir .. ' -type f -maxdepth 1  -printf "%f\n"', 'r'))
+        local output = assert(handle:read('*a'))
+        handle:close()
+
+        -- Get all characters in each line.
+        local lines = output:gmatch('(.-)[\n\r]')
+
+        -- Store the wallpaper names.
+        for line in lines do table.insert(wallpapers, dir .. '/' .. line) end
+    end
 
     -- Set seed before calling random(), which does not work after a refresh.
     math.randomseed(os.time())
@@ -174,12 +178,13 @@ function GetRandomWallpaper(wallpaper_dir)
     local wallpaper_idx = math.random(#wallpapers)
 
     -- Get a random wallpaper from the list.
-    return wallpaper_dir .. '/' .. wallpapers[wallpaper_idx]
+    return wallpapers[wallpaper_idx]
 end
 
 -- beautiful.wallpaper = awful.util.get_configuration_dir() .. "path/to/wallpaper.png"
 beautiful.wallpaper = GetRandomWallpaper(
-    os.getenv('HOME') .. '/Pictures/wallpapers/nordic/include')
+    os.getenv('HOME') .. '/Pictures/wallpapers/nordic/'
+)
 
 local function set_wallpaper(s)
     -- Wallpaper
