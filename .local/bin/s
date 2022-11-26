@@ -3,11 +3,14 @@
 # s - stardict for rofi
 
 # Get a temp file name to store definition.
-# Get word definition and store it in temp file.
-# Open the definition in a terminal.
+definition_temp_file=$(mktemp) && {
+    # Get word definition and store it in temp file.
+    sdcv -eu WordNet "$1" > "$definition_temp_file"
+} && {
+    # Open the definition in a terminal.
+    alacritty -e w3m "$definition_temp_file"
+}
+
 # Remove the temp file.
-definition_temp_file=$(mktemp) \
-    && sdcv -eu WordNet "$1" > "$definition_temp_file"  \
-    && alacritty -e w3m "$definition_temp_file" \
-    && rm "$definition_temp_file"
+[ -f "$definition_temp_file" ] && rm "$definition_temp_file"
 
