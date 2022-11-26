@@ -32,6 +32,11 @@ source /usr/share/nvm/init-nvm.sh
 nvm_node_modules="${NVM_BIN%/bin}/lib/node_modules"
 
 ################################################################################
+# Lynx Browser.
+################################################################################
+export LYNX_CFG="$HOME/.config/lynx/lynx.cfg"
+
+################################################################################
 # Aliases.
 ################################################################################
 
@@ -100,6 +105,8 @@ alias passbgui='gitui -d "$HOME/.local/share/pass/.backup/.git" \
     -w "$HOME/.local/share/pass/.backup"'
 
 alias e='exit'
+
+alias m='man -Hlynx'
 alias v='nvim'
 alias h='helix'
 alias r='ranger'
