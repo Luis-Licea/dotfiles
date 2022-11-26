@@ -447,10 +447,22 @@ vim.b.runOnSave = false
 vim.g.compPath = '/tmp/' -- Output folder for compiled binaries, pdfs, etc.
 
 -- Function for toggling auto compilation on save:
-function ToggleRunOnSave() vim.b.runOnSave = not vim.b.runOnSave end
-function ToggleFormatOnSave() vim.b.formatOnSave = not vim.b.formatOnSave end
-function ToggleAddCompFlags() vim.b.addCompFlags = not vim.b.addCompFlags end
-function ToggleAddDebugFlags() vim.b.addDebugFlags = not vim.b.addDebugFlags end
+function ToggleRunOnSave()
+    vim.b.runOnSave = not vim.b.runOnSave
+    print("Run On Save:", vim.b.runOnSave)
+end
+function ToggleFormatOnSave()
+    vim.b.formatOnSave = not vim.b.formatOnSave
+    print("Format On Save:", vim.b.formatOnSave)
+end
+function ToggleAddCompFlags()
+    vim.b.addCompFlags = not vim.b.addCompFlags
+    print("Add Comp Flags:", vim.b.addCompFlags)
+end
+function ToggleAddDebugFlags()
+    vim.b.addDebugFlags = not vim.b.addDebugFlags
+    print("Add Debug Flags:", vim.b.addDebugFlags)
+end
 vim.api.nvim_create_user_command('ToggleRunOnSave', ToggleRunOnSave,
     { nargs = 0, desc = "Run the file upon saving." })
 vim.api.nvim_create_user_command('ToggleFormatOnSave', ToggleFormatOnSave,
