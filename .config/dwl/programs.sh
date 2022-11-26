@@ -2,7 +2,7 @@
 
 # Set the background.
     # Get path to a random background and set the background.
-    swaybg -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png &
+    swaybg -i "$HOME/Pictures/wallpapers/nordic/ign_nordhills.png" &
 
 # Show the status bar.
     waybar &

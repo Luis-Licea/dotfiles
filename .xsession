@@ -18,7 +18,7 @@ if [ "$DESKTOP_SESSION" = "dwm" ]; then
         picom -b
 
     # Set wallpaper randomly and change it every 60 seconds.
-        nowater -d /usr/share/backgrounds/nordic-wallpapers -t 60
+        nowater -d "$HOME/Pictures/wallpapers/nordic" -t 60
 
     # Suckless status bar for dwm.
         slstatus &
