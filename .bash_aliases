@@ -35,6 +35,7 @@ nvm_node_modules="${NVM_BIN%/bin}/lib/node_modules"
 # Lynx Browser.
 ################################################################################
 export LYNX_CFG="$HOME/.config/lynx/lynx.cfg"
+export LYNX_LSS="$HOME/.config/lynx/lynx.lss"
 
 ################################################################################
 # Aliases.
