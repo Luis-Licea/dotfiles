@@ -81,6 +81,7 @@ scratchpad() {
     cd /tmp && nvim "$1" && cd -
 }
 
+alias awkscratch='scratchpad scratchpad.awk'
 alias bashscratch='scratchpad scratchpad.sh'
 alias confluencescratch='scratchpad scratchpad.confluencewiki'
 alias cppscratch='scratchpad scratchpad.cpp'

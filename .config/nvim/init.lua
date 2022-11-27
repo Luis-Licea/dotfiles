@@ -382,6 +382,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
             mjs = "skeleton.mjs",
             py = "skeleton.py",
             sh = "skeleton.sh",
+            awk = "skeleton.awk",
             confluencewiki = "skeleton.confluencewiki",
         }
 
