@@ -360,9 +360,11 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
         -- " The place where the templates are saved.
         local templateDir = vim.fn.expand('~/.config/nvim/templates/')
         -- " Get path to template file.
-        local templatePath = templateDir .. vim.fn.fnameescape(templateName)
+        local templatePath = templateDir .. templateName
         -- " Load the template into the current file.
-        vim.fn.execute('0r ' .. templatePath)
+        if vim.fn.filereadable(templatePath) == 1 then
+            vim.fn.execute('0r ' .. templatePath)
+        end
     end
 
     local function LoadTemplateFromType()
@@ -375,17 +377,6 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
             "scratchpad_test.py",
         }
 
-        local type2skeleton = {
-            c = "skeleton.c",
-            cpp = "skeleton.cpp",
-            html = "skeleton.html",
-            mjs = "skeleton.mjs",
-            py = "skeleton.py",
-            sh = "skeleton.sh",
-            awk = "skeleton.awk",
-            confluencewiki = "skeleton.confluencewiki",
-        }
-
         -- Get the file name.
         local fileName = vim.fn.expand("%")
         -- Get the file extension only.
@@ -393,7 +384,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
         -- The template to load.
         local template = nil
 
-        -- If a matching file exists, use it as a template.
+        -- If a matching file name exists, use it as a template.
         for _, templateName in pairs(templates) do
             if fileName == templateName then
                 template = templateName
@@ -401,8 +392,9 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
             end
         end
 
-        -- Try to find a valid template using the file name or the file type.
-        if not template then template = type2skeleton[extension] end
+        -- Try to find a valid template using the file type. Examples:
+        -- skeleton.c, skeleton.html, skeleton.awk, etc.
+        if not template then template = "skeleton." .. extension end
 
         -- Load the template if it could be found.
         if template then LoadTemplate(template) end
