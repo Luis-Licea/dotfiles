@@ -1442,8 +1442,8 @@ local servers = {
     'clangd', -- C/C++
     'cssls', -- CSS
     -- 'dockerls', -- Docker
-    'eslint',   -- JavaScript, TypeScript; Needs .eslintrc.yml.
-    -- 'tsserver', -- JavaScript, TypeScript; Works well for individual files.
+    'eslint',   -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
+    'tsserver', -- JavaScript, TypeScript; LSP functionality.
     'groovyls', -- Groovy
     'html', -- HTML
     -- 'jdtls',
@@ -1784,7 +1784,6 @@ local ft2interpreter = {
 local cflags = {
     '-Wall',
     '-Wextra',
-    -- TODO Remove wfloat-conversion as it conflicts with old c compiler.
     '-Wfloat-conversion',
     '-Wshadow',
     '-Wsign-conversion',
@@ -1802,7 +1801,6 @@ local debug_flags = {
     '-fsanitize=address,leak,undefined',
     '-fsanitize-address-use-after-scope',
 }
-
 
 local ft2flags = {
     c   = {unpack(cflags)},
