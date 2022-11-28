@@ -499,7 +499,7 @@ local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
     })
 
     -- Execute files named "scratchpad" each time they are saved.
-    vim.api.nvim_create_autocmd('BufReadPost', {
+    vim.api.nvim_create_autocmd({'BufNewFile','BufReadPost'}, {
         group = auto_run_group,
         pattern = 'scratchpad.*',
         callback = function()
