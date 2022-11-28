@@ -593,6 +593,8 @@ vim.o.colorcolumn = '81'
 vim.o.mouse = 'a'
 -- Support true color in vim.
 vim.o.termguicolors = true
+-- Hide quotes in JSON files.
+vim.o.conceallevel = 1
 
 --------------------------------------------------------------------------------
 -- Tabs & spaces.
@@ -695,13 +697,6 @@ require('packer').startup(function()
             require("tokyonight").colorscheme()
         end
     }
-    -- Markdown syntax highlighting.
-    use { 'preservim/vim-markdown',
-        requires = {
-            -- Vim-json for conceal.
-            'elzr/vim-json',
-            -- Tabular for auto-formatting tables.
-            'godlygeek/tabular' } }
     -- Code snippet auto completion.
     use {'saadparwaiz1/cmp_luasnip',
         -- Code snippets. Needed by cmp-vim.
@@ -988,6 +983,8 @@ require('packer').startup(function()
                     require("null-ls").builtins.formatting.black,
                     -- Formats Bash scripts and ensures consistent indentation.
                     require("null-ls").builtins.formatting.shfmt.with({ extra_args = {"-i", "4"}}),
+                    -- Formats Markdown tables.
+                    require("null-ls").builtins.formatting.prettier,
 
                 },
                 -- Set correct encoding to avoid gitsigns warning: multiple
@@ -1004,6 +1001,7 @@ require('packer').startup(function()
                 'cmakelang', -- CMake linter
                 'shfmt', -- Bash formatter
                 'stylua', -- Lua formatter
+                'prettier', -- Markdown formatter.
             }
 
             vim.api.nvim_create_user_command(
@@ -1901,27 +1899,6 @@ function Run()
     -- Program did not run.
     return false
 end
-
---------------------------------------------------------------------------------
--- Md-vim settings.
---------------------------------------------------------------------------------
--- Disable header folding.
-vim.g.vim_markdown_folding_disabled = 1
-
--- Conceal ~~this~~ and *this* and `this` and more.
-vim.g.vim_markdown_conceal = 1
-
--- Disable math tex conceal feature.
-vim.g.tex_conceal = ""
-vim.g.vim_markdown_math= 1
-
--- Stop adding annoying indentation.
-vim.g.vim_markdown_new_list_item_indent = 0
-
--- Support front matter of various format.
-vim.g.vim_markdown_frontmatter = 1 -- for YAML format
-vim.g.vim_markdown_toml_frontmatter = 1  -- for TOML format
-vim.g.vim_markdown_json_frontmatter = 1  -- for JSON format
 
 --------------------------------------------------------------------------------
 -- Rust-vim settings.
