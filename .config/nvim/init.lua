@@ -436,38 +436,49 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
 vim.b.addCompFlags = false
 vim.b.addDebugFlags = false
 vim.b.formatOnSave = false
+vim.b.runCommand = nil
 vim.b.runOnSave = false
 vim.g.compPath = '/tmp/' -- Output folder for compiled binaries, pdfs, etc.
 
 -- Function for toggling auto compilation on save:
-function ToggleRunOnSave()
-    vim.b.runOnSave = not vim.b.runOnSave
-    print("Run On Save:", vim.b.runOnSave)
+function EditRunCommand()
+    vim.b.runCommand = vim.fn.input("Run command: ", vim.b.runCommand)
+end
+function ToggleAddCompFlags()
+    vim.b.addCompFlags = not vim.b.addCompFlags
+    print("Add Comp Flags:", vim.b.addCompFlags)
+    vim.b.runCommand = nil
+end
+function ToggleAddDebugFlags()
+    vim.b.addDebugFlags = not vim.b.addDebugFlags
+    print("Add Debug Flags:", vim.b.addDebugFlags)
+    vim.b.runCommand = nil
 end
 function ToggleFormatOnSave()
     vim.b.formatOnSave = not vim.b.formatOnSave
     print("Format On Save:", vim.b.formatOnSave)
 end
-function ToggleAddCompFlags()
-    vim.b.addCompFlags = not vim.b.addCompFlags
-    print("Add Comp Flags:", vim.b.addCompFlags)
+function ToggleRunOnSave()
+    vim.b.runOnSave = not vim.b.runOnSave
+    print("Run On Save:", vim.b.runOnSave)
+    vim.b.runCommand = nil
 end
-function ToggleAddDebugFlags()
-    vim.b.addDebugFlags = not vim.b.addDebugFlags
-    print("Add Debug Flags:", vim.b.addDebugFlags)
-end
-vim.api.nvim_create_user_command('ToggleRunOnSave', ToggleRunOnSave,
-    { nargs = 0, desc = "Run the file upon saving." })
-vim.api.nvim_create_user_command('ToggleFormatOnSave', ToggleFormatOnSave,
-    { nargs = 0, desc = "Format the file upon saving." })
+
+vim.api.nvim_create_user_command('EditRunCommand', EditRunCommand,
+    { nargs = 0, desc = "Edit the run (or compilation) command." })
 vim.api.nvim_create_user_command('ToggleAddCompFlags', ToggleAddCompFlags,
     { nargs = 0, desc = "Add compilation flags upon compilation." })
 vim.api.nvim_create_user_command('ToggleAddDebugFlags', ToggleAddDebugFlags,
     { nargs = 0, desc = "Add debug flags upon compilation." })
-nnoremap('<leader>cr', ToggleRunOnSave)
-nnoremap('<leader>cf', ToggleFormatOnSave)
+vim.api.nvim_create_user_command('ToggleFormatOnSave', ToggleFormatOnSave,
+    { nargs = 0, desc = "Format the file upon saving." })
+vim.api.nvim_create_user_command('ToggleRunOnSave', ToggleRunOnSave,
+    { nargs = 0, desc = "Run the file upon saving." })
+nnoremap('<leader>ce', EditRunCommand)
 nnoremap('<leader>cc', ToggleAddCompFlags)
 nnoremap('<leader>cd', ToggleAddDebugFlags)
+nnoremap('<leader>cf', ToggleFormatOnSave)
+nnoremap('<leader>cr', ToggleRunOnSave)
 
 local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
     clear = true
@@ -1792,6 +1803,7 @@ local debug_flags = {
     '-fsanitize-address-use-after-scope',
 }
 
+
 local ft2flags = {
     c   = {unpack(cflags)},
     cpp = {unpack(cflags), '-std=c++17'},
@@ -1822,11 +1834,20 @@ end
 -- Example: ag -g "/tmp/mocha.mjs" | entr npx mocha mocha.mjs
 
 function Run()
+    -- If the run command is defined, execute it.
+    if vim.b.runCommand then
+        vim.cmd(vim.b.runCommand)
+
+        -- Program ran.
+        return true
+    end
+
     -- Handle files with hash-bangs.
     if FileHasHashBang() and GetHashBang() then
-        vim.cmd("!".. GetHashBang() .. ' ' .. vim.fn.fnameescape(vim.fn.expand("%")))
+        -- Run file using hash-bang.
+        vim.b.runCommand = ("!%s %s"):format(GetHashBang(), vim.fn.fnameescape(vim.fn.expand("%")))
 
-        return
+        return Run()
     end
 
     -- Handle interpreted languages.
@@ -1838,9 +1859,9 @@ function Run()
         local path = vim.fn.fnameescape(vim.fn.expand('%:p'))
 
         -- Run the file.
-        vim.cmd(('!%s %s'):format(interpreter, path))
+        vim.b.runCommand = ('!%s %s'):format(interpreter, path)
 
-        return
+        return Run()
     end
 
     -- Handle compiled languages.
@@ -1874,11 +1895,13 @@ function Run()
         end
 
         -- Compile and run the file.
-        vim.cmd(('!%s %s %s -o "%s" && "%s"'):format(compiler,
-            table.concat(flags, ' '), path, executable_path, executable_path))
+        vim.b.runCommand = ('!%s %s %s -o "%s" && "%s"'):format(compiler,
+            table.concat(flags, ' '), path, executable_path, executable_path)
 
-        return
+        return Run()
     end
+    -- Program did not run.
+    return false
 end
 
 --------------------------------------------------------------------------------
