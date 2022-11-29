@@ -356,48 +356,28 @@ local cpp_group = vim.api.nvim_create_augroup('C++ Group', {})
 --------------------------------------------------------------------------------
 local template_group = vim.api.nvim_create_augroup('Template Group', {})
 
-    local function LoadTemplate(templateName)
-        -- " The place where the templates are saved.
-        local templateDir = vim.fn.expand('~/.config/nvim/templates/')
-        -- " Get path to template file.
-        local templatePath = templateDir .. templateName
-        -- " Load the template into the current file.
-        if vim.fn.filereadable(templatePath) == 1 then
-            vim.fn.execute('0r ' .. templatePath)
-        end
-    end
-
+    --- Load a template in the current buffer. The template will be determined
+    --- based on the file extension and the file name.
     local function LoadTemplateFromType()
-        local templates = {
-            ".eslintrc.yml",
-            ".stylua.toml",
-            "CMakeLists.txt",
-            "cmake_uninstall.cmake.in",
-            "scratchpad_test.mjs",
-            "scratchpad_test.py",
-        }
+        -- The place where the templates are saved.
+        local templateDir = vim.fn.expand('~/.config/nvim/templates/')
 
-        -- Get the file name.
-        local fileName = vim.fn.expand("%")
-        -- Get the file extension only.
-        local extension = vim.fn.expand("%:e")
-        -- The template to load.
+        -- The path to the template to with the same file extension.
+        -- Examples: skeleton.c, skeleton.html, skeleton.awk, etc.
+        local pathSameExt = templateDir .. "skeleton." .. vim.fn.expand("%:e")
+
+        -- The path to the template to with the same file name.
+        local pathSameName = templateDir .. vim.fn.expand("%")
+
+        -- The path to the template to load.
         local template = nil
 
-        -- If a matching file name exists, use it as a template.
-        for _, templateName in pairs(templates) do
-            if fileName == templateName then
-                template = templateName
-                break
-            end
+        -- Check if the template has the same file name or extension.
+        for _, path in ipairs({pathSameExt, pathSameName}) do
+            if vim.fn.filereadable(path) == 1 then template = path end
         end
 
-        -- Try to find a valid template using the file type. Examples:
-        -- skeleton.c, skeleton.html, skeleton.awk, etc.
-        if not template then template = "skeleton." .. extension end
-
-        -- Load the template if it could be found.
-        if template then LoadTemplate(template) end
+        if template then vim.fn.execute('0r ' .. template) end
     end
 
     --- Return whether the file has a hash-bang.
