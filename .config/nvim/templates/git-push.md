@@ -1,0 +1,13 @@
+# Steps for pushing a branch to merged
+
+- `git pull --rebase origin master`
+    - Check for conflicts and unintended code changes
+- Check commit messages for typos (languagetool-node)
+- Test code works:
+  - Run tests (JavaScript, Python, C++)
+  - Run linters
+  - Run program
+- `git pull --rebase origin master` if changes occurred during testing
+- `git push origin my_branch`
+- Verify pipelines pass
+- Proof read all modified files before creating a PR or review
