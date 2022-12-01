@@ -55,3 +55,9 @@
 - Is the use and function of API functions documented?
 - Are data structures/typedefs explained?
 - Is there any incomplete code, e.g., code marked TODO or FIXME?
+
+## Python
+
+### Unittest
+
+- Are assert stements appropriate? Use assertEqual, not ==, etc.

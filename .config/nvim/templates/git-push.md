@@ -1,4 +1,4 @@
-# Steps for pushing a branch to merged
+# Steps to perform before and after pushing
 
 - `git pull --rebase origin master`
     - Check for conflicts and unintended code changes
