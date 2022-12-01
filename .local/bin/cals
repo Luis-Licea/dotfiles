@@ -66,7 +66,7 @@ main() {
     # If the directory exists:
     if [ -d "$pdf_dir" ]; then
         # Open the all the pdf in the directory. There should only be one pdf.
-        zathura "$pdf_file"
+        zathura "$pdf_file" --config-dir="$HOME/.config/zathura/base"
     fi
 }
 
