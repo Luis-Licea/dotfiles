@@ -119,6 +119,7 @@ alias d='sdcv -u WordNet'
 alias de='sdcv -eu WordNet'
 alias t="sdcv -u 'Moby Thesaurus II'"
 alias n='setsid --fork alacritty &'
+alias mpv='mpv --config-dir="$HOME/.config/mpv/base"'
 alias cheat='cht.sh'
 alias swaylock='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
 alias playmusic='setsid -f mpv /run/media/luis/DATA/Music/* --shuffle'
