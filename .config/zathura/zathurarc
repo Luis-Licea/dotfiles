@@ -4,6 +4,6 @@
 #-----------------------------
 
 # Do not save bookmarks or history.
-set database none
+set database null
 
 include base/zathurarc
