@@ -14,7 +14,8 @@ main() {
     # is_debugging=true
 
     # If an argument is passed, use it as the path to the Calibre library.
-    local -r library_path="$(get_calibre_library_path "$1")"
+    # local -r library_path="$(get_calibre_library_path "$1")"
+    local -r library_path="${1:-$(get_calibre_library_path)}"
 
     # Define a directory where all the cache files will be stored.
     local -r cache_dir="$(get_cache_dir)"
@@ -62,7 +63,7 @@ main() {
     fi
 
     # Get the pdf path.
-    local -r pdf_file=$(find "$pdf_dir" -type f -name "*.pdf")
+    local -r pdf_file="$(find "$pdf_dir" -type f -name "*.pdf" -print -quit)"
 
     # If the directory exists:
     if [ -d "$pdf_dir" ]; then
@@ -71,6 +72,11 @@ main() {
     fi
 }
 
+#######################################
+# Return the absolute path to the directory where the cache file will be saved.
+# The directory will be created if it does not already exist.
+# Returns: {string} The absolute path to the cache directory.
+#######################################
 get_cache_dir() {
     # Define a directory where all the cache files will be stored.
     local -r cache_dir="$HOME/.cache/$(basename "$0")"
@@ -84,13 +90,12 @@ get_cache_dir() {
     echo "$cache_dir"
 }
 
-# Return the directory where the Calibre library is, use a default
-# directory, or search for the directory.
+#######################################
+# Search home directory and return directory where the Calibre Library is.
+# Returns: {string} The absolute path to the Calibre Library.
+#######################################
 get_calibre_library_path() {
-    if [ $# -eq 1 ] && [ -d "$1" ]; then
-        # If an argument is passed, use it as the path to the Calibre library.
-        echo "$1"
-    elif [ -d "$HOME/Calibre Library" ]; then
+    if [ -d "$HOME/Calibre Library" ]; then
         # Attempt to use the default directory.
         echo "$HOME/Calibre Library"
     elif [ -d "$HOME/Documents/Calibre Library" ]; then
@@ -98,24 +103,25 @@ get_calibre_library_path() {
         echo "$HOME/Documents/Calibre Library"
     else
         # Look for the Calibre Library in the home folder.
-        find ~ -maxdepth 3 -type d -name "Calibre Library"
+        find ~ -maxdepth 3 -type d -name "Calibre Library" -print -quit
     fi
 }
 
-# Checks whether the Calibredb metadata has changed since the script was last
-# run. Side effects: If the metadata has changed, the last known modification
-# data is updated. Also, the book title cache is cleared so a new one can be
-# generated.
+#######################################
+# Check whether the Calibre DB metadata has changed since the script was last
+# run and update the cache if so.
+# Side effects:
+#   If the metadata has changed, the last known modification data is updated.
+#   Also, the book title cache is cleared so a new one can be generated.
+# Arguments:
+#   {string} The path to the file that will store the last modification date.
+#   {string} The last time the metadata was modified.
+#   {string} The path to the file where the book titles will be cached.
+#######################################
 delete_cache_upon_metadata_change() {
-
-    # Define the file that will store the last modification date.
-    local -nr metadata_last_modified_file="$1"
-
-    # Get the last time the metadata was modified.
-    local -nr metadata_last_modified_date="$2"
-
-    # Define the file where the book titles are cached.
-    local -nr title2dir_cache_file="$3"
+    local -r metadata_last_modified_file="$1"
+    local -r metadata_last_modified_date="$2"
+    local -r title2dir_cache_file="$3"
 
     # If the last modification date is known:
     if [ -f "$metadata_last_modified_file" ]
@@ -133,15 +139,16 @@ delete_cache_upon_metadata_change() {
     fi
 }
 
+#######################################
 # Create at book title cache since parsing the metadata each time the script is
 # run is slow.
+# Arguments:
+#   {string} The path to the file where the book titles are cached.
+#   {string} The path to the directory where the Calibre Library is.
+#######################################
 create_book_title_cache() {
-
-    # Define the file that will store the last modification date.
-    local -nr title2dir_cache_file="$1"
-
-    # Define the directory where the Calibre Library is.
-    local -nr library_path="$2"
+    local -r title2dir_cache_file="$1"
+    local -r library_path="$2"
 
     # If the cached file does not exist:
     if ! [ -f "$title2dir_cache_file" ]; then
@@ -156,18 +163,20 @@ create_book_title_cache() {
 
         # Create associative array, and make it a reference to another variable.
         declare -A title2dir
+        local -r prefix="<dc:title>"
+        local -r string=".*"
+        local -r suffix="</dc:title>"
 
         for file in $metadata_files; do
             # Get the pdf title by scanning the XML tags.
-            title=$(grep -o "<dc:title>.*</dc:title>" "$file")
+            # local title=$(grep -o "<dc:title>.*</dc:title>" "$file")
+            local title=$(grep -o "$prefix$string$suffix" "$file")
 
             # Remove dc:title tag prefix and suffix.
-            prefix="<dc:title>"
-            suffix="</dc:title>"
             title="${title#"$prefix"}"
             title="${title%"$suffix"}"
 
-            # Store the directory and the title of the pdf.
+            # Store the PDF directory and title with no extension.
             title2dir["$title"]="${file%"/$(basename "$file")"}"
         done
 
@@ -183,10 +192,13 @@ create_book_title_cache() {
     fi
 }
 
+#######################################
 # Display all the titles in dmenu. Use xargs or else the output of dmenu will
 # not be usable in other commands.
+# Arguments:
+#   {dict} A ref-name to the dictionary containing key-value pairs.
+#######################################
 select_dmenu_dict_value() {
-    # Create a ref-name for the dictionary so we can refer to it.
     local -nr dictionary="$1"
     # Iterate thru ever key in the dictionary:
     choice=$(
