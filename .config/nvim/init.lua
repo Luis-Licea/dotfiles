@@ -705,20 +705,6 @@ require('packer').startup(function()
     -- use 'kyazdani42/nvim-web-devicons'
     -- Fancy debug adapter UI provider and Debug Adapter Protocol.
     use { "rcarriga/nvim-dap-ui", requires = 'mfussenegger/nvim-dap' }
-    -- Window picker for using with Dap UI because it opens many windows.
-    use {'https://gitlab.com/yorickpeterse/nvim-window',
-        config = function() require('nvim-window').setup({
-            -- The characters available for hinting windows.
-            chars = {
-                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'k', 'l','m',
-                'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
-            },
-            -- The border style to use for the floating window.
-            border = 'rounded'
-        })
-        end,
-        nnoremap('<leader><leader>', require("nvim-window").pick)
-    }
     -- Adapter for vscode-js-debug.
     use { "mxsdev/nvim-dap-vscode-js", requires = "mfussenegger/nvim-dap" }
     -- Provide richer syntax highlighting and only spell-check comments.
@@ -996,6 +982,8 @@ require('packer').startup(function()
             )
         end
     }
+    -- Window picker for using with Dap UI because it opens many windows.
+    use 'https://gitlab.com/yorickpeterse/nvim-window'
     --  NOTE: Requires universal ctags. Tagbar: a class outline viewer for Vim.
     use 'preservim/tagbar'
     -- Add git decorations for modified lines, +, -, ~, etc.
@@ -1021,6 +1009,22 @@ require('packer').startup(function()
     -- Auto-install packer if necessary.
     if packer_bootstrap then require('packer').sync() end
 end)
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- Nvim-Window.
+--------------------------------------------------------------------------------
+require('nvim-window').setup({
+    -- The characters available for hinting windows.
+    chars = {
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'k', 'l','m',
+        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+    },
+    -- The border style to use for the floating window.
+    border = 'rounded'
+})
+nnoremap('<leader><leader>', require("nvim-window").pick)
 
 --------------------------------------------------------------------------------
 -- Gitsigns.
