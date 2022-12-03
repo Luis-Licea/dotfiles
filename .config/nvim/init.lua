@@ -1,3 +1,6 @@
+-- Place at top to load cache and get the greatest benefits.
+require('impatient')
+
 -- TODO Replace callback with command in autocommands.
 local function dict_append(dict1, dict2)
     if dict1 and dict2 then
@@ -642,6 +645,8 @@ local use = require('packer').use
 require('packer').startup(function()
     -- Packer plugin manager.
     use 'wbthomason/packer.nvim'
+    -- Speed up loading Lua modules to improve startup time.
+    use 'lewis6991/impatient.nvim'
     -- Syntax highlight Confluence wiki pages.
     use 'dix75/jira.vim'
     -- Context-aware comment plugin.
