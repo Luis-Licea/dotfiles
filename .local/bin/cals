@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=2155,1090
 
 # cals - Calibre Library Search.
 # Searches and opens pdfs in the Calibre Library directory.
@@ -9,14 +10,14 @@
 
 main() {
     # Whether or not to print debugging messages.
-    is_debugging=false
+    local -r is_debugging=false
     # is_debugging=true
 
     # If an argument is passed, use it as the path to the Calibre library.
-    library_path="$(get_calibre_library_path "$1")"
+    local -r library_path="$(get_calibre_library_path "$1")"
 
     # Define a directory where all the cache files will be stored.
-    cache_dir="$(get_cache_dir)"
+    local -r cache_dir="$(get_cache_dir)"
 
     # Define a path to cache the calculated associative array. Calculating the
     # directory in which a pdf is located each time the script is run is wasteful.
@@ -24,14 +25,14 @@ main() {
     # store the file for later use. The cached file should only be re-calculated
     # when the Calibre library database is modified or if the file does not exist
     # in the first place.
-    title2dir_cache_file="$cache_dir/title2dir.sh"
+    local -r title2dir_cache_file="$cache_dir/title2dir.sh"
 
     # Define the file that will store the last modification date.
-    metadata_last_modified_file="$cache_dir/last_modified_date.txt"
+    local -r metadata_last_modified_file="$cache_dir/last_modified_date.txt"
 
     # Get the last modification date of the matadata.db file. The database
     # changes each time Calibre is opened or books are added or removed.
-    metadata_last_modified_date="$(stat --printf="%y\n" "$library_path/metadata.db")"
+    local -r metadata_last_modified_date="$(stat --printf="%y\n" "$library_path/metadata.db")"
 
     # Delete the cached book titles if the state of the database changed.
     delete_cache_upon_metadata_change "$metadata_last_modified_file" \
@@ -53,7 +54,7 @@ main() {
     fi
 
     # Get the directory associated to the chosen pdf title.
-    pdf_dir=$(select_dmenu_dict_value title2dir)
+    local -r pdf_dir=$(select_dmenu_dict_value title2dir)
 
     if $is_debugging; then
         echo "Chosen key:"
@@ -61,7 +62,7 @@ main() {
     fi
 
     # Get the pdf path.
-    pdf_file=$(find "$pdf_dir" -type f -name "*.pdf")
+    local -r pdf_file=$(find "$pdf_dir" -type f -name "*.pdf")
 
     # If the directory exists:
     if [ -d "$pdf_dir" ]; then
@@ -72,7 +73,7 @@ main() {
 
 get_cache_dir() {
     # Define a directory where all the cache files will be stored.
-    cache_dir="$HOME/.cache/$(basename "$0")"
+    local -r cache_dir="$HOME/.cache/$(basename "$0")"
 
     # Create the cache directory if it does not exist.
     if ! [ -d "$cache_dir" ]; then
@@ -108,18 +109,18 @@ get_calibre_library_path() {
 delete_cache_upon_metadata_change() {
 
     # Define the file that will store the last modification date.
-    metadata_last_modified_file="$1"
+    local -nr metadata_last_modified_file="$1"
 
     # Get the last time the metadata was modified.
-    metadata_last_modified_date="$2"
+    local -nr metadata_last_modified_date="$2"
 
     # Define the file where the book titles are cached.
-    title2dir_cache_file="$3"
+    local -nr title2dir_cache_file="$3"
 
     # If the last modification date is known:
-    if test -f "$metadata_last_modified_file"
+    if [ -f "$metadata_last_modified_file" ]
        # And the last modification date has changed:
-       test "$metadata_last_modified_date" !=  "$(cat "$metadata_last_modified_file")"
+       [ "$metadata_last_modified_date" !=  "$(cat "$metadata_last_modified_file")" ]
     then
         # Remove the book title cache so a new one is created.
         if [ -f "$title2dir_cache_file" ]; then
@@ -137,10 +138,10 @@ delete_cache_upon_metadata_change() {
 create_book_title_cache() {
 
     # Define the file that will store the last modification date.
-    title2dir_cache_file="$1"
+    local -nr title2dir_cache_file="$1"
 
     # Define the directory where the Calibre Library is.
-    library_path="$2"
+    local -nr library_path="$2"
 
     # If the cached file does not exist:
     if ! [ -f "$title2dir_cache_file" ]; then
@@ -160,7 +161,7 @@ create_book_title_cache() {
             # Get the pdf title by scanning the XML tags.
             title=$(grep -o "<dc:title>.*</dc:title>" "$file")
 
-            # Remove dc:title tags prefix and suffix.
+            # Remove dc:title tag prefix and suffix.
             prefix="<dc:title>"
             suffix="</dc:title>"
             title="${title#"$prefix"}"
@@ -186,7 +187,7 @@ create_book_title_cache() {
 # not be usable in other commands.
 select_dmenu_dict_value() {
     # Create a ref-name for the dictionary so we can refer to it.
-    declare -n dictionary="$1"
+    local -nr dictionary="$1"
     # Iterate thru ever key in the dictionary:
     choice=$(
         for choice in "${!dictionary[@]}"; do
