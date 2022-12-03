@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# pdfshuf - Open a random PDF on a random page.
+#
+# Add option to open given PDF on a random page.
+# Add option to open random PDF on a given page.
+
+get_random_pdf_page() {
+    # Get the pdf path.
+    local -r pdf_name="$1"
+
+    # Get total number of pages from pdf information.
+    local -r pages="$(pdfinfo "$pdf_name" | awk '/Pages:/ { print $2 }')"
+
+    # Get a random page number.
+    local -r randomPage="$(shuf --head-count=1 --input-range=1-"$pages")"
+    # randomPage=$((RANDOM % pages + 1))
+
+    echo "$randomPage"
+}
+
+#######################################
+# Return the absolute path to a random PDF.
+# Arguments:
+#   Optional(string) The path to the directory that will be searched for a
+#   random PDF. If a path is not provided, the default Calibre Library path
+#   will be used.
+#######################################
+get_random_pdf_path() {
+    local -r searchDirectory="${1:-$HOME/Documents/Calibre Library}"
+    readarray -t books < <(find "$searchDirectory" -type f -name "*.pdf")
+    local -r arrayLength="${#books[@]}"
+    local -r randomIndex=$((RANDOM % arrayLength))
+    local -r randomBook="${books[$randomIndex]}"
+    echo "$randomBook"
+}
+
+main() {
+    local -r bookPath="$(get_random_pdf_path "$1")"
+    local -r bookPage="$(get_random_pdf_page "$bookPath")"
+    setsid --fork zathura "$bookPath" --page="$bookPage"
+}
+
+main "$@"
