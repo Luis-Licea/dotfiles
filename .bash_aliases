@@ -28,8 +28,8 @@ alias em='setsid --fork emacsclient --create-frame && exit'
 # NVM.
 ################################################################################
 # Node Version Manager.
-source /usr/share/nvm/init-nvm.sh
-nvm_node_modules="${NVM_BIN%/bin}/lib/node_modules"
+[ -f /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh
+[ -n "$NVM_BIN" ] && nvm_node_modules="${NVM_BIN%/bin}/lib/node_modules"
 
 ################################################################################
 # Lynx Browser.
