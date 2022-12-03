@@ -21,11 +21,11 @@ main() {
     local -r cache_dir="$(get_cache_dir)"
 
     # Define a path to cache the calculated associative array. Calculating the
-    # directory in which a pdf is located each time the script is run is wasteful.
-    # It is better to find the directory in which the pdf is located once, and then
-    # store the file for later use. The cached file should only be re-calculated
-    # when the Calibre library database is modified or if the file does not exist
-    # in the first place.
+    # directory in which a pdf is located each time the script is run is
+    # wasteful. It is better to find the directory in which the pdf is located
+    # once, and then store the file for later use. The cached file should only
+    # be re-calculated when the Calibre library database is modified or if the
+    # file does not exist in the first place.
     local -r title2dir_cache_file="$cache_dir/title2dir.sh"
 
     # Define the file that will store the last modification date.
@@ -152,8 +152,9 @@ create_book_title_cache() {
 
     # If the cached file does not exist:
     if ! [ -f "$title2dir_cache_file" ]; then
-        # Find all files ending with the .opf extension. This type of XML files contain
-        # information about pdf books. Eeach opf file corresponds to a pdf book.
+        # Find all files ending with the .opf extension. This type of XML files
+        # contain information about pdf books. Eeach opf file corresponds to a
+        # pdf book.
         metadata_files="$(find "$library_path" -name "*.opf")"
 
         # For-loop setup.
@@ -161,7 +162,8 @@ create_book_title_cache() {
         # Set newline as the delimiter, or else for loop will not work.
         IFS=$'\n'
 
-        # Create associative array, and make it a reference to another variable.
+        # Create associative array, and make it a reference to another
+        # variable.
         declare -A title2dir
         local -r prefix="<dc:title>"
         local -r string=".*"
@@ -169,7 +171,6 @@ create_book_title_cache() {
 
         for file in $metadata_files; do
             # Get the pdf title by scanning the XML tags.
-            # local title=$(grep -o "<dc:title>.*</dc:title>" "$file")
             local title=$(grep -o "$prefix$string$suffix" "$file")
 
             # Remove dc:title tag prefix and suffix.
@@ -180,7 +181,8 @@ create_book_title_cache() {
             title2dir["$title"]="${file%"/$(basename "$file")"}"
         done
 
-        # Store the associate array so it is easier to retrieve later on folder.
+        # Store the associate array so it is easier to retrieve later on
+        # folder.
         declare -p title2dir > "$title2dir_cache_file"
     fi
 
