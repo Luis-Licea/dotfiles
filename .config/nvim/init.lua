@@ -1,6 +1,3 @@
--- Place at top to load cache and get the greatest benefits.
-require('impatient')
-
 -- TODO Replace callback with command in autocommands.
 local function dict_append(dict1, dict2)
     if dict1 and dict2 then
@@ -302,12 +299,12 @@ local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
         pattern  = '*',
         command  = 'startinsert | set winfixheight'})
 
-    -- Start git messages in insert mode.
-    -- Spell check and wrap commit messages.
+    -- Start git messages in insert mode. Set color-column relative to
+    -- text-width.
     vim.api.nvim_create_autocmd('FileType',     {
         group    = buffer_check_group,
         pattern  = { 'gitcommit', },
-        command  = 'startinsert | 1 | setlocal spell textwidth=72'})
+        command  = 'startinsert | 1 | setlocal colorcolumn=+1'})
 
     -- Remember file position.
     vim.api.nvim_create_autocmd('BufReadPost',  {
@@ -327,10 +324,16 @@ local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
         group = buffer_check_group,
         pattern = "*",
         callback = function()
-            local should_ignore = { lua = true, markdown = true, javascript = true,
-                sh = true, json = true, yaml = true, python = true, c = true, cpp = true}
-            if should_ignore[vim.bo.filetype] then
+            local noSyntaxFor = {
+                lua = true, markdown = true, sh = true, json = true,
+                yaml = true, python = true, c = true, cpp = true
+            }
+            local noTreeSitterFor = { gitcommit = true }
+            if noSyntaxFor[vim.bo.filetype] then
                 vim.bo.syntax = false
+            end
+            if noTreeSitterFor[vim.bo.filetype] then
+                vim.cmd('TSBufDisable highlight')
             end
         end
     })
@@ -493,6 +496,13 @@ local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
         end
     })
 
+    -- Always auto-format the following file types.
+    vim.api.nvim_create_autocmd('FileType', {
+        group = auto_run_group,
+        pattern = {'rust', 'cpp', 'html'},
+        callback = ToggleFormatOnSave
+    })
+
 --------------------------------------------------------------------------------
 -- Markdown.
 --------------------------------------------------------------------------------
@@ -592,12 +602,6 @@ vim.o.softtabstop = 4
 vim.o.tabstop = 4
 
 --------------------------------------------------------------------------------
--- Indentation.
---------------------------------------------------------------------------------
--- Add indentation when S or cc is pressed.
-vim.o.cindent = true
-
---------------------------------------------------------------------------------
 -- Other.
 --------------------------------------------------------------------------------
 -- Open history file using :q.
@@ -612,6 +616,8 @@ vim.o.spell = true
 vim.opt.listchars = { tab = '◃―▹', trail = '●', extends = '◣', precedes = '◢', nbsp = '○' }
 -- Show tabs and trailing spaces.
 vim.o.list = true
+-- Add indentation when S or cc is pressed.
+vim.o.cindent = true
 -- Change cwd to file's directory.
 vim.o.autochdir = true
 
@@ -699,8 +705,8 @@ require('packer').startup(function()
         -- Uncomment next line if you want to follow only stable versions
         tag = "*"
     }
-    -- Provide Cargo commands, and Rust syntax highlighting and formatting.
-    use 'rust-lang/rust.vim'
+    -- use 'nvim-treesitter/playground'
+    -- use '~/Code/treesitter-markdown'
     -- NOTE: Nvim-web-devicons requires a patched font such as MesloLGS NF.
     -- use 'kyazdani42/nvim-web-devicons'
     -- Fancy debug adapter UI provider and Debug Adapter Protocol.
@@ -934,12 +940,12 @@ require('packer').startup(function()
                     -- require("null-ls").builtins.completion.luasnip,
                     -- Does not have as many options as shfmt.
                     -- require("null-ls").builtins.formatting.beautysh,
+                    -- Provide text auto completion.
+                    -- require("null-ls").builtins.completion.spell,
 
                     ------------------------------------------------------------
                     -- Useful.
                     ------------------------------------------------------------
-                    -- Provide text auto completion.
-                    require("null-ls").builtins.completion.spell,
                     -- Add action to preview, reset, select, and stage hunks.
                     require("null-ls").builtins.code_actions.gitsigns,
                     -- Auto-complete CMake commands and keywords.
@@ -992,16 +998,16 @@ require('packer').startup(function()
     use { 'hrsh7th/nvim-cmp',
         requires =  {
             -- Completion sources.
-            'hrsh7th/cmp-cmdline',
-            'hrsh7th/cmp-buffer',
-            'hrsh7th/cmp-nvim-lsp',
-            'hrsh7th/cmp-nvim-lua',
-            'octaltree/cmp-look',
-            'hrsh7th/cmp-path',
-            'hrsh7th/cmp-calc',
             'f3fora/cmp-spell',
+            'hrsh7th/cmp-buffer',
+            'hrsh7th/cmp-calc',
+            'hrsh7th/cmp-cmdline',
             'hrsh7th/cmp-emoji',
-
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-nvim-lsp-signature-help',
+            'hrsh7th/cmp-nvim-lua',
+            'hrsh7th/cmp-path',
+            'octaltree/cmp-look',
             -- Icons before source names.
             'onsails/lspkind.nvim'
         }
@@ -1011,7 +1017,11 @@ require('packer').startup(function()
 end)
 
 --------------------------------------------------------------------------------
+-- Impatient.
 --------------------------------------------------------------------------------
+-- Does not need to be at top of file.
+require('impatient')
+
 --------------------------------------------------------------------------------
 -- Nvim-Window.
 --------------------------------------------------------------------------------
@@ -1107,16 +1117,32 @@ dap.adapters.cppdbg = {
   command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/OpenDebugAD7'
 }
 
+local function GetDebugExecutable()
+    local compilationPath = vim.g.compPath .. vim.fn.expand('%:r')
+    local sourcePath = vim.fn.expand('%:p:r')
+    local cargoPath = function()
+        if vim.fn.execute('cargo') then
+            local metadata = vim.fn.system({'cargo', 'metadata', '--format-version', '1'})
+            local name = metadata:gmatch('"name":"(.-)"')()
+            local directory = metadata:gmatch('"target_directory":"(.-)"')()
+            if directory and name then return directory .. '/' .. name end
+        end
+        return ""
+    end
+
+    for _, path in ipairs({sourcePath, compilationPath, cargoPath}) do
+        if vim.fn.executable(path) == 1 then return path end
+    end
+
+    -- Manually enter executable name:
+    return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+end
 dap.configurations.cpp = {
   {
     name = "Launch file",
     type = "cppdbg",
     request = "launch",
-    -- Manually enter executable name:
-    -- program = function()
-    --   return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-    -- end,
-    program = function() return vim.fn.expand('%:p:r') end,
+    program = GetDebugExecutable,
     cwd = '${workspaceFolder}',
     stopAtEntry = true,
   },
@@ -1128,9 +1154,7 @@ dap.configurations.cpp = {
     miDebuggerServerAddress = 'localhost:1234',
     miDebuggerPath = '/usr/bin/gdb',
     cwd = '${workspaceFolder}',
-    program = function()
-      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-    end,
+    program = GetDebugExecutable,
   },
 }
 -- Reuse configuration for C and Rust.
@@ -1239,7 +1263,6 @@ require 'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = true,
     },
 }
-
 --------------------------------------------------------------------------------
 -- Session Manager.
 --------------------------------------------------------------------------------
@@ -1438,7 +1461,7 @@ local servers = {
     'marksman', -- Markdown
     -- 'phpactor', -- PHP
     'pyright',
-    -- 'rust_analyzer', -- Rust
+    'rust_analyzer', -- Rust
     -- 'sqls', -- SQL
     'cmake',
     'taplo', -- TOML
@@ -1522,15 +1545,16 @@ require('cmp').setup {
             -- Set a name for each source.
             vim_item.menu = ({
                 -- buffer = "[Buffer]",
-                nvim_lsp = "[LSP]",
-                luasnip = "[Snip]",
-                nvim_lua = "[Lua]",
-                look = "[Look]",
-                path = "[Path]",
                 calc = "[Calc]",
-                -- cmdline = "[Cmdline]",
-                -- spell = "[Spell]",
-                emoji = "[Emoji]"
+                cmdline = "[Cmdline]",
+                emoji = "[Emoji]",
+                look = "[Look]",
+                luasnip = "[Snip]",
+                nvim_lsp = "[LSP]",
+                nvim_lsp_signature_help = "[Signature]",
+                nvim_lua = "[Lua]",
+                path = "[Path]",
+                spell = "[Spell]",
             })[entry.source.name]
             return vim_item
         end
@@ -1558,17 +1582,21 @@ require('cmp').setup {
         }),
     },
     sources = {
-        -- {name = 'buffer'},
-        {name = 'nvim_lsp'},
-        {name = "nvim_lua"},
-        {name = "look"},
-        {name = "path"},
-        {name = "calc"},
-        -- {name = "cmdline"},
-        -- {name = "spell"},
-        {name = "luasnip"},
-        {name = "emoji"}
+        { name = 'buffer', keyword_length = 2 },   -- Source current buffer.
+        { name = 'calc'},                          -- Source for math calculation.
+        { name = 'cmdline', keyword_length = 4 },
+        { name = 'emoji' },
+        { name = 'look' },
+        { name = 'luasnip' },
+        { name = 'nvim_lsp', keyword_length = 3 }, -- Language server.
+        { name = 'nvim_lsp_signature_help'},       -- Display function signatures with current parameter emphasized.
+        { name = 'nvim_lua', keyword_length = 2 }, -- Complete neovim's Lua runtime API such vim.lsp.*.
+        { name = 'path' },                         -- File paths.
+        { name = 'spell', keyword_length = 4 },
     },
+    -- menuone: popup even when there's only one match
+    -- noinsert: Do not insert text until a selection is made
+    -- noselect: Do not select, force to select one from the menu
     completion = {completeopt = 'menu,menuone,noinsert,noselect'}
 }
 
@@ -1888,15 +1916,6 @@ function Run()
     -- Program did not run.
     return false
 end
-
---------------------------------------------------------------------------------
--- Rust-vim settings.
---------------------------------------------------------------------------------
--- Format Rust file using rustfmt each time the file is saved.
--- let g:rustfmt_autosave = 1
--- TODO Provide RustRun and Crun mapping to run single files or cargo files.
--- Also provide RustTest, RustEmitIr, RustEmitAsm, RustFmt, Ctest, Cbuild.
-vim.g.rustfmt_autosave = 1
 
 --------------------------------------------------------------------------------
 -- Latex auto compilation.
