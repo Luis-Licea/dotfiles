@@ -326,7 +326,7 @@ local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
         callback = function()
             local noSyntaxFor = {
                 lua = true, markdown = true, sh = true, json = true,
-                yaml = true, python = true, c = true, cpp = true
+                yaml = true, python = true, c = true, cpp = true, rust = true,
             }
             local noTreeSitterFor = { gitcommit = true }
             if noSyntaxFor[vim.bo.filetype] then
@@ -1588,7 +1588,7 @@ require('cmp').setup {
         { name = 'emoji' },
         { name = 'look' },
         { name = 'luasnip' },
-        { name = 'nvim_lsp', keyword_length = 3 }, -- Language server.
+        { name = 'nvim_lsp' },                     -- Language server.
         { name = 'nvim_lsp_signature_help'},       -- Display function signatures with current parameter emphasized.
         { name = 'nvim_lua', keyword_length = 2 }, -- Complete neovim's Lua runtime API such vim.lsp.*.
         { name = 'path' },                         -- File paths.
