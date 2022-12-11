@@ -721,10 +721,10 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- Custom gap:
 -- beautiful.useless_gap = 5
 -- Custom auto-start programs:
--- awful.spawn.with_shell("nitrogen --restore")
 awful.spawn.with_shell("compton")
 awful.spawn.with_shell("emacs --daemon")
 awful.spawn.with_shell("gnome-keyring-daemon --daemonize")
+-- awful.spawn.with_shell("nitrogen --restore")
 
 -- {{{ Disable status bar at startup.
 myscreen = awful.screen.focused()

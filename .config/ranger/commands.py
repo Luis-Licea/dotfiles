@@ -63,8 +63,8 @@ class my_edit(Command):
 
 
 # Open a new terminal in the current directory.
-class n(Command):
-    """:n
+class Nt(Command):
+    """:Nt
 
     Open another terminal in the current window.
     """
@@ -76,8 +76,8 @@ class n(Command):
 
 
 # Open a new ranger instance in the current directory, in a new terminal.
-class nr(Command):
-    """:nr
+class Nr(Command):
+    """:Nr
 
     Open a new ranger instance in the current directory, in a new terminal.
     """

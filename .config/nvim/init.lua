@@ -54,12 +54,24 @@ elseif vim.fn.executable('konsole') == 1 then
 end
 
 if console then
-    local new_terminal=':let $VIM_DIR=expand("%:p:h")<cr>:sil !setsid --fork ' .. console .. ' "$VIM_DIR" &<cr>'
-    local new_ranger=':let $VIM_DIR=expand("%:p:h")<cr>:sil !setsid --fork ' .. console .. ' "$VIM_DIR" -e ranger<cr>'
+    function NewTerminal()
+        vim.fn.setenv('VIM_DIR', vim.fn.expand("%:p:h"))
+        vim.cmd('sil !setsid --fork ' .. console .. ' "$VIM_DIR"')
+    end
+    function NewRanger()
+        vim.fn.setenv('VIM_DIR', vim.fn.expand("%:p:h"))
+        vim.cmd('sil !setsid --fork ' .. console .. ' "$VIM_DIR" -e ranger')
+    end
+
     -- Spawn a new terminal in the folder of the current file.
-    nnoremap('<leader>tt', new_terminal)
+    nnoremap('<leader>nt', NewTerminal)
     -- Spawn a new ranger terminal in the folder of the current file.
-    nnoremap('<leader>rt', new_ranger)
+    nnoremap('<leader>nr', NewRanger)
+
+    vim.api.nvim_create_user_command('Nt', NewTerminal,
+        { nargs = 0, desc = "Launch a new terminal." })
+    vim.api.nvim_create_user_command('Nr', NewRanger,
+        { nargs = 0, desc = "Launch a new ranger terminal." })
 end
 
 local function OpenTagBar()
