@@ -92,7 +92,7 @@ alias mdscratch='scratchpad scratchpad.md'
 alias pyscratch='scratchpad scratchpad.py'
 alias pyscratchtest='scratchpad scratchpad_test.py'
 alias todoscratch='scratchpad todo.md'
-alias todo='$EDITOR "To Do.md"'
+alias todo='$EDITOR "$HOME/To Do.md"'
 alias txtscratch='scratchpad scratchpad.txt'
 
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
