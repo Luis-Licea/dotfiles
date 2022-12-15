@@ -12,6 +12,9 @@
 # Search for devices in the network and re-establish connections.
     kdeconnect-cli --refresh
 
+# Screen saver daemon.
+    xscreensaver --no-splash &
+
 # Only run the following programs, not intended for KDE or GNOME, with DWM.
 if [ "$DESKTOP_SESSION" = "dwm" ]; then
     # Run picom compositor for blurring windows and rounding corners.
