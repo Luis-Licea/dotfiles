@@ -9,8 +9,13 @@ get_random_pdf_page() {
     # Get the pdf path.
     local -r pdf_name="$1"
 
-    # Get total number of pages from pdf information.
-    local -r pages="$(pdfinfo "$pdf_name" | awk '/Pages:/ { print $2 }')"
+    if [ "$(file --mime --brief "$pdf_name")" == "application/pdf; charset=binary" ]; then
+        # Get total number of pages from pdf information.
+        local -r pages="$(pdfinfo "$pdf_name" | awk '/Pages:/ { print $2 }')"
+    else
+        # If PDF is not readable, assume it only has one page.
+        local -r pages=1
+    fi
 
     # Get a random page number.
     local -r randomPage="$(shuf --head-count=1 --input-range=1-"$pages")"

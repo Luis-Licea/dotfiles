@@ -15,6 +15,8 @@ kdeconnect-cli --refresh
 # Screen saver daemon.
 xscreensaver --no-splash &
 
+# Open a random PDF at startup.
+[ -n "$(command -v pdfshuf)" ] && pdfshuf
 
 # Only run the following programs, not intended for KDE or GNOME, with DWM.
 if [ "$DESKTOP_SESSION" = "dwm" ]; then
