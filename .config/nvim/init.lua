@@ -631,7 +631,7 @@ vim.o.list = true
 -- Add indentation when S or cc is pressed.
 vim.o.cindent = true
 -- Change cwd to file's directory.
-vim.o.autochdir = true
+-- vim.o.autochdir = true
 
 --------------------------------------------------------------------------------
 -- File finder.
