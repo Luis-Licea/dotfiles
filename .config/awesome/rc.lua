@@ -258,9 +258,10 @@ end)
 
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
-    awful.button({ }, 3, function () mymainmenu:toggle() end),
-    awful.button({ }, 4, awful.tag.viewnext),
-    awful.button({ }, 5, awful.tag.viewprev)
+    awful.button({ }, 3, function () mymainmenu:toggle() end)
+    -- Forward/backward tag scrolling.
+    -- awful.button({ }, 4, awful.tag.viewnext),
+    -- awful.button({ }, 5, awful.tag.viewprev)
 ))
 -- }}}
 
@@ -721,9 +722,10 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- Custom gap:
 -- beautiful.useless_gap = 5
 -- Custom auto-start programs:
-awful.spawn.with_shell("compton")
+awful.spawn.with_shell("compton -i 0.7")
 awful.spawn.with_shell("emacs --daemon")
 awful.spawn.with_shell("gnome-keyring-daemon --daemonize")
+-- awful.spawn.with_shell("xscreensaver --no-splash")
 -- awful.spawn.with_shell("nitrogen --restore")
 
 -- {{{ Disable status bar at startup.
