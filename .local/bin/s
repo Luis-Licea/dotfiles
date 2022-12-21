@@ -8,7 +8,7 @@ definition_temp_file=$(mktemp) && {
     sdcv -eu WordNet "$1" > "$definition_temp_file"
 } && {
     # Open the definition in a terminal.
-    alacritty -e w3m "$definition_temp_file"
+    alacritty -e most "$definition_temp_file"
 }
 
 # Remove the temp file.
