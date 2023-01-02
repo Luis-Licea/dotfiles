@@ -126,7 +126,7 @@ alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias cheat='cht.sh'
 alias locksway='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
 alias lockx='xscreensaver-command -lock'
-alias playmusic='setsid -f mpv /run/media/luis/DATA/Music/* --shuffle'
+alias playmusic='mpv /run/media/luis/DATA/Music/* --shuffle'
 export bgs='/usr/share/backgrounds/nordic-wallpapers/'
 
 # Only enter SSH password once.
