@@ -655,6 +655,32 @@ awful.rules.rules = {
 }
 -- }}}
 
+-- {{{ Window swallowing.
+function is_terminal(c)
+    return (c.class and c.class:match("Alacritty")) and true or false
+end
+
+function copy_size(c, parent_client)
+    if not c or not parent_client then return end
+    if not c.valid or not parent_client.valid then return end
+
+    c.x=parent_client.x;
+    c.y=parent_client.y;
+    c.width=parent_client.width;
+    c.height=parent_client.height;
+end
+
+--- Return the parent process id.
+---@param pid number The process id whose parent process id will be returned.
+---@return number?
+local function get_parent_pid(pid)
+    local handle = io.popen("ps --format ppid='' --pid " .. pid)
+    local result = handle:read("*a")
+    handle:close()
+    return tonumber(result)
+end
+-- }}}
+
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function (c)
@@ -668,6 +694,24 @@ client.connect_signal("manage", function (c)
         -- Prevent clients from being unreachable after screen count changes.
         awful.placement.no_offscreen(c)
     end
+
+    -- {{{ Window swallowing.
+    if is_terminal(c) or not c.pid then return end
+
+    local parent_pid = get_parent_pid(c.pid)
+    local grandparent_pid = get_parent_pid(parent_pid)
+    local parent_client = awful.client.focus.history.get(c.screen, 1)
+
+    if parent_client and (grandparent_pid == parent_client.pid or parent_pid == parent_client.pid) and is_terminal(parent_client) then
+        parent_client.child_resize=c
+        parent_client.minimized = true
+
+        c:connect_signal("unmanage", function() parent_client.minimized = false end)
+
+        -- c.floating=true
+        copy_size(c, parent_client)
+    end
+    -- }}}
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
