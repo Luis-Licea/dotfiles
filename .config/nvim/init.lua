@@ -616,6 +616,8 @@ vim.o.tabstop = 4
 --------------------------------------------------------------------------------
 -- Other.
 --------------------------------------------------------------------------------
+-- Treat keybindings the same when using a different keyboard layout.
+vim.cmd[[set langmap=йЙцЦуУкКеЕнНгГшШщЩзЗхХъЪфФыЫвВаАпПрРоОлЛдДжЖэЭяЯчЧсСмМиИтТьЬбБюЮ\\,;qQwWeErRtTyYuUiIoOpP[{]}aAsSdDfFgGhHjJkKlL;:'\"zZxXcCvVbBnNmM\\,<.>?"]]
 -- Open history file using :q.
 vim.o.history = 200
 -- Ignore case in search patterns.
@@ -1599,7 +1601,7 @@ require('cmp').setup {
         { name = 'cmdline', keyword_length = 4 },
         { name = 'emoji' },
         { name = 'look' },
-        { name = 'luasnip' },
+        { name = 'luasnip' },                      -- Snippets.
         { name = 'nvim_lsp' },                     -- Language server.
         { name = 'nvim_lsp_signature_help'},       -- Display function signatures with current parameter emphasized.
         { name = 'nvim_lua', keyword_length = 2 }, -- Complete neovim's Lua runtime API such vim.lsp.*.
