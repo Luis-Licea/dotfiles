@@ -1,0 +1,3 @@
+# A sample of ~/.w3m/keymap
+keymap	k	PREV_PAGE
+keymap	j	NEXT_PAGE
