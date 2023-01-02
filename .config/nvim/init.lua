@@ -1558,9 +1558,7 @@ require('cmp').setup {
 
             -- Set a name for each source.
             vim_item.menu = ({
-                -- buffer = "[Buffer]",
                 calc = "[Calc]",
-                cmdline = "[Cmdline]",
                 emoji = "[Emoji]",
                 look = "[Look]",
                 luasnip = "[Snip]",
@@ -1596,9 +1594,7 @@ require('cmp').setup {
         }),
     },
     sources = {
-        { name = 'buffer', keyword_length = 2 },   -- Source current buffer.
         { name = 'calc'},                          -- Source for math calculation.
-        { name = 'cmdline', keyword_length = 4 },
         { name = 'emoji' },
         { name = 'look' },
         { name = 'luasnip' },                      -- Snippets.
@@ -1638,7 +1634,7 @@ require('cmp').setup.cmdline({ '/', '?' }, {
     view = { entries = entries },
     mapping = require('cmp').mapping.preset.cmdline(mappings),
     sources = {
-        { name = 'buffer' }
+        { name = 'buffer' } -- Source text in current buffer.
     },
     completion = {completeopt = 'menu,menuone,noinsert,noselect'}
 })
@@ -1650,6 +1646,8 @@ require('cmp').setup.cmdline(':', {
     sources = require('cmp').config.sources({
         { name = 'path' }
     }, {
+        -- Remove cmp-cmdline from global sources because it will produce
+        -- errors, so add cmp-cmdline for the cmdline setup function.
         { name = 'cmdline' }
     }),
     completion = {completeopt = 'menu,menuone,noinsert,noselect'}
