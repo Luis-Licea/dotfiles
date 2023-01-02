@@ -1975,7 +1975,7 @@ end
 
 function OpenLaTeXPDF(viewer)
     -- Get current file's root name (without extension) and add .pdf.
-    local jobname = vim.fn.expand('%:p:r.pdf')
+    local jobname = vim.fn.expand('%:p:r') .. '.pdf'
     if LatexJobName then
         -- Get current file's head (last path component removed) and add .pdf.
         jobname = vim.fn.expand('%:p:h') .. '/' .. LatexJobName .. '.pdf'
