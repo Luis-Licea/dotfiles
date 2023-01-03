@@ -102,6 +102,7 @@ plugins=(git vi-mode pass) # colored-man-pages
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
 
+# Use binkey -l and bindkey -M <keymap> for info.
 # Use ctrl+hjkl to navigate tab completion options in terminal.
 zstyle ':completion:*' menu select
 zmodload zsh/complist
@@ -109,6 +110,17 @@ bindkey -M menuselect '^h' vi-backward-char
 bindkey -M menuselect '^k' vi-up-line-or-history
 bindkey -M menuselect '^l' vi-forward-char
 bindkey -M menuselect '^j' vi-down-line-or-history
+
+# Edit command with vim.
+bindkey -M vicmd "^V" edit-command-line
+
+# Russian keybindings.
+bindkey -M vicmd "л" up-line-or-beginning-search # k
+bindkey -M vicmd "о" down-line-or-beginning-search # j
+bindkey -M vicmd "ш" vi-insert # i
+
+# Make Vi mode transitions faster (timeout is in hundredths of a second).
+export KEYTIMEOUT=1
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
