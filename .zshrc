@@ -115,8 +115,13 @@ bindkey -M menuselect '^j' vi-down-line-or-history
 bindkey -M vicmd "^V" edit-command-line
 
 # Russian keybindings.
-bindkey -M vicmd "л" up-line-or-beginning-search # k
-bindkey -M vicmd "о" down-line-or-beginning-search # j
+bindkey -M vicmd "Ф" vi-add-eol # A
+bindkey -M vicmd "Ш" vi-insert-bol # I
+bindkey -M vicmd "д" vi-forward-char # l
+bindkey -M vicmd "л" up-line-or-history # k
+bindkey -M vicmd "о" down-line-or-history # j
+bindkey -M vicmd "р" vi-backward-char # h
+bindkey -M vicmd "ф" vi-add-next # a
 bindkey -M vicmd "ш" vi-insert # i
 
 # Make Vi mode transitions faster (timeout is in hundredths of a second).
