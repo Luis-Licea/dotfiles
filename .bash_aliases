@@ -21,8 +21,10 @@ fi
 
 export EDITOR=nvim
 export VISUAL="$EDITOR"
-alias ema='emacsclient --create-frame'
-alias em='setsid --fork emacsclient --create-frame && exit'
+
+# Disable loading Ranger's global configuration files because custom
+# configurations are provided.
+export RANGER_LOAD_DEFAULT_RC=FALSE
 
 ################################################################################
 # NVM.
@@ -41,9 +43,8 @@ export LYNX_LSS="$HOME/.config/lynx/lynx.lss"
 # Aliases.
 ################################################################################
 
-# Disable loading Ranger's global configuration files because custom
-# configurations are provided.
-export RANGER_LOAD_DEFAULT_RC=FALSE
+# Suffix aliases.
+alias -s {md,txt,sh}='$EDITOR'
 
 # Stay in current folder when exiting ranger. Show ranger nested level at exit.
 alias ranger='source ranger && echo "Level ${RANGER_LEVEL:-0}"'
@@ -111,25 +112,28 @@ alias passbgit='git --git-dir="$HOME/.local/share/pass/.backup/.git" \
 alias passbgui='gitui -d "$HOME/.local/share/pass/.backup/.git" \
     -w "$HOME/.local/share/pass/.backup"'
 
-alias e='exit'
-
-alias m='man -Hlynx'
-alias v='nvim'
-alias h='helix'
-alias r='ranger'
-alias c='codium .'
 alias d='sdcv -u WordNet'
 alias de='sdcv -eu WordNet'
-alias t="sdcv -u 'Moby Thesaurus II'"
-alias nt='setsid --fork alacritty'
+alias e='exit'
+alias m='man -Hlynx'
 alias nr='setsid --fork alacritty -e ranger'
-alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
-alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
+alias nt='setsid --fork alacritty'
+alias r='ranger'
+alias t="sdcv -u 'Moby Thesaurus II'"
+alias v='nvim'
+
 alias cheat='cht.sh'
 alias locksway='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
 alias lockx='xscreensaver-command -lock'
+alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias playmusic='mpv /run/media/luis/DATA/Music/* --shuffle'
+alias sqlite-doc='xdg-open /usr/share/doc/sqlite/doclist.html'
+alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
+
 export bgs='/usr/share/backgrounds/nordic-wallpapers/'
 
 # Only enter SSH password once.
 # keychain --quiet --eval id_rsa > /dev/null
+
+# shellcheck source=./.my_aliases
+[[ -f ~/.my_aliases ]] && source ~/.my_aliases
