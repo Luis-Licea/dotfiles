@@ -339,6 +339,7 @@ local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
             local noSyntaxFor = {
                 lua = true, markdown = true, sh = true, json = true,
                 yaml = true, python = true, c = true, cpp = true, rust = true,
+                tex = true
             }
             local noTreeSitterFor = { gitcommit = true }
             if noSyntaxFor[vim.bo.filetype] then
@@ -975,8 +976,7 @@ require('packer').startup(function()
                     -- Formats Bash scripts and ensures consistent indentation.
                     require("null-ls").builtins.formatting.shfmt.with({ extra_args = {"-i", "4"}}),
                     -- Formats Markdown tables.
-                    require("null-ls").builtins.formatting.prettier,
-
+                    require("null-ls").builtins.formatting.prettier.with({ extra_args = {"--tab-width", "4"}}),
                 },
                 -- Set correct encoding to avoid gitsigns warning: multiple
                 -- different client offset_encodings detected for buffer, this
