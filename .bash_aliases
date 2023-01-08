@@ -44,7 +44,7 @@ export LYNX_LSS="$HOME/.config/lynx/lynx.lss"
 ################################################################################
 
 # Suffix aliases.
-alias -s {md,txt,sh}='$EDITOR'
+alias -s {md,txt}='$EDITOR'
 
 # Stay in current folder when exiting ranger. Show ranger nested level at exit.
 alias ranger='source ranger && echo "Level ${RANGER_LEVEL:-0}"'
@@ -100,8 +100,8 @@ alias todo='$EDITOR "$HOME/To Do.md"'
 alias txtscratch='scratchpad scratchpad.txt'
 
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
-alias jsscratch='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && nvim scratchpad.mjs || nvim scratchpad.mjs && cd -'
-alias jsscratchtest='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && nvim scratchpad_test.mjs || nvim scratchpad_test.mjs && cd -'
+alias jsscratch='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && ln -s ~/.config/nvim/templates/.prettierrc.yml .prettierrc.yml && nvim scratchpad.mjs || nvim scratchpad.mjs && cd -'
+alias jsscratchtest='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && ln -s ~/.config/nvim/templates/.prettierrc.yml .prettierrc.yml && nvim scratchpad_test.mjs || nvim scratchpad_test.mjs && cd -'
 # Create cargo project rather than individual file.
 alias rsscratch='cd /tmp && [ ! -d rsscratch ] && cargo new rsscratch && nvim rsscratch/src/main.rs || nvim /tmp/rsscratch/src/main.rs && cd -'
 
@@ -110,7 +110,7 @@ repo_git() { git --git-dir="$1" --work-tree="$2" "${@:3}"; }
 repo_ui() { gitui --polling -d "$1" -w "$2" "${@:3}"; }
 
 alias dotfiles='repo_git ~/.config/dotfiles/ ~'
-alias dotfilesui='repo_ui ~/.config/dotfiles/ ~'
+alias dotfilesui='repo_ui ~/.config/dotfiles/ ~ && git-summary ~/Code -s'
 alias passbgit='repo_git ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 
