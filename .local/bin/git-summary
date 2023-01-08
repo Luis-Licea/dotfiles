@@ -1,0 +1,67 @@
+#!/bin/bash
+
+dir="$1"
+
+# No directory has been provided, use current
+if [[ -z "$dir" ]]; then
+    dir="$(pwd)"
+fi
+
+# Make sure directory ends with "/"
+if [[ $dir != */ ]]; then
+    dir="$dir/*"
+else
+    dir="$dir*"
+fi
+
+# Loop all sub-directories
+for f in $dir; do
+
+    # Only interested in directories
+    [ -d "${f}" ] || continue
+
+    echo -en "\033[0;35m"
+    echo "${f}"
+    echo -en "\033[0m"
+
+    # Check if directory is a git repository
+    if [ -d "$f/.git" ]; then
+        is_clean=true
+        cd "$f" ||  exit
+
+        # Check for modified files
+        if git status | grep -q modified; then
+            is_clean=false
+            echo -en "\033[0;31m"
+            echo "Modified files"
+            echo -en "\033[0m"
+        fi
+
+        # Check for untracked files
+        if git status | grep -q Untracked; then
+            is_clean=false
+            echo -en "\033[0;31m"
+            echo "Untracked files"
+            echo -en "\033[0m"
+        fi
+
+        # Check for unpushed changes
+        if git status | grep -q 'Your branch is ahead'; then
+            is_clean=false
+            echo -en "\033[0;31m"
+            echo "Unpushed commit"
+            echo -en "\033[0m"
+        fi
+
+        # Check if everything is peachy keen
+        if $is_clean; then
+            echo "Nothing to commit."
+        fi
+
+        cd - > /dev/null || exit
+    else
+        echo "Not a git repository."
+    fi
+
+    echo
+done
