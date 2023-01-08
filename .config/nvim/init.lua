@@ -91,8 +91,6 @@ nnoremap('<leader>q', ':quit<cr>')
 nnoremap('<leader>so', ':source ~/.config/nvim/init.vim<cr>')
 -- Fix syntax highlighting.
 nnoremap('<leader>fs', ':syntax sync fromstart<cr>')
--- Check script to make it POSIX compliant.
-nnoremap('<leader>sc', ':term shellcheck "%" && beautysh -c "%"<cr>')
 -- Remove trailing white space.
 nnoremap('<leader>rw', ':%s/\\s\\+$//e<cr>')
 -- Remove swap file. Make the command long in purpose.
@@ -100,8 +98,8 @@ nnoremap('<leader>rswap', ':!rm "%.swp"<cr>')
 -- Unset the last search pattern register.
 nnoremap('<esc>', ':nohl<cr>', { silent = true })
 -- Paste last thing yanked, not deleted.
-nnoremap(',p', '"0p')
-nnoremap(',P', '"0P')
+nnoremap('<leader>p', '"0p')
+nnoremap('<leader>P', '"0P')
 
 --------------------------------------------------------------------------------
 -- Tab, window, and buffer navigation.
@@ -218,6 +216,8 @@ nnoremap('<leader>sa', ':set autoindent! autoindent?<cr>')
 nnoremap('<leader>sw', ':set wrap! wrap?<cr>')
 -- Switch highlight search.
 nnoremap('<leader>sh', ':set hlsearch! hlsearch?<cr>')
+-- Switch auto-changing directory.
+nnoremap('<leader>sc', ':set autochdir! autochdir?<cr>')
 
 --------------------------------------------------------------------------------
 -- Spellcheck mappings. Prefix s means "spell".
@@ -974,9 +974,11 @@ require('packer').startup(function()
                     -- Format Python code and comments consistently.
                     require("null-ls").builtins.formatting.black,
                     -- Formats Bash scripts and ensures consistent indentation.
-                    require("null-ls").builtins.formatting.shfmt.with({ extra_args = {"-i", "4"}}),
+                    require("null-ls").builtins.formatting.shfmt.with({
+                        extra_args = {"-i", "4"}
+                    }),
                     -- Formats Markdown tables.
-                    require("null-ls").builtins.formatting.prettier.with({ extra_args = {"--tab-width", "4"}}),
+                    require("null-ls").builtins.formatting.prettier
                 },
                 -- Set correct encoding to avoid gitsigns warning: multiple
                 -- different client offset_encodings detected for buffer, this
