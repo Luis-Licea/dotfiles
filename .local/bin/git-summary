@@ -16,12 +16,7 @@ if [[ -z "$dir" ]]; then
     dir="$(pwd)"
 fi
 
-# Make sure directory ends with "/"
-if [[ $dir != */ ]]; then
-    dir="$dir/*"
-else
-    dir="$dir*"
-fi
+readarray -t dirs < <(find "$dir" -maxdepth 3 -type d -name .git -not -path '*/site-packages/*' -not -path '*/node_modules/*')
 
 message() {
     echo -en "\033[0;35m"
@@ -36,51 +31,38 @@ warning() {
 }
 
 # Loop all sub-directories
-for f in $dir; do
+for d in "${dirs[@]}"; do
+    is_modified=false
+    is_untracked=false
+    is_ahead=false
 
-    # Only interested in directories
-    [ -d "${f}" ] || continue
+    cd "$d/.." ||  exit
 
-    # Check if directory is a git repository
-    if [ -d "$f/.git" ]; then
-        is_modified=false
-        is_untracked=false
-        is_ahead=false
-
-        cd "$f" ||  exit
-
-        # Check for modified files
-        if git status | grep -q modified; then
-            is_modified=true
-        fi
-
-        # Check for untracked files
-        if git status | grep -q Untracked; then
-            is_untracked=true
-        fi
-
-        # Check for unpushed changes
-        if git status | grep -q 'Your branch is ahead'; then
-            is_ahead=true
-        fi
-
-        if $is_modified || $is_untracked || $is_ahead || $is_verbose; then
-            message "$f"
-        fi
-
-        $is_modified && warning "Modified files"
-        $is_untracked && warning "Untracked files"
-        $is_ahead && warning "Unpushed commit"
-        ! $is_modified && ! $is_untracked && ! $is_ahead && $is_verbose &&
-            echo "Nothing to commit."
-
-        $is_verbose && echo
-        cd - > /dev/null || exit
-
-    elif $is_verbose; then
-        message "$f"
-        echo "Not a git repository."
-        echo
+    # Check for modified files
+    if git status | grep -q modified; then
+        is_modified=true
     fi
 
+    # Check for untracked files
+    if git status | grep -q Untracked; then
+        is_untracked=true
+    fi
+
+    # Check for unpushed changes
+    if git status | grep -q 'Your branch is ahead'; then
+        is_ahead=true
+    fi
+
+    if $is_modified || $is_untracked || $is_ahead || $is_verbose; then
+        message "$d"
+    fi
+
+    $is_modified && warning "Modified files"
+    $is_untracked && warning "Untracked files"
+    $is_ahead && warning "Unpushed commit"
+    ! $is_modified && ! $is_untracked && ! $is_ahead && $is_verbose &&
+        echo "Nothing to commit."
+
+    $is_verbose && echo
+    cd - > /dev/null || exit
 done
