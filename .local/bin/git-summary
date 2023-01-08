@@ -1,6 +1,15 @@
 #!/bin/bash
 
 dir="$1"
+is_verbose=true
+
+flags='s'
+while getopts "$flags" option "${@:2}"; do
+    case "$option" in
+        s) is_verbose=false ;;
+        *) echo "Recognized flags: $flags"; exit ;;
+    esac
+done
 
 # No directory has been provided, use current
 if [[ -z "$dir" ]]; then
@@ -14,54 +23,64 @@ else
     dir="$dir*"
 fi
 
+message() {
+    echo -en "\033[0;35m"
+    echo "${@}"
+    echo -en "\033[0m"
+}
+
+warning() {
+    echo -en "\033[0;31m"
+    echo "${@}"
+    echo -en "\033[0m"
+}
+
 # Loop all sub-directories
 for f in $dir; do
 
     # Only interested in directories
     [ -d "${f}" ] || continue
 
-    echo -en "\033[0;35m"
-    echo "${f}"
-    echo -en "\033[0m"
-
     # Check if directory is a git repository
     if [ -d "$f/.git" ]; then
-        is_clean=true
+        is_modified=false
+        is_untracked=false
+        is_ahead=false
+
         cd "$f" ||  exit
 
         # Check for modified files
         if git status | grep -q modified; then
-            is_clean=false
-            echo -en "\033[0;31m"
-            echo "Modified files"
-            echo -en "\033[0m"
+            is_modified=true
         fi
 
         # Check for untracked files
         if git status | grep -q Untracked; then
-            is_clean=false
-            echo -en "\033[0;31m"
-            echo "Untracked files"
-            echo -en "\033[0m"
+            is_untracked=true
         fi
 
         # Check for unpushed changes
         if git status | grep -q 'Your branch is ahead'; then
-            is_clean=false
-            echo -en "\033[0;31m"
-            echo "Unpushed commit"
-            echo -en "\033[0m"
+            is_ahead=true
         fi
 
-        # Check if everything is peachy keen
-        if $is_clean; then
+        if $is_modified || $is_untracked || $is_ahead || $is_verbose; then
+            message "$f"
+        fi
+
+        $is_modified && warning "Modified files"
+        $is_untracked && warning "Untracked files"
+        $is_ahead && warning "Unpushed commit"
+        ! $is_modified && ! $is_untracked && ! $is_ahead && $is_verbose &&
             echo "Nothing to commit."
-        fi
 
+        $is_verbose && echo
         cd - > /dev/null || exit
-    else
+
+    elif $is_verbose; then
+        message "$f"
         echo "Not a git repository."
+        echo
     fi
 
-    echo
 done
