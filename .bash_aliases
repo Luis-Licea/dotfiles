@@ -105,12 +105,14 @@ alias jsscratchtest='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null
 # Create cargo project rather than individual file.
 alias rsscratch='cd /tmp && [ ! -d rsscratch ] && cargo new rsscratch && nvim rsscratch/src/main.rs || nvim /tmp/rsscratch/src/main.rs && cd -'
 
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME'
-alias dotfilesui='gitui -d $HOME/.config/dotfiles/ -w $HOME'
-alias passbgit='git --git-dir="$HOME/.local/share/pass/.backup/.git" \
-    --work-tree="$HOME/.local/share/pass/.backup"'
-alias passbgui='gitui -d "$HOME/.local/share/pass/.backup/.git" \
-    -w "$HOME/.local/share/pass/.backup"'
+scratchpad() { cd /tmp && nvim "$@" && cd -; }
+repo_git() { git --git-dir="$1" --work-tree="$2" "${@:3}"; }
+repo_ui() { gitui --polling -d "$1" -w "$2" "${@:3}"; }
+
+alias dotfiles='repo_git ~/.config/dotfiles/ ~'
+alias dotfilesui='repo_ui ~/.config/dotfiles/ ~'
+alias passbgit='repo_git ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
+alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 
 alias d='sdcv -u WordNet'
 alias de='sdcv -eu WordNet'
