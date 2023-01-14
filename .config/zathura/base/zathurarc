@@ -67,6 +67,7 @@ set guioptions ""
 
 # Show status line.
 map b feedkeys ':set guioptions "s"'
+map [fullscreen] b feedkeys ':set guioptions "s"'
 
 # zathurarc-dark
 
