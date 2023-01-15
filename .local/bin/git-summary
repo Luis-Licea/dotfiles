@@ -16,7 +16,12 @@ if [[ -z "$dir" ]]; then
     dir="$(pwd)"
 fi
 
-readarray -t dirs < <(find "$dir" -maxdepth 3 -type d -name .git -not -path '*/site-packages/*' -not -path '*/node_modules/*')
+readarray -t dirs < <(
+    find "$dir" -maxdepth 3 -type d -name .git \
+    -not -path '*/site-packages/*' \
+    -not -path '*/node_modules/*' \
+    -not -path '*/deleteme/*' \
+)
 
 message() {
     echo -en "\033[0;35m"
