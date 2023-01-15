@@ -1,7 +1,7 @@
 # Steps to perform before and after pushing
 
 - `git pull --rebase origin master`
-    - Check for conflicts and unintended code changes
+  - Check for conflicts and unintended code changes
 - Check commit messages for typos (languagetool-node)
 - Test code works:
   - Run tests (JavaScript, Python, C++)

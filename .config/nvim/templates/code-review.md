@@ -12,9 +12,9 @@
 
 - Is code covered by functional or unit tests?
 - Are error paths covered by functional or unit tests? All errors which are
-  relatively easy to check must be checked: error conditions like “open()
-  failed after stat() was successfull” or “array size greater then INT_MAX” may
-  be ignored for being just as unlikely as uneasy to test, but otherwise having
+  relatively easy to check must be checked: error conditions like “open() failed
+  after stat() was successfull” or “array size greater then INT_MAX” may be
+  ignored for being just as unlikely as uneasy to test, but otherwise having
   bugs in code which does error handling is way too common to be ignored.
 - For new code, are unit tests written where needed?
 
