@@ -42,10 +42,6 @@ export LYNX_LSS="$HOME/.config/lynx/lynx.lss"
 ################################################################################
 # Aliases.
 ################################################################################
-
-# Suffix aliases.
-alias -s {md,txt}='$EDITOR'
-
 # Stay in current folder when exiting ranger. Show ranger nested level at exit.
 alias ranger='source ranger && echo "Level ${RANGER_LEVEL:-0}"'
 
