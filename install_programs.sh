@@ -7,6 +7,9 @@
 pacman_programs=(
 
     # Development tools.
+    zim                     # A WYSIWYG text editor that aims at bringing the concept of a wiki to the desktop.
+    zim-tools               # Various ZIM command line tools.
+    sqlite-doc              # Static HTML website files, SQL Syntax, and C/C++ interface specs.
     nvm                     # Node Version Manager.
     entr                    # Run arbitrary commands when files change.
     keychain                # A front-end to ssh-agent, allowing one long-running ssh-agent process per system, rather than per login
@@ -15,6 +18,7 @@ pacman_programs=(
     tig                     # Text-mode interface for Git.
     awesome                 # Highly configurable framework window manager
     xev                     # Print contents of X events
+    bash-completion         # Programmable completion for the bash shell.
     zsh-syntax-highlighting # Fish shell like syntax highlighting for Zsh
     kwin-bismuth-bin        # KDE tiling window manager.
     include-what-you-use    # A tool for use with clang to analyze #includes in C and C++ source files
@@ -24,6 +28,8 @@ pacman_programs=(
     gtk4                    # GObject-based multi-platform GUI toolkit
     gtk4-demos              # GObject-based multi-platform GUI toolkit (demo applications)
     gtk4-docs               # GObject-based multi-platform GUI toolkit (documentation)
+    gtkmm-4.0               # C++ bindings for GTK 4
+    gtkmm-4.0-docs          # C++ bindings for GTK 4 (documentation)
     rustup                  # The Rust toolchain installer.
     pax                     # Portable Archive Interchange - the POSIX standard archive tool for cpio and tar formats
     atool                   # A script for managing file archives of various types.
@@ -107,6 +113,7 @@ pacman_programs=(
 
     # Vim setup.
     xclip # Allows nvim to access Xorg system clipboard.
+    gvim  # Install vim and clipboard support.
 
     # Texlive setup.
     biber  # Unicode-capable bibliography backend for BibLaTeX.
@@ -206,7 +213,7 @@ printer_programs=(
     # Add *mdns_minimal [NOTFOUND=return]* before *resolve* in /etc/nsswitch.conf
     # https://wiki.archlinux.org/title/Avahi#Hostname_resolution
 
-    avahi # Service Discovery for Linux using mDNS/DNS-SD
+    avahi                 # Service Discovery for Linux using mDNS/DNS-SD
     system-config-printer # A CUPS printer configuration tool and status applet
 )
 
