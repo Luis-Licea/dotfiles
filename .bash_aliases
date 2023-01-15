@@ -95,9 +95,10 @@ alias luascratch='scratchpad scratchpad.lua'
 alias mdscratch='scratchpad scratchpad.md'
 alias pyscratch='scratchpad scratchpad.py'
 alias pyscratchtest='scratchpad scratchpad_test.py'
-alias todoscratch='scratchpad todo.md'
 alias todo='$EDITOR "$HOME/To Do.md"'
+alias todoscratch='scratchpad todo.md'
 alias txtscratch='scratchpad scratchpad.txt'
+alias zshscratch='scratchpad scratchpad.zsh'
 
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
 alias jsscratch='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && ln -s ~/.config/nvim/templates/.prettierrc.yml .prettierrc.yml && nvim scratchpad.mjs || nvim scratchpad.mjs && cd -'
