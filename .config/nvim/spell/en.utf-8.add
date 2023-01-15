@@ -81,3 +81,5 @@ SQLite
 Wiktionaries
 GitLab
 stringified
+shellcheck
+compdef

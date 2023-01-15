@@ -974,9 +974,7 @@ require('packer').startup(function()
                     -- Format Python code and comments consistently.
                     require("null-ls").builtins.formatting.black,
                     -- Formats Bash scripts and ensures consistent indentation.
-                    require("null-ls").builtins.formatting.shfmt.with({
-                        extra_args = {"-i", "4"}
-                    }),
+                    require("null-ls").builtins.formatting.shfmt,
                     -- Formats Markdown tables.
                     require("null-ls").builtins.formatting.prettier
                 },
