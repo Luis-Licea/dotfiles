@@ -82,7 +82,7 @@ scratchpad() {
 }
 
 alias awkscratch='scratchpad scratchpad.awk'
-alias bashscratch='scratchpad scratchpad.sh'
+alias bashscratch='scratchpad scratchpad.bash'
 alias confluencescratch='scratchpad scratchpad.confluencewiki'
 alias cppscratch='scratchpad scratchpad.cpp'
 alias cscratch='scratchpad scratchpad.c'
