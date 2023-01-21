@@ -177,7 +177,6 @@ aur_programs=(
     dolvim                   # Dolphin but Vim. NOTE: Enable Git, Show Hidden files in Context Menu.
 
     # Terminal setup.
-    oh-my-zsh-git                     # Read instructions after installation. There are additional steps. Add this to ~/.bashrc: "exec zsh". Make root have zsh as default shell: "ln -s $HOME/.zshrc /root/.zshrc".
     ttf-meslo-nerd-font-powerlevel10k # Symbol-patched font for powerlevel10k.
     zsh-theme-powerlevel10k           # Theme for Zsh.
 
@@ -206,6 +205,11 @@ aur_programs=(
     fcitx5-im # Manage input method editors. NOTE: add env variables and locales.
 
     dragon-drop # For Ranger. Drag-and-drop source for X or Wayland.
+)
+
+dont_install=(
+    # There is a problem with this package: the command 'omz update' won't work.
+    oh-my-zsh-git #  To mae root have zsh as default shell: "ln -s $HOME/.zshrc /root/.zshrc".
 )
 
 printer_programs=(

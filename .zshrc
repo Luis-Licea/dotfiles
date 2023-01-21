@@ -9,11 +9,7 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-if [ -d "/usr/share/oh-my-zsh" ]; then
-    ZSH=/usr/share/oh-my-zsh
-elif [  -d "$HOME/.oh-my-zsh" ]; then
-    ZSH="$HOME/.oh-my-zsh"
-fi
+ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -21,13 +17,12 @@ fi
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 
 # Set powerlevel10k as theme if installed, and set agnoster theme as a backup.
-POWERLEVEL10k_DIR=zsh-theme-powerlevel10k
 if [[ "$TERM" == "linux" ]]; then
     # If using the tty, load a simple theme.
     ZSH_THEME="half-life"
-elif [[ -d "$ZSH/../$POWERLEVEL10k_DIR" ]] && [[ "$TERM" != "linux" ]]; then
+elif [[ -d "$ZSH/custom/themes/powerlevel10k" && "$TERM" != "linux" ]]; then
     # Must be a path relative to themes folder in $ZSH folder.
-    ZSH_THEME=../../$POWERLEVEL10k_DIR/powerlevel10k
+    ZSH_THEME="powerlevel10k/powerlevel10k"
 else
     # Backup theme.
     ZSH_THEME="agnoster"
