@@ -1,0 +1,78 @@
+# vim: ft=yaml textwidth=80 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+phones:
+    personal: (123) 456 7890
+    work: (123) 456 7890
+emails:
+    personal: foo@bar.com
+    work: foo@bar.com
+addresses:
+    -
+        street: 1234 Foo Bar Street
+        city: Sometown
+        state: TX
+    -
+        street: 1234 Foo Bar Street
+        city: Somequxtown
+        state: TX
+educations:
+    -
+        instituation: University of Foo
+        degreees:
+            - Computer Science
+        gpa: 4.0
+        graduation: 2010
+languages:
+    - English
+    - Spanish
+interests:
+    -
+        name: Music
+        notes: Plays trombone
+    -
+        name: Food
+        notes: Likes pasta
+    -
+        name: Art
+        notes: Likes painting
+    -
+        name: Sports
+        notes: Likes soccer
+    -
+        name: Fashion
+        notes: Likes makup
+jobs:
+    -
+        name: Mechanical Engineer
+        description: Mechanical Engineer
+        start: 2000
+        end: 2010
+important_dates:
+    -
+        title: date of birth
+        notes: None
+        date: yyyy-mm-dd
+    -
+        title: marriage
+        notes: None
+        date: yyyy-mm-dd
+    -
+        title: death
+        notes: None
+        date: yyyy-mm-dd
+relationship:
+    -
+        name: Classmate
+        notes: Underwater basket weaving class
+    -
+        name: Friend
+        notes: Best friend
+    -
+        name: Cousin
+        notes: From dad's side
+web_address:
+    personal: www.site.com
+    linkedin: www.linkedin.com/example
+description: >
+    None
+notes: >
+    None
