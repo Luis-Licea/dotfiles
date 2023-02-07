@@ -377,7 +377,8 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
 
     --- Load a template in the current buffer. The template will be determined
     --- based on the file extension and the file name.
-    local function LoadTemplateFromType()
+    ---@param name The path to the template to load.
+    local function LoadTemplateFromType(name)
         -- The place where the templates are saved.
         local templateDir = vim.fn.expand('~/.config/nvim/templates/')
 
@@ -396,8 +397,43 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
             if vim.fn.filereadable(path) == 1 then template = path end
         end
 
+        -- Override the template path if a template name is given.
+        if name then template = name end
+
         if template then vim.fn.execute('0r ' .. template) end
     end
+
+    --- Join two or more arrays and return the new array.
+    ---@vararg Array the arrays to merge.
+    ---@return Array the new array formed from all the passed arrays.
+    local function tableMerge(...)
+        local result = {}
+        for _, t in ipairs({ ... }) do
+            for _, v in pairs(t) do
+                table.insert(result, v)
+            end
+        end
+        return result
+    end
+
+    vim.api.nvim_create_user_command('LoadTemplate',
+        function(opts)
+            LoadTemplateFromType(opts.args)
+        end,
+        {
+            nargs = '*',
+            complete = function()
+                local regular_templates = vim.api.nvim_get_runtime_file("templates/*", true)
+                local hidden_templates = vim.api.nvim_get_runtime_file("templates/.*", true)
+                -- Remove the "." directory.
+                table.remove(hidden_templates, 1)
+                -- Remove the ".." directory.
+                table.remove(hidden_templates, 1)
+                return tableMerge(regular_templates, hidden_templates)
+            end,
+            desc = 'Load the given template'
+        }
+     )
 
     --- Return whether the file has a hash-bang.
     ---@return boolean True if the file has a hash-bang, false otherwise.
@@ -1670,19 +1706,6 @@ local function args2list(str)
     end
   end
   return t
-end
-
---- Join two or more arrays and return the new array.
----@vararg Array the arrays to merge.
----@return Array the new array formed from all the passed arrays.
-local function tableMerge(...)
-    local result = {}
-    for _, t in ipairs({ ... }) do
-        for _, v in pairs(t) do
-            table.insert(result, v)
-        end
-    end
-    return result
 end
 
 --- Benchmark the execution time of compiled binary.
