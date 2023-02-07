@@ -71,6 +71,7 @@ alias vimbconfig='$EDITOR ~/.config/vimb/config'
 alias vscodiumconfig='$EDITOR ~/.config/VSCodium/User/'
 alias waybarconfig='$EDITOR ~/.config/waybar/'
 alias zathuraconfig='$EDITOR ~/.config/zathura/zathurarc'
+alias zictconfig='$EDITOR ~/.config/zict/zict.bash'
 alias zshconfig='$EDITOR ~/.zshrc'
 
 alias passconfig='cd ~/.local/share/pass'
@@ -122,12 +123,21 @@ alias r='ranger'
 alias t="sdcv -u 'Moby Thesaurus II'"
 alias v='nvim'
 
+# Dictionary aliases.
+alias en='zict alter en'
+alias ja='zict alter ja'
+alias ru='zict alter ru'
+alias ру='zict alter ru'
+
 alias cheat='cht.sh'
 alias locksway='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
 alias lockx='xscreensaver-command -lock'
+alias man='man -a'
 alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias playmusic='mpv /run/media/luis/DATA/Music/* --shuffle'
 alias sqlite-doc='xdg-open /usr/share/doc/sqlite/doclist.html'
+alias y='yt-dlp --paths ~/Music'
+alias ya='yt-dlp --write-thumbnail --extract-audio --audio-format mp3 --paths ~/Music'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
 
 export bgs='/usr/share/backgrounds/nordic-wallpapers/'
