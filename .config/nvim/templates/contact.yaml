@@ -10,10 +10,12 @@ addresses:
         street: 1234 Foo Bar Street
         city: Sometown
         state: TX
+        country: US
     -
         street: 1234 Foo Bar Street
         city: Somequxtown
         state: TX
+        country: US
 educations:
     -
         instituation: University of Foo
