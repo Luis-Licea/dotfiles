@@ -27,19 +27,41 @@ class Song:
 
 def parse_track_list(lines) -> list[Song]:
     songs: list[Song] = []
+
+    # TrackNumber.[Minutes:Seconds] Title:
+    # 01.[00:00] Example
+    patterns = [
+        r"(?P<minutes>\d+):(?P<seconds>\d+) (?P<title>.+)$",
+        r"(?P<number>\d+)\.\[(?P<minutes>\d+):(?P<seconds>\d+)\] (?P<title>.+)$",
+    ]
+
+    pattern = patterns.pop()
+
     for line in lines:
         if line.startswith("#") or len(line) == 0:
             continue
 
-        # TrackNumber.[Minutes:Seconds] Title:
-        # 01.[00:00] Example
-        match = search(r"(\d+)\.\[(\d+):(\d+)\] (.+)$", line)
-        if match:
-            number, minutes, seconds, title = match.groups()
-            song = Song(title, int(number), int(minutes), int(seconds))
-            songs.append(song)
-        else:
-            raise Exception(f"No match for line: {line}")
+        while not (match := search(pattern, line)):
+            print(f"Pattern '{pattern}' did not work for line: {line}")
+            try:
+                pattern = patterns.pop()
+            except IndexError:
+                raise Exception(f"No match for line: {line}")
+
+        print(match.groupdict())
+        song_attributes: dict = match.groupdict()
+
+        for attribute in ['number', 'minutes', 'seconds']:
+            if song_attributes.get(attribute):
+                song_attributes[attribute] = int(song_attributes[attribute])
+            elif attribute == 'number': 
+                song_attributes['number'] = len(songs)
+
+        for attribute in ['title']:
+                song_attributes[attribute] = song_attributes[attribute].replace("/", "|")
+
+        song = Song(**song_attributes)
+        songs.append(song)
 
     for next, song in enumerate(songs, 1):
 
