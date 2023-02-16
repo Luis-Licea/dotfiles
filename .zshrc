@@ -133,17 +133,17 @@ export KEYTIMEOUT=1
 # Suffix aliases.
 alias -s {md,txt}='$EDITOR'
 
-# Source aliases.
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
 ZSH_CACHE_DIR=$HOME/.cache/oh-my-zsh
 if [[ ! -d $ZSH_CACHE_DIR ]]; then
   mkdir $ZSH_CACHE_DIR
 fi
 
 source $ZSH/oh-my-zsh.sh
+
+# Source aliases.
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
