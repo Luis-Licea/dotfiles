@@ -76,7 +76,7 @@ alias zshconfig='$EDITOR ~/.zshrc'
 
 alias passconfig='cd ~/.local/share/pass'
 alias passbackup='cp -iur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8/primary/pass/'
-alias passdiff='kdeconnect-cli --refresh && diff -q ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/'
+alias passdiff='kdeconnect-cli --refresh && diff -q -r ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/'
 
 scratchpad() {
     # Go to directory, open file, go to previous directory.
@@ -108,11 +108,26 @@ scratchpad() { cd /tmp && nvim "$@" && cd -; }
 repo_git() { git --git-dir="$1" --work-tree="$2" "${@:3}"; }
 repo_ui() { gitui --polling -d "$1" -w "$2" "${@:3}"; }
 
+if command -v lsd > /dev/null; then
+    # Show icons along with files and directories.
+    alias l='lsd -lah'
+    alias la='lsd -lAh'
+    alias ll='lsd -lh'
+    alias ls='lsd'
+    alias lsa='lsd -lah'
+    alias tree='lsd --tree'
+fi
+if command -v lsd > /dev/null; then
+    # Add syntax highlighting to printed files.
+    alias cat='bat --style=plain --paging=never'
+fi
+
 alias dotfiles='repo_git ~/.config/dotfiles/ ~'
 alias dotfilesui='repo_ui ~/.config/dotfiles/ ~ && git-summary ~/Code -s'
 alias passbgit='repo_git ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 
+alias bc='bc --mathlib'
 alias d='sdcv -u WordNet'
 alias de='sdcv -eu WordNet'
 alias e='exit'
@@ -120,7 +135,7 @@ alias m='man -Hlynx'
 alias nr='setsid --fork alacritty -e ranger'
 alias nt='setsid --fork alacritty'
 alias r='ranger'
-alias t="sdcv -u 'Moby Thesaurus II'"
+alias t='sdcv -u "Moby Thesaurus II"'
 alias v='nvim'
 
 # Dictionary aliases.
@@ -130,14 +145,16 @@ alias ru='zict alter ru'
 alias ру='zict alter ru'
 
 alias cheat='cht.sh'
+alias gdiff='git diff origin/master HEAD'
 alias locksway='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
 alias lockx='xscreensaver-command -lock'
 alias man='man -a'
 alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias playmusic='mpv /run/media/luis/DATA/Music/* --shuffle'
+alias rgf='rg --files | rg'
 alias sqlite-doc='xdg-open /usr/share/doc/sqlite/doclist.html'
 alias y='yt-dlp --paths ~/Music'
-alias ya='yt-dlp --write-thumbnail --extract-audio --audio-format mp3 --paths ~/Music'
+alias ya='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
 
 export bgs='/usr/share/backgrounds/nordic-wallpapers/'
