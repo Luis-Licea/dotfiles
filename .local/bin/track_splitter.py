@@ -1,37 +1,51 @@
 #!/usr/bin/python3
-from subprocess import call
-from argparse import ArgumentParser
-from re import search
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from dataclasses import dataclass
 from math import inf
 from os import mkdir, path
+from re import search
+from subprocess import call
+from textwrap import dedent
 
 
 @dataclass
 class Song:
     title: str
     number: int
-    minutes: int
     seconds: int
+    minutes: int
+    hours: int = 0
     end: float = inf
 
     @property
-    def start(self) -> int:
-        return self.seconds + self.minutes * 60
+    def start(self: "Song") -> int:
+        """Return the starting time in seconds.
+            self (Song): The song object.
+
+        Returns:
+            The starting time in seconds.
+        """
+        return self.seconds + self.minutes * 60 + self.hours * 3_600
 
     @start.setter
     def start(self, value: int):
+        """Set the number of seconds, minutes, and hours from given value.
+        self (Song): The song object.
+        value (int): The song start in seconds.
+        """
         self.seconds = value % 60
         self.minutes = value // 60
+        self.minutes = value // 3_600
 
 
 def parse_track_list(lines) -> list[Song]:
     songs: list[Song] = []
 
-    # TrackNumber.[Minutes:Seconds] Title:
-    # 01.[00:00] Example
     patterns = [
-        r"(?P<minutes>\d+):(?P<seconds>\d+) (?P<title>.+)$",
+        # 00:?00:00 Title
+        r"((?P<hours>\d+):)?(?P<minutes>\d+):(?P<seconds>\d+) (?P<title>.+)$",
+        # TrackNumber.[Minutes:Seconds] Title:
+        # 01.[00:00] Example
         r"(?P<number>\d+)\.\[(?P<minutes>\d+):(?P<seconds>\d+)\] (?P<title>.+)$",
     ]
 
@@ -51,14 +65,16 @@ def parse_track_list(lines) -> list[Song]:
         print(match.groupdict())
         song_attributes: dict = match.groupdict()
 
-        for attribute in ['number', 'minutes', 'seconds']:
+        for attribute in ["number", "seconds", "minutes", "hours"]:
             if song_attributes.get(attribute):
                 song_attributes[attribute] = int(song_attributes[attribute])
-            elif attribute == 'number': 
-                song_attributes['number'] = len(songs)
+            elif attribute == "hours":
+                song_attributes[attribute] = 0
+            elif attribute == "number":
+                song_attributes[attribute] = len(songs)
 
-        for attribute in ['title']:
-                song_attributes[attribute] = song_attributes[attribute].replace("/", "|")
+        for attribute in ["title"]:
+            song_attributes[attribute] = song_attributes[attribute].replace("/", "|")
 
         song = Song(**song_attributes)
         songs.append(song)
@@ -84,37 +100,54 @@ def split(album: str, track_list: str, artist: str, dry_run: bool):
     if not path.exists(artist):
         mkdir(artist)
 
-    #  The ffmpeg call.
-    song_command = "ffmpeg -i '{album}' -acodec libopus -ss {start} -to {end} '{artist}/{artist} - {number:02d} - {title}.opus'"
-    last_command = "ffmpeg -i '{album}' -acodec libopus -ss {start} '{artist}/{artist} - {number:02d} - {title}.opus'"
-
     for song in songs:
         if song.end != inf:
-            command = song_command.format(
-                album=album,
-                start=song.start,
-                end=song.end,
-                number=song.number,
-                title=song.title,
-                artist=artist,
-            )
+            # Song command.
+            command = [
+                "ffmpeg",
+                "-i",
+                album,
+                "-acodec",
+                "libopus",
+                "-ss",
+                f"{song.start}",
+                "-to",
+                f"{song.end}",
+                f"{artist}/{artist} - {song.number:02d} - {song.title}.opus",
+            ]
         else:
-            command = last_command.format(
-                album=album,
-                start=song.start,
-                number=song.number,
-                title=song.title,
-                artist=artist,
-            )
+            # Last song.
+            command = [
+                "ffmpeg",
+                "-i",
+                album,
+                "-acodec",
+                "libopus",
+                "-ss",
+                f"{song.start}",
+                f"{artist}/{artist} - {song.number:02d} - {song.title}.opus",
+            ]
         if dry_run:
             print(command)
         else:
-            call(command, shell=True)
+            call(command)
 
 
 def parse_arguments():
-    parser = ArgumentParser(description="Split albums into songs.")
-    parser.add_argument("artist", help="The artist name")
+    epilog = """
+    examples:
+        Split the mp3 file into tracks and placed them into a folder.
+        $ track_splitter.py "Artist Name" "../some/mp3" "some/tracklist.txt"
+
+        Show what would happen if the command were run.
+        $ track_splitter.py Artist album.mp3 tracklist.txt --dry-run
+    """
+    parser = ArgumentParser(
+        description="Split albums into songs.",
+        formatter_class=RawDescriptionHelpFormatter,
+        epilog=dedent(epilog),
+    )
+    parser.add_argument("artist", help="The artist name.")
     parser.add_argument("album", help="The path to the album (a music file).")
     parser.add_argument("track_list", help="The path to the track list (a text file).")
     parser.add_argument(
