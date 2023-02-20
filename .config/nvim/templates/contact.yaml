@@ -1,80 +1,124 @@
 # vim: ft=yaml textwidth=80 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+nicknames: []
 phones:
-    personal: (123) 456 7890
-    work: (123) 456 7890
+    # Format: 123-456-7890
+    personal:
+    work:
+    others:
+        # -
+        #     email:
+        #     notes:
 emails:
-    personal: foo@bar.com
-    work: foo@bar.com
+    # Format: foo@bar.com
+    personal:
+    work:
+    others:
+        # -
+        #     email:
+        #     notes:
 addresses:
-    -
-        street: 1234 Foo Bar Street
-        city: Sometown
-        state: TX
-        country: US
-    -
-        street: 1234 Foo Bar Street
-        city: Somequxtown
-        state: TX
-        country: US
+    # -
+    #     street: 1234 Foo Bar Street
+    #     city: Sometown
+    #     state: TX
+    #     country: US
+    # -
+    #     street: 1234 Foo Bar Street
+    #     city: Somequxtown
+    #     state: TX
+    #     country: US
 educations:
-    -
-        instituation: University of Foo
-        degreees:
-            - Computer Science
-        gpa: 4.0
-        graduation: 2010
+    # -
+    #     instituation: University of Foo
+    #     degreees:
+    #         - Bachelor's in Computer Science
+    #     # Format: 4.0
+    #     gpa:
+    #     graduation: { year: , month: , day:  , exact: false }
 languages:
-    - English
-    - Spanish
+    english: true
+    spanish: true
+    french: false
+    russian: false
+    vietnamese: false
+    chinese: false
+    arabic: false
+    persian: false
 interests:
-    -
-        name: Music
-        notes: Plays trombone
-    -
-        name: Food
-        notes: Likes pasta
-    -
-        name: Art
-        notes: Likes painting
-    -
-        name: Sports
-        notes: Likes soccer
-    -
-        name: Fashion
-        notes: Likes makup
+    # -
+    #     name: Music
+    #     notes: Plays trombone
+    # -
+    #     name: Food
+    #     notes: Likes pasta
+    # -
+    #     name: Art
+    #     notes: Likes painting
+    # -
+    #     name: Sports
+    #     notes: Likes soccer
+    # -
+    #     name: Fashion
+    #     notes: Likes makup
 jobs:
-    -
-        name: Mechanical Engineer
-        description: Mechanical Engineer
-        start: 2000
-        end: 2010
+    # -
+    #     name: Mechanical Engineer
+    #     description: Mechanical Engineer
+    #     start: { year: , month: , day:  , exact: false}
+    #     end: { year: , month: , day: , present: false , exact: false}
 important_dates:
+    # Format: { year: yyyy, month: mm, day: dd }
     -
-        title: date of birth
-        notes: None
-        date: yyyy-mm-dd
+        title: Date of birth
+        notes:
+        date: { year: , month: , day:  , exact: false }
     -
-        title: marriage
-        notes: None
-        date: yyyy-mm-dd
+        title: Marriage
+        notes:
+        date: { year: , month: , day:  , exact: false }
     -
-        title: death
-        notes: None
-        date: yyyy-mm-dd
-relationship:
-    -
-        name: Classmate
-        notes: Underwater basket weaving class
-    -
-        name: Friend
-        notes: Best friend
-    -
-        name: Cousin
-        notes: From dad's side
+        title: Death
+        notes:
+        date: { year: , month: , day:  , exact: false }
+relationships:
+    # -
+    #     name: Other
+    #     notes: Friend of friend of friend who I heard about.
+    # -
+    #     name: Acquaintance
+    #     notes: Talked with once.
+    # -
+    #     name: Classmate
+    #     notes: Underwater basket weaving class
+    # -
+    #     name: Friend
+    #     notes: Best friend
+    # -
+    #     name: Cousin
+    #     notes: From dad's side
+relatives:
+    # -
+    #     relationship: Son
+    #     name:
+    # -
+    #     relationship: Daughter
+    #     name:
+    # -
+    #     relationship: Spouse
+    #     name:
 web_address:
-    personal: www.site.com
-    linkedin: www.linkedin.com/example
-description: >
-    None
-notes: >
-    None
+    # Format: www.site.com
+    personal:
+    linkedin:
+    facebook:
+    twitter:
+    github:
+    gitlab:
+    others:
+        # -
+        #     url:
+        #     notes:
+description:
+    # Description goes here.
+notes:
+    # Notes go here.
