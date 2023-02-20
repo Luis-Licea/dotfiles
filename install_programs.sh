@@ -57,6 +57,7 @@ pacman_programs=(
     timidity++ # For mpd. A MIDI to WAVE converter and player.
     ncmpcpp    # An mpd client like ncmpc with some new features.
     mpdris2    # MPRIS2 support for MPD. Use AUR.
+    kid3       # An MP3, Ogg/Vorbis and FLAC tag editor, KDE version
 
     # Video player.
     mpv       # The best video player.
@@ -69,6 +70,8 @@ pacman_programs=(
     termshark    # Terminal UI for tshark, inspired by Wireshark.
     newsboat     # An RSS/Atom feed reader for text terminals
     kdeconnect   # Adds communication between KDE and your smartphone.
+    rmlint       # Tool to remove duplicates much faster than fdupes
+    syncthing    # Continuous Replication / Cluster Synchronization Thing
 
     kitty             # A modern, hackable, featureful, OpenGL-based terminal emulator.
     sshfs             # For kdeconnect. FUSE client based on the SSH File Transfer Protocol.
