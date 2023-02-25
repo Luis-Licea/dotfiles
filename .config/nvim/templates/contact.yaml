@@ -22,11 +22,15 @@ addresses:
     #     city: Sometown
     #     state: TX
     #     country: US
+    #     exact: true
+    #     notes:
     # -
     #     street: 1234 Foo Bar Street
     #     city: Somequxtown
     #     state: TX
     #     country: US
+    #     exact: true
+    #     notes:
 educations:
     # -
     #     instituation: University of Foo
