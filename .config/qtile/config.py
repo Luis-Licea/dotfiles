@@ -28,9 +28,25 @@ from libqtile import bar, layout, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
+from argparse import Namespace
 
-mod = "mod4"
+mod = "mod1"
 terminal = guess_terminal()
+
+# Commands for changing volume.
+volume = Namespace(
+    decrease = "amixer -D pulse sset Master 5%-",
+    increase = "amixer -D pulse sset Master 5%+",
+    toggle = "amixer sset Master toggle",
+)
+
+# Commands for controlling music and video players.
+playerctl = Namespace(
+    play = "rofi_playerctl play-pause",
+    prev = "rofi_playerctl previous",
+    next = "rofi_playerctl next",
+    pick = "rofi_playerctl",
+)
 
 keys = [
     # A list of available commands that can be bound to keys can be found
@@ -71,6 +87,20 @@ keys = [
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    #  Custom multimedia keys:
+    Key([], "XF86AudioPrev", lazy.spawn(playerctl.prev), desc = "Audio Prev"),
+    Key([], "XF86AudioPlay", lazy.spawn(playerctl.play), desc = "Audo Play"),
+    Key([], "XF86AudioNext", lazy.spawn(playerctl.next), desc = "Audio Next"),
+    Key([], "XF86AudioMute", lazy.spawn(volume.toggle), desc = "Toggle volume"),
+    Key([], "XF86AudioLowerVolume", lazy.spawn(volume.decrease), desc = "Lower volume"),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn(volume.increase), desc = "Raise volume"),
+    Key(["mod4"], "F5", lazy.spawn(playerctl.pick), desc = "Audio Pick"),
+    Key(["mod4"], "F6", lazy.spawn(playerctl.prev), desc = "Audio Prev"),
+    Key(["mod4"], "F7", lazy.spawn(playerctl.play), desc = "Audo Play"),
+    Key(["mod4"], "F8", lazy.spawn(playerctl.next), desc = "Audio Next"),
+    Key(["mod4"], "F9", lazy.spawn(volume.toggle), desc = "Toggle volume"),
+    Key(["mod4"], "F10", lazy.spawn(volume.decrease), desc = "Lower volume"),
+    Key(["mod4"], "F11", lazy.spawn(volume.increase), desc = "Raise volume"),
 ]
 
 groups = [Group(i) for i in "123456789"]
