@@ -469,8 +469,8 @@ clientkeys = gears.table.join(
         {description = "toggle floating", group = "layout"}),
     awful.key({ modkey, "Control" }, keys.t, function (c) awful.titlebar.toggle(c) end,
         {description = "toggle title bar", group = 'client'}),
-    awful.key({ modkey, "Shift"}, keys.t,      function (c) c.ontop = not c.ontop            end,
-              {description = "toggle keep on top", group = "client"}),
+    -- awful.key({ modkey, "Shift"}, "t",      function (c) c.ontop = not c.ontop            end,
+    --           {description = "toggle keep on top", group = "client"}),
     -- awful.key({ modkey,           }, "n",
         -- function (c)
             -- -- The client currently has the input focus, so it cannot be
