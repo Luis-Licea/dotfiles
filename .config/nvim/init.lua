@@ -1560,7 +1560,7 @@ require('lspconfig').yamlls.setup {
     }
 }
 
-require('lspconfig').sumneko_lua.setup {
+require('lspconfig').lua_ls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
@@ -1593,6 +1593,7 @@ require('lspconfig').sumneko_lua.setup {
 local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
+
 
 require('cmp').setup {
     snippet = {
