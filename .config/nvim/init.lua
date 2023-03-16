@@ -435,6 +435,22 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
         }
      )
 
+     local function ChooseTemplate()
+        local regular_templates = vim.api.nvim_get_runtime_file("templates/*", true)
+        local hidden_templates = vim.api.nvim_get_runtime_file("templates/.*", true)
+        -- Remove the "." directory.
+        table.remove(hidden_templates, 1)
+        -- Remove the ".." directory.
+        table.remove(hidden_templates, 1)
+        templates = tableMerge(regular_templates, hidden_templates)
+        vim.ui.select(templates, { prompt = 'Select template to load into file:', },
+            function(choice) LoadTemplateFromType(choice) end
+         )
+     end
+
+    vim.api.nvim_create_user_command('ChooseTemplate', ChooseTemplate,
+        { nargs = 0, desc = "Chose a template and load it into the buffer." })
+
     --- Return whether the file has a hash-bang.
     ---@return boolean True if the file has a hash-bang, false otherwise.
     function FileHasHashBang()
