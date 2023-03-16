@@ -789,6 +789,7 @@ require('packer').startup(function()
         -- Uncomment next line if you want to follow only stable versions
         tag = "*"
     }
+    use 'gpanders/editorconfig.nvim'
     -- use 'nvim-treesitter/playground'
     -- use '~/Code/treesitter-markdown'
     -- NOTE: Nvim-web-devicons requires a patched font such as MesloLGS NF.
