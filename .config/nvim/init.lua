@@ -331,6 +331,23 @@ local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
             end
         end })
 
+    -- Quit overly large files before loading them to avoid slowness.
+    vim.api.nvim_create_autocmd('BufReadPre', {
+        group = buffer_check_group,
+        pattern = "*",
+        callback = function()
+            local fsize = vim.fn.getfsize(vim.fn.expand("%:p:f"))
+            local mega_byte = 1024 * 1024
+            if fsize > 5 * mega_byte then
+                 vim.ui.input({ prompt = 'File exceeds recommended file size. Continue [y/n]? ' },
+                     function(input)
+                            if input ~= 'y' then vim.cmd('quit') end
+                     end
+                 )
+            end
+        end
+    })
+
     -- Turn off syntax highlighting that conflicts with treesitter.
     vim.api.nvim_create_autocmd('BufEnter', {
         group = buffer_check_group,
