@@ -453,13 +453,16 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
      )
 
      local function ChooseTemplate()
-        local regular_templates = vim.api.nvim_get_runtime_file("templates/*", true)
-        local hidden_templates = vim.api.nvim_get_runtime_file("templates/.*", true)
-        -- Remove the "." directory.
-        table.remove(hidden_templates, 1)
-        -- Remove the ".." directory.
-        table.remove(hidden_templates, 1)
-        templates = tableMerge(regular_templates, hidden_templates)
+        local regular_templates = vim.api.nvim_get_runtime_file("templates/**", true)
+        local hidden_templates = vim.api.nvim_get_runtime_file("templates/**/.*", true)
+        local templates = {}
+        for _, path in ipairs(tableMerge(hidden_templates, regular_templates)) do
+            local tail = vim.fs.basename(path)
+            -- Do not include special "." and ".." directories.
+            if tail ~= "." and tail ~= ".." and vim.fn.isdirectory(path) == 0 then
+                table.insert(templates, path)
+            end
+        end
         vim.ui.select(templates, { prompt = 'Select template to load into file:', },
             function(choice) LoadTemplateFromType(choice) end
          )
