@@ -150,6 +150,7 @@ alias ру='zict alter ru'
 
 alias cheat='cht.sh'
 alias gdiff='git fetch && git diff origin/master HEAD'
+alias lf='$HOME/Code/lfimg/lfrun'
 alias locksway='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
 alias lockx='xscreensaver-command -lock'
 alias man='man -a'
