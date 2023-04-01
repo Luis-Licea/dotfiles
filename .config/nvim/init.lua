@@ -1843,15 +1843,16 @@ local ft2compiler = {
     vala = 'valac',
 }
 
--- Validate GLSL code: vert, tesc, tese, glsl, geom, frag, comp.
+-- Validate GLSL code for extensions: vert, tesc, tese, glsl, geom, frag, comp.
 local ft2interpreter = {
-    python     = 'python3',
+    python     = "python3",
     java       = "java",
     groovy     = "groovy",
     lua        = "lua",
     sh         = "bash",
     javascript = "node",
     glsl       = "glslangValidator",
+    typ        = "typst",
 }
 
 -- Sample CMake flags.
