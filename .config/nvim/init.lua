@@ -665,14 +665,16 @@ local latex_group = vim.api.nvim_create_augroup('LaTeX Group', {
 --------------------------------------------------------------------------------
 -- Share clipboard with operating system.
 vim.o.clipboard = 'unnamedplus'
--- Reminder to keep lines at most 80 characters long.
-vim.o.colorcolumn = '81'
+-- Reminder to keep lines at most 80, 120 characters long.
+vim.o.colorcolumn = '81,121'
 -- Enable mouse wheel in normal modes.
 vim.o.mouse = 'a'
 -- Support true color in vim.
 vim.o.termguicolors = true
 -- Hide quotes in JSON files.
 vim.o.conceallevel = 1
+-- When using gq, wrap the line at this many characters.
+vim.o.textwidth = 80
 
 --------------------------------------------------------------------------------
 -- Tabs & spaces.
