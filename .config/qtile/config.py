@@ -28,26 +28,30 @@ from libqtile import bar, layout, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
-from argparse import Namespace
+from types import SimpleNamespace
 
 mod = "mod1"
 terminal = guess_terminal()
 
 # Commands for changing volume.
-volume = Namespace(
+volume = SimpleNamespace(
     decrease = "amixer -D pulse sset Master 5%-",
     increase = "amixer -D pulse sset Master 5%+",
     toggle = "amixer sset Master toggle",
 )
 
 # Commands for controlling music and video players.
-playerctl = Namespace(
+playerctl = SimpleNamespace(
     play = "rofi_playerctl play-pause",
     prev = "rofi_playerctl previous",
     next = "rofi_playerctl next",
     pick = "rofi_playerctl",
 )
 
+rofi = SimpleNamespace(
+    run = "rofi -show run -show-icons -disable-history",
+    drun = "rofi -show drun -show-icons -disable-history",
+)
 keys = [
     # A list of available commands that can be bound to keys can be found
     # at https://docs.qtile.org/en/latest/manual/config/lazy.html
@@ -87,6 +91,7 @@ keys = [
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    Key([mod], "p", lazy.spawn(rofi.run), desc="Run programs"),
     #  Custom multimedia keys:
     Key([], "XF86AudioPrev", lazy.spawn(playerctl.prev), desc = "Audio Prev"),
     Key([], "XF86AudioPlay", lazy.spawn(playerctl.play), desc = "Audo Play"),
