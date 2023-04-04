@@ -28,6 +28,9 @@ from libqtile import bar, layout, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
+from os import environ
+from pathlib import Path
+from random import choice
 from types import SimpleNamespace
 
 mod = "mod1"
@@ -52,6 +55,7 @@ rofi = SimpleNamespace(
     run = "rofi -show run -show-icons -disable-history",
     drun = "rofi -show drun -show-icons -disable-history",
 )
+
 keys = [
     # A list of available commands that can be bound to keys can be found
     # at https://docs.qtile.org/en/latest/manual/config/lazy.html
@@ -157,8 +161,24 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
+def GetRandomWallpaper(path: Path, patterns=["**/*.png", "**/*.jpg"]) -> Path:
+    """Get absolute path to random wallpaper from the given directories.
+
+    Args:
+        patterns (list[str]): The glob patterns for selecting the wallpapers.
+        path: The path to the wallpaper directory.
+
+    Returns:
+        The path to a random wallpaper form the given directory.
+    """
+    wallpapers: list[Path] = []
+    for pattern in patterns:
+        wallpapers += list(path.glob(pattern))
+    return choice(wallpapers)
+
 screens = [
     Screen(
+        wallpaper=GetRandomWallpaper(Path(f"{environ['HOME']}/Pictures/wallpapers/nordic")).as_posix(),
         bottom=bar.Bar(
             [
                 widget.CurrentLayout(),
