@@ -179,6 +179,7 @@ def GetRandomWallpaper(path: Path, patterns=["**/*.png", "**/*.jpg"]) -> Path:
 screens = [
     Screen(
         wallpaper=GetRandomWallpaper(Path(f"{environ['HOME']}/Pictures/wallpapers/nordic")).as_posix(),
+        wallpaper_mode='stretch',
         bottom=bar.Bar(
             [
                 widget.CurrentLayout(),
