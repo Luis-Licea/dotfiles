@@ -666,7 +666,7 @@ local latex_group = vim.api.nvim_create_augroup('LaTeX Group', {
 -- Share clipboard with operating system.
 vim.o.clipboard = 'unnamedplus'
 -- Reminder to keep lines at most 80, 120 characters long.
-vim.o.colorcolumn = '81,121'
+vim.o.colorcolumn = '81,101,121'
 -- Enable mouse wheel in normal modes.
 vim.o.mouse = 'a'
 -- Support true color in vim.
@@ -1045,9 +1045,13 @@ require('packer').startup(function()
                     -- Add code actions since they aren't provided by the LSP.
                     require("null-ls").builtins.code_actions.shellcheck,
                     -- Format Lua files based on .stylua.toml file.
-                    require("null-ls").builtins.formatting.stylua,
+                    require("null-ls").builtins.formatting.stylua.with({
+                        extra_args = {'--column-width', '100', '--quote-style', 'AutoPreferSingle'}
+                    }),
                     -- Format Python code and comments consistently.
-                    require("null-ls").builtins.formatting.black,
+                    require("null-ls").builtins.formatting.black.with({
+                        extra_args = {'--line-length', '100'}
+                    }),
                     -- Formats Bash scripts and ensures consistent indentation.
                     require("null-ls").builtins.formatting.shfmt,
                     -- Formats Markdown tables.
