@@ -36,10 +36,11 @@ from types import SimpleNamespace
 mod = "mod1"
 terminal = guess_terminal()
 
+
 # Commands for changing volume.
 volume = SimpleNamespace(
-    decrease = "amixer -D pulse sset Master 5%-",
-    increase = "amixer -D pulse sset Master 5%+",
+    decrease = "amixer -D pulse sset Master 2%-",
+    increase = "amixer -D pulse sset Master 2%+",
     toggle = "amixer sset Master toggle",
 )
 
