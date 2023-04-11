@@ -794,6 +794,7 @@ require('packer').startup(function()
         -- Uncomment next line if you want to follow only stable versions
         tag = "*"
     }
+    use { 'kkoomen/vim-doge', run = ':call doge#install()' }
     use 'gpanders/editorconfig.nvim'
     -- use 'nvim-treesitter/playground'
     -- use '~/Code/treesitter-markdown'
@@ -1128,6 +1129,14 @@ require('nvim-window').setup({
     border = 'rounded'
 })
 nnoremap('<leader><leader>', require("nvim-window").pick)
+
+
+--------------------------------------------------------------------------------
+-- Doge - Documentation Generator
+--------------------------------------------------------------------------------
+vim.g.doge_python_settings = { omit_redundant_param_types = 0 }
+vim.g.doge_doc_standard_python = 'google'
+vim.api.nvim_create_user_command('Doge', 'DogeGenerate', {})
 
 --------------------------------------------------------------------------------
 -- Gitsigns.
