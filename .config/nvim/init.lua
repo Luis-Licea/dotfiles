@@ -394,7 +394,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
 
     --- Load a template in the current buffer. The template will be determined
     --- based on the file extension and the file name.
-    ---@param name The path to the template to load.
+    ---@param name string path to the template to load.
     local function LoadTemplateFromType(name)
         -- The place where the templates are saved.
         local templateDir = vim.fn.expand('~/.config/nvim/templates/')
@@ -404,7 +404,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
         local pathSameExt = templateDir .. "skeleton." .. vim.fn.expand("%:e")
 
         -- The path to the template to with the same file name.
-        local pathSameName = templateDir .. vim.fn.expand("%")
+        local pathSameName = templateDir .. vim.fn.expand("%:t")
 
         -- The path to the template to load.
         local template = nil
