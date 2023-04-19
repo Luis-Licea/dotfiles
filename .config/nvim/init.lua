@@ -610,14 +610,12 @@ local markdown_group = vim.api.nvim_create_augroup('Markdown Group', {
         vim.fn.execute('!zathura "' .. vim.g.compPath .. '%<.pdf" &')
     end
 
-    vim.api.nvim_create_autocmd('BufReadPost', {
+    vim.api.nvim_create_autocmd('FileType', {
         group = markdown_group,
-        pattern = '*.md',
+        pattern = 'markdown',
         callback = function()
             -- View compiled markdown pdf.
             nnoremap('<leader>cv', ':lua LaunchViewer()<cr>', {buffer = true})
-            -- Create a binding for formatting tables.
-            nnoremap('<leader>fo', ':TableFormat<cr>', {buffer = true})
         end
     })
 
