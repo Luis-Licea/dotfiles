@@ -1,10 +1,16 @@
--- TODO Replace callback with command in autocommands.
 local function dict_append(dict1, dict2)
     if dict1 and dict2 then
         for key, value in pairs(dict2) do
             dict1[key] = value
         end
     end
+end
+
+-- Expand environment variables and escape spaces and quotes in a string.
+-- @param str string The string whose environment variables will be expanded
+-- and whose paces and quotes will be escaped.
+local function expand(str)
+        return vim.fn.fnameescape(vim.fn.expandcmd(str))
 end
 
 local function keymap(mode, shortcut, command, options)
@@ -486,7 +492,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
     ---@return boolean True if the path is executable by all users.
     function IsExecutable(path)
         -- If the path is not defined, use the path to the current file.
-        if not path then path = vim.fn.fnameescape(vim.fn.expand("%")) end
+        if not path then path = vim.fn.expand("%") end
         -- Get permissions string including parenthesis, e.g. "drwxrwxrwx".
         local permissions = vim.fn.system({'stat', '--printf="%A"', path})
         -- The eleventh character in the permissions "drwxrwxrwx" represents
@@ -509,7 +515,8 @@ vim.b.addDebugFlags = false
 vim.b.formatOnSave = false
 vim.b.runCommand = nil
 vim.b.runOnSave = false
-vim.g.compPath = '/tmp/' -- Output folder for compiled binaries, pdfs, etc.
+-- Output folder for compiled binaries, pdfs, etc.
+vim.fn.setenv("TMPDIR", vim.fn.expandcmd("/tmp"))
 
 -- Function for toggling auto compilation on save:
 function EditRunCommand()
@@ -600,14 +607,14 @@ local markdown_group = vim.api.nvim_create_augroup('Markdown Group', {
         pattern = '*.md',
         callback = function()
             if vim.b.runOnSave then
-                vim.fn.execute('!pandoc "%" -o "' .. vim.g.compPath .. '%<.pdf"')
+                vim.fn.execute('!pandoc "%" -o "$TMPDIR/%<.pdf"')
             end
         end
     })
 
     -- View pdf files.
     function LaunchViewer()
-        vim.fn.execute('!zathura "' .. vim.g.compPath .. '%<.pdf" &')
+        vim.fn.execute('!zathura "$TMPDIR/%<.pdf" &')
     end
 
     vim.api.nvim_create_autocmd('FileType', {
@@ -1218,7 +1225,7 @@ dap.adapters.cppdbg = {
 }
 
 local function GetDebugExecutable()
-    local compilationPath = vim.g.compPath .. vim.fn.expand('%:r')
+    local compilationPath = vim.fn.expandcmd('$TMPDIR/%:t:r')
     local sourcePath = vim.fn.expand('%:p:r')
     local cargoPath = function()
         if vim.fn.execute('cargo') then
@@ -1745,7 +1752,7 @@ require('cmp').setup.cmdline(':', {
 --------------------------------------------------------------------------------
 
 --- Split a string of command-line arguments into a list.
----@param str The string with one or more arguments.
+---@param str string The string with one or more arguments.
 ---@return Array
 local function args2list(str)
   local t = {}
@@ -1768,7 +1775,7 @@ function BenchmarkExecutionTime(times, executable_path, runner)
 
     times = times or 10 -- Execute the program this many times.
     -- Remove the parent directories and extension to get file name.
-    executable_path = executable_path or vim.fn.fnameescape(vim.fn.expand("%:p:r"))
+    executable_path = executable_path or expand("%:p:r")
     runner = runner or ''
 
     local program = string.format([[
@@ -1830,11 +1837,10 @@ vim.api.nvim_create_user_command('Time',
         complete = function(ArgLead, CmdLine, CursorPos)
             -- Times to execute program.
             local times = 1000
-            -- Remove the parent directories and extension to get file name.
-            local file = vim.fn.expand('%:t:r')
             -- Define the path where the compiled executable will be placed, and
-            -- where it should be executed.
-            local executable_path = vim.g.compPath .. file
+            -- where it should be executed. Remove the parent directories and
+            -- extension to get file name.
+            local executable_path = vim.fn.expandcmd("$TMPDIR/%:t:r")
             local completion_str_runner = 'times=%d runner=%s path="%s"'
             local completion_str = 'times=%d path="%s"'
             return {
@@ -1945,7 +1951,7 @@ function Run()
     -- Handle files with hash-bangs.
     if FileHasHashBang() and GetHashBang() then
         -- Run file using hash-bang.
-        vim.b.runCommand = ("!%s %s"):format(GetHashBang(), vim.fn.fnameescape(vim.fn.expand("%")))
+        vim.b.runCommand = ("!%s %s"):format(GetHashBang(), expand("%"))
 
         return Run()
     end
@@ -1956,7 +1962,7 @@ function Run()
         local interpreter = ft2interpreter[vim.bo.filetype]
 
         -- Get the file path.
-        local path = vim.fn.fnameescape(vim.fn.expand('%:p'))
+        local path = expand('%:p')
 
         -- Run the file.
         vim.b.runCommand = ('!%s %s'):format(interpreter, path)
@@ -1970,14 +1976,12 @@ function Run()
         local compiler = ft2compiler[vim.bo.filetype]
 
         -- Get the file path.
-        local path = vim.fn.fnameescape(vim.fn.expand('%:p'))
-
-        -- Remove the parent directories and extension to get file name.
-        local file = vim.fn.fnameescape(vim.fn.expand('%:t:r'))
+        local path = expand('%:p')
 
         -- Define the path where the compiled executable will be placed, and
-        -- where it should be executed.
-        local executable_path = vim.g.compPath .. file
+        -- where it should be executed. Remove the parent directories and
+        -- extension to get file name.
+        local executable_path = expand("$TMPDIR/%:t:r")
 
         -- By default do not pass additional compilation flags.
         local flags = {}
