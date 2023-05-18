@@ -3,6 +3,9 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
+;; PlanUML settings.
+;; (setq org-plantuml-jar-path (expand-file-name "/usr/share/java/plantuml/plantuml.jar"))
+;; (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
@@ -45,6 +48,9 @@
 ;; Automatically add time stamp to finished to-do tasks.
 (setq org-log-done 'time)
 
+(after! org
+    (setq org-agenda-span 45)
+    (setq org-agenda-start-on-weekday nil))
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
