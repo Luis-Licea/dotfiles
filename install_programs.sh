@@ -64,6 +64,7 @@ pacman_programs=(
     mpv-mpris # MPRIS plugin for mpv.
 
     # Miscellaneous.
+    informant    # An Arch Linux News reader and pacman hook
     languagetool # An open source language checker.
     termdown     # Countdown timer and stopwatch in your terminal.
     calibre      # Ebook management application
@@ -73,6 +74,7 @@ pacman_programs=(
     rmlint       # Tool to remove duplicates much faster than fdupes
     syncthing    # Continuous Replication / Cluster Synchronization Thing
 
+    lf                # A terminal file manager inspired by ranger
     kitty             # A modern, hackable, featureful, OpenGL-based terminal emulator.
     sshfs             # For kdeconnect. FUSE client based on the SSH File Transfer Protocol.
     sddm              # QML based X11 and Wayland display manager.
@@ -159,6 +161,12 @@ aur_programs=(
     aspell-en  # English dictionary for aspell
 
     # Miscellaneous.
+    xonsh                    # Python-powered, cross-platform, Unix-gazing shell
+    asciiquarium             # An aquarium/sea animation in ASCII art
+    sl                       # Steam locomotive ascii art.
+    python-gtts              # Python library and CLI tool to interface with Google Translate's text-to-speech API
+    toilet                   # free replacement for the FIGlet utility.
+    toilet-fonts             # Additional asciiart fonts for toilet (adapted from figlet-fonts)
     mutt-wizard-git          # Auto-configure neomutt and isync/mpop with safe passwords (IMAP/POP3/SMTP)
     abook                    # Text-based addressbook designed for use with Mutt.
     pipe-viewer-git          # A lightweight YouTube client for Linux (CLI/GTK).

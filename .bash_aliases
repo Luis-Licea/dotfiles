@@ -81,6 +81,10 @@ alias passbackup='cp -viur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8
 alias passrefresh='kdeconnect-cli --refresh'
 alias passdiff='diff -q -r ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/'
 
+say() {
+    gtts-cli "${*}" | mpv -
+}
+
 scratchpad() {
     # Go to directory, open file, go to previous directory.
     cd /tmp && nvim "$1" && cd -
@@ -100,6 +104,7 @@ alias pyscratchtest='scratchpad scratchpad_test.py'
 alias todo='$EDITOR "$HOME/To Do.md"'
 alias todoscratch='scratchpad todo.md'
 alias txtscratch='scratchpad scratchpad.txt'
+alias typscratch='scratchpad scratchpad.typ'
 alias zshscratch='scratchpad scratchpad.zsh'
 
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
@@ -164,7 +169,12 @@ alias sqlite-doc='xdg-open /usr/share/doc/sqlite/doclist.html'
 alias y='yt-dlp --paths ~/Music'
 alias ya='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
+alias toilet='toilet -F crop -F border -f mono12' # -F metal -F rainbow --html
+alias toilet-filters='toilet --filter list'
 
+# https://unix.stackexchange.com/questions/79112/how-do-i-set-time-and-date-from-the-internet
+# sudo ntpd -qg; sudo hwclock -w
+alias fixtime='sudo ntpd -qg'
 export bgs='/usr/share/backgrounds/nordic-wallpapers/'
 
 # Only enter SSH password once.
