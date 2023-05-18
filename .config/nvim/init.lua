@@ -595,6 +595,26 @@ local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
         callback = ToggleFormatOnSave
     })
 
+    -- Always auto-format the following file types.
+    vim.api.nvim_create_autocmd('FileType', {
+        group = auto_run_group,
+        pattern = 'c',
+        callback = function()
+            vim.api.nvim_create_user_command('CGenerateAssembly0',
+                function() vim.fn.execute('!gcc -S -O0 -fverbose-asm "%"') end,
+                { nargs = 0, desc = "Generate the assembly file" })
+            vim.api.nvim_create_user_command('CGenerateAssembly1',
+                function() vim.fn.execute('!gcc -S -O1 -fverbose-asm "%"') end,
+                { nargs = 0, desc = "Generate the assembly file" })
+            vim.api.nvim_create_user_command('CGenerateAssembly2',
+                function() vim.fn.execute('!gcc -S -O2 -fverbose-asm "%"') end,
+                { nargs = 0, desc = "Generate the assembly file" })
+            vim.api.nvim_create_user_command('CDumpObject',
+                function() vim.fn.execute('!objdump -drwC "$TMPDIR/%<"') end,
+                { nargs = 0, desc = "Generate the assembly file" })
+        end
+    })
+
 --------------------------------------------------------------------------------
 -- Markdown.
 --------------------------------------------------------------------------------
