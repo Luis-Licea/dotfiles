@@ -619,7 +619,7 @@ local markdown_group = vim.api.nvim_create_augroup('Markdown Group', {
 
     vim.api.nvim_create_autocmd('FileType', {
         group = markdown_group,
-        pattern = 'markdown',
+        pattern = {'markdown', 'typst'},
         callback = function()
             -- View compiled markdown pdf.
             nnoremap('<leader>cv', ':lua LaunchViewer()<cr>', {buffer = true})
@@ -1046,6 +1046,8 @@ require('packer').startup(function()
                     require("null-ls").builtins.code_actions.gitsigns,
                     -- Auto-complete CMake commands and keywords.
                     require("null-ls").builtins.diagnostics.cmake_lint,
+                    -- Show Python lint errors.
+                    require("null-ls").builtins.diagnostics.pylint,
                     -- Show messages when bad indentation occurs.
                     require("null-ls").builtins.formatting.cmake_format,
                     -- Add code actions since they aren't provided by the LSP.
@@ -1557,23 +1559,24 @@ local servers = {
     'awk_ls', -- AWK
     'bashls', -- Bash
     'clangd', -- C/C++
+    'cmake', -- CMake
     'cssls', -- CSS
     -- 'dockerls', -- Docker
     'eslint',   -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
-    'tsserver', -- JavaScript, TypeScript; LSP functionality.
     'groovyls', -- Groovy
     'html', -- HTML
-    -- 'jdtls',
+    -- 'jdtls', -- Java
     'jsonls', -- JSON
+    'ltex',
     'marksman', -- Markdown
     -- 'phpactor', -- PHP
     'pyright',
     'rust_analyzer', -- Rust
     -- 'sqls', -- SQL
-    'cmake',
     'taplo', -- TOML
-    -- 'ltex',
-    -- 'texlab',
+    -- 'texlab', -- LaTeX
+    'tsserver', -- JavaScript, TypeScript; LSP functionality.
+    'typst_lsp', -- Typst
 }
 
 -- Enable (broadcasting) snippet capability for completion.
@@ -1871,8 +1874,9 @@ local ft2interpreter = {
     sh         = "bash",
     javascript = "node",
     glsl       = "glslangValidator",
-    typ        = "typst",
+    typst      = "typst",
 }
+vim.filetype.add({ extension = {typ = "typst"}})
 
 -- Sample CMake flags.
 -- set(CMAKE_CXX_FLAGS_DEBUG_INIT "-fsanitize=address,undefined -fsanitize-undefined-trap-on-error")
