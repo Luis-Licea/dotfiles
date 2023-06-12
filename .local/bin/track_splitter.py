@@ -1,167 +1,283 @@
 #!/usr/bin/python3
+"""Split albumns into tracks."""
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from dataclasses import dataclass
 from math import inf
-from os import mkdir, path
-from re import search
+from pathlib import Path
+from re import search, Match
 from subprocess import call
 from textwrap import dedent
+
+patterns = [
+    # 00:?00:00 Title
+    r"((?P<hours>\d+):)?(?P<minutes>\d+):(?P<seconds>\d+) (?P<title>.+)$",
+    # 01.[00:00] Title
+    r"(?P<number>\d+)\.\[(?P<minutes>\d+):(?P<seconds>\d+)\] (?P<title>.+)$",
+    # 01.[00:00(.000)?] Title
+    r"(?P<number>\d+)\.\[(?P<minutes>\d+):(?P<seconds>\d+)\.?(?P<milliseconds>\d+)?\] (?P<title>.+)$",
+    # 01. Title 00:00(.000)
+    r"(?P<number>\d+)\. (?P<title>.+) (?P<minutes>\d+):(?P<seconds>\d+)\.?(?P<milliseconds>\d+)?$",
+]
 
 
 @dataclass
 class Song:
-    title: str
+    """Represent a song object with timestamps."""
+
     number: int
-    seconds: int
+    hours: int
     minutes: int
-    hours: int = 0
-    end: float = inf
+    seconds: int
+    milliseconds: int
+    end: int
+    title: str
+
+    @property
+    def start_stamp(self: "Song") -> str:
+        """Return the starting time-stamp.
+
+        Args:
+            self ("Song"): The song object.
+
+        Returns:
+            str: The starting time-stamp in the format HH:MM:SS:sss.
+        """
+        return f"{self.hours:02d}:{self.minutes:02d}:{self.seconds:02d}.{self.milliseconds:03d}"
+
+    @property
+    def end_stamp(self: "Song") -> str:
+        """Return the ending time-stamp.
+
+        Args:
+            self ("Song"): The song object.
+
+        Returns:
+            str: The ending time-stamp in the format HH:MM:SS:sss.
+        """
+        hours, minutes, seconds, milliseconds = Song.time_from_milliseconds(self.end)
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}.{milliseconds:03d}"
 
     @property
     def start(self: "Song") -> int:
-        """Return the starting time in seconds.
-            self (Song): The song object.
+        """Return the starting time in milliseconds.
+
+        Args:
+            self ("Song"): The song object.
 
         Returns:
-            The starting time in seconds.
+            float: The starting time in milliseconds.
         """
-        return self.seconds + self.minutes * 60 + self.hours * 3_600
+        return (
+            self.milliseconds
+            + self.seconds * 1_000
+            + self.minutes * 60_000
+            + self.hours * 3_600_000
+        )
 
     @start.setter
-    def start(self, value: int):
+    def start(self: "Song", milliseconds: int):
         """Set the number of seconds, minutes, and hours from given value.
-        self (Song): The song object.
-        value (int): The song start in seconds.
+
+        Args:
+            self ("Song"): The song object.
+            milliseconds (float): The song start in milliseconds.
         """
-        self.seconds = value % 60
-        self.minutes = value // 60
-        self.minutes = value // 3_600
+        hours, minutes, seconds, milliseconds = Song.time_from_milliseconds(milliseconds)
+        self.hours = hours
+        self.minutes = minutes
+        self.seconds = seconds
+        self.milliseconds = milliseconds
+
+    @staticmethod
+    def time_from_milliseconds(total_milliseconds: int) -> tuple[int, int, int, int]:
+        """Return the total number of milliseconds as hours, minutes, seconds, and milliseconds.
+
+        Args:
+            total_milliseconds (int): The total number of milliseconds.
+
+        Returns:
+            tuple[int, int, int, int]: The hours, minutes, seconds, and milliseconds.
+        """
+        milliseconds = total_milliseconds % 1_0000
+        seconds = total_milliseconds // 1_000
+        minutes = total_milliseconds // 60_000
+        hours = total_milliseconds // 3_600_000
+        return hours, minutes, seconds, milliseconds
+
+    @staticmethod
+    def timestamp(hours: int, minutes: int, seconds: int, milliseconds: int) -> str:
+        """Returns the time-stamp in the format HH:MM:SS:sss.
+
+        Args:
+            hours (int): The hours.
+            minutes (int): The minutes.
+            seconds (int): The seconds.
+            milliseconds (int): The milliseconds.
+
+        Returns:
+            str: The time-stamp in the format HH:MM:SS:sss.
+        """
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}.{milliseconds:03d}"
 
 
-def parse_track_list(lines) -> list[Song]:
-    songs: list[Song] = []
+def parse_track_list(text: str) -> list[Song]:
+    no_whitespaces = map(str.strip, text.splitlines())
+    no_empty_lines = filter(str, no_whitespaces)
+    no_comments = filter(lambda line: not line.startswith("#"), no_empty_lines)
+    lines = list(no_comments)
 
-    patterns = [
-        # 00:?00:00 Title
-        r"((?P<hours>\d+):)?(?P<minutes>\d+):(?P<seconds>\d+) (?P<title>.+)$",
-        # TrackNumber.[Minutes:Seconds] Title:
-        # 01.[00:00] Example
-        r"(?P<number>\d+)\.\[(?P<minutes>\d+):(?P<seconds>\d+)\] (?P<title>.+)$",
-    ]
+    def get_song(match: Match[str]):
+        attributes: dict = match.groupdict()
+        song_attributes = {
+            "number": int(attributes.get("number", 0)),
+            "seconds": int(attributes.get("seconds", 0)),
+            "milliseconds": int(attributes.get("milliseconds", 0) or 0),
+            "minutes": int(attributes.get("minutes", 0)),
+            "hours": int(attributes.get("hours", 0)),
+            "title": str(attributes["title"].replace("/", "|")),
+            "end": inf,
+        }
+        return Song(**song_attributes)
 
-    pattern = patterns.pop()
+    def find_matches(pattern, lines) -> list[Song]:
+        matches = list(map(lambda line: search(pattern, line), lines))
+        if None in matches:
+            return []
 
-    for line in lines:
-        if line.startswith("#") or len(line) == 0:
-            continue
+        matches = [match for match in matches if match is not None]
 
-        while not (match := search(pattern, line)):
-            print(f"Pattern '{pattern}' did not work for line: {line}")
-            try:
-                pattern = patterns.pop()
-            except IndexError:
-                raise Exception(f"No match for line: {line}")
+        songs = list(map(get_song, matches))
+        for next_index, song in enumerate(songs, 1):
+            if 0 <= next_index < len(songs):
+                song.end = songs[next_index].start
+        return songs
 
-        print(match.groupdict())
-        song_attributes: dict = match.groupdict()
+    song_lists = list(map(lambda pattern: find_matches(pattern, lines), patterns))
 
-        for attribute in ["number", "seconds", "minutes", "hours"]:
-            if song_attributes.get(attribute):
-                song_attributes[attribute] = int(song_attributes[attribute])
-            elif attribute == "hours":
-                song_attributes[attribute] = 0
-            elif attribute == "number":
-                song_attributes[attribute] = len(songs)
+    if songs := next(filter(list, song_lists), None):
+        return songs
 
-        for attribute in ["title"]:
-            song_attributes[attribute] = song_attributes[attribute].replace("/", "|")
-
-        song = Song(**song_attributes)
-        songs.append(song)
-
-    for next, song in enumerate(songs, 1):
-
-        if next >= 0 and next < len(songs):
-            song.end = songs[next].start
-    return songs
+    raise ValueError("Tracklist could not be parsed.")
 
 
-def split(album: str, track_list: str, artist: str, dry_run: bool):
+def split(album: Path, track_list: Path, artist: Path, dry_run: bool):
     """split a music track into specified sub-tracks by calling ffmpeg from the shell"""
     for file in [album, track_list]:
-        if not path.isfile(file):
-            raise Exception(f"File {file} is not a file.")
+        if not file.is_file():
+            raise ValueError(f"File {file} is not a file.")
 
-    with open(track_list) as track_list_file:
-        lines = map(lambda line: line.rstrip(), track_list_file.readlines())
+    songs = parse_track_list(track_list.read_text())
 
-    songs = parse_track_list(lines)
+    if not artist.exists():
+        artist.mkdir()
 
-    if not path.exists(artist):
-        mkdir(artist)
-
-    for song in songs:
+    def get_command(song):
+        song_location = f"{artist}/{artist} - {song.number:02d} - {song.title}.opus"
         if song.end != inf:
             # Song command.
-            command = [
+            return [
                 "ffmpeg",
                 "-i",
                 album,
                 "-acodec",
                 "libopus",
                 "-ss",
-                f"{song.start}",
+                f"{song.start}ms",
                 "-to",
-                f"{song.end}",
-                f"{artist}/{artist} - {song.number:02d} - {song.title}.opus",
+                f"{song.end}ms",
+                song_location,
             ]
         else:
             # Last song.
-            command = [
+            return [
                 "ffmpeg",
                 "-i",
                 album,
                 "-acodec",
                 "libopus",
                 "-ss",
-                f"{song.start}",
-                f"{artist}/{artist} - {song.number:02d} - {song.title}.opus",
+                f"{song.start}ms",
+                song_location,
             ]
-        if dry_run:
+
+    commands = list(map(get_command, songs))
+    if dry_run:
+        for song in songs:
+            print(song)
+        for command in commands:
             print(command)
-        else:
+    else:
+        for command in commands:
             call(command)
 
 
 def parse_arguments():
-    epilog = """
+    patterns_txt = "\n\t".join(patterns)
+    epilog = f"""
     examples:
         Split the mp3 file into tracks and placed them into a folder.
         $ track_splitter.py "Artist Name" "../some/mp3" "some/tracklist.txt"
 
         Show what would happen if the command were run.
         $ track_splitter.py Artist album.mp3 tracklist.txt --dry-run
+
+        Supported patterns:
+        {patterns_txt}
     """
     parser = ArgumentParser(
         description="Split albums into songs.",
         formatter_class=RawDescriptionHelpFormatter,
         epilog=dedent(epilog),
     )
-    parser.add_argument("artist", help="The artist name.")
-    parser.add_argument("album", help="The path to the album (a music file).")
-    parser.add_argument("track_list", help="The path to the track list (a text file).")
+    parser.add_argument("artist", type=Path, help="The artist name.")
+    parser.add_argument("album", type=Path, help="The path to the album (a music file).")
+    parser.add_argument("track_list", type=Path, help="The path to the track list (a text file).")
     parser.add_argument(
-        "-d", "--dry-run", help="Show what would happen", action="store_true"
+        "-d",
+        "--dry-run",
+        action="store_true",
+        help="Show what would happen",
     )
     args = parser.parse_args()
+    print(args)
     return args
 
 
 def main():
+    """Split the album into tracks."""
     args = parse_arguments()
-    args_dictonary = vars(args).copy()
+    args_dictonary = vars(args)
     split(**args_dictonary)
+
+
+def test_tracklist_regex():
+    """Test whether the tracklists are read correctly."""
+    test1 = """
+
+    01.[00:00] Test name
+
+    02.[01:00.456] Another example?
+    03.[02:30.10] More examples!
+
+    04.[03:18] And another one.
+    # A comment.
+    """
+
+    songs = parse_track_list(test1)
+
+    test2 = """
+    1. 3, 2, 1 Let's Start 0:00
+    2. This is an example 0:55.300
+    3. Line 1:43
+    4. Title 2:47
+    5. Cool 3:55
+    """
+    songs = parse_track_list(test2)
+    for song in songs:
+        print(song)
+
 
 
 if __name__ == "__main__":
     main()
+    # test_tracklist_regex()
