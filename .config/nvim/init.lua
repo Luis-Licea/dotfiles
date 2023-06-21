@@ -971,6 +971,8 @@ require('packer').startup(function()
         requires = 'nvim-telescope/telescope.nvim' }
     -- File browser with Telescope previews.
     use "nvim-telescope/telescope-file-browser.nvim"
+    -- Add Nu shell syntax highlighting.
+    use 'LhKipp/nvim-nu'
     -- Add OpenGL Shader Language support.
     use 'tikhomirov/vim-glsl'
     -- Prettify status line.
