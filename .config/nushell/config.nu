@@ -297,7 +297,7 @@ let-env config = {
   # buffer_editor: "emacs" # command that will be used to edit the current line buffer with ctrl+o, if unset fallback to $env.EDITOR and $env.VISUAL
   use_ansi_coloring: true
   bracketed_paste: true # enable bracketed paste, currently useless on windows
-  edit_mode: emacs # emacs, vi
+  edit_mode: vi # emacs, vi
   shell_integration: true # enables terminal markers and a workaround to arrow keys stop working issue
   render_right_prompt_on_last_line: false # true or false to enable or disable right prompt to be rendered on last line of the prompt.
 
@@ -542,3 +542,171 @@ let-env config = {
     }
   ]
 }
+
+################################################################################
+# Preferred editor for local and remote sessions
+################################################################################
+if ($env.SSH_CONNECTION? | is-empty) {
+    let-env EDITOR = nvim
+} else {
+    let executables = (which nvim vim vi nano emacs);
+    let-env EDITOR = $executables.0.path?;
+}
+let-env VISUAL = $env.EDITOR;
+
+let pagers = (which nvimpager most less);
+let-env PAGER = $pagers.0.path;
+
+################################################################################
+# Ranger.
+################################################################################
+# Disable loading Ranger's global configuration files because custom
+# configurations are provided.
+let-env RANGER_LOAD_DEFAULT_RC = FALSE
+
+################################################################################
+# Lynx Browser.
+################################################################################
+let-env LYNX_CFG = $"($env.HOME)/.config/lynx/lynx.cfg"
+let-env LYNX_LSS = $"($env.HOME)/.config/lynx/lynx.lss"
+
+################################################################################
+# Aliases.
+################################################################################
+alias alacrittyconfig = nvim ~/.config/alacritty/alacritty.yml
+alias awesomeconfig = nvim ~/.config/awesome/rc.lua
+alias cppmanconfig = nvim ~/.config/cppman/cppman.cfg
+alias doomconfig = nvim ~/.config/doom/config.el
+alias dwlconfig = nvim ~/.config/dwl/
+alias emacsconfig = nvim ~/.config/doom/init.el
+alias gitconfig = nvim ~/.config/git/config
+alias lynxconfig = nvim .config/lynx/lynx.cfg
+alias mostconfig = nvim ~/.config/mostrc
+alias mpdconfig = nvim ~/.config/mpd/mpd.conf
+alias mpvconfig = nvim ~/.config/mpv
+alias ncmpcppconfig = nvim ~/.config/ncmpcpp/
+alias neomuttconfig = nvim ~/.config/mutt/
+alias neomuttmsmtpconfig = nvim ~/.config/msmtp/config
+alias newsboatconfig = nvim ~/.config/newsboat/
+alias nvimconfig = nvim ~/.config/nvim/init.lua
+alias nvimpagerconfig = nvim ~/.config/nvimpager/init.vim
+alias nvimswap = cd ~/.local/share/nvim/swap/
+alias picomconfig = nvim ~/.config/picom/picom.conf
+alias qtileconfig = nvim ~/.config/qtile/config.py
+alias rangercache = cd ~/.cache/ranger/
+alias rangerconfig = nvim ~/.config/ranger/
+alias roficonfig = nvim ~/.config/rofi/config.rasi
+alias shellconfig = nvim ~/.bash_aliases
+alias nuconfig = nvim ~/.config/nushell/config.nu
+alias nuconfigdir = nvim ~/.config/nushell
+alias vimbconfig = nvim ~/.config/vimb/config
+alias vscodiumconfig = nvim ~/.config/VSCodium/User/
+alias waybarconfig = nvim ~/.config/waybar/
+alias zathuraconfig = nvim ~/.config/zathura/zathurarc
+alias zictconfig = nvim ~/.config/zict/zict.bash
+alias zshconfig = nvim ~/.zshrc
+
+alias passconfig = cd $"($env.HOME)/.local/share/pass"
+alias passbackup = cp -viur $"($env.HOME)/.local/share/pass/*" /run/user/1000/5bfbfc95be7243f8/primary/pass/
+alias passrefresh = kdeconnect-cli --refresh
+alias passdiff = diff -q -r $"($env.HOME)/.local/share/pass/" /run/user/1000/5bfbfc95be7243f8/primary/pass/
+
+def say [words] {
+    gtts-cli $words | mpv -
+}
+
+def scratchpad [path: string] {
+    # Go to directory, open file, go to previous directory.
+    cd /tmp
+    nvim $path
+    cd -
+}
+
+export extern "lf" [
+    cd_or_select_path?: path, # set the initial dir or file selection to the given argument
+    --command: string, # command to execute on client initialization
+    --config: string, # path to the config file (instead of the usual paths)
+    --cpuprofile: string, # path to the file to write the CPU profile
+    --doc, # show documentation
+    --last-dir-path: string, # path to the file to write the last dir on exit (to use for cd)
+    --log: string, # path to the log file to write messages
+    --memprofile: string, # path to the file to write the memory profile
+    --remote: string, # send remote command to server
+    --selection-path: string, # path to the file to write selected files on open (to use as open file dialog)
+    --server, # start server (automatic)
+    --single, # start a client without server
+    --version, # show version
+]
+
+
+alias awkscratch = scratchpad scratchpad.awk
+alias bashscratch = scratchpad scratchpad.bash
+alias confluencescratch = scratchpad scratchpad.confluencewiki
+alias cppscratch = scratchpad scratchpad.cpp
+alias cscratch = scratchpad scratchpad.c
+alias elscratch = scratchpad scratchpad.el
+alias groovyscratch = scratchpad scratchpad.groovy
+alias luascratch = scratchpad scratchpad.lua
+alias mdscratch = scratchpad scratchpad.md
+alias nuscratch = scratchpad scratchpad.nu
+alias pyscratch = scratchpad scratchpad.py
+alias pyscratchtest = scratchpad scratchpad_test.py
+alias sagescratch = scratchpad scratchpad.sage
+alias typscratch = scratchpad scratchpad.typ
+alias watch-star-wars = telnet towel.blinkenlights.nl
+alias zshscratch = scratchpad scratchpad.zsh
+
+def-env ranger-cd [] {
+    let temporary_directory = (mktemp);
+    try {
+        ranger --choosedir $temporary_directory;
+        cd (open $temporary_directory);
+    } catch {
+        print $in;
+        print "An error happened while running Ranger.";
+    }
+    rm $temporary_directory;
+}
+
+def-env lf-cd [] {
+    let temporary_directory = (mktemp);
+    try {
+        lf --last-dir-path $temporary_directory;
+        cd (open $temporary_directory);
+    } catch {
+        print $in;
+        print "An error happened while running lf.";
+    }
+    rm $temporary_directory;
+}
+
+
+alias bc = bc --mathlib
+alias d = sdcv -u WordNet
+alias de = sdcv -eu WordNet
+alias e = exit
+alias l = lf-cd
+alias m = man -Hlynx
+alias nr = setsid --fork alacritty -e ranger
+alias nt = setsid --fork alacritty
+alias r = ranger-cd
+alias t = sdcv -u "Moby Thesaurus II"
+alias v = nvim
+
+alias codestatus = git-summary $"($env.HOME)/Code" -s
+alias dotfiles = git --git-dir $"($env.HOME)/.config/dotfiles/" --work-tree $env.HOME
+alias dotfilesui = gitui --polling -d $"($env.HOME)/.config/dotfiles/" -w $"($env.HOME)";
+alias passbgit = git --git-dir $"($env.HOME)/.local/share/pass/.backup/.git" --work-tree $"($env.HOME)/.local/share/pass/.backup"
+alias passbgui = gitui --polling -d $"($env.HOME)/.local/share/pass/.backup/.git" -w $"($env.HOME)/.local/share/pass/.backup"
+
+# Dictionary aliases.
+alias en = zict alter en
+alias es = zict alter es
+alias ja = zict alter ja
+alias ru = zict alter ru
+alias it = zict it
+alias ру = zict alter ru
+
+alias ya = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths $"($env.HOME)/Music"
+alias yad = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths
+alias zathurah = zathura --config-dir=$"($env.HOME)/.config/zathura/base"
