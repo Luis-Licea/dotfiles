@@ -3,6 +3,8 @@
 ################################################################################
 # Preferred editor for local and remote sessions
 ################################################################################
+export EDITOR=nvim
+export VISUAL="$EDITOR"
 if [[ -n $SSH_CONNECTION ]]; then
     if [[ -x "$(command -v nvim)" ]]; then
         export EDITOR=nvim
@@ -19,17 +21,16 @@ elif [[ -x "$(command -v most)" ]]; then
     export PAGER=most
 fi
 
-export EDITOR=nvim
-export VISUAL="$EDITOR"
-
+################################################################################
+# Ranger.
+################################################################################
 # Disable loading Ranger's global configuration files because custom
 # configurations are provided.
 export RANGER_LOAD_DEFAULT_RC=FALSE
 
 ################################################################################
-# NVM.
-################################################################################
 # Node Version Manager.
+################################################################################
 [ -f /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh
 [ -n "$NVM_BIN" ] && nvm_node_modules="${NVM_BIN%/bin}/lib/node_modules"
 
@@ -69,6 +70,8 @@ alias rangercache='cd ~/.cache/ranger/'
 alias rangerconfig='$EDITOR ~/.config/ranger/'
 alias roficonfig='$EDITOR ~/.config/rofi/config.rasi'
 alias shellconfig='$EDITOR ~/.bash_aliases'
+alias nuconfig='$EDITOR ~/.config/nushell/config.nu'
+alias nuconfigenv='$EDITOR ~/.config/nushell/env.nu'
 alias vimbconfig='$EDITOR ~/.config/vimb/config'
 alias vscodiumconfig='$EDITOR ~/.config/VSCodium/User/'
 alias waybarconfig='$EDITOR ~/.config/waybar/'
@@ -99,12 +102,10 @@ alias elscratch='scratchpad scratchpad.el'
 alias groovyscratch='scratchpad scratchpad.groovy'
 alias luascratch='scratchpad scratchpad.lua'
 alias mdscratch='scratchpad scratchpad.md'
+alias nuscratch='scratchpad scratchpad.nu'
 alias pyscratch='scratchpad scratchpad.py'
 alias pyscratchtest='scratchpad scratchpad_test.py'
 alias sagescratch='scratchpad scratchpad.sage'
-alias todo='$EDITOR "$HOME/To Do.md"'
-alias todoscratch='scratchpad todo.md'
-alias txtscratch='scratchpad scratchpad.txt'
 alias typscratch='scratchpad scratchpad.typ'
 alias zshscratch='scratchpad scratchpad.zsh'
 
@@ -127,7 +128,7 @@ if command -v lsd > /dev/null; then
     alias lsa='lsd -lah'
     alias tree='lsd --tree'
 fi
-if command -v lsd > /dev/null; then
+if command -v bat > /dev/null; then
     # Add syntax highlighting to printed files.
     alias cat='bat --style=plain --paging=never'
 fi
@@ -137,9 +138,35 @@ alias dotfilesui='repo_ui ~/.config/dotfiles/ ~ && git-summary ~/Code -s'
 alias passbgit='repo_git ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 
+joshutocd() {
+    ID="$$"
+    mkdir -p /tmp/$USER
+    OUTPUT_FILE="/tmp/$USER/joshuto-cwd-$ID"
+    env joshuto --output-file "$OUTPUT_FILE" $@
+    exit_code=$?
+
+    case "$exit_code" in
+        # regular exit
+        0)
+            ;;
+        # output contains current directory
+        101)
+            JOSHUTO_CWD=$(cat "$OUTPUT_FILE")
+            cd "$JOSHUTO_CWD"
+            ;;
+        # output selected files
+        102)
+            ;;
+        *)
+            echo "Exit code: $exit_code"
+            ;;
+    esac
+}
+
 alias bc='bc --mathlib'
 alias d='sdcv -u WordNet'
 alias de='sdcv -eu WordNet'
+alias j='joshutocd'
 alias e='exit'
 alias m='man -Hlynx'
 alias nr='setsid --fork alacritty -e ranger'
