@@ -1,0 +1,6 @@
+{
+	packages: [
+		{source: 'https://github.com/jan9103/packer.nu'}
+	]
+}
+# vim: ft=nu

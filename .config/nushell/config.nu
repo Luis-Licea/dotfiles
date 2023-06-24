@@ -693,11 +693,11 @@ alias r = ranger-cd
 alias t = sdcv -u "Moby Thesaurus II"
 alias v = nvim
 
-alias codestatus = git-summary $"($env.HOME)/Code" -s
-alias dotfiles = git --git-dir $"($env.HOME)/.config/dotfiles/" --work-tree $env.HOME
-alias dotfilesui = gitui --polling -d $"($env.HOME)/.config/dotfiles/" -w $"($env.HOME)";
-alias passbgit = git --git-dir $"($env.HOME)/.local/share/pass/.backup/.git" --work-tree $"($env.HOME)/.local/share/pass/.backup"
-alias passbgui = gitui --polling -d $"($env.HOME)/.local/share/pass/.backup/.git" -w $"($env.HOME)/.local/share/pass/.backup"
+alias codestatus = git-summary ~/Code -s
+alias dotfiles = git --git-dir ~/.config/dotfiles/ --work-tree ~;
+alias dotfilesui = gitui -d ~/.config/dotfiles/ -w ~;
+alias passbgit = git --git-dir ~/.local/share/pass/.backup/.git --work-tree ~/.local/share/pass/.backup
+alias passbgui = gitui -d ~/.local/share/pass/.backup/.git -w ~/.local/share/pass/.backup
 
 # Dictionary aliases.
 alias en = zict alter en
