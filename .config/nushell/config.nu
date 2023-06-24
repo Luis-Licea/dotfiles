@@ -710,3 +710,13 @@ alias ру = zict alter ru
 alias ya = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths $"($env.HOME)/Music"
 alias yad = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths
 alias zathurah = zathura --config-dir=$"($env.HOME)/.config/zathura/base"
+
+################################################################################
+# packer.nu
+################################################################################
+# Load packer API.
+overlay use ~/.local/share/nushell/packer/start/packer.nu/api_layer/packer_api.nu
+# Load packages.
+overlay use ~/.local/share/nushell/packer/packer_packages.nu
+# Load conditional packages.
+overlay use ~/.local/share/nushell/packer/conditional_packages.nu
