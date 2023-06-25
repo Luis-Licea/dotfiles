@@ -195,12 +195,9 @@ alias playmusic='mpv /run/media/luis/DATA/Music/* --shuffle'
 alias rgf='rg --files | rg'
 alias rsyncdelete='rsync -arv --delete'
 alias rsyncdryrun='rsync -arvn --delete'
-alias sqlite-doc='xdg-open /usr/share/doc/sqlite/doclist.html'
-alias y='yt-dlp --paths ~/Music'
-alias ya='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music'
+alias y='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music'
+alias yd='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
-alias toilet='toilet -F crop -F border -f mono12' # -F metal -F rainbow --html
-alias toilet-filters='toilet --filter list'
 
 # https://unix.stackexchange.com/questions/79112/how-do-i-set-time-and-date-from-the-internet
 # sudo ntpd -qg; sudo hwclock -w
