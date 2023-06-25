@@ -1,0 +1,19 @@
+#!/usr/bin/python3
+"""Change the python history file location to respect XDG conventions."""
+from os import environ
+from os.path import join
+from readline import write_history_file
+import readline
+
+def write_history(path: str):
+    """Save the history file.
+
+    Args:
+        path (str): Ignore this path, as it will be ~/.python_history, which
+        does not respect the XDG convention.
+    """
+    history = join(environ['XDG_CACHE_HOME'], 'python_history')
+    # Using readline.write_history_file will cause infinite recursion.
+    write_history_file(history)
+
+readline.write_history_file = write_history
