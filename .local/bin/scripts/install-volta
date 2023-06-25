@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+if [ -z "$VOLTA_HOME" ]; then
+    echo 'Specify where to install Volta in /etc/profile:'
+    echo 'export VOLTA_HOME="$XDG_DATA_HOME/volta"'
+    exit 1
+fi
+
+if [ ! -x "$VOLTA_HOME/bin/volta" ]; then
+    # install Volta
+    curl https://get.volta.sh | bash
+
+    # install Node
+    volta install node
+else
+    echo "Volta is already installed."
+fi
