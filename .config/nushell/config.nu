@@ -639,6 +639,12 @@ export extern "lf" [
     --version, # show version
 ]
 
+export extern "joshuto" [
+    --version(-v), # prints the version
+    --help(-h), # Prints help information
+    --output-file: path, # the output file
+    --path: path, # The path
+]
 
 alias awkscratch = scratchpad scratchpad.awk
 alias bashscratch = scratchpad scratchpad.bash
@@ -655,7 +661,6 @@ alias pyscratch = scratchpad scratchpad.py
 alias pyscratchtest = scratchpad scratchpad_test.py
 alias sagescratch = scratchpad scratchpad.sage
 alias typscratch = scratchpad scratchpad.typ
-alias watch-star-wars = telnet towel.blinkenlights.nl
 alias zshscratch = scratchpad scratchpad.zsh
 
 def-env ranger-cd [] {
@@ -682,18 +687,82 @@ def-env lf-cd [] {
     rm $temporary_directory;
 }
 
+def-env joshuto-cd [] {
+    let temporary_directory = (mktemp);
+    try {
+        joshuto --output-file $temporary_directory;
+    } catch {
+    }
+    try {
+        cd (open $temporary_directory);
+    } catch {
+        print $in;
+    }
+    rm $temporary_directory;
+}
 
 alias bc = bc --mathlib
 alias d = sdcv -u WordNet
 alias de = sdcv -eu WordNet
 alias e = exit
+alias j = joshuto-cd
 alias l = lf-cd
 alias m = man -Hlynx
-alias nr = setsid --fork alacritty -e ranger
+alias nr = setsid --fork alacritty -e nu -e ranger-cd
 alias nt = setsid --fork alacritty
 alias r = ranger-cd
 alias t = sdcv -u "Moby Thesaurus II"
 alias v = nvim
+
+# Create a symlink to globally installed node modules for access to Mocha and Chai.
+let setup_js_scratchpad = {
+    cd /tmp;
+    if not ('package.json' | path exists) {
+        npm init -f | save --append /dev/null;
+    }
+    if not ('node_modules' | path exists) {
+        let node_modules = $"($env.VOLTA_HOME)/tools/shared";
+        ln -s $node_modules node_modules
+    }
+    if not ('.eslintrc.yml' | path exists) {
+        ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml;
+    }
+    if not ('.prettierrc.yml' | path exists) {
+        ln -s ~/.config/nvim/templates/.prettierrc.yml .prettierrc.yml;
+    }
+}
+
+def jsscratch [] {
+    do $setup_js_scratchpad;
+    cd /tmp/;
+    nvim scratchpad.mjs;
+}
+
+def jsscratchtest [] {
+    do $setup_js_scratchpad;
+    cd /tmp/;
+    nvim scratchpad_test.mjs;
+}
+
+# # Create cargo project rather than individual file.
+def rsscratch [] {
+    cd /tmp;
+    if not ('rsscratch' | path exists) {
+        cargo new rsscratch;
+    }
+    nvim rsscratch/src/main.rs;
+
+}
+
+# Show icons along with files and directories.
+alias lsdl = lsd -lah
+alias lsdla = lsd -lAh
+alias lsdll = lsd -lh
+alias lsdtree = lsd --tree
+
+# Add syntax highlighting to printed files.
+alias bat = bat --style=plain --paging=never;
+alias cat = bat;
 
 alias codestatus = git-summary ~/Code -s
 alias dotfiles = git --git-dir ~/.config/dotfiles/ --work-tree ~;
@@ -701,6 +770,7 @@ alias dotfilesui = gitui -d ~/.config/dotfiles/ -w ~;
 alias passbgit = git --git-dir ~/.local/share/pass/.backup/.git --work-tree ~/.local/share/pass/.backup
 alias passbgui = gitui -d ~/.local/share/pass/.backup/.git -w ~/.local/share/pass/.backup
 
+use ~/.config/nushell/modules/ranger.nu *;
 # Dictionary aliases.
 alias en = zict alter en
 alias es = zict alter es
@@ -709,9 +779,31 @@ alias ru = zict alter ru
 alias it = zict it
 alias ру = zict alter ru
 
-alias ya = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths $"($env.HOME)/Music"
-alias yad = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths
-alias zathurah = zathura --config-dir=$"($env.HOME)/.config/zathura/base"
+alias cheat = cht.sh
+alias gdiff = git diff origin/master HEAD
+# alias lf = ~/Code/lfimg/lfrun
+alias locksway = swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png
+alias lockx = xscreensaver-command -lock
+alias man = man -a
+alias mpvh = mpv --config-dir=~/.config/mpv/base
+alias playmusic =  mpv /run/media/luis/DATA/Music/* --shuffle
+alias rgf = rg --files
+alias rsyncdelete = rsync -arv --delete
+alias rsyncdryrun = rsync -arvn --delete
+alias y = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music
+alias yd = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths
+alias zathurah = zathura --config-dir=~/.config/zathura/base
+
+# XDG-Ninja.
+alias wget = wget --hsts-file=$"($env.XDG_DATA_HOME)/wget-hsts"
+
+# https://unix.stackexchange.com/questions/79112/how-do-i-set-time-and-date-from-the-internet
+# sudo ntpd -qg; sudo hwclock -w
+# alias fixtime='sudo ntpd -qg'
+# export bgs='/usr/share/backgrounds/nordic-wallpapers/'
+
+# Only enter SSH password once.
+# keychain --quiet --eval id_rsa > /dev/null
 
 ################################################################################
 # packer.nu
