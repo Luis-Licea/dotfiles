@@ -770,6 +770,8 @@ alias dotfilesui = gitui -d ~/.config/dotfiles/ -w ~;
 alias passbgit = git --git-dir ~/.local/share/pass/.backup/.git --work-tree ~/.local/share/pass/.backup
 alias passbgui = gitui -d ~/.local/share/pass/.backup/.git -w ~/.local/share/pass/.backup
 
+# Export completions, functions, and aliases.
+use ~/.config/nushell/modules/git-completions.nu *;
 use ~/.config/nushell/modules/ranger.nu *;
 # Dictionary aliases.
 alias en = zict alter en
