@@ -3,6 +3,7 @@
 ################################################################################
 # Preferred editor for local and remote sessions
 ################################################################################
+
 export EDITOR=nvim
 export VISUAL="$EDITOR"
 if [[ -n $SSH_CONNECTION ]]; then
@@ -24,6 +25,7 @@ fi
 ################################################################################
 # Ranger.
 ################################################################################
+
 # Disable loading Ranger's global configuration files because custom
 # configurations are provided.
 export RANGER_LOAD_DEFAULT_RC=FALSE
@@ -31,20 +33,98 @@ export RANGER_LOAD_DEFAULT_RC=FALSE
 ################################################################################
 # Node Version Manager.
 ################################################################################
+
 [ -f /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh
 [ -n "$NVM_BIN" ] && nvm_node_modules="${NVM_BIN%/bin}/lib/node_modules"
 
 ################################################################################
 # Lynx Browser.
 ################################################################################
+
 export LYNX_CFG="$HOME/.config/lynx/lynx.cfg"
 export LYNX_LSS="$HOME/.config/lynx/lynx.lss"
 
 ################################################################################
+# Functions.
+################################################################################
+
+say() {
+    gtts-cli "${*}" | mpv -
+}
+
+# Go to directory, open file, go to previous directory.
+scratchpad() {
+    cd /tmp && nvim "$@" && cd -
+}
+
+repo_git() {
+    git --git-dir="$1" --work-tree="$2" "${@:3}"
+}
+repo_ui() {
+    gitui -d "$1" -w "$2" "${@:3}"
+}
+
+lfcd() {
+    local temporary_directory="$(mktemp)"
+    lf --last-dir-path "$temporary_directory" "$@"
+    cd "$(cat "$temporary_directory")"
+    rm "$temporary_directory"
+}
+
+joshutocd() {
+    local id="$$"
+    mkdir -p /tmp/$USER
+    local output_file="/tmp/$USER/joshuto-cwd-$id"
+    env joshuto --output-file "$output_file" "$@"
+    local exit_code=$?
+
+    case "$exit_code" in
+        # regular exit
+        0) ;;
+        # output contains current directory
+        101) cd "$(cat "$output_file")" ;;
+        # output selected files
+        102) ;;
+        *) echo "Exit code: $exit_code" ;;
+    esac
+}
+
+# Create a symlink to globally installed node modules for access to Mocha and Chai.
+setup_js_scratchpad() {
+    cd /tmp
+    if [ ! -f package.json ]; then
+        npm init -f > /dev/null
+        ln -s "$nvm_node_modules" node_modules
+        ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml
+        ln -s ~/.config/nvim/templates/.prettierrc.yml .prettierrc.yml
+    fi
+}
+
+jsscratch() {
+    setup_js_scratchpad
+    nvim scratchpad.mjs "$@"
+    cd -
+}
+
+jsscratchtest() {
+    setup_js_scratchpad
+    nvim scratchpad_test.mjs "$@"
+    cd -
+}
+
+# Create cargo project rather than individual file.
+rsscratch() {
+    cd /tmp
+    if [ ! -d rsscratch ]; then
+        cargo new rsscratch
+    fi
+    nvim /tmp/rsscratch/src/main.rs "$@"
+    cd -
+}
+
+################################################################################
 # Aliases.
 ################################################################################
-# Stay in current folder when exiting ranger. Show ranger nested level at exit.
-alias ranger='source ranger && echo "Level ${RANGER_LEVEL:-0}"'
 
 alias alacrittyconfig='$EDITOR ~/.config/alacritty/alacritty.yml'
 alias awesomeconfig='$EDITOR ~/.config/awesome/rc.lua'
@@ -85,15 +165,6 @@ alias passbackup='cp -viur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8
 alias passrefresh='kdeconnect-cli --refresh'
 alias passdiff='diff -q -r ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/'
 
-say() {
-    gtts-cli "${*}" | mpv -
-}
-
-scratchpad() {
-    # Go to directory, open file, go to previous directory.
-    cd /tmp && nvim "$1" && cd -
-}
-
 alias awkscratch='scratchpad scratchpad.awk'
 alias bashscratch='scratchpad scratchpad.bash'
 alias confluencescratch='scratchpad scratchpad.confluencewiki'
@@ -111,23 +182,12 @@ alias sagescratch='scratchpad scratchpad.sage'
 alias typscratch='scratchpad scratchpad.typ'
 alias zshscratch='scratchpad scratchpad.zsh'
 
-# Create a symlink to globally installed node modules for access to Mocha and Chai.
-alias jsscratch='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && ln -s ~/.config/nvim/templates/.prettierrc.yml .prettierrc.yml && nvim scratchpad.mjs || nvim scratchpad.mjs && cd -'
-alias jsscratchtest='cd /tmp && [ ! -f package.json ] && npm init -f > /dev/null && ln -s "$nvm_node_modules" node_modules && ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml && ln -s ~/.config/nvim/templates/.prettierrc.yml .prettierrc.yml && nvim scratchpad_test.mjs || nvim scratchpad_test.mjs && cd -'
-# Create cargo project rather than individual file.
-alias rsscratch='cd /tmp && [ ! -d rsscratch ] && cargo new rsscratch && nvim rsscratch/src/main.rs || nvim /tmp/rsscratch/src/main.rs && cd -'
-
-scratchpad() { cd /tmp && nvim "$@" && cd -; }
-repo_git() { git --git-dir="$1" --work-tree="$2" "${@:3}"; }
-repo_ui() { gitui --polling -d "$1" -w "$2" "${@:3}"; }
-
 if command -v lsd > /dev/null; then
     # Show icons along with files and directories.
     alias l='lsd -lah'
     alias la='lsd -lAh'
     alias ll='lsd -lh'
     alias ls='lsd'
-    alias lsa='lsd -lah'
     alias tree='lsd --tree'
 fi
 if command -v bat > /dev/null; then
@@ -140,64 +200,53 @@ alias dotfilesui='repo_ui ~/.config/dotfiles/ ~ && git-summary ~/Code -s'
 alias passbgit='repo_git ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 
-joshutocd() {
-    ID="$$"
-    mkdir -p /tmp/$USER
-    OUTPUT_FILE="/tmp/$USER/joshuto-cwd-$ID"
-    env joshuto --output-file "$OUTPUT_FILE" $@
-    exit_code=$?
+# Stay in current folder when exiting ranger. Show ranger nested level at exit.
+alias ranger='source ranger && echo "Level ${RANGER_LEVEL:-0}"'
 
-    case "$exit_code" in
-        # regular exit
-        0)
-            ;;
-        # output contains current directory
-        101)
-            JOSHUTO_CWD=$(cat "$OUTPUT_FILE")
-            cd "$JOSHUTO_CWD"
-            ;;
-        # output selected files
-        102)
-            ;;
-        *)
-            echo "Exit code: $exit_code"
-            ;;
-    esac
-}
-
-alias bc='bc --mathlib'
-alias d='sdcv -u WordNet'
-alias de='sdcv -eu WordNet'
-alias j='joshutocd'
-alias e='exit'
-alias m='man -Hlynx'
-alias nr='setsid --fork alacritty -e ranger'
-alias nt='setsid --fork alacritty'
-alias r='ranger'
-alias t='sdcv -u "Moby Thesaurus II"'
-alias v='nvim'
-
-# Dictionary aliases.
+# Zict dictionary aliases.
 alias en='zict alter en'
 alias es='zict alter es'
 alias ja='zict alter ja'
 alias ru='zict alter ru'
+alias it='zict it'
 alias ру='zict alter ru'
 
+# Dictionary aliases.
+alias da='sdcv --non-interactive --color' # Dictionary all <word>
+alias de='sdcv --non-interactive --color --use-dict --exact-search WordNet' # Dictionary exact <word>
+alias di='sdcv --non-interactive --color --use-dict WordNet' # Dictionary <word>
+alias th='sdcv --non-interactive --color --use-dict "Moby Thesaurus II"' # Thesaurus <word>
+
+alias e='exit'
+alias j='joshutocd'
+alias l='lfcd'
+alias m='man -Hlynx'
+alias n='nvim'
+alias r='ranger'
+alias v='vim'
+
+alias y='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music'
+alias yd='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths'
+
+alias bc='bc --mathlib'
 alias cheat='cht.sh'
 alias gdiff='git fetch && git diff origin/master HEAD'
 alias lf='$HOME/Code/lfimg/lfrun'
 alias locksway='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
 alias lockx='xscreensaver-command -lock'
 alias man='man -a'
-alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
+alias nr='setsid --fork alacritty -e ranger'
+alias nt='setsid --fork alacritty'
 alias playmusic='mpv /run/media/luis/DATA/Music/* --shuffle'
-alias rgf='rg --files | rg'
+alias rf='rg --files'
 alias rsyncdelete='rsync -arv --delete'
 alias rsyncdryrun='rsync -arvn --delete'
-alias y='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music'
-alias yd='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths'
+
+alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
+
+# XDG-Ninja.
+alias wget=wget --hsts-file="$XDG_DATA_HOME/wget-hsts"
 
 # https://unix.stackexchange.com/questions/79112/how-do-i-set-time-and-date-from-the-internet
 # sudo ntpd -qg; sudo hwclock -w

@@ -571,46 +571,8 @@ let-env LYNX_CFG = $"($env.HOME)/.config/lynx/lynx.cfg"
 let-env LYNX_LSS = $"($env.HOME)/.config/lynx/lynx.lss"
 
 ################################################################################
-# Aliases.
+# Functions.
 ################################################################################
-alias alacrittyconfig = nvim ~/.config/alacritty/alacritty.yml
-alias awesomeconfig = nvim ~/.config/awesome/rc.lua
-alias bashconfig = nvim ~/.bashrc
-alias cppmanconfig = nvim ~/.config/cppman/cppman.cfg
-alias doomconfig = nvim ~/.config/doom/config.el
-alias dwlconfig = nvim ~/.config/dwl/
-alias emacsconfig = nvim ~/.config/doom/init.el
-alias gitconfig = nvim ~/.config/git/config
-alias lynxconfig = nvim .config/lynx/lynx.cfg
-alias mostconfig = nvim ~/.config/mostrc
-alias mpdconfig = nvim ~/.config/mpd/mpd.conf
-alias mpvconfig = nvim ~/.config/mpv
-alias ncmpcppconfig = nvim ~/.config/ncmpcpp/
-alias neomuttconfig = nvim ~/.config/mutt/
-alias neomuttmsmtpconfig = nvim ~/.config/msmtp/config
-alias newsboatconfig = nvim ~/.config/newsboat/
-alias nuconfig = nvim ~/.config/nushell/config.nu
-alias nuconfigdir = nvim ~/.config/nushell
-alias nvimconfig = nvim ~/.config/nvim/init.lua
-alias nvimpagerconfig = nvim ~/.config/nvimpager/init.vim
-alias nvimswap = cd ~/.local/share/nvim/swap/
-alias picomconfig = nvim ~/.config/picom/picom.conf
-alias qtileconfig = nvim ~/.config/qtile/config.py
-alias rangercache = cd ~/.cache/ranger/
-alias rangerconfig = nvim ~/.config/ranger/
-alias roficonfig = nvim ~/.config/rofi/config.rasi
-alias shellconfig = nvim ~/.bash_aliases
-alias vimbconfig = nvim ~/.config/vimb/config
-alias vscodiumconfig = nvim ~/.config/VSCodium/User/
-alias waybarconfig = nvim ~/.config/waybar/
-alias zathuraconfig = nvim ~/.config/zathura/zathurarc
-alias zictconfig = nvim ~/.config/zict/zict.bash
-alias zshconfig = nvim ~/.config/zsh/.zshrc
-
-alias passconfig = cd $"($env.HOME)/.local/share/pass"
-alias passbackup = cp -viur $"($env.HOME)/.local/share/pass/*" /run/user/1000/5bfbfc95be7243f8/primary/pass/
-alias passrefresh = kdeconnect-cli --refresh
-alias passdiff = diff -q -r $"($env.HOME)/.local/share/pass/" /run/user/1000/5bfbfc95be7243f8/primary/pass/
 
 def say [words] {
     gtts-cli $words | mpv -
@@ -645,23 +607,6 @@ export extern "joshuto" [
     --output-file: path, # the output file
     --path: path, # The path
 ]
-
-alias awkscratch = scratchpad scratchpad.awk
-alias bashscratch = scratchpad scratchpad.bash
-alias confluencescratch = scratchpad scratchpad.confluencewiki
-alias cppscratch = scratchpad scratchpad.cpp
-alias cscratch = scratchpad scratchpad.c
-alias elscratch = scratchpad scratchpad.el
-alias groovyscratch = scratchpad scratchpad.groovy
-alias javascratch = scratchpad scratchpad.java
-alias luascratch = scratchpad scratchpad.lua
-alias mdscratch = scratchpad scratchpad.md
-alias nuscratch = scratchpad scratchpad.nu
-alias pyscratch = scratchpad scratchpad.py
-alias pyscratchtest = scratchpad scratchpad_test.py
-alias sagescratch = scratchpad scratchpad.sage
-alias typscratch = scratchpad scratchpad.typ
-alias zshscratch = scratchpad scratchpad.zsh
 
 def-env ranger-cd [] {
     let temporary_directory = (mktemp);
@@ -701,19 +646,6 @@ def-env joshuto-cd [] {
     rm $temporary_directory;
 }
 
-alias bc = bc --mathlib
-alias d = sdcv -u WordNet
-alias de = sdcv -eu WordNet
-alias e = exit
-alias j = joshuto-cd
-alias l = lf-cd
-alias m = man -Hlynx
-alias nr = setsid --fork alacritty -e nu -e ranger-cd
-alias nt = setsid --fork alacritty
-alias r = ranger-cd
-alias t = sdcv -u "Moby Thesaurus II"
-alias v = nvim
-
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
 let setup_js_scratchpad = {
     cd /tmp;
@@ -751,8 +683,79 @@ def rsscratch [] {
         cargo new rsscratch;
     }
     nvim rsscratch/src/main.rs;
-
 }
+
+################################################################################
+# Import completions, functions, and aliases.
+################################################################################
+
+use ~/.config/nushell/modules/git-completions.nu *;
+
+################################################################################
+# Aliases.
+################################################################################
+
+alias alacrittyconfig = nvim ~/.config/alacritty/alacritty.yml
+alias awesomeconfig = nvim ~/.config/awesome/rc.lua
+alias bashconfig = nvim ~/.bashrc
+alias cppmanconfig = nvim ~/.config/cppman/cppman.cfg
+alias doomconfig = nvim ~/.config/doom/config.el
+alias dwlconfig = nvim ~/.config/dwl/
+alias emacsconfig = nvim ~/.config/doom/init.el
+alias gitconfig = nvim ~/.config/git/config
+alias lynxconfig = nvim .config/lynx/lynx.cfg
+alias mostconfig = nvim ~/.config/mostrc
+alias mpdconfig = nvim ~/.config/mpd/mpd.conf
+alias mpvconfig = nvim ~/.config/mpv
+alias ncmpcppconfig = nvim ~/.config/ncmpcpp/
+alias neomuttconfig = nvim ~/.config/mutt/
+alias neomuttmsmtpconfig = nvim ~/.config/msmtp/config
+alias newsboatconfig = nvim ~/.config/newsboat/
+alias nuconfig = nvim ~/.config/nushell/config.nu
+alias nuconfigdir = nvim ~/.config/nushell
+alias nvimconfig = nvim ~/.config/nvim/init.lua
+alias nvimpagerconfig = nvim ~/.config/nvimpager/init.vim
+alias nvimswap = cd ~/.local/share/nvim/swap/
+alias picomconfig = nvim ~/.config/picom/picom.conf
+alias qtileconfig = nvim ~/.config/qtile/config.py
+alias rangercache = cd ~/.cache/ranger/
+alias rangerconfig = nvim ~/.config/ranger/
+alias roficonfig = nvim ~/.config/rofi/config.rasi
+alias shellconfig = nvim ~/.bash_aliases
+alias vimbconfig = nvim ~/.config/vimb/config
+alias vscodiumconfig = nvim ~/.config/VSCodium/User/
+alias waybarconfig = nvim ~/.config/waybar/
+alias zathuraconfig = nvim ~/.config/zathura/zathurarc
+alias zictconfig = nvim ~/.config/zict/zict.bash
+alias zshconfig = nvim ~/.config/zsh/.zshrc
+
+alias passconfig = cd $"($env.HOME)/.local/share/pass"
+alias passbackup = cp -viur $"($env.HOME)/.local/share/pass/*" /run/user/1000/5bfbfc95be7243f8/primary/pass/
+alias passrefresh = kdeconnect-cli --refresh
+alias passdiff = diff -q -r $"($env.HOME)/.local/share/pass/" /run/user/1000/5bfbfc95be7243f8/primary/pass/
+
+alias awkscratch = scratchpad scratchpad.awk
+alias bashscratch = scratchpad scratchpad.bash
+alias confluencescratch = scratchpad scratchpad.confluencewiki
+alias cppscratch = scratchpad scratchpad.cpp
+alias cscratch = scratchpad scratchpad.c
+alias elscratch = scratchpad scratchpad.el
+alias groovyscratch = scratchpad scratchpad.groovy
+alias javascratch = scratchpad scratchpad.java
+alias luascratch = scratchpad scratchpad.lua
+alias mdscratch = scratchpad scratchpad.md
+alias nuscratch = scratchpad scratchpad.nu
+alias pyscratch = scratchpad scratchpad.py
+alias pyscratchtest = scratchpad scratchpad_test.py
+alias sagescratch = scratchpad scratchpad.sage
+alias typscratch = scratchpad scratchpad.typ
+alias zshscratch = scratchpad scratchpad.zsh
+
+alias codestatus = git-summary ~/Code -s
+alias dotfiles = git --git-dir ~/.config/dotfiles/ --work-tree ~
+alias dotfilesui = gitui -d ~/.config/dotfiles/ -w ~;
+alias passbgit = git --git-dir ~/.local/share/pass/.backup/.git --work-tree ~/.local/share/pass/.backup
+alias passbgui = gitui -d ~/.local/share/pass/.backup/.git -w ~/.local/share/pass/.backup
 
 # Show icons along with files and directories.
 alias lsdl = lsd -lah
@@ -761,19 +764,10 @@ alias lsdll = lsd -lh
 alias lsdtree = lsd --tree
 
 # Add syntax highlighting to printed files.
-alias bat = bat --style=plain --paging=never;
-alias cat = bat;
+alias bat = bat --style=plain --paging=never
+alias cat = bat
 
-alias codestatus = git-summary ~/Code -s
-alias dotfiles = git --git-dir ~/.config/dotfiles/ --work-tree ~;
-alias dotfilesui = gitui -d ~/.config/dotfiles/ -w ~;
-alias passbgit = git --git-dir ~/.local/share/pass/.backup/.git --work-tree ~/.local/share/pass/.backup
-alias passbgui = gitui -d ~/.local/share/pass/.backup/.git -w ~/.local/share/pass/.backup
-
-# Export completions, functions, and aliases.
-use ~/.config/nushell/modules/git-completions.nu *;
-use ~/.config/nushell/modules/ranger.nu *;
-# Dictionary aliases.
+# Zict dictionary aliases.
 alias en = zict alter en
 alias es = zict alter es
 alias ja = zict alter ja
@@ -781,19 +775,38 @@ alias ru = zict alter ru
 alias it = zict it
 alias ру = zict alter ru
 
+# Dictionary aliases.
+alias da = sdcv --non-interactive --color # Dictionary all <word>
+alias de = sdcv --non-interactive --color --use-dict --exact-search WordNet # Dictionary exact <word>
+alias di = sdcv --non-interactive --color --use-dict WordNet # Dictionary <word>
+alias th = sdcv --non-interactive --color --use-dict "Moby Thesaurus II" # Thesaurus <word>
+
+alias e = exit
+alias j = joshuto-cd
+alias l = lf-cd
+alias m = man -Hlynx
+alias n = nvim
+alias r = ranger-cd
+alias v = vim
+
+alias y = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music
+alias yd = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths
+
+# alias lf = ~/Code/lfimg/lfrun
+alias bc = bc --mathlib
 alias cheat = cht.sh
 alias gdiff = git diff origin/master HEAD
-# alias lf = ~/Code/lfimg/lfrun
 alias locksway = swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png
 alias lockx = xscreensaver-command -lock
 alias man = man -a
-alias mpvh = mpv --config-dir=~/.config/mpv/base
+alias nr = setsid --fork alacritty -e nu -e ranger-cd
+alias nt = setsid --fork alacritty
 alias playmusic =  mpv /run/media/luis/DATA/Music/* --shuffle
-alias rgf = rg --files
+alias rf = rg --files
 alias rsyncdelete = rsync -arv --delete
 alias rsyncdryrun = rsync -arvn --delete
-alias y = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music
-alias yd = yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths
+
+alias mpvh = mpv --config-dir=~/.config/mpv/base
 alias zathurah = zathura --config-dir=~/.config/zathura/base
 
 # XDG-Ninja.
@@ -801,7 +814,7 @@ alias wget = wget --hsts-file=$"($env.XDG_DATA_HOME)/wget-hsts"
 
 # https://unix.stackexchange.com/questions/79112/how-do-i-set-time-and-date-from-the-internet
 # sudo ntpd -qg; sudo hwclock -w
-# alias fixtime='sudo ntpd -qg'
+alias fixtime = sudo ntpd -qg
 # export bgs='/usr/share/backgrounds/nordic-wallpapers/'
 
 # Only enter SSH password once.
