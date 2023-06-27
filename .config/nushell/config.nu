@@ -806,13 +806,3 @@ alias wget = wget --hsts-file=$"($env.XDG_DATA_HOME)/wget-hsts"
 
 # Only enter SSH password once.
 # keychain --quiet --eval id_rsa > /dev/null
-
-################################################################################
-# packer.nu
-################################################################################
-# Load packer API.
-overlay use ~/.local/share/nushell/packer/start/packer.nu/api_layer/packer_api.nu
-# Load packages.
-overlay use ~/.local/share/nushell/packer/packer_packages.nu
-# Load conditional packages.
-overlay use ~/.local/share/nushell/packer/conditional_packages.nu

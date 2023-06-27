@@ -85,24 +85,3 @@ let-env NU_PLUGIN_DIRS = [
 
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 # let-env PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
-
-################################################################################
-# packer.nu
-################################################################################
-let-env NU_PACKER_HOME = ('~/.local/share/nushell/packer' | path expand)
-# Recovery command.
-def 'packer compile' [] { nu -c $'use ($env.NU_PACKER_HOME)/start/packer.nu/api_layer/packer.nu; packer compile' }
-# bootstrap packer.nu
-if not ($'($env.NU_PACKER_HOME)/start/packer.nu/api_layer/packer_api.nu' | path exists) {
-  print $'(ansi ub)Bootstrapping packer.nu...(ansi reset)'
-  nu -c (http get https://raw.githubusercontent.com/jan9103/packer.nu/main/install.nu)
-  print $'(ansi ub)Bootstrapped packer.nu.'
-  print $'(ansi ub)Installing packages...(ansi reset)'
-  nu -c $'use ($env.NU_PACKER_HOME)/start/packer.nu/api_layer/packer.nu; packer install'
-  print $'(ansi ub)Installed packages.(ansi reset)'
-}
-# Compile conditional package loader.
-# Conditional packages have to be generated in the env, since you can't generate and import in the same file.
-nu -c 'use ~/.local/share/nushell/packer/start/packer.nu/api_layer/packer.nu; packer compile_cond_init ~/.local/share/nushell/packer/conditional_packages.nu'
-# Create packages file if it does not exist already.
-if not ($'($env.NU_PACKER_HOME)/packer_packages.nu' | path exists) { 'export-env {}' | save $'($env.NU_PACKER_HOME)/packer_packages.nu' }
