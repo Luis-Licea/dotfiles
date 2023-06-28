@@ -7,9 +7,11 @@
 pacman_programs=(
 
     # Development tools.
+    indent                  # C language source code formatting program # alias indent='indent -bap -br -ce -ci4 -cli0 -d0 -di0 -i8 -ip -l79 -nbc -ncdb -ndj -ei -nfc1 -nlp -npcs -psl -sc -sob'
+    ansible                 # Official assortment of Ansible collections
     zim                     # A WYSIWYG text editor that aims at bringing the concept of a wiki to the desktop.
     zim-tools               # Various ZIM command line tools.
-    sqlite-doc              # Static HTML website files, SQL Syntax, and C/C++ interface specs.
+    sqlite-doc              # Static HTML website files, SQL Syntax, and C/C++ interface specs. alias sqlite-doc='xdg-open /usr/share/doc/sqlite/doclist.html'
     nvm                     # Node Version Manager.
     entr                    # Run arbitrary commands when files change.
     keychain                # A front-end to ssh-agent, allowing one long-running ssh-agent process per system, rather than per login
@@ -51,6 +53,8 @@ pacman_programs=(
     pandoc-bin              # Pandoc executable only, without 750MB Haskell depends/makedepends.
     tcc                     # Tiny C Compiler.
     opengl-man-pages        # OpenGL Man Pages - OpenGL 4.x.
+    sagemath                # Open Source Mathematics Software, free alternative to Magma, Maple, Mathematica, and Matlab
+    scrcpy                  # Needs `adb` from `anroid-tools`. Display and control your Android device; Enable Android debugging mode, connect USB, and done!
 
     # Music player.
     mpd        # Flexible, powerful, server for playing music.
@@ -74,6 +78,7 @@ pacman_programs=(
     rmlint       # Tool to remove duplicates much faster than fdupes
     syncthing    # Continuous Replication / Cluster Synchronization Thing
 
+    libsixel          # Provides a codec for DEC SIXEL graphics and some converter programs
     lf                # A terminal file manager inspired by ranger
     kitty             # A modern, hackable, featureful, OpenGL-based terminal emulator.
     sshfs             # For kdeconnect. FUSE client based on the SSH File Transfer Protocol.
@@ -165,8 +170,9 @@ aur_programs=(
     asciiquarium             # An aquarium/sea animation in ASCII art
     sl                       # Steam locomotive ascii art.
     python-gtts              # Python library and CLI tool to interface with Google Translate's text-to-speech API
-    toilet                   # free replacement for the FIGlet utility.
-    toilet-fonts             # Additional asciiart fonts for toilet (adapted from figlet-fonts)
+
+    toilet                   # free replacement for the FIGlet utility.                         # alias toilet='toilet -F crop -F border -f mono12' # -F metal -F rainbow --html
+    toilet-fonts             # Additional asciiart fonts for toilet (adapted from figlet-fonts) # alias toilet-filters='toilet --filter list'
     mutt-wizard-git          # Auto-configure neomutt and isync/mpop with safe passwords (IMAP/POP3/SMTP)
     abook                    # Text-based addressbook designed for use with Mutt.
     pipe-viewer-git          # A lightweight YouTube client for Linux (CLI/GTK).
@@ -312,19 +318,13 @@ pip3_programs=(
     cppman       # C++ man page documentation.
     cmake-format # Source code formatter for CMake list files.
     cmakelint    # CMake files and reports style issues
+    notebook     # Provies `jupyter notebook` command.
 )
 
 # List of installers that I hope existed.
 nonexistent_programs=(
     goldendict-en # Goldendict English dictionaries.
     goldendict-es # Goldendict Spanish dictionaries.
-    imprimis      # Video game based on Tesseract.
-)
-
-# Programs I would like to contribute to.
-want_to_contribute=(
-    goldendict-git
-    imprimis
 )
 
 function install_programs() {
