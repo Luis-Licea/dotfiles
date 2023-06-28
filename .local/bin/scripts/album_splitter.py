@@ -241,10 +241,10 @@ def parse_arguments():
     epilog = f"""
     examples:
         Split the mp3 file into tracks and placed them into a folder.
-        $ track_splitter.py "Artist Name" "../some/mp3" "some/tracklist.txt"
+        $ album_splitter.py "Artist Name" "../some/mp3" "some/tracklist.txt"
 
         Show what would happen if the command were run.
-        $ track_splitter.py Artist album.mp3 tracklist.txt --dry-run
+        $ album_splitter.py Artist album.mp3 tracklist.txt --dry-run
 
         Supported patterns:
         {patterns_txt}
