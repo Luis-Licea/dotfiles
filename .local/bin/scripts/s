@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 ################################################################################
 # MIT License
@@ -24,18 +24,18 @@
 # SOFTWARE.
 ################################################################################
 
-if [ -z "$VOLTA_HOME" ]; then
-    echo 'Specify where to install Volta in /etc/profile:'
-    echo 'export VOLTA_HOME="$XDG_DATA_HOME/volta"'
-    exit 1
-fi
+# s - stardict for rofi
 
-if [ ! -x "$VOLTA_HOME/bin/volta" ]; then
-    # install Volta
-    curl https://get.volta.sh | bash
+# Get a temp file name to store definition.
+definition_temp_file=$(mktemp) && {
+    # Get word definition and store it in temp file.
+    # sdcv -eu WordNet "$1" > "$definition_temp_file"
+    sdcv --color --non-interactive "$1" > "$definition_temp_file"
+} && {
+    # Open the definition in a terminal.
+    alacritty -e less -R "$definition_temp_file"
+}
 
-    # install Node
-    volta install node
-else
-    echo "Volta is already installed."
-fi
+# Remove the temp file.
+[ -f "$definition_temp_file" ] && rm "$definition_temp_file"
+

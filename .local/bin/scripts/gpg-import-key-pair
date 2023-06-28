@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 ################################################################################
 # MIT License
@@ -24,18 +24,16 @@
 # SOFTWARE.
 ################################################################################
 
-if [ -z "$VOLTA_HOME" ]; then
-    echo 'Specify where to install Volta in /etc/profile:'
-    echo 'export VOLTA_HOME="$XDG_DATA_HOME/volta"'
-    exit 1
-fi
+# If there is only one argument:
+if [ $# -eq 1 ] ; then
+    # Import the private key with the specified parameter.
+    gpg --import "$1-private-key.asc"
 
-if [ ! -x "$VOLTA_HOME/bin/volta" ]; then
-    # install Volta
-    curl https://get.volta.sh | bash
+    # Import the public key with the specified parameter.
+    gpg --import "$1-public-key.asc"
 
-    # install Node
-    volta install node
+    # Set the trust level for the imported public key.
+    gpg --edit-key "$1" trust quit
 else
-    echo "Volta is already installed."
+    echo "Enter the name or email associated to the key pair."
 fi
