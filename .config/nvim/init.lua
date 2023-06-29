@@ -54,19 +54,19 @@ nnoremap('<leader>w', ':write<cr>')
 -- nnoremap('<leader>w', ':update<cr>')
 local console = nil
 if vim.fn.executable('alacritty') == 1 then
-    console='alacritty --working-directory'
+    console = {"alacritty", "--working-directory"}
 elseif vim.fn.executable('konsole') == 1 then
-    console="konsole --workdir"
+    console = {"konsole", "--workdir"}
 end
 
 if console then
     function NewTerminal()
-        vim.fn.setenv('VIM_DIR', vim.fn.expand("%:p:h"))
-        vim.cmd('sil !setsid --fork ' .. console .. ' "$VIM_DIR"')
+        local path = vim.fn.expand("%:p:h")
+        vim.fn.system({'setsid', '--fork', console[1], console[2], path})
     end
     function NewRanger()
-        vim.fn.setenv('VIM_DIR', vim.fn.expand("%:p:h"))
-        vim.cmd('sil !setsid --fork ' .. console .. ' "$VIM_DIR" -e ranger')
+        local path = vim.fn.expand("%:p:h")
+        vim.fn.system({'setsid', '--fork', console[1], console[2], path, '-e', 'ranger'})
     end
 
     -- Spawn a new terminal in the folder of the current file.
