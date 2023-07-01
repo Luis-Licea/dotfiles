@@ -427,13 +427,17 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
     end
 
     --- Join two or more arrays and return the new array.
-    ---@vararg Array the arrays to merge.
+    ---@vararg Array|number|string the arrays to merge.
     ---@return Array the new array formed from all the passed arrays.
     local function tableMerge(...)
         local result = {}
         for _, t in ipairs({ ... }) do
-            for _, v in pairs(t) do
-                table.insert(result, v)
+            if type(t) == "table" then
+                for _, v in pairs(t) do
+                    table.insert(result, v)
+                end
+            else
+                table.insert(result, t)
             end
         end
         return result
@@ -513,24 +517,26 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
 vim.b.addCompFlags = false
 vim.b.addDebugFlags = false
 vim.b.formatOnSave = false
-vim.b.runCommand = nil
+vim.b.runCommand = {}
 vim.b.runOnSave = false
 -- Output folder for compiled binaries, pdfs, etc.
 vim.fn.setenv("TMPDIR", vim.fn.expandcmd("/tmp"))
 
 -- Function for toggling auto compilation on save:
 function EditRunCommand()
-    vim.b.runCommand = vim.fn.input("Run command: ", vim.b.runCommand)
+    local separator = table.concat(vim.b.runCommand, ""):chooseSeparator()
+    local command = table.concat(vim.b.runCommand, separator)
+    vim.b.runCommand = vim.fn.input("Run command: ", command..separator):split(separator)
 end
 function ToggleAddCompFlags()
     vim.b.addCompFlags = not vim.b.addCompFlags
     print("Add Comp Flags:", vim.b.addCompFlags)
-    vim.b.runCommand = nil
+    vim.b.runCommand = {}
 end
 function ToggleAddDebugFlags()
     vim.b.addDebugFlags = not vim.b.addDebugFlags
     print("Add Debug Flags:", vim.b.addDebugFlags)
-    vim.b.runCommand = nil
+    vim.b.runCommand = {}
 end
 function ToggleFormatOnSave()
     vim.b.formatOnSave = not vim.b.formatOnSave
@@ -539,7 +545,7 @@ end
 function ToggleRunOnSave()
     vim.b.runOnSave = not vim.b.runOnSave
     print("Run On Save:", vim.b.runOnSave)
-    vim.b.runCommand = nil
+    vim.b.runCommand = {}
 end
 
 vim.api.nvim_create_user_command('EditRunCommand', EditRunCommand,
@@ -1779,7 +1785,7 @@ require('cmp').setup.cmdline(':', {
 --- Split a string of command-line arguments into a list.
 ---@param str string The string with one or more arguments.
 ---@return Array
-local function args2list(str)
+local function str2list(str)
   local t = {}
   -- Balanced quotes.
   for quoted, non_quoted in ('""'..str):gmatch'(%b"")([^"]*)' do
@@ -1789,6 +1795,29 @@ local function args2list(str)
     end
   end
   return t
+end
+
+--- Splits a string into a table using the given character.
+---@param separator string The character to use as a seperator.
+---@return table
+function string:split(separator)
+    local fields = {}
+    local pattern = string.format('([^%s]+)', separator)
+    for match in self:gmatch(pattern) do
+        fields[#fields + 1] = match
+    end
+    return fields
+end
+
+--- Returns a character separator that does not appear in the given string.
+---@return string?
+function string:chooseSeparator()
+    for _, separator in ipairs({ '|', '@', '#', ':', '+', '-' }) do
+        if not self:find(separator) then
+            return separator
+        end
+    end
+    return nil
 end
 
 --- Benchmark the execution time of compiled binary.
@@ -1967,8 +1996,16 @@ end
 
 function Run()
     -- If the run command is defined, execute it.
-    if vim.b.runCommand then
-        vim.cmd(vim.b.runCommand)
+    if #vim.b.runCommand ~= 0 then
+        print(table.concat(vim.b.runCommand, " "))
+        -- Compile the program.
+        print(vim.fn.system(vim.b.runCommand))
+
+        -- Execute the program.
+        local executable_path = vim.b.runCommand[#vim.b.runCommand]
+        if vim.v.shell_error == 0 and vim.fn.executable(executable_path) == 1 then
+            print(vim.fn.system({executable_path}))
+        end
 
         -- Program ran.
         return true
@@ -1977,7 +2014,9 @@ function Run()
     -- Handle files with hash-bangs.
     if FileHasHashBang() and GetHashBang() then
         -- Run file using hash-bang.
-        vim.b.runCommand = ("!%s %s"):format(GetHashBang(), expand("%"))
+        local runCommand = str2list(GetHashBang())
+        table.insert(runCommand, vim.fn.expand("%"))
+        vim.b.runCommand = runCommand
 
         return Run()
     end
@@ -1988,10 +2027,10 @@ function Run()
         local interpreter = ft2interpreter[vim.bo.filetype]
 
         -- Get the file path.
-        local path = expand('%:p')
+        local path = vim.fn.expand('%:p')
 
         -- Run the file.
-        vim.b.runCommand = ('!%s %s'):format(interpreter, path)
+        vim.b.runCommand = {interpreter, path}
 
         return Run()
     end
@@ -2002,12 +2041,12 @@ function Run()
         local compiler = ft2compiler[vim.bo.filetype]
 
         -- Get the file path.
-        local path = expand('%:p')
+        local path = vim.fn.expand('%:p')
 
         -- Define the path where the compiled executable will be placed, and
         -- where it should be executed. Remove the parent directories and
         -- extension to get file name.
-        local executable_path = expand("$TMPDIR/%:t:r")
+        local executable_path = vim.fn.expandcmd("$TMPDIR/%:t:r")
 
         -- By default do not pass additional compilation flags.
         local flags = {}
@@ -2025,9 +2064,7 @@ function Run()
         end
 
         -- Compile and run the file.
-        vim.b.runCommand = ('!%s %s %s -o "%s" && "%s"'):format(compiler,
-            table.concat(flags, ' '), path, executable_path, executable_path)
-
+        vim.b.runCommand = tableMerge(compiler, flags, path, "-o", executable_path)
         return Run()
     end
     -- Program did not run.
