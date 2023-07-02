@@ -690,6 +690,7 @@ def rsscratch [] {
 ################################################################################
 
 use ~/.config/nushell/modules/git-completions.nu *;
+use ~/.config/nushell/modules/pass-completions.nu *;
 
 ################################################################################
 # Aliases.
