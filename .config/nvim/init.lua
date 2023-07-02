@@ -522,11 +522,69 @@ vim.b.runOnSave = false
 -- Output folder for compiled binaries, pdfs, etc.
 vim.fn.setenv("TMPDIR", vim.fn.expandcmd("/tmp"))
 
--- Function for toggling auto compilation on save:
+-- Open a file, operate on it, and open it in a new tab. The function does not
+-- remove the temporary file.
+-- @param path string The path to the temporary file.
+-- @param lines string The contents to write to the file.
+local function openTemporaryTab(path, lines)
+    local file = io.open(path, "w")
+    if file then
+        io.output(file)
+        io.write(lines)
+        io.close(file)
+        vim.cmd("belowright split "..path)
+    end
+end
+
+-- Returns true if the file is readable. Returns false for directories.
+-- @param path string The path to the file to test.
+-- @return bool
+local function fileExists(path)
+   local file = io.open(path, "r")
+   if file ~= nil then
+       io.close(file)
+       return true
+   else
+       return false
+   end
+end
+
+-- Convert the file lines into a table and return it.
+-- @param path string The path to the file to convert into a table.
+-- @return table
+local function fileLines2Table(path)
+    local t = {}
+    if fileExists(path) then
+        for line in io.lines(path, "*l") do
+            table.insert(t, line)
+        end
+    end
+    return t
+end
+
+-- Toggle auto compilation on file save.
 function EditRunCommand()
-    local separator = table.concat(vim.b.runCommand, ""):chooseSeparator()
-    local command = table.concat(vim.b.runCommand, separator)
-    vim.b.runCommand = vim.fn.input("Run command: ", command..separator):split(separator)
+    local separator = "\n"
+    local lines = table.concat(vim.b.runCommand, separator)
+    local path = os.tmpname()
+    local buffer = vim.api.nvim_get_current_buf()
+
+    pcall(openTemporaryTab, path, lines)
+
+    -- Read the file and set the contents as the run command.
+    vim.api.nvim_create_autocmd('BufWritePost', {
+        pattern = path,
+        callback = function(event)
+            local arguments = fileLines2Table(event.file)
+            vim.api.nvim_buf_set_var(buffer, 'runCommand', arguments)
+        end
+    })
+
+    -- Remove the temporary file when done using it.
+    vim.api.nvim_create_autocmd('BufDelete', {
+        pattern = path,
+        callback = function(event) os.remove(event.file) end
+    })
 end
 function ToggleAddCompFlags()
     vim.b.addCompFlags = not vim.b.addCompFlags
