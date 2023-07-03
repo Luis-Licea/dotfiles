@@ -1229,7 +1229,14 @@ nnoremap('<leader><leader>', require("nvim-window").pick)
 --------------------------------------------------------------------------------
 vim.g.doge_python_settings = { omit_redundant_param_types = 0 }
 vim.g.doge_doc_standard_python = 'google'
-vim.api.nvim_create_user_command('Doge', 'DogeGenerate', {})
+
+-- Use a POSIX-compliant shell when executing Doge commands to avoid errors.
+vim.api.nvim_create_user_command('Doge', function()
+    local shell = os.getenv("SHELL") or "/usr/bin/sh"
+    vim.o.shell = "/usr/bin/sh"
+    vim.cmd("DogeGenerate")
+    vim.o.shell = shell
+end, {})
 
 --------------------------------------------------------------------------------
 -- Gitsigns.
