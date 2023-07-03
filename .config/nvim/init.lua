@@ -1238,6 +1238,29 @@ vim.api.nvim_create_user_command('Doge', function()
     vim.o.shell = shell
 end, {})
 
+vim.fn.sign_define('DapBreakpoint',{ text ='⏺️', texthl ='Error', linehl ='Error', numhl ='Error'})
+vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='Search', linehl ='Search', numhl ='Search'})
+
+vim.keymap.set('n', 'dC', require 'dap'.continue) -- [C]ontinue
+vim.keymap.set('n', 'dO', require 'dap'.step_over) -- [O]ver
+vim.keymap.set('n', 'dI', require 'dap'.step_into) -- [I]nto
+vim.keymap.set('n', 'dU', require 'dap'.step_out) -- [U]p
+vim.keymap.set('n', 'dT', require 'dap'.toggle_breakpoint) -- [T]oggle
+vim.keymap.set('n', 'dB', function()
+    require('dap').set_breakpoint(vim.fn.input("Condition: "), vim.fn.input("Hit Condition: "), vim.fn.input('Log Message: '))
+end)
+vim.keymap.set('n', 'dR', require('dap').repl.open) -- [R]epl
+vim.keymap.set('n', 'dL', require('dap').run_last) -- [L]ast
+vim.keymap.set({'n', 'v'}, 'dH', require('dap.ui.widgets').hover) -- [H]over
+vim.keymap.set({'n', 'v'}, 'dP', require('dap.ui.widgets').preview) -- [P]review
+vim.keymap.set('n', 'dF', function() -- [F]rames
+  local widgets = require('dap.ui.widgets')
+  widgets.centered_float(widgets.frames)
+end)
+vim.keymap.set('n', 'dS', function() -- [S]copes
+  local widgets = require('dap.ui.widgets')
+  widgets.centered_float(widgets.scopes)
+end)
 --------------------------------------------------------------------------------
 -- Gitsigns.
 --------------------------------------------------------------------------------
@@ -1403,6 +1426,7 @@ dap.configurations.javascript = {
 }
 dap.configurations.typescript = dap.configurations.javascript
 
+-- Open windows automatically when debug session starts.
 dap.listeners.after.event_initialized["dapui_config"] = function()
   dapui.open({})
 end
@@ -2062,7 +2086,7 @@ end
 function Run()
     -- If the run command is defined, execute it.
     if #vim.b.runCommand ~= 0 then
-        print(table.concat(vim.b.runCommand, " "))
+        print(vim.inspect(vim.b.runCommand))
         -- Compile the program.
         print(vim.fn.system(vim.b.runCommand))
 
