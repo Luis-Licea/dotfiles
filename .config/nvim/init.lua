@@ -2026,7 +2026,9 @@ vim.filetype.add({ extension = {typ = "typst"}})
 -- set(CMAKE_CXX_FLAGS_INIT "--coverage -fno-exceptions -g")
 --
 -- C++ and C compilation flags:
--- Wall: Warn questionable or easyadfjgffa to avoid constructions.
+-- O3: Enable IEEE-and-ISO-compliant optimizations.
+-- Ofast: Enable fast math optimizations; The results may be inaccurate.
+-- Wall: Warn questionable or easy to avoid constructions.
 -- Wextra: Some extra warnings not enabled by -Wall.
 -- Wfloat-conversion: Warns when doubles implicitly converted to floats.
 -- Wsign-conversion: Warn implicit conversion that change integer sign.
@@ -2034,12 +2036,14 @@ vim.filetype.add({ extension = {typ = "typst"}})
 -- Wpedantic: Demand strict ISO C and ISO C++; no forbidden extensions.
 -- Wconversion: Warn implicit conversions that may alter a value.
 local cflags = {
+    '-O3',
+    '-Ofast',
     '-Wall',
+    '-Wconversion',
     '-Wextra',
     '-Wfloat-conversion',
     '-Wshadow',
     '-Wsign-conversion',
-    '-Wconversion'
 }
 
 -- g: Produce debugging info for GDB.
@@ -2056,7 +2060,7 @@ local debug_flags = {
 
 local ft2flags = {
     c   = {unpack(cflags)},
-    cpp = {unpack(cflags), '-std=c++17'},
+    cpp = {'-std=c++17', unpack(cflags)},
 }
 
 local ft2debugflags = {
