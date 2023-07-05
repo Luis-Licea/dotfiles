@@ -534,6 +534,11 @@ local function openTemporaryTab(path, lines)
         io.write(lines)
         io.close(file)
         vim.cmd("belowright split "..path)
+        nnoremap('<leader>bd', ':bd<cr>')
+
+        -- Close window entirely rather than leaving the buffer open.
+        local opts = { noremap=true, silent=true, buffer=true }
+        vim.keymap.set('n', '<leader>q', ":bd<cr>", opts)
     end
 end
 
