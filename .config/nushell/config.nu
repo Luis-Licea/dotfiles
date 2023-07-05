@@ -183,7 +183,7 @@ let light_theme = {
 
 
 # The default config record. This is where much of your global configuration is setup.
-let-env config = {
+$env.config = {
   # true or false to enable or disable the welcome banner at startup
   show_banner: true
   ls: {
@@ -547,28 +547,29 @@ let-env config = {
 # Preferred editor for local and remote sessions
 ################################################################################
 if ($env.SSH_CONNECTION? | is-empty) {
-    let-env EDITOR = nvim
+    $env.EDITOR = nvim
 } else {
     let executables = (which nvim vim vi nano emacs);
-    let-env EDITOR = $executables.0.path?;
+    $env.EDITOR = $executables.0.path?;
 }
-let-env VISUAL = $env.EDITOR;
+$env.VISUAL = $env.EDITOR;
 
 let pagers = (which nvimpager most less);
-let-env PAGER = $pagers.0.path;
+$env.PAGER = $pagers.0.path;
 
 ################################################################################
 # Ranger.
 ################################################################################
 # Disable loading Ranger's global configuration files because custom
 # configurations are provided.
-let-env RANGER_LOAD_DEFAULT_RC = FALSE
+$env.RANGER_LOAD_DEFAULT_RC = FALSE
 
 ################################################################################
 # Lynx Browser.
 ################################################################################
-let-env LYNX_CFG = $"($env.HOME)/.config/lynx/lynx.cfg"
-let-env LYNX_LSS = $"($env.HOME)/.config/lynx/lynx.lss"
+
+$env.LYNX_CFG = $"($env.HOME)/.config/lynx/lynx.cfg"
+$env.LYNX_LSS = $"($env.HOME)/.config/lynx/lynx.lss"
 
 ################################################################################
 # Functions.
