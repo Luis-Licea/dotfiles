@@ -518,6 +518,7 @@ vim.b.addCompFlags = false
 vim.b.addDebugFlags = false
 vim.b.formatOnSave = false
 vim.b.runCommand = {}
+vim.b.compilationCommand = {}
 vim.b.runOnSave = false
 -- Output folder for compiled binaries, pdfs, etc.
 vim.fn.setenv("TMPDIR", vim.fn.expandcmd("/tmp"))
@@ -590,11 +591,13 @@ function ToggleAddCompFlags()
     vim.b.addCompFlags = not vim.b.addCompFlags
     print("Add Comp Flags:", vim.b.addCompFlags)
     vim.b.runCommand = {}
+    vim.b.compilationCommand = {}
 end
 function ToggleAddDebugFlags()
     vim.b.addDebugFlags = not vim.b.addDebugFlags
     print("Add Debug Flags:", vim.b.addDebugFlags)
     vim.b.runCommand = {}
+    vim.b.compilationCommand = {}
 end
 function ToggleFormatOnSave()
     vim.b.formatOnSave = not vim.b.formatOnSave
@@ -604,6 +607,7 @@ function ToggleRunOnSave()
     vim.b.runOnSave = not vim.b.runOnSave
     print("Run On Save:", vim.b.runOnSave)
     vim.b.runCommand = {}
+    vim.b.compilationCommand = {}
 end
 
 vim.api.nvim_create_user_command('EditRunCommand', EditRunCommand,
@@ -2088,18 +2092,19 @@ end
 -- Example: ag -g "/tmp/mocha.mjs" | entr npx mocha mocha.mjs
 
 function Run()
-    -- If the run command is defined, execute it.
+
+    -- Run the compilation command if it is not empty.
+    if #vim.b.compilationCommand ~= 0 then
+        print(vim.inspect(vim.b.compilationCommand))
+        -- Compile the program.
+        print(vim.fn.system(vim.b.compilationCommand))
+    end
+
+    -- Run the program if the command is not empty.
     if #vim.b.runCommand ~= 0 then
         print(vim.inspect(vim.b.runCommand))
-        -- Compile the program.
+        -- Run the program.
         print(vim.fn.system(vim.b.runCommand))
-
-        -- Execute the program.
-        local executable_path = vim.b.runCommand[#vim.b.runCommand]
-        if vim.v.shell_error == 0 and vim.fn.executable(executable_path) == 1 then
-            print(vim.fn.system({executable_path}))
-        end
-
         -- Program ran.
         return true
     end
@@ -2157,7 +2162,8 @@ function Run()
         end
 
         -- Compile and run the file.
-        vim.b.runCommand = tableMerge(compiler, flags, path, "-o", executable_path)
+        vim.b.compilationCommand = tableMerge(compiler, flags, path, "-o", executable_path)
+        vim.b.runCommand = {executable_path}
         return Run()
     end
     -- Program did not run.
