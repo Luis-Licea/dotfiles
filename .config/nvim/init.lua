@@ -40,6 +40,23 @@ local function MasonInstall(binaries)
     for _, bin in ipairs(binaries) do vim.cmd('MasonInstall ' .. bin) end
 end
 
+--- Join two or more arrays and return the new array.
+---@vararg Array|number|string the arrays to merge.
+---@return Array the new array formed from all the passed arrays.
+function table.merge(...)
+    local result = {}
+    for _, t in ipairs({ ... }) do
+        if type(t) == "table" then
+            for _, v in pairs(t) do
+                table.insert(result, v)
+            end
+        else
+            table.insert(result, t)
+        end
+    end
+    return result
+end
+
 --------------------------------------------------------------------------------
 -- Ungrouped Mappings.
 --------------------------------------------------------------------------------
@@ -62,11 +79,11 @@ end
 if console then
     function NewTerminal()
         local path = vim.fn.expand("%:p:h")
-        vim.fn.system({'setsid', '--fork', console[1], console[2], path})
+        vim.fn.system(table.merge('setsid', '--fork', console, path))
     end
     function NewRanger()
         local path = vim.fn.expand("%:p:h")
-        vim.fn.system({'setsid', '--fork', console[1], console[2], path, '-e', 'ranger'})
+        vim.fn.system(table.merge('setsid', '--fork', console, path, '-e', 'ranger'))
     end
 
     -- Spawn a new terminal in the folder of the current file.
@@ -426,23 +443,6 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
         if template then vim.fn.execute('0r ' .. template) end
     end
 
-    --- Join two or more arrays and return the new array.
-    ---@vararg Array|number|string the arrays to merge.
-    ---@return Array the new array formed from all the passed arrays.
-    local function tableMerge(...)
-        local result = {}
-        for _, t in ipairs({ ... }) do
-            if type(t) == "table" then
-                for _, v in pairs(t) do
-                    table.insert(result, v)
-                end
-            else
-                table.insert(result, t)
-            end
-        end
-        return result
-    end
-
     vim.api.nvim_create_user_command('LoadTemplate',
         function(opts)
             LoadTemplateFromType(opts.args)
@@ -456,7 +456,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
                 table.remove(hidden_templates, 1)
                 -- Remove the ".." directory.
                 table.remove(hidden_templates, 1)
-                return tableMerge(regular_templates, hidden_templates)
+                return table.merge(regular_templates, hidden_templates)
             end,
             desc = 'Load the given template'
         }
@@ -466,7 +466,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
         local regular_templates = vim.api.nvim_get_runtime_file("templates/**", true)
         local hidden_templates = vim.api.nvim_get_runtime_file("templates/**/.*", true)
         local templates = {}
-        for _, path in ipairs(tableMerge(hidden_templates, regular_templates)) do
+        for _, path in ipairs(table.merge(hidden_templates, regular_templates)) do
             local tail = vim.fs.basename(path)
             -- Do not include special "." and ".." directories.
             if tail ~= "." and tail ~= ".." and vim.fn.isdirectory(path) == 0 then
@@ -2133,7 +2133,7 @@ function Run()
         local path = vim.fn.expand('%:p')
 
         -- Run the file.
-        vim.b.runCommand = {interpreter, path}
+        vim.b.runCommand = table.merge(interpreter, path)
 
         return Run()
     end
@@ -2163,11 +2163,11 @@ function Run()
         -- If the language has debug flags, and debugging is enabled:
         if ft2debugflags[vim.bo.filetype] and vim.b.addDebugFlags then
             -- Pass the additional compilation flags.
-            flags = tableMerge(ft2debugflags[vim.bo.filetype], flags)
+            flags = table.merge(ft2debugflags[vim.bo.filetype], flags)
         end
 
         -- Compile and run the file.
-        vim.b.compilationCommand = tableMerge(compiler, flags, path, "-o", executable_path)
+        vim.b.compilationCommand = table.merge(compiler, flags, path, "-o", executable_path)
         vim.b.runCommand = {executable_path}
         return Run()
     end
