@@ -718,22 +718,38 @@ local markdown_group = vim.api.nvim_create_augroup('Markdown Group', {
         pattern = '*.md',
         callback = function()
             if vim.b.runOnSave then
-                vim.fn.execute('!pandoc "%" -o "$TMPDIR/%<.pdf"')
+                vim.fn.system({'setsid', '--fork', 'pandoc', vim.fn.expand("%"), '-o', vim.fn.expandcmd("$TMPDIR/%<.pdf")})
             end
         end
     })
 
     -- View pdf files.
     function LaunchViewer()
-        vim.fn.execute('!zathura "$TMPDIR/%<.pdf" &')
+        local viewer = 'zathura'
+        if vim.fn.executable('evince') == 1 then
+            viewer = 'evince'
+        end
+        vim.fn.system({'setsid', '--fork', viewer, vim.fn.expandcmd("$TMPDIR/%<.pdf")})
+    end
+
+    -- Auto compile Typst upon changes.
+    function LaunchWatcher()
+        vim.b.runOnSave = false
+        local path = vim.fn.expand("%:p:h")
+        local input = vim.fn.expand('%')
+        local output = vim.fn.expandcmd("$TMPDIR/%<.pdf")
+        vim.fn.system(table.merge('setsid', '--fork', console, path, '-e', 'typst', 'watch', input, output))
     end
 
     vim.api.nvim_create_autocmd('FileType', {
         group = markdown_group,
         pattern = {'markdown', 'typst'},
-        callback = function()
+        callback = function(event)
             -- View compiled markdown pdf.
-            nnoremap('<leader>cv', ':lua LaunchViewer()<cr>', {buffer = true})
+            nnoremap('<leader>cv', LaunchViewer, {buffer = true})
+            if event.match == "typst" then
+                nnoremap('<leader>cw', LaunchWatcher, {buffer = true})
+            end
         end
     })
 
@@ -2041,7 +2057,7 @@ local ft2interpreter = {
     sh         = "bash",
     javascript = "node",
     glsl       = "glslangValidator",
-    typst      = "typst",
+    typst      = {"typst", "compile"},
 }
 vim.filetype.add({ extension = {typ = "typst"}})
 
@@ -2205,19 +2221,18 @@ function SetLaTeXVariables()
         vim.fn.expand('%')})
     -- Ignore surrounding whitespace. Match any characters such that the last
     -- one is not whitespace. The job name can be many words long.
-    LatexJobName = jobname_line:gmatch('.*jobname:%s*(.*%S)%s*')()
+    vim.b.latexJobName = jobname_line:gmatch('.*jobname:%s*(.*%S)%s*')()
 end
 
 function RunLaTeX()
-    if LatexJobName then
+    if vim.b.latexJobName then
         -- Compile using the jobname.
-        local stdout = vim.fn.system({unpack(RubberCompFlags), '--pdf',
-            '--jobname', LatexJobName, vim.fn.expand('%')})
+        local arguments = table.merge(RubberCompFlags, '--pdf', '--jobname', vim.b.latexJobName, vim.fn.expand('%'))
+        local stdout = vim.fn.system(arguments)
         print(stdout)
     else
         -- If there is no jobname, compile using the default file name.
-        local stdout = vim.fn.system({unpack(RubberCompFlags), '--pdf',
-            vim.fn.expand('%')})
+        local stdout = vim.fn.system(table.merge(RubberCompFlags, '--pdf', vim.fn.expand('%')))
         print(stdout)
     end
 end
@@ -2227,20 +2242,19 @@ function CleanLaTeX()
     -- used for compilation in addition to --clean flag. Do not include --pdf
     -- flag as not to remove the output pdf.
     local rubber_clean_flags = {'--clean', vim.fn.expand('%')}
-    if LatexJobName then
+    if vim.b.latexJobName then
         -- Clean files matching the job name.
-        rubber_clean_flags = {'--clean', '--jobname', LatexJobName,
-            vim.fn.expand('%')}
+        rubber_clean_flags = {'--clean', '--jobname', vim.b.latexJobName, vim.fn.expand('%')}
     end
-    vim.fn.system({unpack(RubberCompFlags), unpack(rubber_clean_flags)})
+    vim.fn.system(table.merge(RubberCompFlags, rubber_clean_flags))
 end
 
 function OpenLaTeXPDF(viewer)
     -- Get current file's root name (without extension) and add .pdf.
     local jobname = vim.fn.expand('%:p:r') .. '.pdf'
-    if LatexJobName then
+    if vim.b.latexJobName then
         -- Get current file's head (last path component removed) and add .pdf.
-        jobname = vim.fn.expand('%:p:h') .. '/' .. LatexJobName .. '.pdf'
+        jobname = vim.fn.expand('%:p:h') .. '/' .. vim.b.latexJobName .. '.pdf'
     end
     print("Viewing " .. jobname)
     vim.fn.system({'setsid', '--fork', viewer, jobname})
