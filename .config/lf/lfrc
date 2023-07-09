@@ -1,3 +1,4 @@
 # git clone and make install https://github.com/thimc/lfimg
 set previewer ~/.config/lf/preview
 set cleaner ~/.config/lf/cleaner
+set icons
