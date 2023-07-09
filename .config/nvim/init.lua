@@ -568,10 +568,14 @@ local function fileLines2Table(path)
     return t
 end
 
--- Toggle auto compilation on file save.
-function EditRunCommand()
-    local separator = "\n"
-    local lines = table.concat(vim.b.runCommand, separator)
+-- Edit a table property vim.b[value] by opening a buffer.
+-- @param value The buffer property vim.b[value] to modify.
+-- @param separator The argument separator character.
+local function Edit(value, separator)
+    if vim.b[value] == nil then
+        error("The buffer property does not exist: " .. value)
+    end
+    local lines = table.concat(vim.b[value], separator)
     local path = os.tmpname()
     local buffer = vim.api.nvim_get_current_buf()
 
@@ -582,7 +586,7 @@ function EditRunCommand()
         pattern = path,
         callback = function(event)
             local arguments = fileLines2Table(event.file)
-            vim.api.nvim_buf_set_var(buffer, 'runCommand', arguments)
+            vim.api.nvim_buf_set_var(buffer, value, arguments)
         end
     })
 
@@ -592,6 +596,18 @@ function EditRunCommand()
         callback = function(event) os.remove(event.file) end
     })
 end
+
+-- Edit the auto run command.
+local function EditRunCommand()
+    Edit('runCommand', '\n')
+end
+
+-- Edit the auto compilation command.
+local function EditCompilationCommand()
+    Edit('compilationCommand', '\n')
+end
+
+
 function ToggleAddCompFlags()
     vim.b.addCompFlags = not vim.b.addCompFlags
     print("Add Comp Flags:", vim.b.addCompFlags)
@@ -616,6 +632,8 @@ function ToggleRunOnSave()
 end
 
 vim.api.nvim_create_user_command('EditRunCommand', EditRunCommand,
+    { nargs = 0, desc = "Edit the run (or compilation) command." })
+vim.api.nvim_create_user_command('EditCompilationCommand', EditCompilationCommand,
     { nargs = 0, desc = "Edit the run (or compilation) command." })
 vim.api.nvim_create_user_command('ToggleAddCompFlags', ToggleAddCompFlags,
     { nargs = 0, desc = "Add compilation flags upon compilation." })
