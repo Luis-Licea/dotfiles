@@ -1286,8 +1286,10 @@ vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='Search', linehl ='Sea
 
 vim.keymap.set('n', 'dC', require 'dap'.continue) -- [C]ontinue
 vim.keymap.set('n', 'dO', require 'dap'.step_over) -- [O]ver
+vim.keymap.set('n', '<enter>', require 'dap'.step_over)
 vim.keymap.set('n', 'dI', require 'dap'.step_into) -- [I]nto
 vim.keymap.set('n', 'dU', require 'dap'.step_out) -- [U]p
+vim.keymap.set('n', 'dE', require 'dap'.terminate) -- T[e]rminate, [E]nd
 vim.keymap.set('n', 'dT', require 'dap'.toggle_breakpoint) -- [T]oggle
 vim.keymap.set('n', 'dB', function()
     require('dap').set_breakpoint(vim.fn.input("Condition: "), vim.fn.input("Hit Condition: "), vim.fn.input('Log Message: '))
@@ -1304,6 +1306,7 @@ vim.keymap.set('n', 'dS', function() -- [S]copes
   local widgets = require('dap.ui.widgets')
   widgets.centered_float(widgets.scopes)
 end)
+
 --------------------------------------------------------------------------------
 -- Gitsigns.
 --------------------------------------------------------------------------------
@@ -1362,7 +1365,70 @@ vim.api.nvim_create_user_command(
     { nargs = 0, desc = 'Install debuggers for C, C++, Rs, Py, JS, TS.' }
 )
 
-require("dapui").setup()
+require("dapui").setup({
+    controls = {
+        element = "repl",
+        enabled = true,
+        icons = {
+            disconnect = "",
+            pause = "",
+            play = "",
+            run_last = "",
+            step_back = "",
+            step_into = "",
+            step_out = "",
+            step_over = "",
+            terminate = ""
+        }
+    },
+    element_mappings = {},
+    expand_lines = true,
+    floating = {
+        border = "single",
+        mappings = {
+            close = { "q", "<Esc>" }
+        }
+    },
+    force_buffers = true,
+    icons = {
+        collapsed = "",
+        current_frame = "",
+        expanded = ""
+    },
+    layouts = {
+        {
+            elements = {
+                { id = "scopes", size = 0.25 },
+                { id = "breakpoints", size = 0.25 },
+                { id = "stacks", size = 0.25 },
+                { id = "watches", size = 0.25 }
+            },
+            position = "left",
+            size = 40
+        },
+        {
+            elements = {
+                { id = "repl", size = 0.95 },
+                -- { id = "console", size = 0.5 }
+            },
+            position = "bottom",
+            size = 10
+        }
+    },
+    mappings = {
+        edit = "e",
+        expand = { "<CR>", "<2-LeftMouse>" },
+        open = "o",
+        remove = "d",
+        repl = "r",
+        toggle = "t"
+    },
+    render = {
+        indent = 1,
+        max_value_lines = 100
+    }
+})
+
 local dap, dapui = require("dap"), require("dapui")
 
 dap.adapters.python = {
@@ -1781,6 +1847,8 @@ require('lspconfig').lua_ls.setup {
             workspace = {
                 -- Make the server aware of Neovim runtime files
                 library = vim.api.nvim_get_runtime_file("", true),
+                -- Don't ask to configure workspace for luassert, luv, etc.
+                checkThirdParty = false,
             },
             -- Do not send telemetry data containing a randomized but unique
             -- identifier
