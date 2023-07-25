@@ -1,61 +1,14 @@
-local function dict_append(dict1, dict2)
-    if dict1 and dict2 then
-        for key, value in pairs(dict2) do
-            dict1[key] = value
-        end
-    end
-end
+local key = require("key_bindings")
+local tables = require("tables")
 
--- Expand environment variables and escape spaces and quotes in a string.
--- @param str string The string whose environment variables will be expanded
--- and whose paces and quotes will be escaped.
-local function expand(str)
-        return vim.fn.fnameescape(vim.fn.expandcmd(str))
-end
+local expand = key.expand
+local map = key.map
+local nnoremap = key.nnoremap
+local cnoremap = key.cnoremap
+local inoremap = key.inoremap
+local tnoremap = key.tnoremap
 
-local function keymap(mode, shortcut, command, options)
-    vim.keymap.set(mode, shortcut, command, options)
-end
-
-local function map(shortcut, command, options)
-    keymap('', shortcut, command, options)
-end
-
-local function nnoremap(shortcut, command, options)
-    local default_options = {noremap = true}
-    dict_append(default_options, options)
-    keymap('n', shortcut, command, default_options)
-end
-local function cnoremap(shortcut, command)
-    keymap('c', shortcut, command, {noremap = true})
-end
-local function inoremap(shortcut, command)
-    keymap('i', shortcut, command, {noremap = true})
-end
-local function tnoremap(shortcut, command)
-    keymap('t', shortcut, command, {noremap = true})
-end
-
-local function MasonInstall(binaries)
-    for _, bin in ipairs(binaries) do vim.cmd('MasonInstall ' .. bin) end
-end
-
---- Join two or more arrays and return the new array.
----@vararg Array|number|string the arrays to merge.
----@return Array the new array formed from all the passed arrays.
-function table.merge(...)
-    local result = {}
-    for _, t in ipairs({ ... }) do
-        if type(t) == "table" then
-            for _, v in pairs(t) do
-                table.insert(result, v)
-            end
-        else
-            table.insert(result, t)
-        end
-    end
-    return result
-end
+table.merge = tables.merge
 
 --------------------------------------------------------------------------------
 -- Ungrouped Mappings.
@@ -1566,6 +1519,7 @@ require 'nvim-treesitter.configs'.setup {
 
     -- List of parsers to ignore installing (for "all")
     -- ignore_install = { "haskell" },
+    ignore_install = {},
 
     -- If you need to change the installation directory of the parsers (see -> Advanced Setup)
     -- parser_install_dir = "/some/path/to/store/parsers",
