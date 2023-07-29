@@ -1,5 +1,6 @@
 local key = require("key_bindings")
-local tables = require("tables")
+local Table = require("Table")
+local Path = require("Path")
 
 local expand = key.expand
 local map = key.map
@@ -8,7 +9,6 @@ local cnoremap = key.cnoremap
 local inoremap = key.inoremap
 local tnoremap = key.tnoremap
 
-table.merge = tables.merge
 local set = vim.keymap.set
 
 --------------------------------------------------------------------------------
@@ -33,11 +33,11 @@ end
 if console then
     function NewTerminal()
         local path = vim.fn.expand("%:p:h")
-        vim.fn.system(table.merge('setsid', '--fork', console, path))
+        vim.fn.system(Table.merge('setsid', '--fork', console, path))
     end
     function NewRanger()
         local path = vim.fn.expand("%:p:h")
-        vim.fn.system(table.merge('setsid', '--fork', console, path, '-e', 'ranger'))
+        vim.fn.system(Table.merge('setsid', '--fork', console, path, '-e', 'ranger'))
     end
 
     -- Spawn a new terminal in the folder of the current file.
@@ -410,7 +410,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
                 table.remove(hidden_templates, 1)
                 -- Remove the ".." directory.
                 table.remove(hidden_templates, 1)
-                return table.merge(regular_templates, hidden_templates)
+                return Table.merge(regular_templates, hidden_templates)
             end,
             desc = 'Load the given template'
         }
@@ -420,7 +420,7 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
         local regular_templates = vim.api.nvim_get_runtime_file("templates/**", true)
         local hidden_templates = vim.api.nvim_get_runtime_file("templates/**/.*", true)
         local templates = {}
-        for _, path in ipairs(table.merge(hidden_templates, regular_templates)) do
+        for _, path in ipairs(Table.merge(hidden_templates, regular_templates)) do
             local tail = vim.fs.basename(path)
             -- Do not include special "." and ".." directories.
             if tail ~= "." and tail ~= ".." and vim.fn.isdirectory(path) == 0 then
@@ -444,19 +444,6 @@ local template_group = vim.api.nvim_create_augroup('Template Group', {})
     --- Return the path to the executable specified by the hash-bang.
     ---@return string The path tho the executable.
     function GetHashBang() return vim.fn.getline(0,1)[1]:sub(3) end
-
-    --- Return whether the given path is executable.
-    ---@param path string An optional path to the file to check.
-    ---@return boolean True if the path is executable by all users.
-    function IsExecutable(path)
-        -- If the path is not defined, use the path to the current file.
-        if not path then path = vim.fn.expand("%") end
-        -- Get permissions string including parenthesis, e.g. "drwxrwxrwx".
-        local permissions = vim.fn.system({'stat', '--printf="%A"', path})
-        -- The eleventh character in the permissions "drwxrwxrwx" represents
-        -- whether the file is executable by all users.
-        return string.sub(permissions, 11, 11) == "x"
-    end
 
     -- Load a template if one is available when creating a file.
     vim.api.nvim_create_autocmd('BufNewFile',  {
@@ -692,7 +679,7 @@ local markdown_group = vim.api.nvim_create_augroup('Markdown Group', {
         local path = vim.fn.expand("%:p:h")
         local input = vim.fn.expand('%')
         local output = vim.fn.expandcmd("$TMPDIR/%<.pdf")
-        vim.fn.system(table.merge('setsid', '--fork', console, path, '-e', 'typst', 'watch', input, output))
+        vim.fn.system(Table.merge('setsid', '--fork', console, path, '-e', 'typst', 'watch', input, output))
     end
 
     vim.api.nvim_create_autocmd('FileType', {
@@ -795,6 +782,7 @@ vim.o.list = true
 vim.o.cindent = true
 -- Change cwd to file's directory.
 -- vim.o.autochdir = true
+vim.o.shell = Path.first_execuable({"/usr/bin/zsh", "/usr/bin/bash", "/usr/bin/nu"})
 
 --------------------------------------------------------------------------------
 -- File finder.
@@ -1243,12 +1231,7 @@ vim.g.doge_python_settings = { omit_redundant_param_types = 0 }
 vim.g.doge_doc_standard_python = 'google'
 
 -- Use a POSIX-compliant shell when executing Doge commands to avoid errors.
-vim.api.nvim_create_user_command('Doge', function()
-    local shell = os.getenv("SHELL") or "/usr/bin/sh"
-    vim.o.shell = "/usr/bin/sh"
-    vim.cmd("DogeGenerate")
-    vim.o.shell = shell
-end, {})
+vim.api.nvim_create_user_command('Doge', "DogeGenerate", {})
 
 vim.fn.sign_define('DapBreakpoint',{ text ='⏺️', texthl ='Error', linehl ='Error', numhl ='Error'})
 vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='Search', linehl ='Search', numhl ='Search'})
@@ -2205,7 +2188,7 @@ function Run()
         local path = vim.fn.expand('%:p')
 
         -- Run the file.
-        vim.b.runCommand = table.merge(interpreter, path)
+        vim.b.runCommand = Table.merge(interpreter, path)
 
         return Run()
     end
@@ -2235,11 +2218,11 @@ function Run()
         -- If the language has debug flags, and debugging is enabled:
         if ft2debugflags[vim.bo.filetype] and vim.b.addDebugFlags then
             -- Pass the additional compilation flags.
-            flags = table.merge(ft2debugflags[vim.bo.filetype], flags)
+            flags = Table.merge(ft2debugflags[vim.bo.filetype], flags)
         end
 
         -- Compile and run the file.
-        vim.b.compilationCommand = table.merge(compiler, flags, path, "-o", executable_path)
+        vim.b.compilationCommand = Table.merge(compiler, flags, path, "-o", executable_path)
         vim.b.runCommand = {executable_path}
         return Run()
     end
@@ -2265,12 +2248,12 @@ end
 function RunLaTeX()
     if vim.b.latexJobName then
         -- Compile using the jobname.
-        local arguments = table.merge(RubberCompFlags, '--pdf', '--jobname', vim.b.latexJobName, vim.fn.expand('%'))
+        local arguments = Table.merge(RubberCompFlags, '--pdf', '--jobname', vim.b.latexJobName, vim.fn.expand('%'))
         local stdout = vim.fn.system(arguments)
         print(stdout)
     else
         -- If there is no jobname, compile using the default file name.
-        local stdout = vim.fn.system(table.merge(RubberCompFlags, '--pdf', vim.fn.expand('%')))
+        local stdout = vim.fn.system(Table.merge(RubberCompFlags, '--pdf', vim.fn.expand('%')))
         print(stdout)
     end
 end
@@ -2284,7 +2267,7 @@ function CleanLaTeX()
         -- Clean files matching the job name.
         rubber_clean_flags = {'--clean', '--jobname', vim.b.latexJobName, vim.fn.expand('%')}
     end
-    vim.fn.system(table.merge(RubberCompFlags, rubber_clean_flags))
+    vim.fn.system(Table.merge(RubberCompFlags, rubber_clean_flags))
 end
 
 function OpenLaTeXPDF(viewer)

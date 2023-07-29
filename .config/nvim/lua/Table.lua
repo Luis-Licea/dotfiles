@@ -2,12 +2,12 @@
 ---@author Luis David Licea Torres
 ---@license MIT
 
-local tables = {}
+local Table = {}
 
 ---Join two dictionaries.
 ---@param table1 table The table that will be modified.
 ---@param table2 table The table to append.
-function tables.append(table1, table2)
+function Table.append(table1, table2)
     if table1 and table2 then
         for key, value in pairs(table2) do
             table1[key] = value
@@ -22,13 +22,13 @@ end
 ---```
 ---
 ---
----@param array1 Array The first array to compare.
----@param array2 Array The second array to compare.
----@return boolean
-function tables.compare(array1, array2)
+---@param array1 table The first array to compare.
+---@param array2 table The second array to compare.
+---@return boolean is_equal Whether the lists are the same.
+function Table.compare(array1, array2)
     for i, v in pairs(array1) do
         if type(v) == 'table' then
-            if tables.compare(array2[i], v) == false then
+            if Table.compare(array2[i], v) == false then
                 return false
             end
         else
@@ -49,7 +49,7 @@ end
 ---
 ---@vararg Array|number|string the arrays or strings to merge.
 ---@return Array the new array formed from all the passed arrays.
-function tables.merge(...)
+function Table.merge(...)
     local result = {}
     for _, t in ipairs({ ... }) do
         if type(t) == "table" then
@@ -64,5 +64,5 @@ function tables.merge(...)
 end
 
 
-return tables
+return Table
 

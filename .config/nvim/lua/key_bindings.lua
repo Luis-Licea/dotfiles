@@ -2,7 +2,7 @@
 ---@author Luis David Licea Torres
 ---@license MIT
 
-local append = require("tables").append
+local append = require("Table").append
 local set = vim.keymap.set
 
 --- Expand environment variables and escape spaces and quotes in a string.
