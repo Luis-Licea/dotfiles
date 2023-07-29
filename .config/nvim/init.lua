@@ -1092,62 +1092,76 @@ require('packer').startup(function()
     use { 'jose-elias-alvarez/null-ls.nvim',
         requires = 'nvim-lua/plenary.nvim',
         config = function()
-            require("null-ls").setup {
+            local null_ls = require("null-ls")
+            null_ls.setup {
+                diagnostics_format = "[#{s}] (#{c}) #{m}",
                 sources = {
                     ------------------------------------------------------------
                     -- Problematic.
                     ------------------------------------------------------------
                     -- Is not very useful.
-                    -- require("null-ls").builtins.hover.printenv,
+                    -- null_ls.builtins.hover.printenv,
                     -- Refactoring for JavaScript and TypeScript, but doesn't work.
-                    -- require("null-ls").builtins.code_actions.refactoring,
+                    -- null_ls.builtins.code_actions.refactoring,
                     -- Useful but may leak information.
-                    -- require("null-ls").builtins.hover.dictionary,
+                    -- null_ls.builtins.hover.dictionary,
                     -- No visible changes.
-                    -- require("null-ls").builtins.code_actions.cspell,
+                    -- null_ls.builtins.code_actions.cspell,
                     -- For Markdown and LaTeX: Not very useful.
-                    -- require("null-ls").builtins.diagnostics.proselint,
-                    -- require("null-ls").builtins.code_actions.proselint,
+                    -- null_ls.builtins.diagnostics.proselint,
+                    -- null_ls.builtins.code_actions.proselint,
                     -- This functionality is provided by the "snowball" plugin.
-                    -- require("null-ls").builtins.diagnostics.trail_space,
+                    -- null_ls.builtins.diagnostics.trail_space,
                     -- I don't even know what this does.
-                    -- require("null-ls").builtins.code_actions.ltrs,
+                    -- null_ls.builtins.code_actions.ltrs,
                     -- Not mature. Use StyLua.
-                    -- require("null-ls").builtins.diagnostics.selene,
+                    -- null_ls.builtins.diagnostics.selene,
                     -- Tags need to be manually created with ctags -R.
-                    -- require("null-ls").builtins.completion.tags,
+                    -- null_ls.builtins.completion.tags,
                     -- Already provided by cmp_luasnip and luasnip plugins.
-                    -- require("null-ls").builtins.completion.luasnip,
+                    -- null_ls.builtins.completion.luasnip,
                     -- Does not have as many options as shfmt.
-                    -- require("null-ls").builtins.formatting.beautysh,
+                    -- null_ls.builtins.formatting.beautysh,
                     -- Provide text auto completion.
-                    -- require("null-ls").builtins.completion.spell,
+                    -- null_ls.builtins.completion.spell,
 
                     ------------------------------------------------------------
                     -- Useful.
                     ------------------------------------------------------------
                     -- Add action to preview, reset, select, and stage hunks.
-                    require("null-ls").builtins.code_actions.gitsigns,
+                    null_ls.builtins.code_actions.gitsigns,
                     -- Auto-complete CMake commands and keywords.
-                    require("null-ls").builtins.diagnostics.cmake_lint,
+                    null_ls.builtins.diagnostics.cmake_lint,
                     -- Show Python lint errors.
-                    require("null-ls").builtins.diagnostics.pylint,
+                    null_ls.builtins.diagnostics.pylint.with({
+                        dynamic_command = function()
+                            local command = {"pylint"}
+                            local environment = os.getenv("VIRTUAL_ENV")
+                            if environment then
+                                command = {"python3", "-m", "pylint"}
+                                if vim.fn.executable(environment.."/bin/pylint") == 0 then
+                                    error("Pylint is not installed in the virtualenv. Run `pip install pylint`.")
+                                end
+                            end
+                            return command
+                        end,
+                    }),
                     -- Show messages when bad indentation occurs.
-                    require("null-ls").builtins.formatting.cmake_format,
+                    null_ls.builtins.formatting.cmake_format,
                     -- Add code actions since they aren't provided by the LSP.
-                    require("null-ls").builtins.code_actions.shellcheck,
+                    null_ls.builtins.code_actions.shellcheck,
                     -- Format Lua files based on .stylua.toml file.
-                    require("null-ls").builtins.formatting.stylua.with({
+                    null_ls.builtins.formatting.stylua.with({
                         extra_args = {'--column-width', '100', '--quote-style', 'AutoPreferSingle'}
                     }),
                     -- Format Python code and comments consistently.
-                    require("null-ls").builtins.formatting.black.with({
+                    null_ls.builtins.formatting.black.with({
                         extra_args = {'--line-length', '100'}
                     }),
                     -- Formats Bash scripts and ensures consistent indentation.
-                    require("null-ls").builtins.formatting.shfmt,
+                    null_ls.builtins.formatting.shfmt,
                     -- Formats Markdown tables.
-                    require("null-ls").builtins.formatting.prettier
+                    null_ls.builtins.formatting.prettier
                 },
                 -- Set correct encoding to avoid gitsigns warning: multiple
                 -- different client offset_encodings detected for buffer, this
@@ -1410,7 +1424,7 @@ local function GetDebugExecutable()
     local compilationPath = vim.fn.expandcmd('$TMPDIR/%:t:r')
     local sourcePath = vim.fn.expand('%:p:r')
     local cargoPath = function()
-        if vim.fn.execute('cargo') then
+        if vim.fn.execute('cargo') == 1 then
             local metadata = vim.fn.system({'cargo', 'metadata', '--format-version', '1'})
             local name = metadata:gmatch('"name":"(.-)"')()
             local directory = metadata:gmatch('"target_directory":"(.-)"')()
