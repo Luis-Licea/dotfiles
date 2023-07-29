@@ -9,6 +9,7 @@ local inoremap = key.inoremap
 local tnoremap = key.tnoremap
 
 table.merge = tables.merge
+local set = vim.keymap.set
 
 --------------------------------------------------------------------------------
 -- Ungrouped Mappings.
@@ -60,7 +61,7 @@ local function OpenTagBar()
 end
 
 -- Open tag bar and close it after selecting a tag.
-vim.keymap.set('n', '<leader>ta', OpenTagBar, {noremap = true})
+nnoremap('<leader>ta', OpenTagBar)
 -- Quit vim.
 nnoremap('<leader>q', ':quit<cr>')
 -- Load .vimrc.
@@ -491,7 +492,7 @@ local function openTemporaryTab(path, lines)
 
         -- Close window entirely rather than leaving the buffer open.
         local opts = { noremap=true, silent=true, buffer=true }
-        vim.keymap.set('n', '<leader>q', ":bd<cr>", opts)
+        set('n', '<leader>q', ":bd<cr>", opts)
     end
 end
 
@@ -905,14 +906,16 @@ require('packer').startup(function()
             'nvim-treesitter/nvim-treesitter'
         },
         config = function()
+            local set = vim.keymap.set
+            local noremap = {noremap = true}
             local builtin = require('telescope.builtin')
-            vim.keymap.set('n', '<leader>tl', builtin.live_grep, {noremap = true})
-            vim.keymap.set('n', '<leader>tb', builtin.buffers, {noremap = true})
-            vim.keymap.set('n', '<leader>th', builtin.help_tags, {noremap = true})
-            vim.keymap.set('n', '<leader>tg', builtin.git_status, {noremap = true})
-            vim.keymap.set('n', '<leader>tr', builtin.resume, {noremap = true})
-            vim.keymap.set('n', 'z=', builtin.spell_suggest, {noremap = true})
-            vim.keymap.set('n', '<localleader><localleader>', ':Telescope<cr>', {noremap = true})
+            set('n', '<leader>tl', builtin.live_grep, noremap)
+            set('n', '<leader>tb', builtin.buffers, noremap)
+            set('n', '<leader>th', builtin.help_tags, noremap)
+            set('n', '<leader>tg', builtin.git_status, noremap)
+            set('n', '<leader>tr', builtin.resume, noremap)
+            set('n', 'z=', builtin.spell_suggest, noremap)
+            set('n', '<localleader><localleader>', ':Telescope<cr>', noremap)
 
             --------------------------------------------------------------------------------
             -- Telescope ui-select.
@@ -1001,8 +1004,7 @@ require('packer').startup(function()
             -- Telescope file browser.
             --------------------------------------------------------------------------------
             require("telescope").load_extension("file_browser")
-            vim.keymap.set("n", "<space>tf",
-                require('telescope').extensions.file_browser.file_browser, {noremap = true})
+            set("n", "<space>tf", require('telescope').extensions.file_browser.file_browser, noremap)
 
             -- Find files in git repo if possible, else find files like normal.
             local project_files = function()
@@ -1014,7 +1016,7 @@ require('packer').startup(function()
             --------------------------------------------------------------------------------
             -- Telescope.
             --------------------------------------------------------------------------------
-            vim.keymap.set('n', '<leader>te', project_files, {noremap = true})
+            set('n', '<leader>te', project_files, noremap)
 
             --------------------------------------------------------------------------------
             -- Telescope repo. Find git repositories.
@@ -1022,7 +1024,7 @@ require('packer').startup(function()
             -- Using nvimpager as the pager does not work, use less or most.
             if vim.fn.executable('less') then vim.fn.setenv("PAGER", "less -r") end
             require('telescope').load_extension('repo')
-            vim.keymap.set('n', '<leader>tp', require'telescope'.extensions.repo.list, {noremap = true})
+            set('n', '<leader>tp', require'telescope'.extensions.repo.list, noremap)
         end
     }
     use 'nvim-telescope/telescope-ui-select.nvim'
@@ -1237,25 +1239,25 @@ end, {})
 vim.fn.sign_define('DapBreakpoint',{ text ='⏺️', texthl ='Error', linehl ='Error', numhl ='Error'})
 vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='Search', linehl ='Search', numhl ='Search'})
 
-vim.keymap.set('n', 'dC', require 'dap'.continue) -- [C]ontinue
-vim.keymap.set('n', 'dO', require 'dap'.step_over) -- [O]ver
-vim.keymap.set('n', '<enter>', require 'dap'.step_over)
-vim.keymap.set('n', 'dI', require 'dap'.step_into) -- [I]nto
-vim.keymap.set('n', 'dU', require 'dap'.step_out) -- [U]p
-vim.keymap.set('n', 'dE', require 'dap'.terminate) -- T[e]rminate, [E]nd
-vim.keymap.set('n', 'dT', require 'dap'.toggle_breakpoint) -- [T]oggle
-vim.keymap.set('n', 'dB', function()
+nnoremap('dC', require 'dap'.continue) -- [C]ontinue
+nnoremap('dO', require 'dap'.step_over) -- [O]ver
+nnoremap('<enter>', require 'dap'.step_over)
+nnoremap('dI', require 'dap'.step_into) -- [I]nto
+nnoremap('dU', require 'dap'.step_out) -- [U]p
+nnoremap('dE', require 'dap'.terminate) -- T[e]rminate, [E]nd
+nnoremap('dT', require 'dap'.toggle_breakpoint) -- [T]oggle
+nnoremap('dB', function()
     require('dap').set_breakpoint(vim.fn.input("Condition: "), vim.fn.input("Hit Condition: "), vim.fn.input('Log Message: '))
 end)
-vim.keymap.set('n', 'dR', require('dap').repl.open) -- [R]epl
-vim.keymap.set('n', 'dL', require('dap').run_last) -- [L]ast
-vim.keymap.set({'n', 'v'}, 'dH', require('dap.ui.widgets').hover) -- [H]over
-vim.keymap.set({'n', 'v'}, 'dP', require('dap.ui.widgets').preview) -- [P]review
-vim.keymap.set('n', 'dF', function() -- [F]rames
+nnoremap('dR', require('dap').repl.open) -- [R]epl
+nnoremap('dL', require('dap').run_last) -- [L]ast
+set({'n', 'v'}, 'dH', require('dap.ui.widgets').hover) -- [H]over
+set({'n', 'v'}, 'dP', require('dap.ui.widgets').preview) -- [P]review
+nnoremap('dF', function() -- [F]rames
   local widgets = require('dap.ui.widgets')
   widgets.centered_float(widgets.frames)
 end)
-vim.keymap.set('n', 'dS', function() -- [S]copes
+nnoremap('dS', function() -- [S]copes
   local widgets = require('dap.ui.widgets')
   widgets.centered_float(widgets.scopes)
 end)
@@ -1270,7 +1272,7 @@ require('gitsigns').setup{
     local function mapb(mode, l, r, opts)
       opts = opts or {}
       opts.buffer = bufnr
-      vim.keymap.set(mode, l, r, opts)
+      set(mode, l, r, opts)
     end
 
     -- Navigation
@@ -1555,10 +1557,10 @@ require 'nvim-treesitter.configs'.setup {
 --------------------------------------------------------------------------------
 -- Session Manager.
 --------------------------------------------------------------------------------
-vim.keymap.set('n', '<leader>sl', ':SessionManager load_session<cr>', {})
-vim.keymap.set('n', '<leader>sd', ':SessionManager delete_session<cr>', {})
-vim.keymap.set('n', '<leader>ss', ':SessionManager save_session<cr>', {})
-vim.keymap.set('n', '<leader>sp', ':SessionManager load_last_session<cr>', {})
+nnoremap('<leader>sl', ':SessionManager load_session<cr>')
+nnoremap('<leader>sd', ':SessionManager delete_session<cr>')
+nnoremap('<leader>ss', ':SessionManager save_session<cr>')
+nnoremap('<leader>sp', ':SessionManager load_last_session<cr>')
 require('session_manager').setup({
     -- Define what to do when Neovim is started without arguments. Possible values: Disabled, CurrentDir, LastSession
     -- autoload_mode = require('session_manager.config').AutoloadMode.LastSession,
@@ -1686,13 +1688,13 @@ require("symbols-outline").setup(
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap=true, silent=true }
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+set('n', '<leader>e', vim.diagnostic.open_float, opts)
+set('n', '[d', vim.diagnostic.goto_prev, opts)
+set('n', ']d', vim.diagnostic.goto_next, opts)
 -- nmap <buffer> [g <plug>(lsp-previous-diagnostic)
 -- nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-vim.keymap.set('n', '<leader>d', vim.diagnostic.setloclist, opts)
-vim.keymap.set('n', '<leader>D', vim.diagnostic.setqflist, opts)
+set('n', '<leader>d', vim.diagnostic.setloclist, opts)
+set('n', '<leader>D', vim.diagnostic.setqflist, opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -1703,31 +1705,31 @@ local on_attach = function(client, bufnr)
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-    -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-    vim.keymap.set('n', '<space>K', vim.lsp.buf.hover, bufopts)
+    set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+    set('n', 'gd', vim.lsp.buf.definition, bufopts)
+    -- set('n', 'K', vim.lsp.buf.hover, bufopts)
+    set('n', '<space>K', vim.lsp.buf.hover, bufopts)
 
-    vim.keymap.set('n', '<space>gi', vim.lsp.buf.implementation, bufopts)
-    -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-    vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set('n', 'gs', vim.lsp.buf.document_symbol, bufopts)
-    vim.keymap.set('n', 'gS', vim.lsp.buf.workspace_symbol, bufopts)
-    vim.keymap.set('n', '<leader><s-s>', vim.lsp.buf.signature_help, bufopts)
-    -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-    -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-    -- vim.keymap.set('n', '<leader>wl', function()
+    set('n', '<space>gi', vim.lsp.buf.implementation, bufopts)
+    -- set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+    set('n', 'gt', vim.lsp.buf.type_definition, bufopts)
+    set('n', 'gs', vim.lsp.buf.document_symbol, bufopts)
+    set('n', 'gS', vim.lsp.buf.workspace_symbol, bufopts)
+    set('n', '<leader><s-s>', vim.lsp.buf.signature_help, bufopts)
+    -- set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+    -- set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+    -- set('n', '<leader>wl', function()
         -- print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     -- end, bufopts)
-    vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
-    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-    vim.keymap.set('x', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-    vim.keymap.set('n', '<C-.>', vim.lsp.buf.code_action, bufopts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-    vim.keymap.set('n', '<c-a>', vim.lsp.buf.code_action, bufopts)
+    set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
+    set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
+    set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
+    set('x', '<leader>ca', vim.lsp.buf.code_action, bufopts)
+    set('n', '<C-.>', vim.lsp.buf.code_action, bufopts)
+    set('n', 'gr', vim.lsp.buf.references, bufopts)
+    set('n', '<c-a>', vim.lsp.buf.code_action, bufopts)
     -- Use gq for LPS formatting and gw for regular formatting.
-    vim.keymap.set('x', '<leader>f', vim.lsp.buf.format, bufopts)
+    set('x', '<leader>f', vim.lsp.buf.format, bufopts)
     vim.api.nvim_create_user_command('FormatDocument', function() vim.lsp.buf.format() end,
         { nargs = 0, desc = "Format the document to fix indentation and spacing issues" })
 end
