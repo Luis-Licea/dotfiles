@@ -22,17 +22,17 @@ end
 ---```
 ---
 ---
----@param array1 table The first array to compare.
----@param array2 table The second array to compare.
+---@param table1 table The first array to compare.
+---@param table2 table The second array to compare.
 ---@return boolean is_equal Whether the lists are the same.
-function Table.compare(array1, array2)
-    for i, v in pairs(array1) do
+function Table.compare(table1, table2)
+    for i, v in pairs(table1) do
         if type(v) == 'table' then
-            if Table.compare(array2[i], v) == false then
+            if Table.compare(table2[i], v) == false then
                 return false
             end
         else
-            if v ~= array2[i] then
+            if v ~= table2[i] then
                 return false
             end
         end
@@ -47,8 +47,8 @@ end
 ---```
 ---
 ---
----@vararg Array|number|string the arrays or strings to merge.
----@return Array the new array formed from all the passed arrays.
+---@vararg table|number|string the arrays, strings, or numbers to merge.
+---@return table merged_table the new array formed from all the passed arrays.
 function Table.merge(...)
     local result = {}
     for _, t in ipairs({ ... }) do

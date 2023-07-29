@@ -1,6 +1,8 @@
-local key = require("key_bindings")
-local Table = require("Table")
+-- Import custom modules.
 local Path = require("Path")
+local String = require("String")
+local Table = require("Table")
+local key = require("key_bindings")
 
 local expand = key.expand
 local map = key.map
@@ -483,32 +485,6 @@ local function openTemporaryTab(path, lines)
     end
 end
 
--- Returns true if the file is readable. Returns false for directories.
--- @param path string The path to the file to test.
--- @return bool
-local function fileExists(path)
-   local file = io.open(path, "r")
-   if file ~= nil then
-       io.close(file)
-       return true
-   else
-       return false
-   end
-end
-
--- Convert the file lines into a table and return it.
--- @param path string The path to the file to convert into a table.
--- @return table
-local function fileLines2Table(path)
-    local t = {}
-    if fileExists(path) then
-        for line in io.lines(path, "*l") do
-            table.insert(t, line)
-        end
-    end
-    return t
-end
-
 -- Edit a table property vim.b[value] by opening a buffer.
 -- @param value The buffer property vim.b[value] to modify.
 -- @param separator The argument separator character.
@@ -526,7 +502,7 @@ local function Edit(value, separator)
     vim.api.nvim_create_autocmd('BufWritePost', {
         pattern = path,
         callback = function(event)
-            local arguments = fileLines2Table(event.file)
+            local arguments = Path.to_lines(event.file)
             vim.api.nvim_buf_set_var(buffer, value, arguments)
         end
     })
@@ -1935,44 +1911,6 @@ require('cmp').setup.cmdline(':', {
 -- Auto compilation settings.
 --------------------------------------------------------------------------------
 
---- Split a string of command-line arguments into a list.
----@param str string The string with one or more arguments.
----@return Array
-local function str2list(str)
-  local t = {}
-  -- Balanced quotes.
-  for quoted, non_quoted in ('""'..str):gmatch'(%b"")([^"]*)' do
-    table.insert(t, quoted ~= '""' and quoted:sub(2,-2) or nil)
-    for word in non_quoted:gmatch'%S+' do
-      table.insert(t, word)
-    end
-  end
-  return t
-end
-
---- Splits a string into a table using the given character.
----@param separator string The character to use as a seperator.
----@return table
-function string:split(separator)
-    local fields = {}
-    local pattern = string.format('([^%s]+)', separator)
-    for match in self:gmatch(pattern) do
-        fields[#fields + 1] = match
-    end
-    return fields
-end
-
---- Returns a character separator that does not appear in the given string.
----@return string?
-function string:chooseSeparator()
-    for _, separator in ipairs({ '|', '@', '#', ':', '+', '-' }) do
-        if not self:find(separator) then
-            return separator
-        end
-    end
-    return nil
-end
-
 --- Benchmark the execution time of compiled binary.
 ---@param times number How many times to execute the program.
 ---@param executable_path string path The path to the file or binary to execute.
@@ -1999,39 +1937,9 @@ function BenchmarkExecutionTime(times, executable_path, runner)
     print(stdout)
 end
 
---- Convert a string into a dictionary and return the dictionary.
----@param string string The string to convert to a dictionary.
----@return table
-local function str2dict(string)
-    local dict = {}
-
-    -- Regex building blocks.
-    local equalsSignWithZeroOrMoreSurroundingSpaces = '%s*=%s*'
-    local oneOrMoreWordChars = '(%w+)'
-    local stringWithNoSpaces = '(%S+)'
-    local shortestStringInDoubleQuotes = '(".-")'
-    local shortestStringInSingleQuotes = "('.-')"
-
-    local dict_entry_patterns = {
-        -- "(%w+)%s*=%s*(%S+)", -- Match strings with no spaces.
-        -- '(%w+)%s*=%s*(".-")', -- Match shortest string inside double quotes.
-        -- "(%w+)%s*=%s*('.-')", -- Match shortest string inside single quotes.
-        oneOrMoreWordChars .. equalsSignWithZeroOrMoreSurroundingSpaces .. stringWithNoSpaces,
-        oneOrMoreWordChars .. equalsSignWithZeroOrMoreSurroundingSpaces .. shortestStringInDoubleQuotes,
-        oneOrMoreWordChars .. equalsSignWithZeroOrMoreSurroundingSpaces .. shortestStringInSingleQuotes,
-    }
-
-    for _, pattern in ipairs(dict_entry_patterns) do
-        for key, value in string:gmatch(pattern) do
-            dict[key] = value
-        end
-    end
-    return dict
-end
-
 vim.api.nvim_create_user_command('Time',
     function(opts)
-        local args = str2dict(opts.args)
+        local args = String.to_dict(opts.args)
 
         local times = args.times or 10
         local executable_path = args.path or vim.fn.expand("%:p:r")
@@ -2172,7 +2080,7 @@ function Run()
     -- Handle files with hash-bangs.
     if FileHasHashBang() and GetHashBang() then
         -- Run file using hash-bang.
-        local runCommand = str2list(GetHashBang())
+        local runCommand = String.to_list(GetHashBang())
         table.insert(runCommand, vim.fn.expand("%"))
         vim.b.runCommand = runCommand
 

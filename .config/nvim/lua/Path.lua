@@ -45,16 +45,29 @@ function Path.first_execuable(executables)
     return nil
 end
 
---- Splits a string into a table using the given character.
----@param separator string The character to use as a seperator.
----@return table
-function string:split(separator)
-    local fields = {}
-    local pattern = string.format('([^%s]+)', separator)
-    for match in self:gmatch(pattern) do
-        fields[#fields + 1] = match
+---Returns true if the file is readable. Returns false for directories.
+---@param path string The path to the file to test.
+---@return boolean exists Whether the file exists.
+function Path.exists(path)
+   local file = io.open(path, "r")
+   if file ~= nil then
+       io.close(file)
+       return true
+   end
+   return false
+end
+
+---Return the file lines a table.
+---@param path string The path to the file to convert into a table.
+---@return table lines The file lines.
+function Path.to_lines(path)
+    local lines = {}
+    if Path.exists(path) then
+        for line in io.lines(path, "*l") do
+            table.insert(lines, line)
+        end
     end
-    return fields
+    return lines
 end
 
 return Path
