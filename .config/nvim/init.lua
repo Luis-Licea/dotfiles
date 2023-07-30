@@ -1,8 +1,8 @@
 -- Import custom modules.
-local Path = require("Path")
-local String = require("String")
-local Table = require("Table")
-local key = require("key_bindings")
+local Path = require('Path')
+local String = require('String')
+local Table = require('Table')
+local key = require('key_bindings')
 
 local expand = key.expand
 local map = key.map
@@ -27,18 +27,19 @@ nnoremap('<leader>w', ':write<cr>')
 -- nnoremap('<leader>w', ':update<cr>')
 local console = nil
 if vim.fn.executable('alacritty') == 1 then
-    console = {"alacritty", "--working-directory"}
+    console = { 'alacritty', '--working-directory' }
 elseif vim.fn.executable('konsole') == 1 then
-    console = {"konsole", "--workdir"}
+    console = { 'konsole', '--workdir' }
 end
 
 if console then
     function NewTerminal()
-        local path = vim.fn.expand("%:p:h")
+        local path = vim.fn.expand('%:p:h')
         vim.fn.system(Table.merge('setsid', '--fork', console, path))
     end
+
     function NewRanger()
-        local path = vim.fn.expand("%:p:h")
+        local path = vim.fn.expand('%:p:h')
         vim.fn.system(Table.merge('setsid', '--fork', console, path, '-e', 'ranger'))
     end
 
@@ -47,18 +48,24 @@ if console then
     -- Spawn a new ranger terminal in the folder of the current file.
     nnoremap('<leader>nr', NewRanger)
 
-    vim.api.nvim_create_user_command('Nt', NewTerminal,
-        { nargs = 0, desc = "Launch a new terminal." })
-    vim.api.nvim_create_user_command('Nr', NewRanger,
-        { nargs = 0, desc = "Launch a new ranger terminal." })
+    vim.api.nvim_create_user_command(
+        'Nt',
+        NewTerminal,
+        { nargs = 0, desc = 'Launch a new terminal.' }
+    )
+    vim.api.nvim_create_user_command(
+        'Nr',
+        NewRanger,
+        { nargs = 0, desc = 'Launch a new ranger terminal.' }
+    )
 end
 
 local function OpenTagBar()
-    local tagbarLanguages = { cmake = true, tex = true}
+    local tagbarLanguages = { cmake = true, tex = true }
     if tagbarLanguages[vim.bo.filetype] then
         vim.cmd("call tagbar#OpenWindow('fcj')")
     else
-        require'symbols-outline'.toggle_outline()
+        require('symbols-outline').toggle_outline()
     end
 end
 
@@ -240,219 +247,248 @@ tnoremap('<localleader>l', '<c-\\><c-n><cr><c-w>l')
 -- Escape window.
 tnoremap('<Esc><Esc>', '<c-\\><c-n><cr>')
 
-local term_opnes_group = vim.api.nvim_create_augroup("Terminal Opens Group", {})
+local term_opnes_group = vim.api.nvim_create_augroup('Terminal Opens Group', {})
 
-    -- Turn off spelling in terminal.
-    vim.api.nvim_create_autocmd('TermOpen', {
-        group = term_opnes_group,
-        pattern = '*',
-        command = 'setlocal nospell'
-    })
+-- Turn off spelling in terminal.
+vim.api.nvim_create_autocmd('TermOpen', {
+    group = term_opnes_group,
+    pattern = '*',
+    command = 'setlocal nospell',
+})
 
-    -- Disable line numbering in terminal.
-    vim.api.nvim_create_autocmd('TermOpen', {
-        group = term_opnes_group,
-        pattern = '*',
-        command = 'setlocal nonumber'
-    })
+-- Disable line numbering in terminal.
+vim.api.nvim_create_autocmd('TermOpen', {
+    group = term_opnes_group,
+    pattern = '*',
+    command = 'setlocal nonumber',
+})
 
-    -- Press escape twice to exit. Add only to zsh because it conflicts with fzf.
-    -- Press ctrl+q to scroll freely in terminal, as opposed to ctrl+\ ctrl+n.
-    vim.api.nvim_create_autocmd('TermOpen', {
-       group = term_opnes_group,
-       pattern = '*',
-       command = 'if expand("%:t") == "zsh" | tnoremap <c-q> <c-\\><c-n> | endif'
-   })
+-- Press escape twice to exit. Add only to zsh because it conflicts with fzf.
+-- Press ctrl+q to scroll freely in terminal, as opposed to ctrl+\ ctrl+n.
+vim.api.nvim_create_autocmd('TermOpen', {
+    group = term_opnes_group,
+    pattern = '*',
+    command = 'if expand("%:t") == "zsh" | tnoremap <c-q> <c-\\><c-n> | endif',
+})
 
 local buffer_check_group = vim.api.nvim_create_augroup('Check Buffer Group', {})
 
-    -- Resize windows equally when the window size changes.
-    vim.api.nvim_create_autocmd('VimResized', {
-        group = buffer_check_group,
-        pattern = '*',
-        command = 'wincmd ='
-    })
-    -- Reload config file on change.
-    vim.api.nvim_create_autocmd('BufWritePost', {
-        group    = buffer_check_group,
-        pattern  = vim.env.MYVIMRC,
-        command  = 'source %'})
+-- Resize windows equally when the window size changes.
+vim.api.nvim_create_autocmd('VimResized', {
+    group = buffer_check_group,
+    pattern = '*',
+    command = 'wincmd =',
+})
+-- Reload config file on change.
+vim.api.nvim_create_autocmd('BufWritePost', {
+    group = buffer_check_group,
+    pattern = vim.env.MYVIMRC,
+    command = 'source %',
+})
 
-    -- Highlight yanks.
-    vim.api.nvim_create_autocmd('TextYankPost', {
-        group    = buffer_check_group,
-        pattern  = '*',
-        callback = function() vim.highlight.on_yank{timeout=150} end})
+-- Highlight yanks.
+vim.api.nvim_create_autocmd('TextYankPost', {
+    group = buffer_check_group,
+    pattern = '*',
+    callback = function()
+        vim.highlight.on_yank({ timeout = 150 })
+    end,
+})
 
-    -- Start terminal in insert mode.
-    vim.api.nvim_create_autocmd('TermOpen',     {
-        group    = buffer_check_group,
-        pattern  = '*',
-        command  = 'startinsert | set winfixheight'})
+-- Start terminal in insert mode.
+vim.api.nvim_create_autocmd('TermOpen', {
+    group = buffer_check_group,
+    pattern = '*',
+    command = 'startinsert | set winfixheight',
+})
 
-    -- Start git messages in insert mode. Set color-column relative to
-    -- text-width.
-    vim.api.nvim_create_autocmd('FileType',     {
-        group    = buffer_check_group,
-        pattern  = { 'gitcommit', },
-        command  = 'startinsert | 1 | setlocal colorcolumn=+1'})
+-- Start git messages in insert mode. Set color-column relative to
+-- text-width.
+vim.api.nvim_create_autocmd('FileType', {
+    group = buffer_check_group,
+    pattern = { 'gitcommit' },
+    command = 'startinsert | 1 | setlocal colorcolumn=+1',
+})
 
-    -- Remember file position.
-    vim.api.nvim_create_autocmd('BufReadPost',  {
-        group    = buffer_check_group,
-        pattern  = '*',
-        callback = function()
-            if vim.fn.line("'\"") > 0 and vim.fn.line("'\"") <= vim.fn.line("$") then
-                vim.fn.setpos('.', vim.fn.getpos("'\""))
-                -- exe "normal! g'\"" -- Difficult to escape qutoes.
-                -- vim.cmd('normal zz') -- Find how to center buffer in a sane way.
-                -- vim.cmd('silent! foldopen') -- Open folds. They are annoying.
-            end
-        end })
-
-    -- Quit overly large files before loading them to avoid slowness.
-    vim.api.nvim_create_autocmd('BufReadPre', {
-        group = buffer_check_group,
-        pattern = "*",
-        callback = function()
-            local fsize = vim.fn.getfsize(vim.fn.expand("%:p:f"))
-            local mega_byte = 1024 * 1024
-            if fsize > 5 * mega_byte then
-                 vim.ui.input({ prompt = 'File exceeds recommended file size. Continue [y/n]? ' },
-                     function(input)
-                            if input ~= 'y' then vim.cmd('quit') end
-                     end
-                 )
-            end
+-- Remember file position.
+vim.api.nvim_create_autocmd('BufReadPost', {
+    group = buffer_check_group,
+    pattern = '*',
+    callback = function()
+        if vim.fn.line('\'"') > 0 and vim.fn.line('\'"') <= vim.fn.line('$') then
+            vim.fn.setpos('.', vim.fn.getpos('\'"'))
+            -- exe "normal! g'\"" -- Difficult to escape qutoes.
+            -- vim.cmd('normal zz') -- Find how to center buffer in a sane way.
+            -- vim.cmd('silent! foldopen') -- Open folds. They are annoying.
         end
-    })
+    end,
+})
 
-    -- Turn off syntax highlighting that conflicts with treesitter.
-    vim.api.nvim_create_autocmd('BufEnter', {
-        group = buffer_check_group,
-        pattern = "*",
-        callback = function()
-            local noSyntaxFor = {
-                lua = true, markdown = true, sh = true, json = true,
-                yaml = true, python = true, c = true, cpp = true, rust = true,
-                tex = true
-            }
-            local noTreeSitterFor = { gitcommit = true }
-            if noSyntaxFor[vim.bo.filetype] then
-                vim.bo.syntax = false
-            end
-            if noTreeSitterFor[vim.bo.filetype] then
-                vim.cmd('TSBufDisable highlight')
-            end
+-- Quit overly large files before loading them to avoid slowness.
+vim.api.nvim_create_autocmd('BufReadPre', {
+    group = buffer_check_group,
+    pattern = '*',
+    callback = function()
+        local fsize = vim.fn.getfsize(vim.fn.expand('%:p:f'))
+        local mega_byte = 1024 * 1024
+        if fsize > 5 * mega_byte then
+            vim.ui.input(
+                { prompt = 'File exceeds recommended file size. Continue [y/n]? ' },
+                function(input)
+                    if input ~= 'y' then
+                        vim.cmd('quit')
+                    end
+                end
+            )
         end
-    })
+    end,
+})
+
+-- Turn off syntax highlighting that conflicts with treesitter.
+vim.api.nvim_create_autocmd('BufEnter', {
+    group = buffer_check_group,
+    pattern = '*',
+    callback = function()
+        local noSyntaxFor = {
+            lua = true,
+            markdown = true,
+            sh = true,
+            json = true,
+            yaml = true,
+            python = true,
+            c = true,
+            cpp = true,
+            rust = true,
+            tex = true,
+        }
+        local noTreeSitterFor = { gitcommit = true }
+        if noSyntaxFor[vim.bo.filetype] then
+            vim.bo.syntax = false
+        end
+        if noTreeSitterFor[vim.bo.filetype] then
+            vim.cmd('TSBufDisable highlight')
+        end
+    end,
+})
 
 local xresources_group = vim.api.nvim_create_augroup('Xresources Group', {})
-    -- Apply .Xresources file after editing the file.
-   vim.api.nvim_create_autocmd('BufWritePost',  {
-        group    = xresources_group,
-        pattern  = '.Xresources',
-        callback = function()
-            vim.fn.execute('!xrdb && xrdb -merge ~/.Xresources')
-        end })
+-- Apply .Xresources file after editing the file.
+vim.api.nvim_create_autocmd('BufWritePost', {
+    group = xresources_group,
+    pattern = '.Xresources',
+    callback = function()
+        vim.fn.execute('!xrdb && xrdb -merge ~/.Xresources')
+    end,
+})
 
 local cpp_group = vim.api.nvim_create_augroup('C++ Group', {})
 
-    -- C++ code settings.
-    vim.api.nvim_create_autocmd('FileType',  {
-        group    = cpp_group,
-        pattern  = 'cpp',
-        callback = function()
-            vim.cmd('set shiftwidth=2 | set softtabstop=2  | set tabstop=2')
-        end })
+-- C++ code settings.
+vim.api.nvim_create_autocmd('FileType', {
+    group = cpp_group,
+    pattern = 'cpp',
+    callback = function()
+        vim.cmd('set shiftwidth=2 | set softtabstop=2  | set tabstop=2')
+    end,
+})
 
 --------------------------------------------------------------------------------
 -- Load templates for newly created files.
 --------------------------------------------------------------------------------
 local template_group = vim.api.nvim_create_augroup('Template Group', {})
 
-    --- Load a template in the current buffer. The template will be determined
-    --- based on the file extension and the file name.
-    ---@param name string path to the template to load.
-    local function LoadTemplateFromType(name)
-        -- The place where the templates are saved.
-        local templateDir = vim.fn.expand('~/.config/nvim/templates/')
+--- Load a template in the current buffer. The template will be determined
+--- based on the file extension and the file name.
+---@param name string path to the template to load.
+local function LoadTemplateFromType(name)
+    -- The place where the templates are saved.
+    local templateDir = vim.fn.expand('~/.config/nvim/templates/')
 
-        -- The path to the template to with the same file extension.
-        -- Examples: skeleton.c, skeleton.html, skeleton.awk, etc.
-        local pathSameExt = templateDir .. "skeleton." .. vim.fn.expand("%:e")
+    -- The path to the template to with the same file extension.
+    -- Examples: skeleton.c, skeleton.html, skeleton.awk, etc.
+    local pathSameExt = templateDir .. 'skeleton.' .. vim.fn.expand('%:e')
 
-        -- The path to the template to with the same file name.
-        local pathSameName = templateDir .. vim.fn.expand("%:t")
+    -- The path to the template to with the same file name.
+    local pathSameName = templateDir .. vim.fn.expand('%:t')
 
-        -- The path to the template to load.
-        local template = nil
+    -- The path to the template to load.
+    local template = nil
 
-        -- Check if the template has the same file name or extension.
-        for _, path in ipairs({pathSameExt, pathSameName}) do
-            if vim.fn.filereadable(path) == 1 then template = path end
+    -- Check if the template has the same file name or extension.
+    for _, path in ipairs({ pathSameExt, pathSameName }) do
+        if vim.fn.filereadable(path) == 1 then
+            template = path
         end
-
-        -- Override the template path if a template name is given.
-        if name then template = name end
-
-        if template then vim.fn.execute('0r ' .. template) end
     end
 
-    vim.api.nvim_create_user_command('LoadTemplate',
-        function(opts)
-            LoadTemplateFromType(opts.args)
-        end,
-        {
-            nargs = '*',
-            complete = function()
-                local regular_templates = vim.api.nvim_get_runtime_file("templates/*", true)
-                local hidden_templates = vim.api.nvim_get_runtime_file("templates/.*", true)
-                -- Remove the "." directory.
-                table.remove(hidden_templates, 1)
-                -- Remove the ".." directory.
-                table.remove(hidden_templates, 1)
-                return Table.merge(regular_templates, hidden_templates)
-            end,
-            desc = 'Load the given template'
-        }
-     )
-
-     local function ChooseTemplate()
-        local regular_templates = vim.api.nvim_get_runtime_file("templates/**", true)
-        local hidden_templates = vim.api.nvim_get_runtime_file("templates/**/.*", true)
-        local templates = {}
-        for _, path in ipairs(Table.merge(hidden_templates, regular_templates)) do
-            local tail = vim.fs.basename(path)
-            -- Do not include special "." and ".." directories.
-            if tail ~= "." and tail ~= ".." and vim.fn.isdirectory(path) == 0 then
-                table.insert(templates, path)
-            end
-        end
-        vim.ui.select(templates, { prompt = 'Select template to load into file:', },
-            function(choice) LoadTemplateFromType(choice) end
-         )
-     end
-
-    vim.api.nvim_create_user_command('ChooseTemplate', ChooseTemplate,
-        { nargs = 0, desc = "Chose a template and load it into the buffer." })
-
-    --- Return whether the file has a hash-bang.
-    ---@return boolean True if the file has a hash-bang, false otherwise.
-    function FileHasHashBang()
-        return vim.fn.getline(0,1)[1]:sub(1, 2) == "#!"
+    -- Override the template path if a template name is given.
+    if name then
+        template = name
     end
 
-    --- Return the path to the executable specified by the hash-bang.
-    ---@return string The path tho the executable.
-    function GetHashBang() return vim.fn.getline(0,1)[1]:sub(3) end
+    if template then
+        vim.fn.execute('0r ' .. template)
+    end
+end
 
-    -- Load a template if one is available when creating a file.
-    vim.api.nvim_create_autocmd('BufNewFile',  {
-        group    = template_group,
-        pattern  = '*',
-        callback = function() LoadTemplateFromType() end
-    })
+vim.api.nvim_create_user_command('LoadTemplate', function(opts)
+    LoadTemplateFromType(opts.args)
+end, {
+    nargs = '*',
+    complete = function()
+        local regular_templates = vim.api.nvim_get_runtime_file('templates/*', true)
+        local hidden_templates = vim.api.nvim_get_runtime_file('templates/.*', true)
+        -- Remove the "." directory.
+        table.remove(hidden_templates, 1)
+        -- Remove the ".." directory.
+        table.remove(hidden_templates, 1)
+        return Table.merge(regular_templates, hidden_templates)
+    end,
+    desc = 'Load the given template',
+})
+
+local function ChooseTemplate()
+    local regular_templates = vim.api.nvim_get_runtime_file('templates/**', true)
+    local hidden_templates = vim.api.nvim_get_runtime_file('templates/**/.*', true)
+    local templates = {}
+    for _, path in ipairs(Table.merge(hidden_templates, regular_templates)) do
+        local tail = vim.fs.basename(path)
+        -- Do not include special "." and ".." directories.
+        if tail ~= '.' and tail ~= '..' and vim.fn.isdirectory(path) == 0 then
+            table.insert(templates, path)
+        end
+    end
+    vim.ui.select(templates, { prompt = 'Select template to load into file:' }, function(choice)
+        LoadTemplateFromType(choice)
+    end)
+end
+
+vim.api.nvim_create_user_command(
+    'ChooseTemplate',
+    ChooseTemplate,
+    { nargs = 0, desc = 'Chose a template and load it into the buffer.' }
+)
+
+--- Return whether the file has a hash-bang.
+---@return boolean True if the file has a hash-bang, false otherwise.
+function FileHasHashBang()
+    return vim.fn.getline(0, 1)[1]:sub(1, 2) == '#!'
+end
+
+--- Return the path to the executable specified by the hash-bang.
+---@return string The path tho the executable.
+function GetHashBang()
+    return vim.fn.getline(0, 1)[1]:sub(3)
+end
+
+-- Load a template if one is available when creating a file.
+vim.api.nvim_create_autocmd('BufNewFile', {
+    group = template_group,
+    pattern = '*',
+    callback = function()
+        LoadTemplateFromType()
+    end,
+})
 --------------------------------------------------------------------------------
 -- Auto compilation settings.
 --------------------------------------------------------------------------------
@@ -464,24 +500,24 @@ vim.b.runCommand = {}
 vim.b.compilationCommand = {}
 vim.b.runOnSave = false
 -- Output folder for compiled binaries, pdfs, etc.
-vim.fn.setenv("TMPDIR", vim.fn.expandcmd("/tmp"))
+vim.fn.setenv('TMPDIR', vim.fn.expandcmd('/tmp'))
 
 -- Open a file, operate on it, and open it in a new tab. The function does not
 -- remove the temporary file.
 -- @param path string The path to the temporary file.
 -- @param lines string The contents to write to the file.
 local function openTemporaryTab(path, lines)
-    local file = io.open(path, "w")
+    local file = io.open(path, 'w')
     if file then
         io.output(file)
         io.write(lines)
         io.close(file)
-        vim.cmd("belowright split "..path)
+        vim.cmd('belowright split ' .. path)
         nnoremap('<leader>bd', ':bd<cr>')
 
         -- Close window entirely rather than leaving the buffer open.
-        local opts = { noremap=true, silent=true, buffer=true }
-        set('n', '<leader>q', ":bd<cr>", opts)
+        local opts = { noremap = true, silent = true, buffer = true }
+        set('n', '<leader>q', ':bd<cr>', opts)
     end
 end
 
@@ -490,7 +526,7 @@ end
 -- @param separator The argument separator character.
 local function Edit(value, separator)
     if vim.b[value] == nil then
-        error("The buffer property does not exist: " .. value)
+        error('The buffer property does not exist: ' .. value)
     end
     local lines = table.concat(vim.b[value], separator)
     local path = os.tmpname()
@@ -504,13 +540,15 @@ local function Edit(value, separator)
         callback = function(event)
             local arguments = Path.to_lines(event.file)
             vim.api.nvim_buf_set_var(buffer, value, arguments)
-        end
+        end,
     })
 
     -- Remove the temporary file when done using it.
     vim.api.nvim_create_autocmd('BufDelete', {
         pattern = path,
-        callback = function(event) os.remove(event.file) end
+        callback = function(event)
+            os.remove(event.file)
+        end,
     })
 end
 
@@ -524,42 +562,62 @@ local function EditCompilationCommand()
     Edit('compilationCommand', '\n')
 end
 
-
 function ToggleAddCompFlags()
     vim.b.addCompFlags = not vim.b.addCompFlags
-    print("Add Comp Flags:", vim.b.addCompFlags)
-    vim.b.runCommand = {}
-    vim.b.compilationCommand = {}
-end
-function ToggleAddDebugFlags()
-    vim.b.addDebugFlags = not vim.b.addDebugFlags
-    print("Add Debug Flags:", vim.b.addDebugFlags)
-    vim.b.runCommand = {}
-    vim.b.compilationCommand = {}
-end
-function ToggleFormatOnSave()
-    vim.b.formatOnSave = not vim.b.formatOnSave
-    print("Format On Save:", vim.b.formatOnSave)
-end
-function ToggleRunOnSave()
-    vim.b.runOnSave = not vim.b.runOnSave
-    print("Run On Save:", vim.b.runOnSave)
+    print('Add Comp Flags:', vim.b.addCompFlags)
     vim.b.runCommand = {}
     vim.b.compilationCommand = {}
 end
 
-vim.api.nvim_create_user_command('EditRunCommand', EditRunCommand,
-    { nargs = 0, desc = "Edit the run (or compilation) command." })
-vim.api.nvim_create_user_command('EditCompilationCommand', EditCompilationCommand,
-    { nargs = 0, desc = "Edit the run (or compilation) command." })
-vim.api.nvim_create_user_command('ToggleAddCompFlags', ToggleAddCompFlags,
-    { nargs = 0, desc = "Add compilation flags upon compilation." })
-vim.api.nvim_create_user_command('ToggleAddDebugFlags', ToggleAddDebugFlags,
-    { nargs = 0, desc = "Add debug flags upon compilation." })
-vim.api.nvim_create_user_command('ToggleFormatOnSave', ToggleFormatOnSave,
-    { nargs = 0, desc = "Format the file upon saving." })
-vim.api.nvim_create_user_command('ToggleRunOnSave', ToggleRunOnSave,
-    { nargs = 0, desc = "Run the file upon saving." })
+function ToggleAddDebugFlags()
+    vim.b.addDebugFlags = not vim.b.addDebugFlags
+    print('Add Debug Flags:', vim.b.addDebugFlags)
+    vim.b.runCommand = {}
+    vim.b.compilationCommand = {}
+end
+
+function ToggleFormatOnSave()
+    vim.b.formatOnSave = not vim.b.formatOnSave
+    print('Format On Save:', vim.b.formatOnSave)
+end
+
+function ToggleRunOnSave()
+    vim.b.runOnSave = not vim.b.runOnSave
+    print('Run On Save:', vim.b.runOnSave)
+    vim.b.runCommand = {}
+    vim.b.compilationCommand = {}
+end
+
+vim.api.nvim_create_user_command(
+    'EditRunCommand',
+    EditRunCommand,
+    { nargs = 0, desc = 'Edit the run (or compilation) command.' }
+)
+vim.api.nvim_create_user_command(
+    'EditCompilationCommand',
+    EditCompilationCommand,
+    { nargs = 0, desc = 'Edit the run (or compilation) command.' }
+)
+vim.api.nvim_create_user_command(
+    'ToggleAddCompFlags',
+    ToggleAddCompFlags,
+    { nargs = 0, desc = 'Add compilation flags upon compilation.' }
+)
+vim.api.nvim_create_user_command(
+    'ToggleAddDebugFlags',
+    ToggleAddDebugFlags,
+    { nargs = 0, desc = 'Add debug flags upon compilation.' }
+)
+vim.api.nvim_create_user_command(
+    'ToggleFormatOnSave',
+    ToggleFormatOnSave,
+    { nargs = 0, desc = 'Format the file upon saving.' }
+)
+vim.api.nvim_create_user_command(
+    'ToggleRunOnSave',
+    ToggleRunOnSave,
+    { nargs = 0, desc = 'Run the file upon saving.' }
+)
 nnoremap('<leader>ce', EditRunCommand)
 nnoremap('<leader>cc', ToggleAddCompFlags)
 nnoremap('<leader>cd', ToggleAddDebugFlags)
@@ -567,147 +625,170 @@ nnoremap('<leader>cf', ToggleFormatOnSave)
 nnoremap('<leader>cr', ToggleRunOnSave)
 
 local auto_run_group = vim.api.nvim_create_augroup('Auto Run Group', {
-    clear = true
+    clear = true,
 })
 
-    -- Format document before saving.
-    vim.api.nvim_create_autocmd('BufWritePre', {
-        group = auto_run_group,
-        pattern = '*',
-        callback = function() if vim.b.formatOnSave then vim.lsp.buf.format() end end
-    })
-
-    -- Run the document after saving it.
-    vim.api.nvim_create_autocmd('BufWritePost', {
-        group = auto_run_group,
-        pattern = '*',
-        callback = function() if vim.b.runOnSave then Run() end end
-    })
-
-    -- Execute files named "scratchpad" each time they are saved.
-    vim.api.nvim_create_autocmd({'BufNewFile','BufReadPost'}, {
-        group = auto_run_group,
-        pattern = 'scratchpad.*',
-        callback = function()
-            ToggleRunOnSave()
-            ToggleFormatOnSave()
-            ToggleAddCompFlags()
-            ToggleAddDebugFlags()
+-- Format document before saving.
+vim.api.nvim_create_autocmd('BufWritePre', {
+    group = auto_run_group,
+    pattern = '*',
+    callback = function()
+        if vim.b.formatOnSave then
+            vim.lsp.buf.format()
         end
-    })
+    end,
+})
 
-    -- Always auto-format the following file types.
-    vim.api.nvim_create_autocmd('FileType', {
-        group = auto_run_group,
-        pattern = {'rust', 'cpp', 'html'},
-        callback = ToggleFormatOnSave
-    })
-
-    -- Always auto-format the following file types.
-    vim.api.nvim_create_autocmd('FileType', {
-        group = auto_run_group,
-        pattern = 'c',
-        callback = function()
-            vim.api.nvim_create_user_command('CGenerateAssembly0',
-                function() vim.fn.execute('!gcc -S -O0 -fverbose-asm "%"') end,
-                { nargs = 0, desc = "Generate the assembly file" })
-            vim.api.nvim_create_user_command('CGenerateAssembly1',
-                function() vim.fn.execute('!gcc -S -O1 -fverbose-asm "%"') end,
-                { nargs = 0, desc = "Generate the assembly file" })
-            vim.api.nvim_create_user_command('CGenerateAssembly2',
-                function() vim.fn.execute('!gcc -S -O2 -fverbose-asm "%"') end,
-                { nargs = 0, desc = "Generate the assembly file" })
-            vim.api.nvim_create_user_command('CDumpObject',
-                function() vim.fn.execute('!objdump -drwC "$TMPDIR/%<"') end,
-                { nargs = 0, desc = "Generate the assembly file" })
+-- Run the document after saving it.
+vim.api.nvim_create_autocmd('BufWritePost', {
+    group = auto_run_group,
+    pattern = '*',
+    callback = function()
+        if vim.b.runOnSave then
+            Run()
         end
-    })
+    end,
+})
+
+-- Execute files named "scratchpad" each time they are saved.
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufReadPost' }, {
+    group = auto_run_group,
+    pattern = 'scratchpad.*',
+    callback = function()
+        ToggleRunOnSave()
+        ToggleFormatOnSave()
+        ToggleAddCompFlags()
+        ToggleAddDebugFlags()
+    end,
+})
+
+-- Always auto-format the following file types.
+vim.api.nvim_create_autocmd('FileType', {
+    group = auto_run_group,
+    pattern = { 'rust', 'cpp', 'html', 'lua' },
+    callback = ToggleFormatOnSave,
+})
+
+-- Always auto-format the following file types.
+vim.api.nvim_create_autocmd('FileType', {
+    group = auto_run_group,
+    pattern = 'c',
+    callback = function()
+        vim.api.nvim_create_user_command('CGenerateAssembly0', function()
+            vim.fn.execute('!gcc -S -O0 -fverbose-asm "%"')
+        end, { nargs = 0, desc = 'Generate the assembly file' })
+        vim.api.nvim_create_user_command('CGenerateAssembly1', function()
+            vim.fn.execute('!gcc -S -O1 -fverbose-asm "%"')
+        end, { nargs = 0, desc = 'Generate the assembly file' })
+        vim.api.nvim_create_user_command('CGenerateAssembly2', function()
+            vim.fn.execute('!gcc -S -O2 -fverbose-asm "%"')
+        end, { nargs = 0, desc = 'Generate the assembly file' })
+        vim.api.nvim_create_user_command('CDumpObject', function()
+            vim.fn.execute('!objdump -drwC "$TMPDIR/%<"')
+        end, { nargs = 0, desc = 'Generate the assembly file' })
+    end,
+})
 
 --------------------------------------------------------------------------------
 -- Markdown.
 --------------------------------------------------------------------------------
 local markdown_group = vim.api.nvim_create_augroup('Markdown Group', {
-    clear = true
+    clear = true,
 })
-    -- Auto compile markdown file after saving if auto compilation is enabled.
-    vim.api.nvim_create_autocmd('BufWritePost', {
-        group = markdown_group,
-        pattern = '*.md',
-        callback = function()
-            if vim.b.runOnSave then
-                vim.fn.system({'setsid', '--fork', 'pandoc', vim.fn.expand("%"), '-o', vim.fn.expandcmd("$TMPDIR/%<.pdf")})
-            end
+-- Auto compile markdown file after saving if auto compilation is enabled.
+vim.api.nvim_create_autocmd('BufWritePost', {
+    group = markdown_group,
+    pattern = '*.md',
+    callback = function()
+        if vim.b.runOnSave then
+            vim.fn.system({
+                'setsid',
+                '--fork',
+                'pandoc',
+                vim.fn.expand('%'),
+                '-o',
+                vim.fn.expandcmd('$TMPDIR/%<.pdf'),
+            })
         end
-    })
+    end,
+})
 
-    -- View pdf files.
-    function LaunchViewer()
-        local viewer = 'zathura'
-        if vim.fn.executable('evince') == 1 then
-            viewer = 'evince'
-        end
-        vim.fn.system({'setsid', '--fork', viewer, vim.fn.expandcmd("$TMPDIR/%<.pdf")})
+-- View pdf files.
+function LaunchViewer()
+    local viewer = 'zathura'
+    if vim.fn.executable('evince') == 1 then
+        viewer = 'evince'
     end
+    vim.fn.system({ 'setsid', '--fork', viewer, vim.fn.expandcmd('$TMPDIR/%<.pdf') })
+end
 
-    -- Auto compile Typst upon changes.
-    function LaunchWatcher()
-        vim.b.runOnSave = false
-        local path = vim.fn.expand("%:p:h")
-        local input = vim.fn.expand('%')
-        local output = vim.fn.expandcmd("$TMPDIR/%<.pdf")
-        vim.fn.system(Table.merge('setsid', '--fork', console, path, '-e', 'typst', 'watch', input, output))
-    end
+-- Auto compile Typst upon changes.
+function LaunchWatcher()
+    vim.b.runOnSave = false
+    local path = vim.fn.expand('%:p:h')
+    local input = vim.fn.expand('%')
+    local output = vim.fn.expandcmd('$TMPDIR/%<.pdf')
+    vim.fn.system(
+        Table.merge('setsid', '--fork', console, path, '-e', 'typst', 'watch', input, output)
+    )
+end
 
-    vim.api.nvim_create_autocmd('FileType', {
-        group = markdown_group,
-        pattern = {'markdown', 'typst'},
-        callback = function(event)
-            -- View compiled markdown pdf.
-            nnoremap('<leader>cv', LaunchViewer, {buffer = true})
-            if event.match == "typst" then
-                nnoremap('<leader>cw', LaunchWatcher, {buffer = true})
-            end
+vim.api.nvim_create_autocmd('FileType', {
+    group = markdown_group,
+    pattern = { 'markdown', 'typst' },
+    callback = function(event)
+        -- View compiled markdown pdf.
+        nnoremap('<leader>cv', LaunchViewer, { buffer = true })
+        if event.match == 'typst' then
+            nnoremap('<leader>cw', LaunchWatcher, { buffer = true })
         end
-    })
+    end,
+})
 
 --------------------------------------------------------------------------------
 -- LaTeX auto commands.
 --------------------------------------------------------------------------------
 local latex_group = vim.api.nvim_create_augroup('LaTeX Group', {
-    clear = true
+    clear = true,
 })
 
-    -- Compile the file in the same directory and watch for changes ever 10 seconds.
-    -- nnoremap <leader>co :sil exec \
-    -- '!watch -n 10 rubber --pdf --shell-escape --synctex --inplace "%"'<cr>
-    vim.api.nvim_create_autocmd('FileType', {
-        group = latex_group,
-        pattern = 'tex',
-        callback = function()
-            -- Define variables for compiling file into a PDF.
-            SetLaTeXVariables()
-            -- Compile the file in the same directory.
-            nnoremap('<leader>co', RunLaTeX, {buffer = true})
-            -- Clean all files except the compiled pdf.
-            nnoremap('<leader>cl', CleanLaTeX, {buffer = true})
-            -- Open the compiled LaTeX pdf with the specified viewer.
-            nnoremap('<leader>cv', ':lua OpenLaTeXPDF("zathura")<cr>', {buffer = true})
+-- Compile the file in the same directory and watch for changes ever 10 seconds.
+-- nnoremap <leader>co :sil exec \
+-- '!watch -n 10 rubber --pdf --shell-escape --synctex --inplace "%"'<cr>
+vim.api.nvim_create_autocmd('FileType', {
+    group = latex_group,
+    pattern = 'tex',
+    callback = function()
+        -- Define variables for compiling file into a PDF.
+        SetLaTeXVariables()
+        -- Compile the file in the same directory.
+        nnoremap('<leader>co', RunLaTeX, { buffer = true })
+        -- Clean all files except the compiled pdf.
+        nnoremap('<leader>cl', CleanLaTeX, { buffer = true })
+        -- Open the compiled LaTeX pdf with the specified viewer.
+        nnoremap('<leader>cv', ':lua OpenLaTeXPDF("zathura")<cr>', { buffer = true })
+    end,
+})
+
+-- Compile LaTeX document every time after saving.
+vim.api.nvim_create_autocmd('BufWritePost', {
+    group = latex_group,
+    pattern = '*.tex',
+    callback = function()
+        if vim.b.runOnSave then
+            RunLaTeX()
         end
-    })
+    end,
+})
 
-    -- Compile LaTeX document every time after saving.
-    vim.api.nvim_create_autocmd('BufWritePost', {
-        group = latex_group,
-        pattern = '*.tex',
-        callback = function() if vim.b.runOnSave then RunLaTeX() end end
-    })
-
-    -- Clean the all files except the compiled pdf when exiting.
-    vim.api.nvim_create_autocmd('VimLeavePre', {
-        group = latex_group,
-        pattern = '*.tex',
-        callback = function() CleanLaTeX() end
-    })
+-- Clean the all files except the compiled pdf when exiting.
+vim.api.nvim_create_autocmd('VimLeavePre', {
+    group = latex_group,
+    pattern = '*.tex',
+    callback = function()
+        CleanLaTeX()
+    end,
+})
 
 --------------------------------------------------------------------------------
 -- Interface.
@@ -741,7 +822,9 @@ vim.o.tabstop = 4
 -- Other.
 --------------------------------------------------------------------------------
 -- Treat keybindings the same when using a different keyboard layout.
-vim.cmd[[set langmap=йЙцЦуУкКеЕнНгГшШщЩзЗхХъЪфФыЫвВаАпПрРоОлЛдДжЖэЭяЯчЧсСмМиИтТьЬбБюЮ\\,;qQwWeErRtTyYuUiIoOpP[{]}aAsSdDfFgGhHjJkKlL;:'\"zZxXcCvVbBnNmM\\,<.>?"]]
+vim.cmd(
+    [[set langmap=йЙцЦуУкКеЕнНгГшШщЩзЗхХъЪфФыЫвВаАпПрРоОлЛдДжЖэЭяЯчЧсСмМиИтТьЬбБюЮ\\,;qQwWeErRtTyYuUiIoOpP[{]}aAsSdDfFgGhHjJkKlL;:'\"zZxXcCvVbBnNmM\\,<.>?"]]
+)
 -- Open history file using :q.
 vim.o.history = 200
 -- Ignore case in search patterns.
@@ -751,14 +834,15 @@ vim.o.smartcase = vim.o.ignorecase
 -- Set spelling on.
 vim.o.spell = true
 -- Define tab and trailing space characters.
-vim.opt.listchars = { tab = '◃―▹', trail = '●', extends = '◣', precedes = '◢', nbsp = '○' }
+vim.opt.listchars =
+{ tab = '◃―▹', trail = '●', extends = '◣', precedes = '◢', nbsp = '○' }
 -- Show tabs and trailing spaces.
 vim.o.list = true
 -- Add indentation when S or cc is pressed.
 vim.o.cindent = true
 -- Change cwd to file's directory.
 -- vim.o.autochdir = true
-vim.o.shell = Path.first_execuable({"/usr/bin/zsh", "/usr/bin/bash", "/usr/bin/nu"})
+vim.o.shell = Path.first_execuable({ '/usr/bin/zsh', '/usr/bin/bash', '/usr/bin/nu' })
 
 --------------------------------------------------------------------------------
 -- File finder.
@@ -773,15 +857,20 @@ vim.o.path = vim.o.path .. '**'
 --------------------------------------------------------------------------------
 -- Function to auto-install packer if necessary.
 local ensure_packer = function()
-  local install_path = vim.fn.stdpath('data')
-    ..'/site/pack/packer/start/packer.nvim'
-  if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-    vim.fn.system({'git', 'clone', '--depth', '1',
-        'https://github.com/wbthomason/packer.nvim', install_path})
-    vim.cmd [[packadd packer.nvim]]
-    return true
-  end
-  return false
+    local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+    if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+        vim.fn.system({
+            'git',
+            'clone',
+            '--depth',
+            '1',
+            'https://github.com/wbthomason/packer.nvim',
+            install_path,
+        })
+        vim.cmd([[packadd packer.nvim]])
+        return true
+    end
+    return false
 end
 
 local packer_bootstrap = ensure_packer()
@@ -789,89 +878,102 @@ local packer_bootstrap = ensure_packer()
 local use = require('packer').use
 require('packer').startup(function()
     -- Packer plugin manager.
-    use 'wbthomason/packer.nvim'
+    use('wbthomason/packer.nvim')
     -- Speed up loading Lua modules to improve startup time.
-    use 'lewis6991/impatient.nvim'
+    use('lewis6991/impatient.nvim')
     -- Syntax highlight Confluence wiki pages.
-    use 'dix75/jira.vim'
+    use('dix75/jira.vim')
     -- Context-aware comment plugin.
-    use { 'numToStr/Comment.nvim',
-        config = function() require'Comment'.setup{
-            -- LHS of toggle mappings in NORMAL mode.
-            toggler = {
-                line = '<C-_>', -- Line-comment toggle keymap.
-                block = 'gbc', -- Block-comment toggle keymap.
-            },
-            -- LHS of operator-pending mappings in NORMAL and VISUAL mode.
-            opleader = {
-                line = '<C-_>', -- Line-comment keymap.
-                block = 'gb', -- Block-comment keymap.
-            },
-            -- Enable keybindings: `false` to not create mappings
-            mappings = { basic = true, extra = false }
-        } end
-    }
-    -- Tokyo night color scheme.
-    use {'folke/tokyonight.nvim',
+    use({
+        'numToStr/Comment.nvim',
         config = function()
-            require("tokyonight").setup({
-                style = "moon",
+            require('Comment').setup({
+                -- LHS of toggle mappings in NORMAL mode.
+                toggler = {
+                    line = '<C-_>', -- Line-comment toggle keymap.
+                    block = 'gbc',  -- Block-comment toggle keymap.
+                },
+                -- LHS of operator-pending mappings in NORMAL and VISUAL mode.
+                opleader = {
+                    line = '<C-_>', -- Line-comment keymap.
+                    block = 'gb',   -- Block-comment keymap.
+                },
+                -- Enable keybindings: `false` to not create mappings
+                mappings = { basic = true, extra = false },
+            })
+        end,
+    })
+    -- Tokyo night color scheme.
+    use({
+        'folke/tokyonight.nvim',
+        config = function()
+            require('tokyonight').setup({
+                style = 'moon',
                 -- Enable this to disable setting the background color.
                 transparent = true,
                 styles = {
                     -- Background styles. Can be "dark", "transparent" or "normal".
-                    sidebars = "transparent", -- Style for sidebars.
-                    floats = "transparent", -- Style for floating windows
-                }
+                    sidebars = 'transparent', -- Style for sidebars.
+                    floats = 'transparent',   -- Style for floating windows
+                },
             })
-            require("tokyonight").colorscheme()
-        end
-    }
+            require('tokyonight').colorscheme()
+        end,
+    })
     -- Code snippet auto completion.
-    use {'saadparwaiz1/cmp_luasnip',
+    use({
+        'saadparwaiz1/cmp_luasnip',
         -- Code snippets. Needed by cmp-vim.
-        requires = 'L3MON4D3/LuaSnip'}
+        requires = 'L3MON4D3/LuaSnip',
+    })
     -- Easily align tables, or text by symbols like , ; = & etc.
-    use 'junegunn/vim-easy-align'
+    use('junegunn/vim-easy-align')
     -- Tagbar for class and function outlines.
-    use 'simrat39/symbols-outline.nvim'
+    use('simrat39/symbols-outline.nvim')
     -- Show indentation lines.
-    use 'lukas-reineke/indent-blankline.nvim'
+    use('lukas-reineke/indent-blankline.nvim')
     -- Add JSDoc, Doxygen, etc support.
-    use { "danymat/neogen",
-        config = function() require('neogen').setup { snippet_engine = "luasnip" } end,
-        requires = "nvim-treesitter/nvim-treesitter",
+    use({
+        'danymat/neogen',
+        config = function()
+            require('neogen').setup({ snippet_engine = 'luasnip' })
+        end,
+        requires = 'nvim-treesitter/nvim-treesitter',
         -- Uncomment next line if you want to follow only stable versions
-        tag = "*"
-    }
-    use { 'kkoomen/vim-doge', run = ':call doge#install()' }
-    use 'gpanders/editorconfig.nvim'
+        tag = '*',
+    })
+    use({ 'kkoomen/vim-doge', run = ':call doge#install()' })
+    use('gpanders/editorconfig.nvim')
     -- use 'nvim-treesitter/playground'
     -- use '~/Code/treesitter-markdown'
     -- NOTE: Nvim-web-devicons requires a patched font such as MesloLGS NF.
     -- use 'kyazdani42/nvim-web-devicons'
     -- Fancy debug adapter UI provider and Debug Adapter Protocol.
-    use { "rcarriga/nvim-dap-ui", requires = 'mfussenegger/nvim-dap' }
+    use({ 'rcarriga/nvim-dap-ui', requires = 'mfussenegger/nvim-dap' })
     -- Adapter for vscode-js-debug.
-    use { "mxsdev/nvim-dap-vscode-js", requires = "mfussenegger/nvim-dap" }
+    use({ 'mxsdev/nvim-dap-vscode-js', requires = 'mfussenegger/nvim-dap' })
     -- Provide richer syntax highlighting and only spell-check comments.
-    use { 'nvim-treesitter/nvim-treesitter',
+    use({
+        'nvim-treesitter/nvim-treesitter',
         -- Show context in first line. Know what class or function you are in.
-        requires = 'nvim-treesitter/nvim-treesitter-context' }
+        requires = 'nvim-treesitter/nvim-treesitter-context',
+    })
     -- Session manager for recently opened files.
-    use 'Shatur/neovim-session-manager'
+    use('Shatur/neovim-session-manager')
     -- Supporting functionality.
-    use 'nvim-lua/plenary.nvim'
+    use('nvim-lua/plenary.nvim')
     -- NOTE: Install fd and ripgrep. Rich fuzzy finder.
-    use { 'nvim-telescope/telescope.nvim', tag = '0.1.0',
+    use({
+        'nvim-telescope/telescope.nvim',
+        tag = '0.1.0',
         requires = {
             'kyazdani42/nvim-web-devicons',
             'nvim-lua/plenary.nvim',
-            'nvim-treesitter/nvim-treesitter'
+            'nvim-treesitter/nvim-treesitter',
         },
         config = function()
             local set = vim.keymap.set
-            local noremap = {noremap = true}
+            local noremap = { noremap = true }
             local builtin = require('telescope.builtin')
             set('n', '<leader>tl', builtin.live_grep, noremap)
             set('n', '<leader>tb', builtin.buffers, noremap)
@@ -885,42 +987,45 @@ require('packer').startup(function()
             -- Telescope ui-select.
             --------------------------------------------------------------------------------
             -- Custom function for telescope file browser.
-            local fb_actions = require "telescope".extensions.file_browser.actions
-            local action_state = require "telescope.actions.state"
+            local fb_actions = require('telescope').extensions.file_browser.actions
+            local action_state = require('telescope.actions.state')
             --- Toggle files and folders in `.gitignore` for |telescope-file-browser.picker.file_browser|.
             ---@param prompt_bufnr number: The prompt bufnr
             fb_actions.toggle_gitignore = function(prompt_bufnr)
-            -- local toggle_gitignore = function(prompt_bufnr)
-            -- local function toggle_gitignore(prompt_bufnr)
-              local current_picker = action_state.get_current_picker(prompt_bufnr)
-              local finder = current_picker.finder
-              finder.respect_gitignore = not finder.respect_gitignore
-              current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi })
+                -- local toggle_gitignore = function(prompt_bufnr)
+                -- local function toggle_gitignore(prompt_bufnr)
+                local current_picker = action_state.get_current_picker(prompt_bufnr)
+                local finder = current_picker.finder
+                finder.respect_gitignore = not finder.respect_gitignore
+                current_picker:refresh(
+                    finder,
+                    { reset_prompt = true, multi = current_picker._multi }
+                )
             end
 
             -- Set vim.ui.select to telescope. This affects SessionManager.
-            local actions = require "telescope.actions"
-            require("telescope").setup {
+            local actions = require('telescope.actions')
+            require('telescope').setup({
                 defaults = {
                     mappings = {
                         i = {
-                            ["<C-j>"] = actions.move_selection_next,
-                            ["<C-k>"] = actions.move_selection_previous,
-                            ["<C-h>"] = actions.preview_scrolling_up,
-                            ["<C-l>"] = actions.preview_scrolling_down,
+                            ['<C-j>'] = actions.move_selection_next,
+                            ['<C-k>'] = actions.move_selection_previous,
+                            ['<C-h>'] = actions.preview_scrolling_up,
+                            ['<C-l>'] = actions.preview_scrolling_down,
                         },
                         n = {
-                            ["<C-j>"] = actions.move_selection_next,
-                            ["<C-k>"] = actions.move_selection_previous,
-                            ["<C-h>"] = actions.preview_scrolling_up,
-                            ["<C-l>"] = actions.preview_scrolling_down,
-                        }
+                            ['<C-j>'] = actions.move_selection_next,
+                            ['<C-k>'] = actions.move_selection_previous,
+                            ['<C-h>'] = actions.preview_scrolling_up,
+                            ['<C-l>'] = actions.preview_scrolling_down,
+                        },
                     },
                 },
                 pickers = {
                     find_files = {
                         -- Use the current file's folder as cwd.
-                        cwd = vim.fn.expand("%:h"),
+                        cwd = vim.fn.expand('%:h'),
                         -- Show hidden?
                         hidden = true,
                         -- Show files in gitignore?
@@ -930,51 +1035,58 @@ require('packer').startup(function()
                     },
                     git_files = {
                         -- Show files that are not tracked?
-                        show_untracked=true,
-                    }
+                        show_untracked = true,
+                    },
                 },
                 extensions = {
                     file_browser = {
                         -- Show file_browser instead of netrw.
                         hijack_netrw = true,
                         -- Use the current file's folder as cwd.
-                        cwd=vim.fn.expand('%:h'),
+                        cwd = vim.fn.expand('%:h'),
                         mappings = {
                             -- Show hidden files? <C-h>/h
                             -- Show files in .gitignore? <C-u>/u
-                            ["n"] = {
-                                ["<u>"] = fb_actions.toggle_gitignore,
+                            ['n'] = {
+                                ['<u>'] = fb_actions.toggle_gitignore,
                             },
-                            ["i"] = {
-                                ["<C-u>"] = fb_actions.toggle_gitignore,
-                            }
-                        }
+                            ['i'] = {
+                                ['<C-u>'] = fb_actions.toggle_gitignore,
+                            },
+                        },
                     },
-                    ["ui-select"] = {
+                    ['ui-select'] = {
                         -- Improves the looks of `lua vim.lsp.buf.code_action()`.
-                        require("telescope.themes").get_dropdown {
-                          -- even more opts
-                        }
-                    }
-                }
-            }
+                        require('telescope.themes').get_dropdown({
+                            -- even more opts
+                        }),
+                    },
+                },
+            })
 
             --------------------------------------------------------------------------------
             -- Telescope UI-select.
             --------------------------------------------------------------------------------
-            require("telescope").load_extension("ui-select")
+            require('telescope').load_extension('ui-select')
 
             --------------------------------------------------------------------------------
             -- Telescope file browser.
             --------------------------------------------------------------------------------
-            require("telescope").load_extension("file_browser")
-            set("n", "<space>tf", require('telescope').extensions.file_browser.file_browser, noremap)
+            require('telescope').load_extension('file_browser')
+            set(
+                'n',
+                '<space>tf',
+                require('telescope').extensions.file_browser.file_browser,
+                noremap
+            )
 
             -- Find files in git repo if possible, else find files like normal.
             local project_files = function()
                 local opts = {}
-                local ok = pcall(require"telescope.builtin".git_files, opts)
-                if not ok then require"telescope.builtin".find_files(opts) end
+                local ok = pcall(require('telescope.builtin').git_files, opts)
+                if not ok then
+                    require('telescope.builtin').find_files(opts)
+                end
             end
 
             --------------------------------------------------------------------------------
@@ -986,79 +1098,100 @@ require('packer').startup(function()
             -- Telescope repo. Find git repositories.
             --------------------------------------------------------------------------------
             -- Using nvimpager as the pager does not work, use less or most.
-            if vim.fn.executable('less') then vim.fn.setenv("PAGER", "less -r") end
+            if vim.fn.executable('less') then
+                vim.fn.setenv('PAGER', 'less -r')
+            end
             require('telescope').load_extension('repo')
-            set('n', '<leader>tp', require'telescope'.extensions.repo.list, noremap)
-        end
-    }
-    use 'nvim-telescope/telescope-ui-select.nvim'
+            set('n', '<leader>tp', require('telescope').extensions.repo.list, noremap)
+        end,
+    })
+    use('nvim-telescope/telescope-ui-select.nvim')
     -- NOTE: Install fd and glow. Git repo searcher and opener.
-    use { 'cljoly/telescope-repo.nvim',
-        requires = 'nvim-telescope/telescope.nvim' }
+    use({ 'cljoly/telescope-repo.nvim', requires = 'nvim-telescope/telescope.nvim' })
     -- File browser with Telescope previews.
-    use "nvim-telescope/telescope-file-browser.nvim"
+    use('nvim-telescope/telescope-file-browser.nvim')
     -- Add Nu shell syntax highlighting.
-    use 'LhKipp/nvim-nu'
+    use('LhKipp/nvim-nu')
     -- Add OpenGL Shader Language support.
-    use 'tikhomirov/vim-glsl'
+    use('tikhomirov/vim-glsl')
     -- Prettify status line.
-    use {'feline-nvim/feline.nvim',
+    use({
+        'feline-nvim/feline.nvim',
         -- Show trailing spaces and mixed indents in Feline.
-        requires = 'stumash/snowball.nvim' }
+        requires = 'stumash/snowball.nvim',
+    })
     -- Highlight colors such as #315fff or #f8f.
-    use {'norcalli/nvim-colorizer.lua',
-        config = function() require('colorizer').setup() end}
-    -- View open buffers and tabs in the top row.
-    use { 'akinsho/bufferline.nvim', tag = "v2.*",
+    use({
+        'norcalli/nvim-colorizer.lua',
         config = function()
-            require('bufferline').setup {
+            require('colorizer').setup()
+        end,
+    })
+    -- View open buffers and tabs in the top row.
+    use({
+        'akinsho/bufferline.nvim',
+        tag = 'v2.*',
+        config = function()
+            require('bufferline').setup({
                 options = {
-                    numbers = "ordinal",
-                    diagnostics = "nvim_lsp",
+                    numbers = 'ordinal',
+                    diagnostics = 'nvim_lsp',
                     show_buffer_close_icons = false,
                     show_close_icon = false,
-                }
-            }
+                },
+            })
         end,
-        requires = 'kyazdani42/nvim-web-devicons'
-    }
+        requires = 'kyazdani42/nvim-web-devicons',
+    })
     -- Git stager and commiter.
-    use { 'TimUntersberger/neogit',
+    use({
+        'TimUntersberger/neogit',
         -- Fix compatibility with Bufferline plugin.
         commit = '4cc4476acbbc772f29fd6c1ccee43f58a29a1b13',
-        cmd = "Neogit",
-        requires = 'nvim-lua/plenary.nvim' }
+        cmd = 'Neogit',
+        requires = 'nvim-lua/plenary.nvim',
+    })
     -- Auto close open brackets, parenthesis, quotes, etc.
-    use { "windwp/nvim-autopairs",
-        config = function() require("nvim-autopairs").setup {} end }
+    use({
+        'windwp/nvim-autopairs',
+        config = function()
+            require('nvim-autopairs').setup({})
+        end,
+    })
     -- Install language servers, formatters, linters, and debug adapters.
-    use { "williamboman/mason.nvim",
-        config = function() require("mason").setup {
-            ui = {
-                icons = {
-                    package_installed = "✓",
-                    package_pending = "➜",
-                    package_uninstalled = "✗"
-                }
-            }
-        }
-        end
-    }
+    use({
+        'williamboman/mason.nvim',
+        config = function()
+            require('mason').setup({
+                ui = {
+                    icons = {
+                        package_installed = '✓',
+                        package_pending = '➜',
+                        package_uninstalled = '✗',
+                    },
+                },
+            })
+        end,
+    })
     -- Configurations for Nvim LSP.
-    use "williamboman/mason-lspconfig.nvim"
+    use('williamboman/mason-lspconfig.nvim')
     -- Ensure lspconfig servers are installed.
-    use {"neovim/nvim-lspconfig",
-        config = function() require("mason-lspconfig").setup({
-            -- Install servers set up via lspconfig.
-            automatic_installation = true,
-        }) end
-    }
-    use { 'jose-elias-alvarez/null-ls.nvim',
+    use({
+        'neovim/nvim-lspconfig',
+        config = function()
+            require('mason-lspconfig').setup({
+                -- Install servers set up via lspconfig.
+                automatic_installation = true,
+            })
+        end,
+    })
+    use({
+        'jose-elias-alvarez/null-ls.nvim',
         requires = 'nvim-lua/plenary.nvim',
         config = function()
-            local null_ls = require("null-ls")
-            null_ls.setup {
-                diagnostics_format = "[#{s}] (#{c}) #{m}",
+            local null_ls = require('null-ls')
+            null_ls.setup({
+                diagnostics_format = '[#{s}] (#{c}) #{m}',
                 sources = {
                     ------------------------------------------------------------
                     -- Problematic.
@@ -1089,6 +1222,11 @@ require('packer').startup(function()
                     -- Provide text auto completion.
                     -- null_ls.builtins.completion.spell,
 
+                    null_ls.builtins.formatting.shellharden,
+                    null_ls.builtins.formatting.isort,
+                    null_ls.builtins.diagnostics.ruff,
+                    null_ls.builtins.diagnostics.flake8,
+
                     ------------------------------------------------------------
                     -- Useful.
                     ------------------------------------------------------------
@@ -1099,12 +1237,14 @@ require('packer').startup(function()
                     -- Show Python lint errors.
                     null_ls.builtins.diagnostics.pylint.with({
                         dynamic_command = function()
-                            local command = {"pylint"}
-                            local environment = os.getenv("VIRTUAL_ENV")
+                            local command = { 'pylint' }
+                            local environment = os.getenv('VIRTUAL_ENV')
                             if environment then
-                                command = {"python3", "-m", "pylint"}
-                                if vim.fn.executable(environment.."/bin/pylint") == 0 then
-                                    error("Pylint is not installed in the virtualenv. Run `pip install pylint`.")
+                                command = { 'python3', '-m', 'pylint' }
+                                if vim.fn.executable(environment .. '/bin/pylint') == 0 then
+                                    error(
+                                        'Pylint is not installed in the virtualenv. Run `pip install pylint`.'
+                                    )
                                 end
                             end
                             return command
@@ -1116,16 +1256,21 @@ require('packer').startup(function()
                     null_ls.builtins.code_actions.shellcheck,
                     -- Format Lua files based on .stylua.toml file.
                     null_ls.builtins.formatting.stylua.with({
-                        extra_args = {'--column-width', '100', '--quote-style', 'AutoPreferSingle'}
+                        extra_args = {
+                            '--column-width',
+                            '100',
+                            '--quote-style',
+                            'AutoPreferSingle',
+                        },
                     }),
                     -- Format Python code and comments consistently.
                     null_ls.builtins.formatting.black.with({
-                        extra_args = {'--line-length', '100'}
+                        extra_args = { '--line-length', '100' },
                     }),
                     -- Formats Bash scripts and ensures consistent indentation.
                     null_ls.builtins.formatting.shfmt,
                     -- Formats Markdown tables.
-                    null_ls.builtins.formatting.prettier
+                    null_ls.builtins.formatting.prettier,
                 },
                 -- Set correct encoding to avoid gitsigns warning: multiple
                 -- different client offset_encodings detected for buffer, this
@@ -1135,31 +1280,30 @@ require('packer').startup(function()
                         new_client.offset_encoding = 'utf-8'
                     end
                 end,
-            }
+            })
 
             local lintersAndFormatters = {
                 'cmakelang', -- CMake linter
-                'shfmt', -- Bash formatter
-                'stylua', -- Lua formatter
-                'prettier', -- Markdown formatter.
+                'shfmt',     -- Bash formatter
+                'stylua',    -- Lua formatter
+                'prettier',  -- Markdown formatter.
             }
 
-            vim.api.nvim_create_user_command(
-                'MasonInstallLintersAndFormatters',
-                function() MasonInstall(lintersAndFormatters) end,
-                { nargs = 0, desc = 'Install linters/formatters for CMake, Lua, Bash' }
-            )
-        end
-    }
+            vim.api.nvim_create_user_command('MasonInstallLintersAndFormatters', function()
+                MasonInstall(lintersAndFormatters)
+            end, { nargs = 0, desc = 'Install linters/formatters for CMake, Lua, Bash' })
+        end,
+    })
     -- Window picker for using with Dap UI because it opens many windows.
-    use 'https://gitlab.com/yorickpeterse/nvim-window'
+    use('https://gitlab.com/yorickpeterse/nvim-window')
     --  NOTE: Requires universal ctags. Tagbar: a class outline viewer for Vim.
-    use 'preservim/tagbar'
+    use('preservim/tagbar')
     -- Add git decorations for modified lines, +, -, ~, etc.
-    use 'lewis6991/gitsigns.nvim'
+    use('lewis6991/gitsigns.nvim')
     -- Completion plugin.
-    use { 'hrsh7th/nvim-cmp',
-        requires =  {
+    use({
+        'hrsh7th/nvim-cmp',
+        requires = {
             -- Completion sources.
             'f3fora/cmp-spell',
             'hrsh7th/cmp-buffer',
@@ -1172,11 +1316,13 @@ require('packer').startup(function()
             'hrsh7th/cmp-path',
             'octaltree/cmp-look',
             -- Icons before source names.
-            'onsails/lspkind.nvim'
-        }
-    }
+            'onsails/lspkind.nvim',
+        },
+    })
     -- Auto-install packer if necessary.
-    if packer_bootstrap then require('packer').sync() end
+    if packer_bootstrap then
+        require('packer').sync()
+    end
 end)
 
 --------------------------------------------------------------------------------
@@ -1191,192 +1337,238 @@ require('impatient')
 require('nvim-window').setup({
     -- The characters available for hinting windows.
     chars = {
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'k', 'l','m',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '0',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z',
     },
     -- The border style to use for the floating window.
-    border = 'rounded'
+    border = 'rounded',
 })
-nnoremap('<leader><leader>', require("nvim-window").pick)
+nnoremap('<leader><leader>', require('nvim-window').pick)
 
-
---------------------------------------------------------------------------------
+-------------------------------------------------------f------------------------
 -- Doge - Documentation Generator
 --------------------------------------------------------------------------------
 vim.g.doge_python_settings = { omit_redundant_param_types = 0 }
 vim.g.doge_doc_standard_python = 'google'
 
 -- Use a POSIX-compliant shell when executing Doge commands to avoid errors.
-vim.api.nvim_create_user_command('Doge', "DogeGenerate", {})
+vim.api.nvim_create_user_command('Doge', 'DogeGenerate', {})
 
-vim.fn.sign_define('DapBreakpoint',{ text ='⏺️', texthl ='Error', linehl ='Error', numhl ='Error'})
-vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='Search', linehl ='Search', numhl ='Search'})
+vim.fn.sign_define(
+    'DapBreakpoint',
+    { text = '⏺️', texthl = 'Error', linehl = 'Error', numhl = 'Error' }
+)
+vim.fn.sign_define(
+    'DapStopped',
+    { text = '▶️', texthl = 'Search', linehl = 'Search', numhl = 'Search' }
+)
 
-nnoremap('dC', require 'dap'.continue) -- [C]ontinue
-nnoremap('dO', require 'dap'.step_over) -- [O]ver
-nnoremap('<enter>', require 'dap'.step_over)
-nnoremap('dI', require 'dap'.step_into) -- [I]nto
-nnoremap('dU', require 'dap'.step_out) -- [U]p
-nnoremap('dE', require 'dap'.terminate) -- T[e]rminate, [E]nd
-nnoremap('dT', require 'dap'.toggle_breakpoint) -- [T]oggle
+nnoremap('dC', require('dap').continue)          -- [C]ontinue
+nnoremap('dO', require('dap').step_over)         -- [O]ver
+nnoremap('<enter>', require('dap').step_over)
+nnoremap('dI', require('dap').step_into)         -- [I]nto
+nnoremap('dU', require('dap').step_out)          -- [U]p
+nnoremap('dE', require('dap').terminate)         -- T[e]rminate, [E]nd
+nnoremap('dT', require('dap').toggle_breakpoint) -- [T]oggle
 nnoremap('dB', function()
-    require('dap').set_breakpoint(vim.fn.input("Condition: "), vim.fn.input("Hit Condition: "), vim.fn.input('Log Message: '))
+    require('dap').set_breakpoint(
+        vim.fn.input('Condition: '),
+        vim.fn.input('Hit Condition: '),
+        vim.fn.input('Log Message: ')
+    )
 end)
-nnoremap('dR', require('dap').repl.open) -- [R]epl
-nnoremap('dL', require('dap').run_last) -- [L]ast
-set({'n', 'v'}, 'dH', require('dap.ui.widgets').hover) -- [H]over
-set({'n', 'v'}, 'dP', require('dap.ui.widgets').preview) -- [P]review
-nnoremap('dF', function() -- [F]rames
-  local widgets = require('dap.ui.widgets')
-  widgets.centered_float(widgets.frames)
+nnoremap('dR', require('dap').repl.open)                   -- [R]epl
+nnoremap('dL', require('dap').run_last)                    -- [L]ast
+set({ 'n', 'v' }, 'dH', require('dap.ui.widgets').hover)   -- [H]over
+set({ 'n', 'v' }, 'dP', require('dap.ui.widgets').preview) -- [P]review
+nnoremap('dF', function()                                  -- [F]rames
+    local widgets = require('dap.ui.widgets')
+    widgets.centered_float(widgets.frames)
 end)
 nnoremap('dS', function() -- [S]copes
-  local widgets = require('dap.ui.widgets')
-  widgets.centered_float(widgets.scopes)
+    local widgets = require('dap.ui.widgets')
+    widgets.centered_float(widgets.scopes)
 end)
 
 --------------------------------------------------------------------------------
 -- Gitsigns.
 --------------------------------------------------------------------------------
-require('gitsigns').setup{
-  on_attach = function(bufnr)
-    local gs = package.loaded.gitsigns
+require('gitsigns').setup({
+    on_attach = function(bufnr)
+        local gs = package.loaded.gitsigns
 
-    local function mapb(mode, l, r, opts)
-      opts = opts or {}
-      opts.buffer = bufnr
-      set(mode, l, r, opts)
-    end
+        local function mapb(mode, l, r, opts)
+            opts = opts or {}
+            opts.buffer = bufnr
+            set(mode, l, r, opts)
+        end
 
-    -- Navigation
-    mapb('n', ']c', function()
-      if vim.wo.diff then return ']c' end
-      vim.schedule(function() gs.next_hunk() end)
-      return '<Ignore>'
-    end, {expr=true})
+        -- Navigation
+        mapb('n', ']c', function()
+            if vim.wo.diff then
+                return ']c'
+            end
+            vim.schedule(function()
+                gs.next_hunk()
+            end)
+            return '<Ignore>'
+        end, { expr = true })
 
-    mapb('n', '[c', function()
-      if vim.wo.diff then return '[c' end
-      vim.schedule(function() gs.prev_hunk() end)
-      return '<Ignore>'
-    end, {expr=true})
+        mapb('n', '[c', function()
+            if vim.wo.diff then
+                return '[c'
+            end
+            vim.schedule(function()
+                gs.prev_hunk()
+            end)
+            return '<Ignore>'
+        end, { expr = true })
 
-    -- Actions
-    mapb({'n', 'v'}, '<leader>hs', ':Gitsigns stage_hunk<CR>')
-    mapb({'n', 'v'}, '<leader>hr', ':Gitsigns reset_hunk<CR>')
-    mapb('n', '<leader>hS', gs.stage_buffer)
-    mapb('n', '<leader>hu', gs.undo_stage_hunk)
-    mapb('n', '<leader>hR', gs.reset_buffer)
-    mapb('n', '<leader>hp', gs.preview_hunk)
-    mapb('n', '<leader>hb', function() gs.blame_line{full=true} end)
-    mapb('n', '<leader>tb', gs.toggle_current_line_blame)
-    mapb('n', '<leader>hd', gs.diffthis)
-    mapb('n', '<leader>hD', function() gs.diffthis('~') end)
-    mapb('n', '<leader>td', gs.toggle_deleted)
-    -- Text object
-    mapb({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
-  end
-}
+        -- Actions
+        -- git log --reverse -p '%'
+        mapb({ 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>')
+        mapb({ 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>')
+        mapb('n', '<leader>hS', gs.stage_buffer)
+        mapb('n', '<leader>hu', gs.undo_stage_hunk)
+        mapb('n', '<leader>hR', gs.reset_buffer)
+        mapb('n', '<leader>hp', gs.preview_hunk)
+        mapb('n', '<leader>hb', function()
+            gs.blame_line({ full = true })
+        end)
+        mapb('n', '<leader>tb', gs.toggle_current_line_blame)
+        mapb('n', '<leader>hd', gs.diffthis)
+        mapb('n', '<leader>hD', function()
+            gs.diffthis('~')
+        end)
+        mapb('n', '<leader>td', gs.toggle_deleted)
+        -- Text object
+        mapb({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+    end,
+})
 
 --------------------------------------------------------------------------------
 -- DAP and DAPUI.
 --------------------------------------------------------------------------------
 local debuggers = {
-    'debugpy', -- Python.
-    'cpptools', -- C++/C/Rust
+    'debugpy',          -- Python.
+    'cpptools',         -- C++/C/Rust
     'js-debug-adapter', -- JavaScript, TypeScript.
 }
 
-vim.api.nvim_create_user_command(
-    'MasonInstallDebuggers',
-    function() MasonInstall(debuggers) end,
-    { nargs = 0, desc = 'Install debuggers for C, C++, Rs, Py, JS, TS.' }
-)
+vim.api.nvim_create_user_command('MasonInstallDebuggers', function()
+    MasonInstall(debuggers)
+end, { nargs = 0, desc = 'Install debuggers for C, C++, Rs, Py, JS, TS.' })
 
-require("dapui").setup({
+require('dapui').setup({
     controls = {
-        element = "repl",
+        element = 'repl',
         enabled = true,
         icons = {
-            disconnect = "",
-            pause = "",
-            play = "",
-            run_last = "",
-            step_back = "",
-            step_into = "",
-            step_out = "",
-            step_over = "",
-            terminate = ""
-        }
+            disconnect = '',
+            pause = '',
+            play = '',
+            run_last = '',
+            step_back = '',
+            step_into = '',
+            step_out = '',
+            step_over = '',
+            terminate = '',
+        },
     },
     element_mappings = {},
     expand_lines = true,
     floating = {
-        border = "single",
+        border = 'single',
         mappings = {
-            close = { "q", "<Esc>" }
-        }
+            close = { 'q', '<Esc>' },
+        },
     },
     force_buffers = true,
     icons = {
-        collapsed = "",
-        current_frame = "",
-        expanded = ""
+        collapsed = '',
+        current_frame = '',
+        expanded = '',
     },
     layouts = {
         {
             elements = {
-                { id = "scopes", size = 0.25 },
-                { id = "breakpoints", size = 0.25 },
-                { id = "stacks", size = 0.25 },
-                { id = "watches", size = 0.25 }
+                { id = 'scopes',      size = 0.25 },
+                { id = 'breakpoints', size = 0.25 },
+                { id = 'stacks',      size = 0.25 },
+                { id = 'watches',     size = 0.25 },
             },
-            position = "left",
-            size = 40
+            position = 'left',
+            size = 40,
         },
         {
             elements = {
-                { id = "repl", size = 0.95 },
+                { id = 'repl', size = 0.95 },
                 -- { id = "console", size = 0.5 }
             },
-            position = "bottom",
-            size = 10
-        }
+            position = 'bottom',
+            size = 10,
+        },
     },
     mappings = {
-        edit = "e",
-        expand = { "<CR>", "<2-LeftMouse>" },
-        open = "o",
-        remove = "d",
-        repl = "r",
-        toggle = "t"
+        edit = 'e',
+        expand = { '<CR>', '<2-LeftMouse>' },
+        open = 'o',
+        remove = 'd',
+        repl = 'r',
+        toggle = 't',
     },
     render = {
         indent = 1,
-        max_value_lines = 100
-    }
+        max_value_lines = 100,
+    },
 })
 
-local dap, dapui = require("dap"), require("dapui")
+local dap, dapui = require('dap'), require('dapui')
 
 dap.adapters.python = {
-  type = 'executable';
-  command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/debugpy-adapter'
+    type = 'executable',
+    command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/debugpy-adapter',
 }
 dap.configurations.python = {
-  {
-    type = 'python';
-    request = 'launch';
-    name = "Launch file";
-    program = "${file}";
-    pythonPath = function() return 'python3' end;
-  },
+    {
+        type = 'python',
+        request = 'launch',
+        name = 'Launch file',
+        program = '${file}',
+        pythonPath = function()
+            return 'python3'
+        end,
+    },
 }
 
 dap.adapters.cppdbg = {
-  id = 'cppdbg',
-  type = 'executable',
-  command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/OpenDebugAD7'
+    id = 'cppdbg',
+    type = 'executable',
+    command = os.getenv('HOME') .. '/.local/share/nvim/mason/bin/OpenDebugAD7',
 }
 
 local function GetDebugExecutable()
@@ -1384,107 +1576,111 @@ local function GetDebugExecutable()
     local sourcePath = vim.fn.expand('%:p:r')
     local cargoPath = function()
         if vim.fn.execute('cargo') == 1 then
-            local metadata = vim.fn.system({'cargo', 'metadata', '--format-version', '1'})
+            local metadata = vim.fn.system({ 'cargo', 'metadata', '--format-version', '1' })
             local name = metadata:gmatch('"name":"(.-)"')()
             local directory = metadata:gmatch('"target_directory":"(.-)"')()
-            if directory and name then return directory .. '/' .. name end
+            if directory and name then
+                return directory .. '/' .. name
+            end
         end
-        return ""
+        return ''
     end
 
-    for _, path in ipairs({sourcePath, compilationPath, cargoPath}) do
-        if vim.fn.executable(path) == 1 then return path end
+    for _, path in ipairs({ sourcePath, compilationPath, cargoPath }) do
+        if vim.fn.executable(path) == 1 then
+            return path
+        end
     end
 
     -- Manually enter executable name:
     return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
 end
 dap.configurations.cpp = {
-  {
-    name = "Launch file",
-    type = "cppdbg",
-    request = "launch",
-    program = GetDebugExecutable,
-    cwd = '${workspaceFolder}',
-    stopAtEntry = true,
-  },
-  {
-    name = 'Attach to gdbserver :1234',
-    type = 'cppdbg',
-    request = 'launch',
-    MIMode = 'gdb',
-    miDebuggerServerAddress = 'localhost:1234',
-    miDebuggerPath = '/usr/bin/gdb',
-    cwd = '${workspaceFolder}',
-    program = GetDebugExecutable,
-  },
+    {
+        name = 'Launch file',
+        type = 'cppdbg',
+        request = 'launch',
+        program = GetDebugExecutable,
+        cwd = '${workspaceFolder}',
+        stopAtEntry = true,
+    },
+    {
+        name = 'Attach to gdbserver :1234',
+        type = 'cppdbg',
+        request = 'launch',
+        MIMode = 'gdb',
+        miDebuggerServerAddress = 'localhost:1234',
+        miDebuggerPath = '/usr/bin/gdb',
+        cwd = '${workspaceFolder}',
+        program = GetDebugExecutable,
+    },
 }
 -- Reuse configuration for C and Rust.
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
 
-require("dap-vscode-js").setup({
+require('dap-vscode-js').setup({
     -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
-    debugger_cmd = { os.getenv('HOME') .. "/.local/share/nvim/mason/bin/js-debug-adapter" },
+    debugger_cmd = { os.getenv('HOME') .. '/.local/share/nvim/mason/bin/js-debug-adapter' },
     -- Which adapters to register in nvim-dap.
     adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
 })
 
 dap.configurations.javascript = {
     {
-        type = "pwa-node",
-        request = "launch",
-        name = "Launch file",
-        program = "${file}",
-        cwd = "${workspaceFolder}",
+        type = 'pwa-node',
+        request = 'launch',
+        name = 'Launch file',
+        program = '${file}',
+        cwd = '${workspaceFolder}',
     },
     {
-        type = "pwa-node",
-        request = "attach",
-        name = "Attach",
-        processId = require 'dap.utils'.pick_process,
-        cwd = "${workspaceFolder}",
+        type = 'pwa-node',
+        request = 'attach',
+        name = 'Attach',
+        processId = require('dap.utils').pick_process,
+        cwd = '${workspaceFolder}',
     },
     {
-        type = "pwa-node",
-        request = "launch",
-        name = "Debug Mocha Tests",
+        type = 'pwa-node',
+        request = 'launch',
+        name = 'Debug Mocha Tests',
         -- trace = true, -- include debugger info
-        runtimeExecutable = "node",
+        runtimeExecutable = 'node',
         runtimeArgs = {
-            "./node_modules/mocha/bin/mocha.js",
+            './node_modules/mocha/bin/mocha.js',
         },
-        program = "${file}",
-        rootPath = "${workspaceFolder}",
-        cwd = "${workspaceFolder}",
-        console = "integratedTerminal",
-        internalConsoleOptions = "neverOpen",
-    }
+        program = '${file}',
+        rootPath = '${workspaceFolder}',
+        cwd = '${workspaceFolder}',
+        console = 'integratedTerminal',
+        internalConsoleOptions = 'neverOpen',
+    },
 }
 dap.configurations.typescript = dap.configurations.javascript
 
 -- Open windows automatically when debug session starts.
-dap.listeners.after.event_initialized["dapui_config"] = function()
-  dapui.open({})
+dap.listeners.after.event_initialized['dapui_config'] = function()
+    dapui.open({})
 end
-dap.listeners.before.event_terminated["dapui_config"] = function()
-  dapui.close({})
+dap.listeners.before.event_terminated['dapui_config'] = function()
+    dapui.close({})
 end
-dap.listeners.before.event_exited["dapui_config"] = function()
-  dapui.close({})
+dap.listeners.before.event_exited['dapui_config'] = function()
+    dapui.close({})
 end
 
 --------------------------------------------------------------------------------
 -- Nvim-treesitter.
 --------------------------------------------------------------------------------
 --{{ For work.
-require 'nvim-treesitter.install'.compilers = { "clang", "tcc", "gcc", "zig", "cc" }
-require'nvim-treesitter.install'.prefer_git = true
+require('nvim-treesitter.install').compilers = { 'clang', 'tcc', 'gcc', 'zig', 'cc' }
+require('nvim-treesitter.install').prefer_git = true
 --}}
-require 'nvim-treesitter.configs'.setup {
+require('nvim-treesitter.configs').setup({
     -- A list of parser names, or "all"
     -- ensure_installed = { "c", "lua", "rust" },
-    ensure_installed = "all",
+    ensure_installed = 'all',
 
     -- Install parsers synchronously (only applied to `ensure_installed`)
     sync_install = false,
@@ -1526,7 +1722,7 @@ require 'nvim-treesitter.configs'.setup {
         -- of languages
         additional_vim_regex_highlighting = true,
     },
-}
+})
 --------------------------------------------------------------------------------
 -- Session Manager.
 --------------------------------------------------------------------------------
@@ -1543,7 +1739,7 @@ require('session_manager').setup({
         'gitcommit',
     },
     autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
-    max_path_length = 80,  -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
+    max_path_length = 80,             -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
 })
 
 --------------------------------------------------------------------------------
@@ -1551,29 +1747,29 @@ require('session_manager').setup({
 --------------------------------------------------------------------------------
 local snowball = require('snowball')
 snowball.setup({ labels = snowball.labels_alternate })
-require('feline').setup {
-   custom_providers = { [snowball.provider_name] = snowball.provider },
-   components = snowball.reverse_scroll_bar(snowball.add_whitespace_component(
-       require('feline.default_components').statusline.icons
-   )),
-}
+require('feline').setup({
+    custom_providers = { [snowball.provider_name] = snowball.provider },
+    components = snowball.reverse_scroll_bar(
+        snowball.add_whitespace_component(require('feline.default_components').statusline.icons)
+    ),
+})
 
 local opts = {
-  -- highlight_hovered_item = true,
-  -- show_guides = true,
-  -- auto_preview = false,
-  -- position = 'right',
-  -- relative_width = true,
-  -- width = 25,
-  auto_close = true,
-  -- show_numbers = false,
-  -- show_relative_numbers = false,
-  -- show_symbol_details = true,
-  -- preview_bg_highlight = 'Pmenu',
-  -- autofold_depth = nil,
-  -- auto_unfold_hover = true,
-  -- wrap = false,
-  -- keymaps = { -- These keymaps can be a string or a table for multiple keys
+    -- highlight_hovered_item = true,
+    -- show_guides = true,
+    -- auto_preview = false,
+    -- position = 'right',
+    -- relative_width = true,
+    -- width = 25,
+    auto_close = true,
+    -- show_numbers = false,
+    -- show_relative_numbers = false,
+    -- show_symbol_details = true,
+    -- preview_bg_highlight = 'Pmenu',
+    -- autofold_depth = nil,
+    -- auto_unfold_hover = true,
+    -- wrap = false,
+    -- keymaps = { -- These keymaps can be a string or a table for multiple keys
     -- close = {"<Esc>", "q"},
     -- goto_location = "<Cr>",
     -- focus_location = "o",
@@ -1586,42 +1782,42 @@ local opts = {
     -- fold_all = "W",
     -- unfold_all = "E",
     -- fold_reset = "R",
-  -- },
-  -- lsp_blacklist = {},
-  symbol_blacklist = {
-      -- 'File',
-      -- 'Module',
-      -- 'Namespace',
-      -- 'Package',
-      -- 'Class',
-      -- 'Method',
+    -- },
+    -- lsp_blacklist = {},
+    symbol_blacklist = {
+        -- 'File',
+        -- 'Module',
+        -- 'Namespace',
+        -- 'Package',
+        -- 'Class',
+        -- 'Method',
 
-      -- 'Property',
-      -- 'Field',
-      -- 'Constructor',
+        -- 'Property',
+        -- 'Field',
+        -- 'Constructor',
 
-      'Enum',
-      -- 'Interface',
-      -- 'Function',
+        'Enum',
+        -- 'Interface',
+        -- 'Function',
 
-      'Variable',
-      'Constant',
-      -- 'String',
-      'Number',
-      'Boolean',
-      -- 'Array',
-      'Object',
-      -- 'Key',
-      -- 'Null',
-      'EnumMember',
-      -- 'Struct',
-      -- 'Event',
-      -- 'Operator',
-      -- 'TypeParameter',
-      -- 'Component',
-      -- 'Fragment',
-  },
-  -- symbols = {
+        'Variable',
+        'Constant',
+        -- 'String',
+        'Number',
+        'Boolean',
+        -- 'Array',
+        'Object',
+        -- 'Key',
+        -- 'Null',
+        'EnumMember',
+        -- 'Struct',
+        -- 'Event',
+        -- 'Operator',
+        -- 'TypeParameter',
+        -- 'Component',
+        -- 'Fragment',
+    },
+    -- symbols = {
     -- File = {icon = "", hl = "TSURI"},
     -- Module = {icon = "", hl = "TSNamespace"},
     -- Namespace = {icon = "", hl = "TSNamespace"},
@@ -1648,19 +1844,17 @@ local opts = {
     -- Event = {icon = "🗲", hl = "TSType"},
     -- Operator = {icon = "+", hl = "TSOperator"},
     -- TypeParameter = {icon = "𝙏", hl = "TSParameter"}
-  -- }
+    -- }
 }
 
-require("symbols-outline").setup(
-    opts
-)
+require('symbols-outline').setup(opts)
 
 --------------------------------------------------------------------------------
 -- Nvim LspConfig.
 --------------------------------------------------------------------------------
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-local opts = { noremap=true, silent=true }
+local opts = { noremap = true, silent = true }
 set('n', '<leader>e', vim.diagnostic.open_float, opts)
 set('n', '[d', vim.diagnostic.goto_prev, opts)
 set('n', ']d', vim.diagnostic.goto_next, opts)
@@ -1692,7 +1886,7 @@ local on_attach = function(client, bufnr)
     -- set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
     -- set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
     -- set('n', '<leader>wl', function()
-        -- print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    -- print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     -- end, bufopts)
     set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
     set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
@@ -1703,35 +1897,36 @@ local on_attach = function(client, bufnr)
     set('n', '<c-a>', vim.lsp.buf.code_action, bufopts)
     -- Use gq for LPS formatting and gw for regular formatting.
     set('x', '<leader>f', vim.lsp.buf.format, bufopts)
-    vim.api.nvim_create_user_command('FormatDocument', function() vim.lsp.buf.format() end,
-        { nargs = 0, desc = "Format the document to fix indentation and spacing issues" })
+    vim.api.nvim_create_user_command('FormatDocument', function()
+        vim.lsp.buf.format()
+    end, { nargs = 0, desc = 'Format the document to fix indentation and spacing issues' })
 end
 
 --------------------------------------------------------------------------------
 -- Language servers.
 --------------------------------------------------------------------------------
 local servers = {
-    'awk_ls', -- AWK
-    'bashls', -- Bash
-    'clangd', -- C/C++
-    'cmake', -- CMake
-    'cssls', -- CSS
+    'awk_ls',   -- AWK
+    'bashls',   -- Bash
+    'clangd',   -- C/C++
+    'cmake',    -- CMake
+    'cssls',    -- CSS
     -- 'dockerls', -- Docker
     'eslint',   -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
     'groovyls', -- Groovy
-    'html', -- HTML
+    'html',     -- HTML
     -- 'jdtls', -- Java
-    'jsonls', -- JSON
+    'jsonls',   -- JSON
     'ltex',
     'marksman', -- Markdown
     -- 'phpactor', -- PHP
     'pyright',
     'rust_analyzer', -- Rust
     -- 'sqls', -- SQL
-    'taplo', -- TOML
+    'taplo',         -- TOML
     -- 'texlab', -- LaTeX
-    'tsserver', -- JavaScript, TypeScript; LSP functionality.
-    'typst_lsp', -- Typst
+    'tsserver',      -- JavaScript, TypeScript; LSP functionality.
+    'typst_lsp',     -- Typst
 }
 
 -- Enable (broadcasting) snippet capability for completion.
@@ -1739,13 +1934,13 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 for _, server in ipairs(servers) do
-    require('lspconfig')[server].setup{
+    require('lspconfig')[server].setup({
         on_attach = on_attach,
         capabilities = capabilities,
-    }
+    })
 end
 
-require('lspconfig').yamlls.setup {
+require('lspconfig').yamlls.setup({
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
@@ -1756,10 +1951,10 @@ require('lspconfig').yamlls.setup {
                 -- ["/path/from/root/of/project"] = "/.github/workflows/*"
             },
         },
-    }
-}
+    },
+})
 
-require('lspconfig').lua_ls.setup {
+require('lspconfig').lua_ls.setup({
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
@@ -1775,7 +1970,7 @@ require('lspconfig').lua_ls.setup {
             },
             workspace = {
                 -- Make the server aware of Neovim runtime files
-                library = vim.api.nvim_get_runtime_file("", true),
+                library = vim.api.nvim_get_runtime_file('', true),
                 -- Don't ask to configure workspace for luassert, luv, etc.
                 checkThirdParty = false,
             },
@@ -1786,7 +1981,7 @@ require('lspconfig').lua_ls.setup {
             },
         },
     },
-}
+})
 
 --------------------------------------------------------------------------------
 -- Completion.
@@ -1795,35 +1990,34 @@ local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
-
-require('cmp').setup {
+require('cmp').setup({
     snippet = {
-      -- NOTE: You must specify a snippet engine.
-      expand = function(args)
-        require('luasnip').lsp_expand(args.body)
-      end,
+        -- NOTE: You must specify a snippet engine.
+        expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+        end,
     },
     formatting = {
         format = function(entry, vim_item)
-
             -- Fancy icons and a name of kind.
-            vim_item.kind = require("lspkind").presets.default[vim_item.kind] ..
-                                " " .. vim_item.kind
+            vim_item.kind = require('lspkind').presets.default[vim_item.kind]
+                .. ' '
+                .. vim_item.kind
 
             -- Set a name for each source.
             vim_item.menu = ({
-                calc = "[Calc]",
-                emoji = "[Emoji]",
-                look = "[Look]",
-                luasnip = "[Snip]",
-                nvim_lsp = "[LSP]",
-                nvim_lsp_signature_help = "[Signature]",
-                nvim_lua = "[Lua]",
-                path = "[Path]",
-                spell = "[Spell]",
+                calc = '[Calc]',
+                emoji = '[Emoji]',
+                look = '[Look]',
+                luasnip = '[Snip]',
+                nvim_lsp = '[LSP]',
+                nvim_lsp_signature_help = '[Signature]',
+                nvim_lua = '[Lua]',
+                path = '[Path]',
+                spell = '[Spell]',
             })[entry.source.name]
             return vim_item
-        end
+        end,
     },
     mapping = {
         ['<C-k>'] = require('cmp').mapping.select_prev_item(),
@@ -1834,52 +2028,52 @@ require('cmp').setup {
         ['<C-e>'] = require('cmp').mapping.close(),
         -- ['<Esc>'] = require('cmp').mapping.close(),
 
-        ["<Esc>"] = require('cmp').mapping(function(fallback)
+        ['<Esc>'] = require('cmp').mapping(function(fallback)
             if vim.fn.pumvisible() == 1 then
-                vim.fn.feedkeys(t("<Esc><Esc>"), "n")
+                vim.fn.feedkeys(t('<Esc><Esc>'), 'n')
             else
                 fallback()
             end
-        end, {"i"}), -- Only apply in insert mode, not "s".
+        end, { 'i' }), -- Only apply in insert mode, not "s".
 
         ['<CR>'] = require('cmp').mapping.confirm({
             behavior = require('cmp').ConfirmBehavior.Insert,
-            select = true
+            select = true,
         }),
     },
     sources = {
-        { name = 'calc'},                          -- Source for math calculation.
+        { name = 'calc' }, -- Source for math calculation.
         { name = 'emoji' },
         { name = 'look' },
         { name = 'luasnip' },                      -- Snippets.
         { name = 'nvim_lsp' },                     -- Language server.
-        { name = 'nvim_lsp_signature_help'},       -- Display function signatures with current parameter emphasized.
-        { name = 'nvim_lua', keyword_length = 2 }, -- Complete neovim's Lua runtime API such vim.lsp.*.
+        { name = 'nvim_lsp_signature_help' },      -- Display function signatures with current parameter emphasized.
+        { name = 'nvim_lua',               keyword_length = 2 }, -- Complete neovim's Lua runtime API such vim.lsp.*.
         { name = 'path' },                         -- File paths.
-        { name = 'spell', keyword_length = 4 },
+        { name = 'spell',                  keyword_length = 4 },
     },
     -- menuone: popup even when there's only one match
     -- noinsert: Do not insert text until a selection is made
     -- noselect: Do not select, force to select one from the menu
-    completion = {completeopt = 'menu,menuone,noinsert,noselect'}
-}
+    completion = { completeopt = 'menu,menuone,noinsert,noselect' },
+})
 
 -- local entries = { entries = { name = 'wildmenu', separator = ' ' } }
 -- local entries  = { name = 'custom', selection_order = 'near_cursor' }
-local entries  = { name = 'custom' }
+local entries = { name = 'custom' }
 local mappings = {
     ['<C-j>'] = { c = require('cmp').mapping.select_next_item() },
     ['<C-k>'] = { c = require('cmp').mapping.select_prev_item() },
     ['<Tab>'] = { c = require('cmp').mapping.select_next_item() },
     ['<S-Tab>'] = { c = require('cmp').mapping.select_prev_item() },
     -- ['<CR>'] = { c = require('cmp').mapping.confirm({
-        -- behavior = require('cmp').ConfirmBehavior.Insert,
-        -- select = true
+    -- behavior = require('cmp').ConfirmBehavior.Insert,
+    -- select = true
     -- })},
-    ['<Esc>'] = { c = require('cmp').mapping.close(),}
+    ['<Esc>'] = { c = require('cmp').mapping.close() },
     -- ['<Tab>'] = { c = require('cmp').mapping.confirm({
-        -- behavior = require('cmp').ConfirmBehavior.Insert,
-        -- select = true
+    -- behavior = require('cmp').ConfirmBehavior.Insert,
+    -- select = true
     -- })},
 }
 
@@ -1888,9 +2082,9 @@ require('cmp').setup.cmdline({ '/', '?' }, {
     view = { entries = entries },
     mapping = require('cmp').mapping.preset.cmdline(mappings),
     sources = {
-        { name = 'buffer' } -- Source text in current buffer.
+        { name = 'buffer' }, -- Source text in current buffer.
     },
-    completion = {completeopt = 'menu,menuone,noinsert,noselect'}
+    completion = { completeopt = 'menu,menuone,noinsert,noselect' },
 })
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
@@ -1898,13 +2092,13 @@ require('cmp').setup.cmdline(':', {
     view = { entries = entries },
     mapping = require('cmp').mapping.preset.cmdline(mappings),
     sources = require('cmp').config.sources({
-        { name = 'path' }
+        { name = 'path' },
     }, {
         -- Remove cmp-cmdline from global sources because it will produce
         -- errors, so add cmp-cmdline for the cmdline setup function.
-        { name = 'cmdline' }
+        { name = 'cmdline' },
     }),
-    completion = {completeopt = 'menu,menuone,noinsert,noselect'}
+    completion = { completeopt = 'menu,menuone,noinsert,noselect' },
 })
 
 --------------------------------------------------------------------------------
@@ -1916,79 +2110,83 @@ require('cmp').setup.cmdline(':', {
 ---@param executable_path string path The path to the file or binary to execute.
 ---@param runner string The interpreter name.
 function BenchmarkExecutionTime(times, executable_path, runner)
-    if not times or not executable_path then return end
+    if not times or not executable_path then
+        return
+    end
 
     times = times or 10 -- Execute the program this many times.
     -- Remove the parent directories and extension to get file name.
-    executable_path = executable_path or expand("%:p:r")
+    executable_path = executable_path or expand('%:p:r')
     runner = runner or ''
 
-    local program = string.format([[
+    local program = string.format(
+        [[
         for ((i=1;i<=%s;i++)); do
             # Execute the program.
             %s %s > /dev/null
         done
-    ]], times, runner, executable_path)
+    ]],
+        times,
+        runner,
+        executable_path
+    )
 
     print(program)
 
     --  Run the file.
-    local stdout = vim.fn.system({'/usr/bin/time', '-p', 'bash', '-c', program})
+    local stdout = vim.fn.system({ '/usr/bin/time', '-p', 'bash', '-c', program })
     print(stdout)
 end
 
-vim.api.nvim_create_user_command('Time',
-    function(opts)
-        local args = String.to_dict(opts.args)
+vim.api.nvim_create_user_command('Time', function(opts)
+    local args = String.to_dict(opts.args)
 
-        local times = args.times or 10
-        local executable_path = args.path or vim.fn.expand("%:p:r")
-        local runner = args.runner or ''
+    local times = args.times or 10
+    local executable_path = args.path or vim.fn.expand('%:p:r')
+    local runner = args.runner or ''
 
-        BenchmarkExecutionTime(times, executable_path, runner)
+    BenchmarkExecutionTime(times, executable_path, runner)
+end, {
+    nargs = '*',
+    complete = function(ArgLead, CmdLine, CursorPos)
+        -- Times to execute program.
+        local times = 1000
+        -- Define the path where the compiled executable will be placed, and
+        -- where it should be executed. Remove the parent directories and
+        -- extension to get file name.
+        local executable_path = vim.fn.expandcmd('$TMPDIR/%:t:r')
+        local completion_str_runner = 'times=%d runner=%s path="%s"'
+        local completion_str = 'times=%d path="%s"'
+        return {
+            completion_str_runner:format(times, GetRunner(), executable_path),
+            completion_str_runner:format(times, GetRunner(), vim.fn.expand('%:p')),
+            completion_str:format(times, vim.fn.expand('%:p')),
+            completion_str:format(times, executable_path),
+        }
     end,
-    {
-        nargs = '*',
-        complete = function(ArgLead, CmdLine, CursorPos)
-            -- Times to execute program.
-            local times = 1000
-            -- Define the path where the compiled executable will be placed, and
-            -- where it should be executed. Remove the parent directories and
-            -- extension to get file name.
-            local executable_path = vim.fn.expandcmd("$TMPDIR/%:t:r")
-            local completion_str_runner = 'times=%d runner=%s path="%s"'
-            local completion_str = 'times=%d path="%s"'
-            return {
-                completion_str_runner:format(times, GetRunner(), executable_path),
-                completion_str_runner:format(times, GetRunner(), vim.fn.expand("%:p")),
-                completion_str:format(times, vim.fn.expand("%:p")),
-                completion_str:format(times, executable_path),
-            }
-        end,
-        desc = 'Execute the given file'
-    }
- )
+    desc = 'Execute the given file',
+})
 
 -- Another compiler for c is tcc.
 local ft2compiler = {
-    c    = 'gcc',
-    cpp  = 'g++',
+    c = 'gcc',
+    cpp = 'g++',
     rust = 'rustc',
     vala = 'valac',
 }
 
 -- Validate GLSL code for extensions: vert, tesc, tese, glsl, geom, frag, comp.
 local ft2interpreter = {
-    python     = "python3",
-    java       = "java",
-    groovy     = "groovy",
-    lua        = "lua",
-    sh         = "bash",
-    javascript = "node",
-    glsl       = "glslangValidator",
-    typst      = {"typst", "compile"},
+    python = 'python3',
+    java = 'java',
+    groovy = 'groovy',
+    lua = 'lua',
+    sh = 'bash',
+    javascript = 'node',
+    glsl = 'glslangValidator',
+    typst = { 'typst', 'compile' },
 }
-vim.filetype.add({ extension = {typ = "typst"}})
+vim.filetype.add({ extension = { typ = 'typst' } })
 
 -- Sample CMake flags.
 -- set(CMAKE_CXX_FLAGS_DEBUG_INIT "-fsanitize=address,undefined -fsanitize-undefined-trap-on-error")
@@ -2031,14 +2229,14 @@ local debug_flags = {
 }
 
 local ft2flags = {
-    c   = {unpack(cflags)},
-    cpp = {'-std=c++17', unpack(cflags)},
+    c = { unpack(cflags) },
+    cpp = { '-std=c++17', unpack(cflags) },
 }
 
 local ft2debugflags = {
-    c    = {unpack(debug_flags)},
-    cpp  = {unpack(debug_flags)},
-    rust = {'-g'}
+    c = { unpack(debug_flags) },
+    cpp = { unpack(debug_flags) },
+    rust = { '-g' },
 }
 
 --- Return the hash-bang, interpreter, or compiler for running the current file.
@@ -2060,7 +2258,6 @@ end
 -- Example: ag -g "/tmp/mocha.mjs" | entr npx mocha mocha.mjs
 
 function Run()
-
     -- Run the compilation command if it is not empty.
     if #vim.b.compilationCommand ~= 0 then
         print(vim.inspect(vim.b.compilationCommand))
@@ -2081,7 +2278,7 @@ function Run()
     if FileHasHashBang() and GetHashBang() then
         -- Run file using hash-bang.
         local runCommand = String.to_list(GetHashBang())
-        table.insert(runCommand, vim.fn.expand("%"))
+        table.insert(runCommand, vim.fn.expand('%'))
         vim.b.runCommand = runCommand
 
         return Run()
@@ -2112,7 +2309,7 @@ function Run()
         -- Define the path where the compiled executable will be placed, and
         -- where it should be executed. Remove the parent directories and
         -- extension to get file name.
-        local executable_path = vim.fn.expandcmd("$TMPDIR/%:t:r")
+        local executable_path = vim.fn.expandcmd('$TMPDIR/%:t:r')
 
         -- By default do not pass additional compilation flags.
         local flags = {}
@@ -2130,8 +2327,8 @@ function Run()
         end
 
         -- Compile and run the file.
-        vim.b.compilationCommand = Table.merge(compiler, flags, path, "-o", executable_path)
-        vim.b.runCommand = {executable_path}
+        vim.b.compilationCommand = Table.merge(compiler, flags, path, '-o', executable_path)
+        vim.b.runCommand = { executable_path }
         return Run()
     end
     -- Program did not run.
@@ -2143,11 +2340,11 @@ end
 --------------------------------------------------------------------------------
 function SetLaTeXVariables()
     -- Flags used by all rubber commands.
-    RubberCompFlags = {'rubber', '--shell-escape', '--synctex', '--inplace'}
+    RubberCompFlags = { 'rubber', '--shell-escape', '--synctex', '--inplace' }
 
     -- grep: Look for first line that contains "% jobname:". Ignore whitespace.
-    local jobname_line = vim.fn.system({'grep', '--max-count=1', '%*jobname:',
-        vim.fn.expand('%')})
+    local jobname_line =
+        vim.fn.system({ 'grep', '--max-count=1', '%*jobname:', vim.fn.expand('%') })
     -- Ignore surrounding whitespace. Match any characters such that the last
     -- one is not whitespace. The job name can be many words long.
     vim.b.latexJobName = jobname_line:gmatch('.*jobname:%s*(.*%S)%s*')()
@@ -2156,7 +2353,13 @@ end
 function RunLaTeX()
     if vim.b.latexJobName then
         -- Compile using the jobname.
-        local arguments = Table.merge(RubberCompFlags, '--pdf', '--jobname', vim.b.latexJobName, vim.fn.expand('%'))
+        local arguments = Table.merge(
+            RubberCompFlags,
+            '--pdf',
+            '--jobname',
+            vim.b.latexJobName,
+            vim.fn.expand('%')
+        )
         local stdout = vim.fn.system(arguments)
         print(stdout)
     else
@@ -2170,10 +2373,10 @@ function CleanLaTeX()
     -- Clean files matching the current file's name by using the same flags
     -- used for compilation in addition to --clean flag. Do not include --pdf
     -- flag as not to remove the output pdf.
-    local rubber_clean_flags = {'--clean', vim.fn.expand('%')}
+    local rubber_clean_flags = { '--clean', vim.fn.expand('%') }
     if vim.b.latexJobName then
         -- Clean files matching the job name.
-        rubber_clean_flags = {'--clean', '--jobname', vim.b.latexJobName, vim.fn.expand('%')}
+        rubber_clean_flags = { '--clean', '--jobname', vim.b.latexJobName, vim.fn.expand('%') }
     end
     vim.fn.system(Table.merge(RubberCompFlags, rubber_clean_flags))
 end
@@ -2185,8 +2388,8 @@ function OpenLaTeXPDF(viewer)
         -- Get current file's head (last path component removed) and add .pdf.
         jobname = vim.fn.expand('%:p:h') .. '/' .. vim.b.latexJobName .. '.pdf'
     end
-    print("Viewing " .. jobname)
-    vim.fn.system({'setsid', '--fork', viewer, jobname})
+    print('Viewing ' .. jobname)
+    vim.fn.system({ 'setsid', '--fork', viewer, jobname })
 end
 
 --------------------------------------------------------------------------------
