@@ -484,7 +484,9 @@ end
 vim.api.nvim_create_autocmd('BufNewFile', {
     group = template_group,
     pattern = '*',
-    callback = LoadTemplateFromType,
+    callback = function()
+        LoadTemplateFromType(nil)
+    end,
 })
 --------------------------------------------------------------------------------
 -- Auto compilation settings.
@@ -832,7 +834,7 @@ vim.o.smartcase = vim.o.ignorecase
 vim.o.spell = true
 -- Define tab and trailing space characters.
 vim.opt.listchars =
-    { tab = '◃―▹', trail = '●', extends = '◣', precedes = '◢', nbsp = '○' }
+{ tab = '◃―▹', trail = '●', extends = '◣', precedes = '◢', nbsp = '○' }
 -- Show tabs and trailing spaces.
 vim.o.list = true
 -- Add indentation when S or cc is pressed.
@@ -888,12 +890,12 @@ require('packer').startup(function()
                 -- LHS of toggle mappings in NORMAL mode.
                 toggler = {
                     line = '<C-_>', -- Line-comment toggle keymap.
-                    block = 'gbc', -- Block-comment toggle keymap.
+                    block = 'gbc',  -- Block-comment toggle keymap.
                 },
                 -- LHS of operator-pending mappings in NORMAL and VISUAL mode.
                 opleader = {
                     line = '<C-_>', -- Line-comment keymap.
-                    block = 'gb', -- Block-comment keymap.
+                    block = 'gb',   -- Block-comment keymap.
                 },
                 -- Enable keybindings: `false` to not create mappings
                 mappings = { basic = true, extra = false },
@@ -911,7 +913,7 @@ require('packer').startup(function()
                 styles = {
                     -- Background styles. Can be "dark", "transparent" or "normal".
                     sidebars = 'transparent', -- Style for sidebars.
-                    floats = 'transparent', -- Style for floating windows
+                    floats = 'transparent',   -- Style for floating windows
                 },
             })
             require('tokyonight').colorscheme()
@@ -1281,9 +1283,9 @@ require('packer').startup(function()
 
             local lintersAndFormatters = {
                 'cmakelang', -- CMake linter
-                'shfmt', -- Bash formatter
-                'stylua', -- Lua formatter
-                'prettier', -- Markdown formatter.
+                'shfmt',     -- Bash formatter
+                'stylua',    -- Lua formatter
+                'prettier',  -- Markdown formatter.
             }
 
             vim.api.nvim_create_user_command('MasonInstallLintersAndFormatters', function()
@@ -1435,8 +1437,8 @@ require('gitsigns').setup({
 -- DAP and DAPUI.
 --------------------------------------------------------------------------------
 local debuggers = {
-    'debugpy', -- Python.
-    'cpptools', -- C++/C/Rust
+    'debugpy',          -- Python.
+    'cpptools',         -- C++/C/Rust
     'js-debug-adapter', -- JavaScript, TypeScript.
 }
 
@@ -1477,10 +1479,10 @@ require('dapui').setup({
     layouts = {
         {
             elements = {
-                { id = 'scopes', size = 0.25 },
+                { id = 'scopes',      size = 0.25 },
                 { id = 'breakpoints', size = 0.25 },
-                { id = 'stacks', size = 0.25 },
-                { id = 'watches', size = 0.25 },
+                { id = 'stacks',      size = 0.25 },
+                { id = 'watches',     size = 0.25 },
             },
             position = 'left',
             size = 40,
@@ -1629,7 +1631,7 @@ vim.fn.sign_define(
     { text = '▶️', texthl = 'Search', linehl = 'Search', numhl = 'Search' }
 )
 
-nnoremap('dC', dap.continue) -- [C]ontinue
+nnoremap('dC', dap.continue)  -- [C]ontinue
 nnoremap('dO', dap.step_over) -- [O]ver
 set('n', '<enter>', function()
     if vim.bo.buftype == '' then
@@ -1639,9 +1641,9 @@ set('n', '<enter>', function()
         return '<enter>'
     end
 end, { expr = true })
-nnoremap('dI', dap.step_into) -- [I]nto
-nnoremap('dU', dap.step_out) -- [U]p
-nnoremap('dE', dap.terminate) -- T[e]rminate, [E]nd
+nnoremap('dI', dap.step_into)         -- [I]nto
+nnoremap('dU', dap.step_out)          -- [U]p
+nnoremap('dE', dap.terminate)         -- T[e]rminate, [E]nd
 nnoremap('dT', dap.toggle_breakpoint) -- [T]oggle
 nnoremap('dB', function()
     dap.set_breakpoint(
@@ -1650,11 +1652,11 @@ nnoremap('dB', function()
         vim.fn.input('Log Message: ')
     )
 end)
-nnoremap('dR', dap.repl.open) -- [R]epl
-nnoremap('dL', dap.run_last) -- [L]ast
-set({ 'n', 'v' }, 'dH', require('dap.ui.widgets').hover) -- [H]over
+nnoremap('dR', dap.repl.open)                              -- [R]epl
+nnoremap('dL', dap.run_last)                               -- [L]ast
+set({ 'n', 'v' }, 'dH', require('dap.ui.widgets').hover)   -- [H]over
 set({ 'n', 'v' }, 'dP', require('dap.ui.widgets').preview) -- [P]review
-nnoremap('dF', function() -- [F]rames
+nnoremap('dF', function()                                  -- [F]rames
     local widgets = require('dap.ui.widgets')
     widgets.centered_float(widgets.frames)
 end)
@@ -1741,7 +1743,7 @@ require('session_manager').setup({
         'gitcommit',
     },
     autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
-    max_path_length = 80, -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
+    max_path_length = 80,             -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
 })
 
 --------------------------------------------------------------------------------
@@ -1908,27 +1910,27 @@ end
 -- Language servers.
 --------------------------------------------------------------------------------
 local servers = {
-    'awk_ls', -- AWK
-    'bashls', -- Bash
-    'clangd', -- C/C++
-    'cmake', -- CMake
-    'cssls', -- CSS
+    'awk_ls',   -- AWK
+    'bashls',   -- Bash
+    'clangd',   -- C/C++
+    'cmake',    -- CMake
+    'cssls',    -- CSS
     -- 'dockerls', -- Docker
-    'eslint', -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
+    'eslint',   -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
     'groovyls', -- Groovy
-    'html', -- HTML
+    'html',     -- HTML
     -- 'jdtls', -- Java
-    'jsonls', -- JSON
+    'jsonls',   -- JSON
     'ltex',
     'marksman', -- Markdown
     -- 'phpactor', -- PHP
     'pyright',
     'rust_analyzer', -- Rust
     -- 'sqls', -- SQL
-    'taplo', -- TOML
+    'taplo',         -- TOML
     -- 'texlab', -- LaTeX
-    'tsserver', -- JavaScript, TypeScript; LSP functionality.
-    'typst_lsp', -- Typst
+    'tsserver',      -- JavaScript, TypeScript; LSP functionality.
+    'typst_lsp',     -- Typst
 }
 
 -- Enable (broadcasting) snippet capability for completion.
@@ -2047,12 +2049,12 @@ require('cmp').setup({
         { name = 'calc' }, -- Source for math calculation.
         { name = 'emoji' },
         { name = 'look' },
-        { name = 'luasnip' }, -- Snippets.
-        { name = 'nvim_lsp' }, -- Language server.
-        { name = 'nvim_lsp_signature_help' }, -- Display function signatures with current parameter emphasized.
-        { name = 'nvim_lua', keyword_length = 2 }, -- Complete neovim's Lua runtime API such vim.lsp.*.
-        { name = 'path' }, -- File paths.
-        { name = 'spell', keyword_length = 4 },
+        { name = 'luasnip' },                      -- Snippets.
+        { name = 'nvim_lsp' },                     -- Language server.
+        { name = 'nvim_lsp_signature_help' },      -- Display function signatures with current parameter emphasized.
+        { name = 'nvim_lua',               keyword_length = 2 }, -- Complete neovim's Lua runtime API such vim.lsp.*.
+        { name = 'path' },                         -- File paths.
+        { name = 'spell',                  keyword_length = 4 },
     },
     -- menuone: popup even when there's only one match
     -- noinsert: Do not insert text until a selection is made
