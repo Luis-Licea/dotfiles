@@ -4,20 +4,23 @@
 
 local Path = {}
 
----Return whether the path exists.
+---Return whether the file is executable.
 ---```lua
 ---local Path = require("Path")
 ---
----local exists1 = Path.is_executable("/usr/bin/nvim")
----assert(exists1 == true, "Executable should exist.")
+---local is_executable1 = Path.is_executable("/usr/bin/nvim")
+---assert(is_executable1 == true, "Expected executable file.")
 ---
----local exists2 = Path.is_executable({"", "usr", "bin", "nvim"})
----assert(exists2 == true, "Executable should exist.")
+---local is_executable2 = Path.is_executable({"", "usr", "bin", "nvim"})
+---assert(is_executable2 == true, "Expected executable file.")
+--
+---local is_executable3 = Path.is_executable("/usr/bin")
+---assert(is_executable3 == false, "Expected non-executable file.")
 ---```
 ---
 ---
 ---@param path string[]|string The path to the file.
----@return boolean is_executable Whether the path executable.
+---@return boolean is_executable Whether the file executable.
 function Path.is_executable(path)
     if type(path) == 'table' then
         path = table.concat(path, "/")
@@ -25,9 +28,20 @@ function Path.is_executable(path)
     return vim.fn.executable(path) == 1
 end
 
----Return whether the given path is executable.
----@param path string? An optional path to the file to check. Defaults to
----current file.
+---Return whether the given file or folder path is executable.
+---```lua
+---local Path = require("Path")
+---
+---local is_executable1 = Path.executable("/usr/bin/nvim")
+---assert(is_executable1 == true, "Expected executable file.")
+---
+---local is_executable2 = Path.executable("/usr/bin")
+---assert(is_executable2 == true, "Expected executable folder.")
+---```
+---
+---
+---@param path string? An optional path to the file or folder to check. Defaults to
+---current file path.
 ---@return boolean is_executable Whether the path is executable by all users.
 function Path.executable(path)
     -- If the path is not defined, use the path to the current file.
@@ -39,16 +53,16 @@ function Path.executable(path)
     return string.sub(permissions, 11, 11) == "x"
 end
 
---- Return the path to the first array element that is executable.
+--- Return the path to the first table element that is executable.
 ---```lua
 ---local Path = require("Path")
 ---
 ---local shell = Path.first_execuable({"/usr/bin/", "/usr/bin/bash"})
----assert(shell == "/usr/bin/bash", "Shell does not match.")
+---assert(shell == "/usr/bin/bash", "Expected shell to match.")
 ---```
 ---
 ---
----@param executables string[]|table[]> The executable paths.
+---@param executables string[]|table[]> The executable file paths.
 ---@return string|table? executable The path to the executable.
 function Path.first_execuable(executables)
     for _, execuatble in ipairs(executables) do
@@ -60,6 +74,16 @@ function Path.first_execuable(executables)
 end
 
 ---Returns true if the file is readable. Returns false for directories.
+---```lua
+---local Path = require("Path")
+---
+---local exists1 = Path.exists("/usr/bin/nvim")
+---local exists2 = Path.exists("/usr/bin/")
+---assert(exists1 == true, "Expected file to exist.")
+---assert(exists2 == true, "Expected folder to exist.")
+---```
+---
+---
 ---@param path string The path to the file to test.
 ---@return boolean exists Whether the file exists.
 function Path.exists(path)
@@ -71,7 +95,7 @@ function Path.exists(path)
    return false
 end
 
----Return the file lines a table.
+---Return the file lines as a table.
 ---@param path string The path to the file to convert into a table.
 ---@return table lines The file lines.
 function Path.to_lines(path)
@@ -102,14 +126,22 @@ function Path.write_text(path, text)
     return false
 end
 
+---@alias ReadMode string
+---| "*n" # Reads a numeral and returns it as number.
+---|>"*a" # Reads the whole file.
+---| "*l" # Reads the next line skipping the end of line.
+---| "*L" # Reads the next line keeping the end of line.
+
 ---Return text the file contents.
 ---@param path string The path to the text file.
+---@param mode ReadMode? The read mode.
 ---@return string? text The text file contents.
-function Path.read_text(path)
+function Path.read_text(path, mode)
+    mode = mode or "*a"
     local file = io.open(path, "r")
     if file then
         io.input(file)
-        local lines = io.read("*a")
+        local lines = io.read(mode)
         io.close(file)
         return lines
     end

@@ -5,6 +5,16 @@
 local Table = {}
 
 ---Join two dictionaries.
+---```lua
+---local Table = require("Table")
+---local compare = Table.compare
+---local table = { "a", "b" }
+---Table.append({ "c", "d" })
+---local the_same = compare(table, {"a", "b", "c", "d"})
+---assert(the_same == true, 'The arrays must be the same.')
+---```
+---
+---
 ---@param table1 table The table that will be modified.
 ---@param table2 table The table to append.
 function Table.append(table1, table2)
@@ -65,7 +75,6 @@ function Table.merge(...)
     end
     return result
 end
-
 
 return Table
 
