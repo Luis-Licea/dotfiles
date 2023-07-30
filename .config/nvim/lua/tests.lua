@@ -8,8 +8,8 @@
 ---@param files string[] The file paths to check.
 ---@return boolean success Whether all the tests passed.
 local function testLuaCodeBlocks(files)
-    local Path = require("Path")
-    local String = require("String")
+    local Path = require('Path')
+    local String = require('String')
     local success = true
     local tests = {}
     for _, file_path in ipairs(files) do
@@ -17,14 +17,20 @@ local function testLuaCodeBlocks(files)
         local is_codeblock_line = false
         local test_lines = {}
 
-        local codeblock_start = "---```lua"
-        local codeblock_end = "---```"
-        local file_name_comment = "--- "..file_path
+        local codeblock_start = '---```lua'
+        local codeblock_end = '---```'
+        local file_name_comment = '--- ' .. file_path
 
-        local test_function = function(index) return "Line"..index.."()" end
-        local test_function_start = function(name) return "local function "..name end
-        local indented_line = function(line) return "    "..line:sub(4) end
-        local test_function_end = "end"
+        local test_function = function(index)
+            return 'Line' .. index .. '()'
+        end
+        local test_function_start = function(name)
+            return 'local function ' .. name
+        end
+        local indented_line = function(line)
+            return '    ' .. line:sub(4)
+        end
+        local test_function_end = 'end'
         local function_name = nil
 
         for index, line in ipairs(lines) do
@@ -32,7 +38,6 @@ local function testLuaCodeBlocks(files)
                 is_codeblock_line = false
                 table.insert(test_lines, test_function_end)
                 table.insert(test_lines, function_name)
-                table.insert(test_lines, "")
                 table.insert(tests, test_lines)
                 test_lines = {}
             end
@@ -48,13 +53,12 @@ local function testLuaCodeBlocks(files)
         end
     end
 
-
     for _, test in ipairs(tests) do
         local path = os.tmpname()
         Path.write_text(path, test)
-        local stdout = vim.fn.system({"nvim", "-l", path})
-        if stdout ~= "" then
-            io.stdout:write("\n"..stdout.."\n")
+        local stdout = vim.fn.system({ 'nvim', '-l', path })
+        if stdout ~= '' then
+            io.stdout:write('\n' .. stdout .. '\n')
         end
         if vim.v.shell_error ~= 0 then
             io.stdout:write(Path.read_text(path))
@@ -66,6 +70,6 @@ local function testLuaCodeBlocks(files)
 end
 
 -- Run tests by executing: nvim -l tests.lua
-local success = testLuaCodeBlocks({"./Path.lua", "./Table.lua", "./String.lua"})
+local success = testLuaCodeBlocks({ './Path.lua', './Table.lua', './String.lua' })
 
 os.exit(success)

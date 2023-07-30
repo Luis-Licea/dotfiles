@@ -15,7 +15,7 @@ local String = {}
 ---@param start string The start substring.
 ---@return boolean does_start Whether the string starts with the start string.
 function String.starts_with(string, start)
-   return string:sub(1, #start) == start
+    return string:sub(1, #start) == start
 end
 
 ---Return whether the string ends with the given end string.
@@ -28,7 +28,7 @@ end
 ---@param ending string The end substring.
 ---@return boolean does_end Whether the string ends with the end string.
 function String.ends_with(string, ending)
-   return ending == "" or string:sub(-#ending) == ending
+    return ending == '' or string:sub(-#ending) == ending
 end
 
 ---Split a string into a table using the given separator.
@@ -80,15 +80,15 @@ end
 ---@param str string The string with one or more arguments.
 ---@return table list The list of command-line arguments.
 function String.to_list(str)
-  local t = {}
-  -- Balanced quotes.
-  for quoted, non_quoted in ('""'..str):gmatch'(%b"")([^"]*)' do
-    table.insert(t, quoted ~= '""' and quoted:sub(2,-2) or nil)
-    for word in non_quoted:gmatch'%S+' do
-      table.insert(t, word)
+    local t = {}
+    -- Balanced quotes.
+    for quoted, non_quoted in ('""' .. str):gmatch('(%b"")([^"]*)') do
+        table.insert(t, quoted ~= '""' and quoted:sub(2, -2) or nil)
+        for word in non_quoted:gmatch('%S+') do
+            table.insert(t, word)
+        end
     end
-  end
-  return t
+    return t
 end
 
 ---Remove trailing and leading whitespace from string.
@@ -101,7 +101,7 @@ end
 ---@param string string The string whose white-space will be removed.
 ---@return string string The string with the white-space removed.
 function String.trim(string)
-  return (string:gsub("^%s*(.-)%s*$", "%1"))
+    return (string:gsub('^%s*(.-)%s*$', '%1'))
 end
 
 ---Remove leading whitespace from string.
@@ -114,7 +114,7 @@ end
 ---@param string string The string whose leading white-spaces will be removed.
 ---@return string string The string with the leading white-spaces removed.
 function String.ltrim(string)
-  return (string:gsub("^%s*", ""))
+    return (string:gsub('^%s*', ''))
 end
 
 ---Remove trailing whitespace from string.
@@ -127,9 +127,11 @@ end
 ---@param string string The string whose trailing spaces will be removed.
 ---@return string string The string with the trailing spaces removed.
 function String.rtrim(string)
-  local n = #string
-  while n > 0 and string:find("^%s", n) do n = n - 1 end
-  return string:sub(1, n)
+    local n = #string
+    while n > 0 and string:find('^%s', n) do
+        n = n - 1
+    end
+    return string:sub(1, n)
 end
 
 ---Format string with the given variables.
@@ -144,12 +146,12 @@ end
 ---@param table table The table with the variables.
 ---@return string string The string with the substituted variables.
 function String.format(string, table)
-  -- note: handle {a=false} substitution
-  string = string:gsub("%$%(([%w_]+)%)", function(name)
-    local val = table[name]
-    return val ~= nil and tostring(val)
-  end)
-  return string
+    -- note: handle {a=false} substitution
+    string = string:gsub('%$%(([%w_]+)%)', function(name)
+        local val = table[name]
+        return val ~= nil and tostring(val)
+    end)
+    return string
 end
 
 ---Convert a string into a dictionary and return the dictionary.
@@ -177,9 +179,15 @@ function String.to_dict(string)
         -- "(%w+)%s*=%s*(%S+)", -- Match strings with no spaces.
         -- '(%w+)%s*=%s*(".-")', -- Match shortest string inside double quotes.
         -- "(%w+)%s*=%s*('.-')", -- Match shortest string inside single quotes.
-        oneOrMoreWordChars .. equalsSignWithZeroOrMoreSurroundingSpaces .. stringWithNoSpaces,
-        oneOrMoreWordChars .. equalsSignWithZeroOrMoreSurroundingSpaces .. shortestStringInDoubleQuotes,
-        oneOrMoreWordChars .. equalsSignWithZeroOrMoreSurroundingSpaces .. shortestStringInSingleQuotes,
+        oneOrMoreWordChars
+            .. equalsSignWithZeroOrMoreSurroundingSpaces
+            .. stringWithNoSpaces,
+        oneOrMoreWordChars
+            .. equalsSignWithZeroOrMoreSurroundingSpaces
+            .. shortestStringInDoubleQuotes,
+        oneOrMoreWordChars
+            .. equalsSignWithZeroOrMoreSurroundingSpaces
+            .. shortestStringInSingleQuotes,
     }
 
     for _, pattern in ipairs(dict_entry_patterns) do

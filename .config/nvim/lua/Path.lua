@@ -23,7 +23,7 @@ local Path = {}
 ---@return boolean is_executable Whether the file executable.
 function Path.is_executable(path)
     if type(path) == 'table' then
-        path = table.concat(path, "/")
+        path = table.concat(path, '/')
     end
     return vim.fn.executable(path) == 1
 end
@@ -45,12 +45,14 @@ end
 ---@return boolean is_executable Whether the path is executable by all users.
 function Path.executable(path)
     -- If the path is not defined, use the path to the current file.
-    if not path then path = vim.fn.expand("%") end
+    if not path then
+        path = vim.fn.expand('%')
+    end
     -- Get permissions string including parenthesis, e.g. "drwxrwxrwx".
-    local permissions = vim.fn.system({'stat', '--printf="%A"', path})
+    local permissions = vim.fn.system({ 'stat', '--printf="%A"', path })
     -- The eleventh character in the permissions "drwxrwxrwx" represents
     -- whether the file is executable by all users.
-    return string.sub(permissions, 11, 11) == "x"
+    return string.sub(permissions, 11, 11) == 'x'
 end
 
 --- Return the path to the first table element that is executable.
@@ -87,12 +89,12 @@ end
 ---@param path string The path to the file to test.
 ---@return boolean exists Whether the file exists.
 function Path.exists(path)
-   local file = io.open(path, "r")
-   if file ~= nil then
-       io.close(file)
-       return true
-   end
-   return false
+    local file = io.open(path, 'r')
+    if file ~= nil then
+        io.close(file)
+        return true
+    end
+    return false
 end
 
 ---Return the file lines as a table.
@@ -101,7 +103,7 @@ end
 function Path.to_lines(path)
     local lines = {}
     if Path.exists(path) then
-        for line in io.lines(path, "*l") do
+        for line in io.lines(path, '*l') do
             table.insert(lines, line)
         end
     end
@@ -113,11 +115,11 @@ end
 ---@param text string|string[] The text to write to the file.
 ---@return boolean? success Whether writing to the file was successful.
 function Path.write_text(path, text)
-    local file = io.open(path, "w")
+    local file = io.open(path, 'w')
     if file then
         io.output(file)
         if type(text) == 'table' then
-            io.write(table.concat(text, "\n"))
+            io.write(table.concat(text, '\n'))
         else
             io.write(text)
         end
@@ -137,8 +139,8 @@ end
 ---@param mode ReadMode? The read mode.
 ---@return string? text The text file contents.
 function Path.read_text(path, mode)
-    mode = mode or "*a"
-    local file = io.open(path, "r")
+    mode = mode or '*a'
+    local file = io.open(path, 'r')
     if file then
         io.input(file)
         local lines = io.read(mode)

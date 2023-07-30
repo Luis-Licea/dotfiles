@@ -65,7 +65,7 @@ end
 function Table.merge(...)
     local result = {}
     for _, t in ipairs({ ... }) do
-        if type(t) == "table" then
+        if type(t) == 'table' then
             for _, v in pairs(t) do
                 table.insert(result, v)
             end
@@ -77,4 +77,3 @@ function Table.merge(...)
 end
 
 return Table
-
