@@ -150,4 +150,18 @@ function Path.read_text(path, mode)
     return nil
 end
 
+---Expand environment variables and escape spaces and quotes in a string.
+---```lua
+---local Path = require("Path")
+---assert(Path.escape("$HOME/a space") == os.getenv("HOME") .. "/a\\ space")
+---```
+---
+---
+---@param str string The string whose environment variables will be expanded
+---and whose paces and quotes will be escaped.
+---@return string string The resolved and escaped string.
+function Path.escape(str)
+    return vim.fn.fnameescape(vim.fn.expandcmd(str))
+end
+
 return Path
