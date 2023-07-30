@@ -2,7 +2,7 @@
 local Path = require('Path')
 local String = require('String')
 local Table = require('Table')
-local key = require('key_bindings')
+local key = require('Key')
 
 local map = key.map
 local nnoremap = key.nnoremap
