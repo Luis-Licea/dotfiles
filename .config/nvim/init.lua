@@ -1378,42 +1378,6 @@ vim.g.doge_doc_standard_python = 'google'
 -- Use a POSIX-compliant shell when executing Doge commands to avoid errors.
 vim.api.nvim_create_user_command('Doge', 'DogeGenerate', {})
 
-vim.fn.sign_define(
-    'DapBreakpoint',
-    { text = '⏺️', texthl = 'Error', linehl = 'Error', numhl = 'Error' }
-)
-vim.fn.sign_define(
-    'DapStopped',
-    { text = '▶️', texthl = 'Search', linehl = 'Search', numhl = 'Search' }
-)
-
-nnoremap('dC', require('dap').continue)          -- [C]ontinue
-nnoremap('dO', require('dap').step_over)         -- [O]ver
-nnoremap('<enter>', require('dap').step_over)
-nnoremap('dI', require('dap').step_into)         -- [I]nto
-nnoremap('dU', require('dap').step_out)          -- [U]p
-nnoremap('dE', require('dap').terminate)         -- T[e]rminate, [E]nd
-nnoremap('dT', require('dap').toggle_breakpoint) -- [T]oggle
-nnoremap('dB', function()
-    require('dap').set_breakpoint(
-        vim.fn.input('Condition: '),
-        vim.fn.input('Hit Condition: '),
-        vim.fn.input('Log Message: ')
-    )
-end)
-nnoremap('dR', require('dap').repl.open)                   -- [R]epl
-nnoremap('dL', require('dap').run_last)                    -- [L]ast
-set({ 'n', 'v' }, 'dH', require('dap.ui.widgets').hover)   -- [H]over
-set({ 'n', 'v' }, 'dP', require('dap.ui.widgets').preview) -- [P]review
-nnoremap('dF', function()                                  -- [F]rames
-    local widgets = require('dap.ui.widgets')
-    widgets.centered_float(widgets.frames)
-end)
-nnoremap('dS', function() -- [S]copes
-    local widgets = require('dap.ui.widgets')
-    widgets.centered_float(widgets.scopes)
-end)
-
 --------------------------------------------------------------------------------
 -- Gitsigns.
 --------------------------------------------------------------------------------
@@ -1659,16 +1623,57 @@ dap.configurations.javascript = {
 }
 dap.configurations.typescript = dap.configurations.javascript
 
+vim.fn.sign_define(
+    'DapBreakpoint',
+    { text = '⏺️', texthl = 'Error', linehl = 'Error', numhl = 'Error' }
+)
+vim.fn.sign_define(
+    'DapStopped',
+    { text = '▶️', texthl = 'Search', linehl = 'Search', numhl = 'Search' }
+)
+
+nnoremap('dC', dap.continue)  -- [C]ontinue
+nnoremap('dO', dap.step_over) -- [O]ver
+set('n', '<enter>', function()
+    if vim.bo.buftype == '' then
+        dap.step_over()
+    else
+        -- Do not shadow quick-fix jump functionality when pressing "<enter>".
+        return '<enter>'
+    end
+end, { expr = true })
+nnoremap('dI', dap.step_into)         -- [I]nto
+nnoremap('dU', dap.step_out)          -- [U]p
+nnoremap('dE', dap.terminate)         -- T[e]rminate, [E]nd
+nnoremap('dT', dap.toggle_breakpoint) -- [T]oggle
+nnoremap('dB', function()
+    dap.set_breakpoint(
+        vim.fn.input('Condition: '),
+        vim.fn.input('Hit Condition: '),
+        vim.fn.input('Log Message: ')
+    )
+end)
+nnoremap('dR', dap.repl.open)                              -- [R]epl
+nnoremap('dL', dap.run_last)                               -- [L]ast
+set({ 'n', 'v' }, 'dH', require('dap.ui.widgets').hover)   -- [H]over
+set({ 'n', 'v' }, 'dP', require('dap.ui.widgets').preview) -- [P]review
+nnoremap('dF', function()                                  -- [F]rames
+    local widgets = require('dap.ui.widgets')
+    widgets.centered_float(widgets.frames)
+end)
+nnoremap('dS', function() -- [S]copes
+    local widgets = require('dap.ui.widgets')
+    widgets.centered_float(widgets.scopes)
+end)
+
 -- Open windows automatically when debug session starts.
-dap.listeners.after.event_initialized['dapui_config'] = function()
+dap.listeners.after.event_initialized.dapui_config = function()
     dapui.open({})
 end
-dap.listeners.before.event_terminated['dapui_config'] = function()
+dap.listeners.before.event_terminated.dapui_config = function()
     dapui.close({})
 end
-dap.listeners.before.event_exited['dapui_config'] = function()
-    dapui.close({})
-end
+dap.listeners.before.event_exited.dapui_config = dap.listeners.before.event_terminated.dapui_config
 
 --------------------------------------------------------------------------------
 -- Nvim-treesitter.
