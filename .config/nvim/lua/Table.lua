@@ -1,4 +1,4 @@
----@module Miscellaneous table functions.
+---@module Table functions.
 ---@author Luis David Licea Torres
 ---@license MIT
 
@@ -17,8 +17,10 @@ end
 
 ---Return whether two arrays are the same.
 ---```lua
+---local Table = require("Table")
 ---local array = { { 'This', 'is' }, { 'an' }, 'example' }
----compare(array, { { 'This', 'is' }, { 'an' }, 'example' }, 'The arrays are the same.'))
+---local the_same = Table.compare(array, { { 'This', 'is' }, { 'an' }, 'example' })
+---assert(the_same == true, 'The arrays must be the same.')
 ---```
 ---
 ---
@@ -42,8 +44,9 @@ end
 
 ---Join two or more arrays or strings and return the new array.
 ---```lua
----local array = tables.merge({"This", "is"}, {"an"}, "example")
--- assert(tables.compare(array, { 'This', 'is', 'an', 'example' }), 'The arrays are the same.')
+---local Table = require("Table")
+---local array = Table.merge({"This", "is"}, {"an"}, "example")
+-- assert(Table.compare(array, { 'This', 'is', 'an', 'example' }), 'The arrays are the same.')
 ---```
 ---
 ---

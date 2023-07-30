@@ -1,4 +1,16 @@
+---@module String functions.
+---@author Luis David Licea Torres
+---@license MIT
+
 local String = {}
+
+function String.starts_with(string, start)
+   return string:sub(1, #start) == start
+end
+
+function String.ends_with(string, ending)
+   return ending == "" or string:sub(-#ending) == ending
+end
 
 --- Splits a string into a table using the given character.
 ---@param separator string The character to use as a seperator.
@@ -26,7 +38,7 @@ end
 
 ---Split a string of command-line arguments into a list.
 ---@param str string The string with one or more arguments.
----@return Array
+---@return table list The list of command-line arguments.
 function String.to_list(str)
   local t = {}
   -- Balanced quotes.
@@ -37,6 +49,49 @@ function String.to_list(str)
     end
   end
   return t
+end
+
+---Remove trailing and leading whitespace from string.
+---@param string string The string whose white-space will be removed.
+---@return string string The string with the white-space removed.
+function String.trim(string)
+  return (string:gsub("^%s*(.-)%s*$", "%1"))
+end
+
+---Remove leading whitespace from string.
+---@param string string The string whose leading white-spaces will be removed.
+---@return string string The string with the leading white-spaces removed.
+function String.ltrim(string)
+  return (string:gsub("^%s*", ""))
+end
+
+---Remove trailing whitespace from string.
+---@param string string The string whose trailing spaces will be removed.
+---@return string string The string with the trailing spaces removed.
+function String.rtrim(string)
+  local n = #string
+  while n > 0 and string:find("^%s", n) do n = n - 1 end
+  return string:sub(1, n)
+end
+
+---Format string with the given variables.
+---```lua
+---local String = require("String")
+---local result = String.format("a=$(a),b=$(b)", {a=1, b=2})
+---assert(result == "a=1,b=2")
+---```
+---
+---
+---@param string string The string to format.
+---@param table table The table with the variables.
+---@return string string The string with the substituted variables.
+function String.format(string, table)
+  -- note: handle {a=false} substitution
+  string = string:gsub("%$%(([%w_]+)%)", function(name)
+    local val = table[name]
+    return val ~= nil and tostring(val)
+  end)
+  return string
 end
 
 ---Convert a string into a dictionary and return the dictionary.
