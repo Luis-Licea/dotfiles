@@ -12,26 +12,30 @@ local function testLuaCodeBlocks(files)
     local String = require('String')
     local success = true
     local tests = {}
+
+    local codeblock_start = '---```lua'
+    local codeblock_end = '---```'
+    local file_name_comment = function(file_path)
+        return '--- ' .. file_path
+    end
+
+    local test_function = function(index)
+        return 'Line' .. index .. '()'
+    end
+    local test_function_start = function(name)
+        return 'local function ' .. name
+    end
+    local indented_line = function(line)
+        return '    ' .. line:sub(4)
+    end
+    local test_function_end = 'end'
+    local function_name = nil
+
+    -- Loop over all the files, storing each code block as test.
     for _, file_path in ipairs(files) do
         local lines = Path.to_lines(file_path)
         local is_codeblock_line = false
         local test_lines = {}
-
-        local codeblock_start = '---```lua'
-        local codeblock_end = '---```'
-        local file_name_comment = '--- ' .. file_path
-
-        local test_function = function(index)
-            return 'Line' .. index .. '()'
-        end
-        local test_function_start = function(name)
-            return 'local function ' .. name
-        end
-        local indented_line = function(line)
-            return '    ' .. line:sub(4)
-        end
-        local test_function_end = 'end'
-        local function_name = nil
 
         for index, line in ipairs(lines) do
             if String.ends_with(line, codeblock_end) then
@@ -46,22 +50,28 @@ local function testLuaCodeBlocks(files)
             end
             if String.ends_with(line, codeblock_start) then
                 is_codeblock_line = true
-                table.insert(test_lines, file_name_comment)
+                table.insert(test_lines, file_name_comment(file_path))
                 function_name = test_function(index)
                 table.insert(test_lines, test_function_start(function_name))
             end
         end
     end
 
+    -- Don't use default "print" because it truncates long lines.
+    local print = function(text)
+        io.stdout:write(text)
+    end
+
+    -- Execute each code block test and report any failures.
     for _, test in ipairs(tests) do
         local path = os.tmpname()
         Path.write_text(path, test)
         local stdout = vim.fn.system({ 'nvim', '-l', path })
         if stdout ~= '' then
-            io.stdout:write('\n' .. stdout .. '\n')
+            print('\n' .. stdout .. '\n')
         end
         if vim.v.shell_error ~= 0 then
-            io.stdout:write(Path.read_text(path))
+            print(Path.read_text(path))
             success = false
         end
         os.remove(path)
