@@ -1,0 +1,3 @@
+[submodule "Documents/Public/suckless"]
+	path = Documents/Public/suckless
+	url = https://github.com/luis-licea/suckless
