@@ -27,9 +27,9 @@
     //     "sway/window"
     // ],
     "modules-right": [
-        "custom/left-arrow-dark",
-        "custom/pacman",
-        "custom/left-arrow-light",
+        //"custom/left-arrow-dark",
+        //"custom/pacman",
+        //"custom/left-arrow-light",
         "custom/left-arrow-dark",
         "tray",
         "custom/left-arrow-light",
@@ -181,7 +181,7 @@
         "tooltip": true
     },
     "disk": {
-        "format": " {percentage_used}%",
+        "format": "󱛟 {percentage_used}%",
     },
     "clock": {
         // "interval": 60,
@@ -203,15 +203,16 @@
     },
     "memory": {
         "interval": 10,
-        "format": " {}%", // Icon: memory 
+        "format": "󰍛 {}%", // Icon: memory 
         "states": {
             "warning": 70,
             "critical": 90
         },
         "on-click": "swaymsg exec \"\\$term_float_landscape \\$mem_mon\""
     },
+    // Run ifconfig to configure interface.
     "network": {
-        "interface": "wlan0", // (Optional) To force the use of this interface
+        "interface": "wlo1", // (Optional) To force the use of this interface
         "interval": 1,
         //"format-wifi": ", // Icon: wifi 
         "format-wifi": "{bandwidthUpOctets} {bandwidthDownOctets}",
@@ -291,8 +292,10 @@
         "tooltip": false
     },
     "bluetooth": {
-        "format": "",
-        "format-disabled": "",
+        "format": "󰝚",
+        "format-disabled": "󰝛",
+        //"format": "󰂯",
+        //"format-disabled": "󰂲",
         "interval": 30,
         "on-click": "blueman-manager",
         "on-click-right": "rfkill toggle bluetooth",

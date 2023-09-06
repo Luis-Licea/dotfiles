@@ -100,18 +100,19 @@ window#waybar {
     background: @light_gray;
 }
 
-#workspaces,
-#custom-spotify,
-#custom-pacman,
-#clock,
-#network,
-#temperature,
-#pulseaudio,
-#memory,
-#cpu,
 #battery,
+#bluetooth,
+#clock,
+#cpu,
+#custom-pacman,
+#custom-spotify,
 #disk,
-#tray {
+#memory,
+#network,
+#pulseaudio,
+#temperature,
+#tray,
+#workspaces {
     background: @light_gray;
     /* background: transparent; */
 }
@@ -178,11 +179,12 @@ window#waybar {
     color: @orange;
 }
 
-#clock,
-#pulseaudio,
-#memory,
-#cpu,
 #battery,
-#disk {
+#bluetooth,
+#clock,
+#cpu,
+#disk,
+#memory,
+#pulseaudio {
     padding: 0 10px;
 }
