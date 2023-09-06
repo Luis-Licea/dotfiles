@@ -5,4 +5,4 @@ export XDG_CURRENT_DESKTOP=dwl
 # Run emacs deamon so that clients start up quickly.
 emacs --daemon
 # Redirect tag information into file.
-dwl > /home/luis/.cache/dwltags
+dwl > "$HOME/.cache/dwltags"
