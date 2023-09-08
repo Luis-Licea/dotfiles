@@ -1,0 +1,220 @@
+# Use yaml-language-server: $schema=/home/luis/.config/nvim/templates/contact_schema.yaml
+type: object
+additionalProperties: false
+require:
+  - nicknames
+  - phones
+  - emails
+  - addresses
+  - educations
+  - languages
+  - interests
+  - jobs
+  - important_dates
+  - relationships
+  - relatives
+  - weba_address
+  - description
+  - notes
+properties:
+  nicknames: &string_array
+    type: array
+    items: { type: string }
+  phones:
+    type: object
+    additionalProperties: false
+    required: [work, home, cellphone, others]
+    properties:
+      cellphone: &phone
+        oneOf:
+          - type: string
+            format: "^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$"
+          - type: "null"
+      work: *phone
+      home: *phone
+      others:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required: [phone, notes]
+          properties:
+            phone: *phone
+            notes: &string_or_null
+              oneOf:
+                - type: string
+                - type: "null"
+  emails:
+    type: object
+    additionalProperties: false
+    required: [work, personal, others]
+    properties:
+      personal: &email
+        oneOf:
+          - type: string
+            # pattern: "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
+            format: email
+          - type: "null"
+      work: *email
+      others:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required: [email, notes]
+          properties:
+            email: *email
+            notes: *string_or_null
+  addresses:
+    type: array
+    items: &address
+      type: object
+      additionalProperties: false
+      required:
+        [city, country, county, exact, state, street, notes, zip, start, end]
+      properties:
+        city: *string_or_null
+        country: *string_or_null
+        county: *string_or_null
+        exact: &boolean
+          type: boolean
+        state: *string_or_null
+        street: *string_or_null
+        notes: *string_or_null
+        zip: &number_or_null
+          oneOf:
+            - type: number
+            - type: "null"
+        start: &date
+          type: object
+          properties:
+            year: *number_or_null
+            month: *number_or_null
+            day: *number_or_null
+            exact: *boolean
+        end: *date
+  educations:
+    oneOf:
+      - type: array
+      - type: "null"
+    items:
+      type: object
+      additionalProperties: false
+      required: [institution, degrees, gpa, graduation, address]
+      properties:
+        institution: *string_or_null
+        degrees: *string_array
+        address: *address
+        graduation: *date
+        gpa: *number_or_null
+  languages:
+    type: array
+    items:
+      enum:
+        - English
+        - Spanish
+        - French
+        - Russian
+        - Vietnamese
+        - Chinese
+        - Arabic
+        - Persian
+  interests:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [name, notes]
+      properties:
+        name: *string_or_null
+        notes: *string_or_null
+  jobs:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [name, description, address, notes, supervisor]
+      properties:
+        name: *string_or_null
+        description: *string_or_null
+        address: *address
+        notes: *string_or_null
+        supervisor:
+          type: object
+          required: [name, email, position]
+          properties:
+            name: *string_or_null
+            email: *string_or_null
+            position: *string_or_null
+  important_dates:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [name, date, notes]
+      properties:
+        name:
+          enum:
+            - Birth
+            - Death
+            - Marriage
+            - Other
+        date: *date
+        notes: *string_or_null
+  relationships:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [name, notes]
+      properties:
+        name: *string_or_null
+        notes: *string_or_null
+  relatives:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [relationship, name]
+      properties:
+        name: { type: string }
+        relationship:
+          enum:
+            - Mother
+            - Father
+            - Sister
+            - Brother
+            - Sibling
+            - Cousin
+            - Niece
+            - Nephew
+            - Son
+            - Daughter
+            - Wife
+            - Husband
+  web_address:
+    type: object
+    additionalProperties: false
+    required: [personal, linkedin, facebook, twitter, github, others]
+    properties:
+      personal: &uri
+        oneOf:
+          - type: string
+            format: uri
+          - type: "null"
+      linkedin: *uri
+      facebook: *uri
+      twitter: *uri
+      github: *uri
+      gitlab: *uri
+      others:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required: [url, description]
+          properties:
+            url: *uri
+            description: *string_or_null
+  description: *string_or_null
+  notes: *string_or_null
