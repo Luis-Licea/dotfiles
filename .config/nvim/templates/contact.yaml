@@ -1,4 +1,5 @@
 # vim: ft=yaml textwidth=80 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+# yaml-language-server: $schema=/home/luis/.config/nvim/templates/contact_schema.yaml
 nicknames: []
 phones:
     # Format: 123-456-7890
