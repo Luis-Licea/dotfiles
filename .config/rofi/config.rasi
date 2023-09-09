@@ -1,4 +1,4 @@
-@theme "/usr/share/rofi/themes/Arc-Dark.rasi"
+@theme "~/.config/rofi/themes/dracula.rasi"
 configuration {
 /*	modes: "window,drun,run,ssh";*/
 /*	font: "mono 12";*/
