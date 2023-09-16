@@ -12,11 +12,11 @@ unset IFS
 #   2: The separator character, like ' ', $'\n', or $'\t'.
 #   3: The variable name-ref.
 # Example:
-#   $ split $'hello\nworld' $'\n' words
+#   $ split_string $'hello\nworld' $'\n' words
 #   $ declare -p words
 #   declare -a words=([0]="hello" [1]="world")
 #######################################
-split() {
+split_string() {
     declare -nr array="$3"
     local IFS="$2"
     array=($1)
