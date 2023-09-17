@@ -1,24 +1,27 @@
 #!/usr/bin/env bash
 
+# No Internal Field Separator. To split spaces, newlines, and tabs: IFS=$' \n\t'
+unset IFS
+
 ################################################################################
 # Preferred editor for local and remote sessions
 ################################################################################
 
 export EDITOR=nvim
 export VISUAL="$EDITOR"
-if [[ -n $SSH_CONNECTION ]]; then
-    if [[ -x "$(command -v nvim)" ]]; then
+if [[ -v SSH_CONNECTION ]]; then
+    if [[ -x $(command -v nvim) ]]; then
         export EDITOR=nvim
-    elif [[ -x "$(command -v vim)" ]]; then
+    elif [[ -x $(command -v vim) ]]; then
         export EDITOR=vim
-    elif [[ -x "$(command -v vi)" ]]; then
+    elif [[ -x $(command -v vi) ]]; then
         export EDITOR=vi
     fi
 fi
 
-if [[ -x "$(command -v nvimpager)" ]]; then
+if [[ -x $(command -v nvimpager) ]]; then
     export PAGER=nvimpager
-elif [[ -x "$(command -v most)" ]]; then
+elif [[ -x $(command -v most) ]]; then
     export PAGER=most
 fi
 
@@ -34,15 +37,15 @@ export RANGER_LOAD_DEFAULT_RC=FALSE
 # Node Version Manager.
 ################################################################################
 
-[ -f /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh
-[ -n "$NVM_BIN" ] && nvm_node_modules="${NVM_BIN%/bin}/lib/node_modules"
+[[ -f /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
+[[ -v NVM_BIN ]] && nvm_node_modules=${NVM_BIN%/bin}/lib/node_modules
 
 ################################################################################
 # Lynx Browser.
 ################################################################################
 
-export LYNX_CFG="$HOME/.config/lynx/lynx.cfg"
-export LYNX_LSS="$HOME/.config/lynx/lynx.lss"
+export LYNX_CFG=$HOME/.config/lynx/lynx.cfg
+export LYNX_LSS=$HOME/.config/lynx/lynx.lss
 
 ################################################################################
 # Functions.
@@ -65,14 +68,14 @@ repo_ui() {
 }
 
 lfcd() {
-    local temporary_directory="$(mktemp)"
+    local temporary_directory=$(mktemp)
     lf --last-dir-path "$temporary_directory" "$@"
     cd "$(cat "$temporary_directory")"
     rm "$temporary_directory"
 }
 
 joshutocd() {
-    local id="$$"
+    local id=$$
     mkdir -p /tmp/$USER
     local output_file="/tmp/$USER/joshuto-cwd-$id"
     env joshuto --output-file "$output_file" "$@"
@@ -93,7 +96,7 @@ joshutocd() {
 setup_js_scratchpad() {
     cd /tmp
     if [ ! -f package.json ]; then
-        npm init -f > /dev/null
+        npm init -f >/dev/null
         ln -s "$nvm_node_modules" node_modules
         ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml
         ln -s ~/.config/nvim/templates/.prettierrc.yml .prettierrc.yml
@@ -184,7 +187,7 @@ alias sagescratch='scratchpad scratchpad.sage'
 alias typscratch='scratchpad scratchpad.typ'
 alias zshscratch='scratchpad scratchpad.zsh'
 
-if command -v lsd > /dev/null; then
+if command -v lsd >/dev/null; then
     # Show icons along with files and directories.
     alias l='lsd -lah'
     alias la='lsd -lAh'
@@ -192,7 +195,7 @@ if command -v lsd > /dev/null; then
     alias ls='lsd'
     alias tree='lsd --tree'
 fi
-if command -v bat > /dev/null; then
+if command -v bat >/dev/null; then
     # Add syntax highlighting to printed files.
     alias cat='bat --style=plain --paging=never'
 fi
@@ -214,10 +217,10 @@ alias it='zict it'
 alias ру='zict alter ru'
 
 # Dictionary aliases.
-alias da='sdcv --non-interactive --color' # Dictionary all <word>
+alias da='sdcv --non-interactive --color'                                   # Dictionary all <word>
 alias de='sdcv --non-interactive --color --use-dict --exact-search WordNet' # Dictionary exact <word>
-alias di='sdcv --non-interactive --color --use-dict WordNet' # Dictionary <word>
-alias th='sdcv --non-interactive --color --use-dict "Moby Thesaurus II"' # Thesaurus <word>
+alias di='sdcv --non-interactive --color --use-dict WordNet'                # Dictionary <word>
+alias th='sdcv --non-interactive --color --use-dict "Moby Thesaurus II"'    # Thesaurus <word>
 
 alias e='exit'
 alias j='joshutocd'
@@ -259,7 +262,6 @@ alias wget=wget --hsts-file="$XDG_DATA_HOME/wget-hsts"
 # https://unix.stackexchange.com/questions/79112/how-do-i-set-time-and-date-from-the-internet
 # sudo ntpd -qg; sudo hwclock -w
 alias fixtime='sudo ntpd -qg'
-export bgs='/usr/share/backgrounds/nordic-wallpapers/'
 
 # Only enter SSH password once.
 # keychain --quiet --eval id_rsa > /dev/null
