@@ -27,10 +27,12 @@ monitor="${1}"
 component="${2}"
 
 _cycle() {
+
     case "${component}" in
     [012345678])
         this_tag="${component}"
         unset this_status
+        # local this_status
         mask=$((1<<this_tag))
 
         if (( "${activetags}"   & mask )) 2>/dev/null; then this_status+='"active",'  ; fi
@@ -38,13 +40,13 @@ _cycle() {
         if (( "${urgenttags}"   & mask )) 2>/dev/null; then this_status+='"urgent",'  ; fi
 
         if [[ "${this_status}" ]]; then
-        printf -- '{"text":" %s ","class":[%s]}\n' "${name[this_tag]}" "${this_status}"
+            printf -- '{"text":" %s ","class":[%s]}\n' "${name[this_tag]}" "${this_status}"
         else
-        printf -- '{"text":" %s "}\n' "${name[this_tag]}"
+            printf -- '{"text":" %s "}\n' "${name[this_tag]}"
         fi
         ;;
     layout)
-        printf -- '{"text":"  %s  "}\n' "${layout}"
+        printf -- '{"text":"%s"}\n' "${layout}"
         ;;
     title)
         printf -- '{"text":"%s"}\n' "${title}"
@@ -61,15 +63,16 @@ while [[ -n "$(pgrep waybar)" ]] ; do
                     "You need to redirect dwl stdout to ~/.cache/dwltags" >&2
 
     # Get info from the file
-    output="$(grep  "${monitor}" "${fname}" | tail -n6)"
+    output="$(grep  "${monitor}" "${fname}" | tail -n7)"
     title="$(echo   "${output}" | grep '^[[:graph:]]* title'  | cut -d ' ' -f 3-  | sed s/\"/“/g )" # Replace quotes - prevent waybar crash
     layout="$(echo  "${output}" | grep '^[[:graph:]]* layout' | cut -d ' ' -f 3- )"
     #selmon="$(echo "${output}" | grep 'selmon')"
 
     # Get the tag bit mask as a decimal
-    activetags="$(echo "${output}"   | grep '^[[:graph:]]* tags' | awk '{print $3}')"
-    selectedtags="$(echo "${output}" | grep '^[[:graph:]]* tags' | awk '{print $4}')"
-    urgenttags="$(echo "${output}"   | grep '^[[:graph:]]* tags' | awk '{print $6}')"
+    tag="$(echo "${output}" | grep '^[[:graph:]]* tags')"
+    activetags="$(echo "${tag}" | awk '{print $3}')"
+    selectedtags="$(echo "${tag}" | awk '{print $4}')"
+    urgenttags="$(echo "${tag}" | awk '{print $6}')"
 
     _cycle
 

@@ -1,14 +1,8 @@
-/* Nord */
 @define-color bg #2E3440;
-/*@define-color bg #353C4A;*/
 @define-color light #D8DEE9;
-/*@define-color dark @nord_dark_font;*/
 @define-color warning #ebcb8b;
 @define-color critical #BF616A;
 @define-color mode #434C5E;
-/*@define-color workspaces @bg;*/
-/*@define-color workspaces @nord_dark_font;*/
-/*@define-color workspacesfocused #434C5E;*/
 @define-color workspacesfocused #4C566A;
 @define-color tray @workspacesfocused;
 @define-color sound #EBCB8B;
@@ -26,6 +20,7 @@
 @define-color nord_light #D8DEE9;
 @define-color nord_light_font #D8DEE9;
 @define-color nord_dark_font #434C5E;
+@define-color dark @nord_dark_font;
 
 /* Example ~/.config/waybar/style.css */
 @define-color dark_orange #EC5800;
@@ -41,65 +36,74 @@
 @define-color teal #2aa198;
 @define-color green #859900;
 
+@define-color bg-hover #1A1A28;
+/* @define-color blue #89B4FA; */
+@define-color sky #89DCEB;
+@define-color red #F38BA8;
+@define-color pink #F5C2E7;
+@define-color lavender #B4BEFE;
+@define-color rosewater #F5E0DC;
+@define-color flamingo #F2CDCD;
+@define-color fg #D9E0EE;
+@define-color green #A6E3A1;
+@define-color dark-fg #161320;
+@define-color peach #FAB387;
+@define-color border @lavender;
+@define-color gray2 #6E6C7E;
+@define-color black4 #575268;
+@define-color black3 #302D41;
+@define-color maroon #EBA0AC;
+
 * {
     border: none;
     border-radius: 0;
-    /* font-family: monospace, Helvetica, fileicon, material, sans-serif; */
     font-family: monospace;
     font-size: 14px;
     min-height: 0;
 }
 
-/* A layout like []= or ><>. */
-#custom-dwl_layout {
-    /* color: @dark_orange */
-    color: @dark_blue
-}
-
-/* The title of the current window. */
-#custom-dwl_title {
-    /* color: @dark_blue */
-    color: @nord_light_font
-}
-
-/* The color for inactive tags, 1 through 9. */
-#custom-dwl_tag {
-    /* color: @light_orange */
-    color: @nord_light_font
-}
-
-#custom-dwl_tag.selected {
-    color: @dark_blue
-}
-
 #custom-dwl_tag.urgent {
-    background-color: #FF0000
+    background-color: #FF0000;
 }
 
 #custom-dwl_tag.active {
-    /* border-top: 1px solid @dark_orange */
-    border-top: 1px solid @dark_blue
+    border-top: 2px solid @blue;
+}
+
+#custom-dwl_tag.selected {
+    color: @red;
+    border-top: 2px solid @red;
+}
+
+#custom-dwl_tag.0 {
+    border-radius: 7px 0 0 7px;
+    margin: 0 0 0 5px;
+}
+
+/* A layout like []= or ><>. */
+#custom-dwl_layout {
+    border-radius: 0 7px 7px 0;
+    padding-right: 10px;
+    padding-left: 5px;
+}
+
+
+#custom-dwl_layout,
+#custom-dwl_tag {
+    background-color: @bg;
+    color: @fg;
 }
 
 window#waybar {
     /* The bar color. */
-    background: @dark_gray;
-    /* background: transparent; */
+    /* background: @nord_bg_blue; */
+    background: transparent;
 
     /* The waybar module text color. */
     color: @nord_light_font;
-    /* color: @nord_bg_blue; */
-}
-#custom-right-arrow-dark,
-#custom-left-arrow-dark {
-    color: #1a1a1a;
-}
-#custom-right-arrow-light,
-#custom-left-arrow-light {
-    color: @dark_gray;
-    background: @light_gray;
 }
 
+#custom-dwl_title, /* The title of the current window. */
 #battery,
 #bluetooth,
 #clock,
@@ -114,7 +118,11 @@ window#waybar {
 #tray,
 #workspaces {
     background: @light_gray;
-    /* background: transparent; */
+    margin: 0 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 7px;
+    background-color: @bg;
 }
 
 #tray {
@@ -122,20 +130,12 @@ window#waybar {
     color: #434C5E;
 }
 
-#clock {
-    color: @violet;
-}
-
-#custom-pacman {
-    color: @violet;
-}
-
 #bluetooth {
-    color: @teal;
+    color: @dark_blue;
 }
 
 #custom-spotify {
-    color: @teal;
+    color: @green;
 }
 
 #network {
@@ -179,12 +179,3 @@ window#waybar {
     color: @orange;
 }
 
-#battery,
-#bluetooth,
-#clock,
-#cpu,
-#disk,
-#memory,
-#pulseaudio {
-    padding: 0 10px;
-}
