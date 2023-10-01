@@ -10,18 +10,19 @@ unset IFS
 export EDITOR=nvim
 export VISUAL="$EDITOR"
 if [[ -v SSH_CONNECTION ]]; then
-    if [[ -x $(command -v nvim) ]]; then
+    if [[ $(command -v nvim) ]]; then
         export EDITOR=nvim
-    elif [[ -x $(command -v vim) ]]; then
+    elif [[ $(command -v vim) ]]; then
         export EDITOR=vim
-    elif [[ -x $(command -v vi) ]]; then
+    elif [[ $(command -v vi) ]]; then
         export EDITOR=vi
     fi
 fi
 
-if [[ -x $(command -v nvimpager) ]]; then
+if [[ $(command -v nvimpager) ]]; then
+
     export PAGER=nvimpager
-elif [[ -x $(command -v most) ]]; then
+elif [[ $(command -v most) ]]; then
     export PAGER=most
 fi
 
@@ -187,7 +188,7 @@ alias sagescratch='scratchpad scratchpad.sage'
 alias typscratch='scratchpad scratchpad.typ'
 alias zshscratch='scratchpad scratchpad.zsh'
 
-if command -v lsd >/dev/null; then
+if [[ $(command -v lsd) ]]; then
     # Show icons along with files and directories.
     alias l='lsd -lah'
     alias la='lsd -lAh'
@@ -195,7 +196,7 @@ if command -v lsd >/dev/null; then
     alias ls='lsd'
     alias tree='lsd --tree'
 fi
-if command -v bat >/dev/null; then
+if [[ $(command -v bat) ]]; then
     # Add syntax highlighting to printed files.
     alias cat='bat --style=plain --paging=never'
 fi
@@ -268,3 +269,7 @@ alias fixtime='sudo ntpd -qg'
 
 # shellcheck source=./.my_aliases
 [[ -f ~/.my_aliases ]] && source ~/.my_aliases
+
+if [[ $(command -v starship) ]]; then
+    eval "$(starship init "$(which "$SHELL")")"
+fi
