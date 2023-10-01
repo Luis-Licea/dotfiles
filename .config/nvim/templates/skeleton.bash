@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Exit on errors, undefined variables, and unmask pipeline errors.
-set -euo pipefail
+# Exit on errors and undefined variables. Unmask pipeline errors and don't glob.
+set -euo pipefail -o noglob
 # No Internal Field Separator. To split spaces, newlines, and tabs: IFS=$' \n\t'
 unset IFS
 
@@ -17,8 +17,8 @@ unset IFS
 #   declare -a words=([0]="hello" [1]="world")
 #######################################
 split_string() {
-    declare -nr array="$3"
-    local IFS="$2"
+    declare -nr array=$3
+    local IFS=$2
     array=($1)
 }
 
