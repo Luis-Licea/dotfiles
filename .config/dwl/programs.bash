@@ -47,11 +47,11 @@ set_wallpaper() {
 # List of commands to execute at boot time.
 declare -A commands=(
     # Set a low volume at login to protect hearing.
-    ["amixer"]="amixer sset Master 15%"
+    # ["amixer"]="amixer sset Master 15%"
     # Run dunst as a notification daemon.
     ["dunst"]="dunst &"
     # Run fcitx5 in the background as a daemon for keyboard switching.
-    ["fcitx"]="fcitx5 -d"
+    ["fcitx5"]="fcitx5 -d"
     # Search for devices in the network and re-establish connections.
     ["kdeconnect-cli"]="kdeconnect-cli --refresh"
     # Show the status bar.
@@ -68,14 +68,14 @@ declare -A wallpapers=(
 
 # Execute the expression if the executable exists.
 for executable in ${!commands[@]}; do
-    if [[ -n $(command -v $executable) ]]; then
+    if [[ $(command -v $executable) ]]; then
         eval ${commands[$executable]}
     fi
 done
 
 # Set the background and quit for-loop.
 for executable in ${!wallpapers[@]}; do
-    if [[ -n $(command -v $executable) ]]; then
+    if [[ $(command -v $executable) ]]; then
         eval ${wallpapers[$executable]} &
         break
     fi
