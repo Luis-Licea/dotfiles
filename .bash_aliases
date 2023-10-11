@@ -65,7 +65,7 @@ repo_git() {
     git --git-dir="$1" --work-tree="$2" "${@:3}"
 }
 repo_ui() {
-    gitui -d "$1" -w "$2" "${@:3}"
+    gitui --polling -d "$1" -w "$2" "${@:3}"
 }
 
 lfcd() {
@@ -243,6 +243,7 @@ alias lockx='xscreensaver-command -lock'
 alias man='man -a'
 alias nr='setsid --fork alacritty -e ranger'
 alias nt='setsid --fork alacritty'
+alias alacrittyx11='WAYLAND_DISPLAY= alacritty'
 alias playmusic='mpv /run/media/luis/DATA/Music/* --shuffle'
 alias rgf='rg --files | rg'
 alias rsyncdelete='rsync -arv --delete'
