@@ -7,7 +7,7 @@ return {
         local set = vim.keymap.set
         require('mason-lspconfig').setup({
             -- Install servers set up via lspconfig.
-            automatic_installation = true,
+            automatic_installation = { exclude = { "lua_ls" } }
         })
 
         --------------------------------------------------------------------------------
@@ -73,30 +73,30 @@ return {
         -- Language servers.
         --------------------------------------------------------------------------------
         local servers = {
-            'awk_ls', -- AWK
+            -- 'awk_ls',   -- AWK
             'bashls', -- Bash
             'clangd', -- C/C++
-            'neocmake', -- CMake
-            'cssls', -- CSS
+            -- 'neocmake', -- CMake
+            'cssls',  -- CSS
             -- 'dockerls', -- Docker
             'eslint', -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
-            'groovyls', -- Groovy
-            'html', -- HTML
+            -- 'groovyls', -- Groovy
+            'html',   -- HTML
             -- 'jdtls', -- Java
             -- 'java-debug-adapter' -- Java
             -- 'java-language-server' -- Java
             -- 'java-test' -- Java
-            'jsonls', -- JSON
+            'jsonls',   -- JSON
             'ltex',
             'marksman', -- Markdown
             -- 'phpactor', -- PHP
             'pyright',
             'rust_analyzer', -- Rust
             -- 'sqls', -- SQL
-            'taplo', -- TOML
-            'texlab', -- LaTeX
-            'tsserver', -- JavaScript, TypeScript; LSP functionality.
-            'typst_lsp', -- Typst
+            'taplo',         -- TOML
+            'texlab',        -- LaTeX
+            'tsserver',      -- JavaScript, TypeScript; LSP functionality.
+            'typst_lsp',     -- Typst
         }
 
         -- Enable (broadcasting) snippet capability for completion.

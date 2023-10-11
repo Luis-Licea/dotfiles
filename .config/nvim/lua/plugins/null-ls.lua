@@ -100,10 +100,6 @@ return {
                 null_ls.builtins.formatting.prettier,
 
                 -- Java linter.
-                null_ls.builtins.diagnostics.semgrep.with({
-                    extra_args = { '--config', 'auto' },
-                }),
-                -- Java linter.
                 null_ls.builtins.diagnostics.checkstyle.with({
                     extra_args = { '-c', '/google_checks.xml' }, -- or "/sun_checks.xml" or path to self written rules
                 }),
@@ -123,25 +119,23 @@ return {
         -- Automatically install linters, formatters, and debug adapters.
         require('mason-null-ls').setup({
             ensure_installed = {
-                'black', -- Python formatter.
-                'checkstyle', -- Java linter.
-                'cmakelang', -- CMake linter.
-                'flake8', -- Python linter.
+                'black',              -- Python formatter.
+                'checkstyle',         -- Java linter.
+                'cmakelang',          -- CMake linter.
+                'flake8',             -- Python linter.
                 'google-java-format', -- Java formatter.
-                'isort', -- Python formatter.
-                'jq', -- JSON formatter.
-                'prettier', -- Markdown formatter.
-                'ruff', -- Python linter.
-                'semgrep', -- Java, JavaScript, Python, TypeScript, Go linter.
-                'shfmt', -- Bash formatter.
-                -- 'sonarlint-language-server', -- C, C++, CloudFormation, CSS, Docker, Go, HTML, IPython, Java, JavaScript, Kubernetes, TypeScript, Python, PHP, Terraform, Text, XML, YAML
-                'stylua', -- Lua formatter.
+                'isort',              -- Python formatter.
+                'jq',                 -- JSON formatter.
+                'prettier',           -- Markdown formatter.
+                -- 'ruff',               -- Python linter.
+                'shfmt',              -- Bash formatter.
+                'stylua',             -- Lua formatter.
 
                 -- Debug adapters.
                 'bash-debug-adpater', -- Bash, Sh.
-                'cpptools', -- C++, C, Rust.
-                'debugpy', -- Python.
-                'js-debug-adapter', -- JavaScript, TypeScript.
+                'cpptools',           -- C++, C, Rust.
+                'debugpy',            -- Python.
+                'js-debug-adapter',   -- JavaScript, TypeScript.
             },
         })
     end,
