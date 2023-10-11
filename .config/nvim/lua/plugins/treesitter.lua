@@ -9,8 +9,8 @@ return {
         require('nvim-treesitter.configs').setup({
             -- A list of parser names, or "all"
             -- ensure_installed = { "c", "lua", "rust" },
-            -- ensure_installed = 'all',
-            ensure_installed = {},
+            ensure_installed = 'all',
+            -- ensure_installed = {},
 
             -- Install parsers synchronously (only applied to `ensure_installed`)
             sync_install = false,
@@ -21,9 +21,7 @@ return {
 
             -- List of parsers to ignore installing (for "all")
             -- ignore_install = { "haskell" },
-            -- ignore_install = {},
-            -- ignore_install = {"all"},
-            ignore_install = "all",
+            ignore_install = {},
 
             -- If you need to change the installation directory of the parsers (see -> Advanced Setup)
             -- parser_install_dir = "/some/path/to/store/parsers",
