@@ -37,7 +37,6 @@ return {
             -- The border style to use for the floating window.
             border = 'rounded',
         })
-        set('n', '<leader><leader>', window.pick, {noremap = true})
+        set('n', '<leader><leader>', window.pick, { noremap = true })
     end,
-
 }

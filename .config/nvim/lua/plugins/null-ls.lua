@@ -8,6 +8,34 @@ return {
         'jay-babu/mason-null-ls.nvim',
     },
     config = function()
+        local programs = {
+            'black', -- Python formatter.
+            'checkstyle', -- Java linter.
+            'cmakelang', -- CMake linter.
+            'flake8', -- Python linter.
+            'google-java-format', -- Java formatter.
+            'isort', -- Python formatter.
+            'jq', -- JSON formatter.
+            'prettier', -- Markdown formatter.
+            'shfmt', -- Bash formatter.
+            'ruff', -- Python linter.
+            'stylua', -- Lua formatter.
+
+            -- Debug adapters.
+            'bash-debug-adpater', -- Bash, Sh.
+            'cpptools', -- C++, C, Rust.
+            'debugpy', -- Python.
+            'js-debug-adapter', -- JavaScript, TypeScript.
+        }
+        local not_installed = {}
+        for _, program in ipairs(programs) do
+            if vim.fn.executable(program) == 0 then
+                table.insert(not_installed, program)
+            end
+        end
+        -- Automatically install linters, formatters, and debug adapters.
+        require('mason-null-ls').setup({ ensure_installed = not_installed })
+
         local null_ls = require('null-ls')
         null_ls.setup({
             diagnostics_format = '[#{s}] (#{c}) #{m}',
@@ -114,29 +142,6 @@ return {
                     new_client.offset_encoding = 'utf-8'
                 end
             end,
-        })
-
-        -- Automatically install linters, formatters, and debug adapters.
-        require('mason-null-ls').setup({
-            ensure_installed = {
-                'black',              -- Python formatter.
-                'checkstyle',         -- Java linter.
-                'cmakelang',          -- CMake linter.
-                'flake8',             -- Python linter.
-                'google-java-format', -- Java formatter.
-                'isort',              -- Python formatter.
-                'jq',                 -- JSON formatter.
-                'prettier',           -- Markdown formatter.
-                -- 'ruff',               -- Python linter.
-                'shfmt',              -- Bash formatter.
-                'stylua',             -- Lua formatter.
-
-                -- Debug adapters.
-                'bash-debug-adpater', -- Bash, Sh.
-                'cpptools',           -- C++, C, Rust.
-                'debugpy',            -- Python.
-                'js-debug-adapter',   -- JavaScript, TypeScript.
-            },
         })
     end,
 }

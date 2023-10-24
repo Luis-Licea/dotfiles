@@ -1,6 +1,3 @@
---------------------------------------------------------------------------------
--- Feline.
---------------------------------------------------------------------------------
 -- Prettify status line.
 return {
     'feline-nvim/feline.nvim',
@@ -12,8 +9,10 @@ return {
         require('feline').setup({
             custom_providers = { [snowball.provider_name] = snowball.provider },
             components = snowball.reverse_scroll_bar(
-                snowball.add_whitespace_component(require('feline.default_components').statusline.icons)
+                snowball.add_whitespace_component(
+                    require('feline.default_components').statusline.icons
+                )
             ),
         })
-    end
+    end,
 }

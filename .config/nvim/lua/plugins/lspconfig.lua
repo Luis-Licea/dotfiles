@@ -5,10 +5,45 @@ return {
     dependencies = 'williamboman/mason-lspconfig.nvim',
     config = function()
         local set = vim.keymap.set
-        require('mason-lspconfig').setup({
-            -- Install servers set up via lspconfig.
-            automatic_installation = { exclude = { "lua_ls" } }
-        })
+
+        local servers = {
+            -- 'java-test' -- Java?
+            -- awk_ls = 'awk-language-server', -- AWK
+            -- dockerls = 'dockerls', -- Docker
+            -- groovyls = 'groovyls', -- Groovy
+            -- java_debug_adapter = -- 'java-debug-adapter' -- Java?
+            -- java_language_server = 'java-language-server' -- Java
+            -- jdtls = 'jdtls', -- Java
+            -- neocmake = 'neocmakelsp', -- CMake
+            -- phpactor = 'phpactor', -- PHP
+            -- sqls = 'sqls', -- SQL
+
+            bashls = 'bashls', -- Bash
+            clangd = 'clangd', -- C/C++
+            cssls = 'cssls', -- CSS
+            eslint = 'eslint', -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
+            html = 'html', -- HTML
+            jsonls = 'jsonls', -- JSON
+            ltex = 'ltex-ls', -- Tex and Markdown spell checking.
+            lua_ls = 'lua-language-server', -- Lua
+            marksman = 'marksman', -- Markdown language server; Provides TOC code action, and help with Markdown links, and references, not spelling.
+            pyright = 'pyright',
+            rust_analyzer = 'rust_analyzer', -- Rust
+            taplo = 'taplo', -- TOML
+            texlab = 'texlab', -- LaTeX
+            tsserver = 'tsserver', -- JavaScript, TypeScript; LSP functionality.
+            typst_lsp = 'typst_lsp', -- Typst
+            yamlls = 'yaml-language-server', -- YAML
+        }
+        local not_installed = {}
+        for configuration, server in pairs(servers) do
+            if vim.fn.executable(server) == 0 then
+                table.insert(not_installed, configuration)
+            end
+        end
+
+        -- Install servers via lspconfig.
+        require('mason-lspconfig').setup({ ensure_installed = not_installed })
 
         --------------------------------------------------------------------------------
         -- Nvim LspConfig.
@@ -72,33 +107,6 @@ return {
         --------------------------------------------------------------------------------
         -- Language servers.
         --------------------------------------------------------------------------------
-        local servers = {
-            -- 'awk_ls',   -- AWK
-            'bashls', -- Bash
-            'clangd', -- C/C++
-            -- 'neocmake', -- CMake
-            'cssls',  -- CSS
-            -- 'dockerls', -- Docker
-            'eslint', -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
-            -- 'groovyls', -- Groovy
-            'html',   -- HTML
-            -- 'jdtls', -- Java
-            -- 'java-debug-adapter' -- Java
-            -- 'java-language-server' -- Java
-            -- 'java-test' -- Java
-            'jsonls',   -- JSON
-            'ltex',
-            'marksman', -- Markdown
-            -- 'phpactor', -- PHP
-            'pyright',
-            'rust_analyzer', -- Rust
-            -- 'sqls', -- SQL
-            'taplo',         -- TOML
-            'texlab',        -- LaTeX
-            'tsserver',      -- JavaScript, TypeScript; LSP functionality.
-            'typst_lsp',     -- Typst
-        }
-
         -- Enable (broadcasting) snippet capability for completion.
         local capabilities = vim.lsp.protocol.make_client_capabilities()
         -- local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -106,6 +114,10 @@ return {
         capabilities.textDocument.completion.completionItem.snippetSupport = true
 
         local lspconfig = require('lspconfig')
+
+        -- Ignore these servers.
+        servers.yamls = nil
+        servers.lua_ls = nil
 
         for _, server in ipairs(servers) do
             lspconfig[server].setup({

@@ -83,3 +83,6 @@ GitLab
 stringified
 shellcheck
 compdef
+zshrc
+bashrc
+dotfiles
