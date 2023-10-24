@@ -2,32 +2,30 @@
 ---@author Luis David Licea Torres
 ---@license MIT
 
-local append = require('Table').append
+local Key = {}
+
 local set = vim.keymap.set
 
-local function map(shortcut, command, options)
+function Key.map(shortcut, command, options)
     set('', shortcut, command, options)
 end
 
-local function nnoremap(shortcut, command, options)
-    local default_options = { noremap = true }
-    append(default_options, options)
-    set('n', shortcut, command, default_options)
+function Key.nnoremap(shortcut, command, options)
+    options = options or {}
+    options.noremap = true
+    set('n', shortcut, command, options)
 end
-local function cnoremap(shortcut, command)
+
+function Key.cnoremap(shortcut, command)
     set('c', shortcut, command, { noremap = true })
 end
-local function inoremap(shortcut, command)
+
+function Key.inoremap(shortcut, command)
     set('i', shortcut, command, { noremap = true })
 end
-local function tnoremap(shortcut, command)
+
+function Key.tnoremap(shortcut, command)
     set('t', shortcut, command, { noremap = true })
 end
 
-return {
-    map = map,
-    nnoremap = nnoremap,
-    cnoremap = cnoremap,
-    inoremap = inoremap,
-    tnoremap = tnoremap,
-}
+return Key
