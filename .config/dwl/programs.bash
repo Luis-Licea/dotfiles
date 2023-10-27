@@ -19,7 +19,7 @@ unset IFS
 choice() {
     declare -nr arguments=$1
     readonly count=${#arguments[@]}
-    readonly choice=${arguments[RANDOM%${count}]}
+    readonly choice=${arguments[RANDOM % ${count}]}
     printf "%s" "$choice"
 }
 
@@ -80,4 +80,3 @@ for executable in ${!wallpapers[@]}; do
         break
     fi
 done
-

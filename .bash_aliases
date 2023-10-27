@@ -58,7 +58,7 @@ say() {
 
 # Go to directory, open file, go to previous directory.
 scratchpad() {
-    cd /tmp && nvim "$@" && cd -
+    cd /tmp && nvim "$@" && { cd - || exit; }
 }
 
 repo_git() {
@@ -69,15 +69,16 @@ repo_ui() {
 }
 
 lfcd() {
-    local temporary_directory=$(mktemp)
+    local temporary_directory
+    temporary_directory=$(mktemp)
     lf --last-dir-path "$temporary_directory" "$@"
-    cd "$(cat "$temporary_directory")"
+    cd "$(cat "$temporary_directory")" || exit
     rm "$temporary_directory"
 }
 
 joshutocd() {
     local id=$$
-    mkdir -p /tmp/$USER
+    mkdir -p "/tmp/$USER"
     local output_file="/tmp/$USER/joshuto-cwd-$id"
     env joshuto --output-file "$output_file" "$@"
     local exit_code=$?
@@ -86,7 +87,7 @@ joshutocd() {
         # regular exit
         0) ;;
         # output contains current directory
-        101) cd "$(cat "$output_file")" ;;
+        101) cd "$(cat "$output_file")"  || exit ;;
         # output selected files
         102) ;;
         *) echo "Exit code: $exit_code" ;;
@@ -95,7 +96,7 @@ joshutocd() {
 
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
 setup_js_scratchpad() {
-    cd /tmp
+    cd /tmp || exit
     if [ ! -f package.json ]; then
         npm init -f >/dev/null
         ln -s "$nvm_node_modules" node_modules
@@ -107,23 +108,23 @@ setup_js_scratchpad() {
 jsscratch() {
     setup_js_scratchpad
     nvim scratchpad.mjs "$@"
-    cd -
+    cd - || exit
 }
 
 jsscratchtest() {
     setup_js_scratchpad
     nvim scratchpad_test.mjs "$@"
-    cd -
+    cd - || exit
 }
 
 # Create cargo project rather than individual file.
 rsscratch() {
-    cd /tmp
+    cd /tmp || exit
     if [ ! -d rsscratch ]; then
         cargo new rsscratch
     fi
     nvim /tmp/rsscratch/src/main.rs "$@"
-    cd -
+    cd - || exit
 }
 
 ################################################################################
@@ -138,6 +139,7 @@ alias doomconfig='$EDITOR ~/.config/doom/config.el'
 alias dwlconfig='$EDITOR ~/.config/dwl/'
 alias emacsconfig='$EDITOR ~/.config/doom/init.el'
 alias gitconfig='$EDITOR ~/.config/git/config'
+alias homeconfig='$EDITOR ~/.config/home-manager/home.nix'
 alias lynxconfig='$EDITOR .config/lynx/lynx.cfg'
 alias mostconfig='$EDITOR ~/.config/mostrc'
 alias mpdconfig='$EDITOR ~/.config/mpd/mpd.conf'
@@ -234,6 +236,7 @@ alias v='nvim'
 alias y='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music/YouTube'
 alias yd='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths'
 
+alias alacrittyx11='WAYLAND_DISPLAY= alacritty'
 alias bc='bc --mathlib'
 alias cheat='cht.sh'
 alias gdiff='git fetch && git diff origin/master HEAD'
@@ -243,7 +246,7 @@ alias lockx='xscreensaver-command -lock'
 alias man='man -a'
 alias nr='setsid --fork alacritty -e ranger'
 alias nt='setsid --fork alacritty'
-alias alacrittyx11='WAYLAND_DISPLAY= alacritty'
+alias nullls='cd $HOME/.local/share/nvim/lazy/null-ls.nvim/lua/null-ls/builtins'
 alias playmusic='mpv /run/media/luis/DATA/Music/* --shuffle'
 alias rgf='rg --files | rg'
 alias rsyncdelete='rsync -arv --delete'
@@ -259,7 +262,7 @@ alias nixrepl='nix repl --file "<nixpkgs/nixos>" -I nixos-config=/etc/nixos/conf
 alias nixsearch='nix search nixpkgs --extra-experimental-features flakes'
 
 # XDG-Ninja.
-alias wget=wget --hsts-file="$XDG_DATA_HOME/wget-hsts"
+alias wget=wget --hsts-file='$XDG_DATA_HOME/wget-hsts'
 
 # https://unix.stackexchange.com/questions/79112/how-do-i-set-time-and-date-from-the-internet
 # sudo ntpd -qg; sudo hwclock -w
@@ -272,5 +275,7 @@ alias fixtime='sudo ntpd -qg'
 [[ -f ~/.my_aliases ]] && source ~/.my_aliases
 
 if [[ $(command -v starship) ]]; then
-    eval "$(starship init "$(which "$SHELL")")"
+    shell=${BASH:+bash}
+    shell=${shell:-zsh}
+    eval "$(starship init "$(which "${shell}")")"
 fi
