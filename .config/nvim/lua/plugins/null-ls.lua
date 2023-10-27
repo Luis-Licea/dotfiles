@@ -17,8 +17,10 @@ return {
             'isort', -- Python formatter.
             'jq', -- JSON formatter.
             'prettier', -- Markdown formatter.
-            'shfmt', -- Bash formatter.
             'ruff', -- Python linter.
+            'shellcheck', -- Bash linter.
+            'shellharden', -- Bash linter, formatter.
+            'shfmt', -- Bash formatter.
             'stylua', -- Lua formatter.
 
             -- Debug adapters.
@@ -68,6 +70,10 @@ return {
                 -- null_ls.builtins.formatting.beautysh,
                 -- Provide text auto completion.
                 -- null_ls.builtins.completion.spell,
+                -- nixfmt is slow and does not use an AST for formatting.
+                -- null_ls.builtins.formatting.nixfmt,
+                -- nixpkgs_fmt does not use an AST for formatting.
+                -- null_ls.builtins.formatting.nixpkgs_fmt,
 
                 -- Shell.
                 null_ls.builtins.formatting.shellharden,
@@ -123,6 +129,10 @@ return {
                 null_ls.builtins.code_actions.shellcheck,
                 -- Bash, Msh, Shell formatter.
                 null_ls.builtins.formatting.shfmt,
+                -- Nix formatting.
+                null_ls.builtins.diagnostics.statix,
+                null_ls.builtins.code_actions.statix,
+                null_ls.builtins.formatting.alejandra,
 
                 -- Formats Markdown tables.
                 null_ls.builtins.formatting.prettier,

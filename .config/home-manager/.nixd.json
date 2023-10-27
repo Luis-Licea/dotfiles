@@ -1,9 +1,9 @@
 {
-    "options": {
-        "enable": true,
-        "target": {
-            "args": [],
-            "installable": ".#homeConfigurations.luis.options"
-        }
+  "options": {
+    "enable": true,
+    "target": {
+      "args": [],
+      "installable": ".#homeConfigurations.luis.options"
     }
+  }
 }

@@ -1,20 +1,30 @@
-{ pkgs, lib, config, options, specialArgs, modulesPath }: {
+{
+  pkgs,
+  lib,
+  config,
+  options,
+  specialArgs,
+  modulesPath,
+}: {
   # with pkgs;
 
   home.packages = with pkgs; [
-
-    ruff
-
+    black # Python formatter.
+    isort # Python formatter.
+    jq # JSON formatter.
+    ruff # Python linter.
     shellcheck # Bash linter.
-    shellharden # Bash Formatter, Linter
-    shfmt # Bash Formatter, Linter
+    shellharden # Bash linter, formatter.
+    shfmt # Bash formatter.
+    stylua # Lua formatter.
 
-    marksman # Language server.
 
-    stylua # Language server.
+    marksman # Markdown language server; Provides TOC code action, and help with Markdown links, and references, not spelling.
+
+
     jdk17 # Needed by ltex-ls.
 
-    nixfmt # Nix formatter.
+    alejandra # Nix formatter.
     statix # Nix diagnostics.
   ];
 
@@ -26,15 +36,14 @@
     withNodeJs = true;
 
     # Install additional Nix packages alongside Neovim
-    plugins = [ pkgs.vimPlugins.nvim-treesitter.withAllGrammars ];
+    plugins = [pkgs.vimPlugins.nvim-treesitter.withAllGrammars];
     extraPackages = with pkgs; [
       # Install the vim-tree-lua plugin
       # vimPlugins.vim-tree-lua
       lua-language-server
 
       nil # Nix language server.
-      rnix-lsp # Nix language server.
-      nixd
+      nixd # Nix language server.
 
       # Install the vim-airline plugin
       # vimPlugins.vim-airline

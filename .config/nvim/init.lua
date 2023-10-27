@@ -296,9 +296,6 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     callback = function()
         if vim.fn.line('\'"') > 0 and vim.fn.line('\'"') <= vim.fn.line('$') then
             vim.fn.setpos('.', vim.fn.getpos('\'"'))
-            -- exe "normal! g'\"" -- Difficult to escape qutoes.
-            -- vim.cmd('normal zz') -- Find how to center buffer in a sane way.
-            -- vim.cmd('silent! foldopen') -- Open folds. They are annoying.
         end
     end,
 })
@@ -362,12 +359,14 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 
 local cpp_group = vim.api.nvim_create_augroup('C++ Group', {})
 
--- C++ code settings.
+-- C++ and Nix code settings.
 vim.api.nvim_create_autocmd('FileType', {
     group = cpp_group,
-    pattern = 'cpp',
+    pattern = {'nix', 'cpp'},
     callback = function()
-        vim.cmd('set shiftwidth=2 | set softtabstop=2  | set tabstop=2')
+        vim.opt_local.shiftwidth = 2
+        vim.opt_local.softtabstop = 2
+        vim.opt_local.tabstop = 2
     end,
 })
 
@@ -801,9 +800,7 @@ vim.o.tabstop = 4
 -- Other.
 --------------------------------------------------------------------------------
 -- Treat keybindings the same when using a different keyboard layout.
-vim.cmd(
-    [[set langmap=йЙцЦуУкКеЕнНгГшШщЩзЗхХъЪфФыЫвВаАпПрРоОлЛдДжЖэЭяЯчЧсСмМиИтТьЬбБюЮ\\,;qQwWeErRtTyYuUiIoOpP[{]}aAsSdDfFgGhHjJkKlL;:'\"zZxXcCvVbBnNmM\\,<.>?"]]
-)
+vim.o.langmap = "йЙцЦуУкКеЕнНгГшШщЩзЗхХъЪфФыЫвВаАпПрРоОлЛдДжЖэЭяЯчЧсСмМиИтТьЬбБюЮ\\,;qQwWeErRtTyYuUiIoOpP[{]}aAsSdDfFgGhHjJkKlL;:'\"zZxXcCvVbBnNmM\\,<.>?"
 -- Open history file using :q.
 vim.o.history = 200
 -- Ignore case in search patterns.

@@ -27,6 +27,8 @@ return {
             ltex = 'ltex-ls', -- Tex and Markdown spell checking.
             lua_ls = 'lua-language-server', -- Lua
             marksman = 'marksman', -- Markdown language server; Provides TOC code action, and help with Markdown links, and references, not spelling.
+            nil_ls = 'nil', -- Nix language server.
+            nixd = 'nixd', -- Nix language server.
             pyright = 'pyright',
             rust_analyzer = 'rust_analyzer', -- Rust
             taplo = 'taplo', -- TOML
@@ -119,7 +121,7 @@ return {
         servers.yamls = nil
         servers.lua_ls = nil
 
-        for _, server in ipairs(servers) do
+        for server, _ in pairs(servers) do
             lspconfig[server].setup({
                 on_attach = on_attach,
                 capabilities = capabilities,
