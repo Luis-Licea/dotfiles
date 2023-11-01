@@ -10,8 +10,8 @@ cmake_minimum_required(VERSION 3.10)
 # Use -std=gnu++17 (the options are 98, 11, 14, 17, 20, and 23).
 set(CMAKE_CXX_STANDARD 17)
 
-# Use ISO standard without GNU extensions.
-# For example, necessary for using -std=c++17 instead of -std=gnu++17.
+# Use ISO standard without GNU extensions. For example, necessary for using
+# -std=c++17 instead of -std=gnu++17.
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # If this property is OFF or unset, the CXX_STANDARD target property is treated
@@ -20,14 +20,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Set PROJECT_NAME variable.
-project(your_project_name
-    VERSION 1.0.0     # VERSION <major>[.<minor>[.<patch>]]
-    DESCRIPTION "A Small Project Description"
-    HOMEPAGE_URL "https://github.com/project/name"
-    LANGUAGES C CXX)
+project(
+  your_project_name
+  VERSION 1.0.0 # VERSION <major>[.<minor>[.<patch>]]
+  DESCRIPTION "A Small Project Description"
+  HOMEPAGE_URL "https://github.com/project/name"
+  LANGUAGES C CXX)
 
 # Show help message.
-message(NOTICE "
+message(
+  NOTICE
+  "
 # Go into Makefile directory.
 cd \"${CMAKE_BINARY_DIR}\"
 
@@ -66,21 +69,22 @@ cd \"${CMAKE_CURRENT_LIST_DIR}\"
 if(MSVC) # Windows flags.
   add_compile_options(/Wall /fp:fast)
 else() # Linux flags.
-  add_compile_options(-Wall           # Turn on warnings.
-                      -ffast-math     # Faster code; doesn't follow ISO specs.
-                      -fno-exceptions # Do not throw exceptions: abort instead.
-                      -fno-rtti       # Do not generate virtual function info.
-                      -fsigned-char   # Allow char to be signed.
-                      )
+  add_compile_options(
+    -Wall # Turn on warnings.
+    -ffast-math # Faster code; doesn't follow ISO specs.
+    -fno-exceptions # Do not throw exceptions: abort instead.
+    -fno-rtti # Do not generate virtual function info.
+    -fsigned-char # Allow char to be signed.
+  )
 
-  # The -ggdb and -O flags are incompatible. Add -ggdb3 to Debug builds
-  # and -O3 to Release builds.
-  if(CMAKE_BUILD_TYPE MATCHES Debug)  # Debug profile.
-      add_definitions(-DDEBUG=1)      # Enable DEBUG macros.
-      add_compile_options(-ggdb3)     # Produce GDB debug info.
-  else()                              # Release profile.
-      set(CMAKE_BUILD_TYPE Release)   # Set build type to report it to user.
-      add_compile_options(-O3)        # Turn on speed optimizations.
+  # The -ggdb and -O flags are incompatible. Add -ggdb3 to Debug builds and -O3
+  # to Release builds.
+  if(CMAKE_BUILD_TYPE MATCHES Debug) # Debug profile.
+    add_definitions(-DDEBUG=1) # Enable DEBUG macros.
+    add_compile_options(-ggdb3) # Produce GDB debug info.
+  else() # Release profile.
+    set(CMAKE_BUILD_TYPE Release) # Set build type to report it to user.
+    add_compile_options(-O3) # Turn on speed optimizations.
   endif()
 
   # Report the build type (Debug, Release, or None).
@@ -94,7 +98,7 @@ add_subdirectory(your_dir) # Compile CMakeLists.txt in subdirectory.
 # Add the given directories to those the compiler uses to search for #include
 # files. Relative paths are interpreted as relative to the current source
 # directory.
-include_directories(your/include)   # -I flag for compiler.
+include_directories(your/include) # -I flag for compiler.
 
 # The first argument is the executable output name, and the remaining arguments
 # are the source files required to build the executable.
@@ -105,17 +109,17 @@ file(GLOB SRC_FILES *.cpp) # Collect the source files.
 
 # Adds an executable target to be built from the listed source files.
 add_executable(${PROJECT_NAME} ${SRC_FILES})
-    # Specifies the paths in which the linker should search for libraries when
-    # linking a given target.
-    #
-    # PRIVATE - use only for specified build target
-    # PUBLIC - use for specified target and for targets which link with project
-    # INTERFACE - use only for targets which link with project
-    target_link_directories(${PROJECT_NAME} PRIVATE your_dir) # -L flag for linker.
+# Specifies the paths in which the linker should search for libraries when
+# linking a given target.
+#
+# PRIVATE - use only for specified build target PUBLIC - use for specified
+# target and for targets which link with project INTERFACE - use only for
+# targets which link with project
+target_link_directories(${PROJECT_NAME} PRIVATE your_dir) # -L flag for linker.
 
-    # Specify libraries or flags to use when linking a given target and/or its
-    # dependents.
-    target_link_libraries(${PROJECT_NAME} your_lib) # -l flag for linker.
+# Specify libraries or flags to use when linking a given target and/or its
+# dependents.
+target_link_libraries(${PROJECT_NAME} your_lib) # -l flag for linker.
 
 # Install targets in /usr/local on UNIX and c:/Program Files/${PROJECT_NAME} on
 # Windows. Change the default path using CMAKE_INSTALL_PREFIX.
@@ -124,12 +128,38 @@ install(TARGETS ${PROJECT_NAME})
 # Copies an <input>.in file to an <output> file and substitutes variable values
 # referenced as @VAR@. The @ONLY keywords means to only replace variables
 # surrounded by @ signs.
-configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-  @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+               "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" @ONLY)
 
-# Add "make uninstall" support.
-add_custom_target(uninstall
-  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
+add_custom_target(
+  uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+  COMMENT "Add 'make unistall' support.")
 
+# Additional targets to perform clang-format/clang-tidy. Get all project files
+file(
+  GLOB_RECURSE
+  ALL_CXX_SOURCE_FILES
+  *.[chi]pp
+  *.[chi]xx
+  *.cc
+  *.hh
+  *.ii
+  *.[CHI])
+
+find_program(CLANG_FORMAT "clang-format")
+if(CLANG_FORMAT)
+  add_custom_target(
+    clang-format
+    COMMAND ${CLANG_FORMAT} -i -style=file ${ALL_CXX_SOURCE_FILES}
+    COMMENT "Execute clang-format.")
+endif()
+
+find_program(CLANG_TIDY "clang-tidy")
+if(CLANG_TIDY)
+  add_custom_target(
+    clang-tidy
+    COMMAND ${CLANG_TIDY} ${ALL_CXX_SOURCE_FILES} -config="" -- -std=c++11
+            ${INCLUDE_DIRECTORIES}
+    COMMENT "Execute clang-tidy on all files.")
+endif()
