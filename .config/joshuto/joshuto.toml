@@ -30,7 +30,7 @@ directories_first = true
 reverse = false
 
 [preview]
-max_preview_size = 2097152                           # 2MB
+max_preview_size = 4194304                           # 4MB
 preview_script = "~/.config/joshuto/preview_file.sh" # make sure it's marked as executable
 
 [tab]

@@ -87,7 +87,7 @@ joshutocd() {
         # regular exit
         0) ;;
         # output contains current directory
-        101) cd "$(cat "$output_file")"  || exit ;;
+        101) cd "$(cat "$output_file")" || exit ;;
         # output selected files
         102) ;;
         *) echo "Exit code: $exit_code" ;;
@@ -135,6 +135,7 @@ alias alacrittyconfig='$EDITOR ~/.config/alacritty/alacritty.yml'
 alias awesomeconfig='$EDITOR ~/.config/awesome/rc.lua'
 alias bashconfig='$EDITOR ~/.bashrc'
 alias cppmanconfig='$EDITOR ~/.config/cppman/cppman.cfg'
+alias joshutoconfig='$EDITOR ~/.config/joshuto/'
 alias doomconfig='$EDITOR ~/.config/doom/config.el'
 alias dwlconfig='$EDITOR ~/.config/dwl/'
 alias emacsconfig='$EDITOR ~/.config/doom/init.el'

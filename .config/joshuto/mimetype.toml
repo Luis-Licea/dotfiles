@@ -7,7 +7,7 @@ audio_default = [
 ]
 
 image_default = [
-  { command = "qimgv", args = [
+  { command = "qview", args = [
     "--",
   ], fork = true, silent = true },
   { command = "krita", args = [
@@ -40,7 +40,7 @@ text_default = [
   ] },
 ]
 
-reader_default = [{ command = "evince", fork = true, silent = true }]
+reader_default = [{ command = "zathura", fork = true, silent = true }]
 
 libreoffice_default = [{ command = "libreoffice", fork = true, silent = true }]
 
@@ -111,11 +111,13 @@ java.inherit = "text_default"
 js.inherit = "text_default"
 json.inherit = "text_default"
 kt.inherit = "text_default"
-lua.inherit = "text_default"
+lock.inherit = "text_default"
 log.inherit = "text_default"
+lua.inherit = "text_default"
 md.inherit = "text_default"
 micro.inherit = "text_default"
 ninja.inherit = "text_default"
+nix.inherit = "text_default"
 py.inherit = "text_default"
 rkt.inherit = "text_default"
 rs.inherit = "text_default"
@@ -225,6 +227,6 @@ inherit = "video_default"
 [mimetype.text]
 inherit = "text_default"
 
-# text/*
+# video/*
 [mimetype.video]
 inherit = "video_default"
