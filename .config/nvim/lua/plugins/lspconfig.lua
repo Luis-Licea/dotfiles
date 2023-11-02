@@ -14,7 +14,6 @@ return {
             -- java_debug_adapter = -- 'java-debug-adapter' -- Java?
             -- java_language_server = 'java-language-server' -- Java
             -- jdtls = 'jdtls', -- Java
-            -- neocmake = 'neocmakelsp', -- CMake
             -- phpactor = 'phpactor', -- PHP
             -- sqls = 'sqls', -- SQL
 
@@ -27,6 +26,7 @@ return {
             ltex = 'ltex-ls', -- Tex and Markdown spell checking.
             lua_ls = 'lua-language-server', -- Lua
             marksman = 'marksman', -- Markdown language server; Provides TOC code action, and help with Markdown links, and references, not spelling.
+            neocmake = 'neocmakelsp', -- CMake
             nil_ls = 'nil', -- Nix language server.
             nixd = 'nixd', -- Nix language server.
             pyright = 'pyright',
@@ -34,7 +34,7 @@ return {
             taplo = 'taplo', -- TOML
             texlab = 'texlab', -- LaTeX
             tsserver = 'tsserver', -- JavaScript, TypeScript; LSP functionality.
-            typst_lsp = 'typst_lsp', -- Typst
+            typst_lsp = 'typst-lsp', -- Typst
             yamlls = 'yaml-language-server', -- YAML
         }
         local not_installed = {}
