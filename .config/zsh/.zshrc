@@ -102,6 +102,10 @@ fi
 # Source aliases.
 [[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
 
+[[ $(command -v starship) ]] && eval "$(starship init zsh)"
+
+export HISTFILE=/tmp/zsh_history
+
 # Syntax highlighting script name.
 ZSH_SYNTAX_HIGHLIGHTING="zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 # Possible installation directories.
@@ -112,5 +116,3 @@ for installation_dir in '/usr/share' '/usr/share/zsh/plugins'; do
         source "$installation_dir/$ZSH_SYNTAX_HIGHLIGHTING"
     fi
 done
-
-export HISTFILE=/tmp/zsh_history

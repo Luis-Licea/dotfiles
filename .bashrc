@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -115,8 +116,13 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
 ###################################################################
-# Vim settings.
+# Custom settings.
 ###################################################################
 # Set vi mode in terminal.
 set -o vi
+
+[[ $(command -v starship) ]] && eval "$(starship init bash)"
+
+export HISTFILE=/tmp/bash_history

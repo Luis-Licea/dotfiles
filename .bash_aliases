@@ -161,6 +161,7 @@ alias rifleconfig='$EDITOR ~/.config/ranger/rifle.conf'
 alias roficonfig='$EDITOR ~/.config/rofi/config.rasi'
 alias scopeconfig='$EDITOR ~/.config/ranger/scope.sh'
 alias shellconfig='$EDITOR ~/.bash_aliases'
+alias starshipconfig='$EDITOR ~/.config/starship.toml'
 alias vimbconfig='$EDITOR ~/.config/vimb/config'
 alias vscodiumconfig='$EDITOR ~/.config/VSCodium/User/'
 alias waybarconfig='$EDITOR ~/.config/waybar/'
@@ -273,9 +274,3 @@ alias fixtime='sudo ntpd -qg'
 
 # shellcheck source=./.my_aliases
 [[ -f ~/.my_aliases ]] && source ~/.my_aliases
-
-if [[ $(command -v starship) ]]; then
-    shell=${BASH:+bash}
-    shell=${shell:-zsh}
-    eval "$(starship init "$(which "${shell}")")"
-fi
