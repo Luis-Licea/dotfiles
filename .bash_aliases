@@ -76,6 +76,15 @@ lfcd() {
     rm "$temporary_directory"
 }
 
+rangercd() {
+    local temporary_directory
+    temporary_directory=$(mktemp)
+    ranger --choosedir="$temporary_directory" -- "${@:-$PWD}"
+    cd "$(cat "$temporary_directory")" || exit
+    rm "$temporary_directory"
+    echo "Level ${RANGER_LEVEL:-0}"
+}
+
 joshutocd() {
     local id=$$
     mkdir -p "/tmp/$USER"
@@ -210,9 +219,6 @@ alias dotfilesui='repo_ui ~/.config/dotfiles/ ~ && git-summary ~/Code -s'
 alias passbgit='repo_git ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 
-# Stay in current folder when exiting ranger. Show ranger nested level at exit.
-alias ranger='source ranger && echo "Level ${RANGER_LEVEL:-0}"'
-
 # Zict dictionary aliases.
 alias en='zict alter en'
 alias es='zict alter es'
@@ -232,7 +238,7 @@ alias j='joshutocd'
 alias l='lfcd'
 alias m='man -Hlynx'
 alias n='nvim'
-alias r='ranger'
+alias r='rangercd'
 alias v='nvim'
 
 alias y='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music/YouTube'
