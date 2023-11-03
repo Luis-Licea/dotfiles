@@ -75,8 +75,6 @@ return {
                 -- nixpkgs_fmt does not use an AST for formatting.
                 -- null_ls.builtins.formatting.nixpkgs_fmt,
 
-                -- Shell.
-                null_ls.builtins.formatting.shellharden,
                 -- Python.
                 null_ls.builtins.formatting.isort,
                 null_ls.builtins.diagnostics.ruff,
@@ -127,8 +125,19 @@ return {
 
                 -- Bash code actions.
                 null_ls.builtins.code_actions.shellcheck,
-                -- Bash, Msh, Shell formatter.
-                null_ls.builtins.formatting.shfmt,
+                null_ls.builtins.diagnostics.shellcheck,
+
+                -- Use either shfmt or shellharden for formatting, not both.
+
+                -- Bash, Msh, Shell formatter. Format spacing, does not add
+                -- quotes around variables.
+                null_ls.builtins.formatting.shfmt.with({
+                    extra_args = { '--indent', '2', '--case-indent', '--binary-next-line' },
+                }),
+                -- Shell. Format spacing and add quotes around variables.
+                -- Stricter than shfmt.
+                -- null_ls.builtins.formatting.shellharden,
+
                 -- Nix formatting.
                 null_ls.builtins.diagnostics.statix,
                 null_ls.builtins.code_actions.statix,
