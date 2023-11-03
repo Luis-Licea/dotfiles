@@ -2,7 +2,7 @@
 return {
     'neovim/nvim-lspconfig',
     -- Configurations for Nvim LSP.
-    dependencies = 'williamboman/mason-lspconfig.nvim',
+    dependencies = { 'williamboman/mason-lspconfig.nvim', 'b0o/schemastore.nvim' },
     config = function()
         local set = vim.keymap.set
 
@@ -118,8 +118,8 @@ return {
         local lspconfig = require('lspconfig')
 
         -- Ignore these servers.
-        servers.yamls = nil
         servers.lua_ls = nil
+        servers.jsonls = nil
 
         for server, _ in pairs(servers) do
             lspconfig[server].setup({
@@ -128,16 +128,14 @@ return {
             })
         end
 
-        lspconfig.yamlls.setup({
+        lspconfig.jsonls.setup({
             on_attach = on_attach,
             capabilities = capabilities,
             settings = {
-                yaml = {
-                    schemas = {
-                        ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
-                        -- ["../path/relative/to/file.yml"] = "/.github/workflows/*"
-                        -- ["/path/from/root/of/project"] = "/.github/workflows/*"
-                    },
+                -- Completion support when typing "$schema: ..." in JSON files.
+                json = {
+                    schemas = require('schemastore').json.schemas(),
+                    validate = { enable = true },
                 },
             },
         })
