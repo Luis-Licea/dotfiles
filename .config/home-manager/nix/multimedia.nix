@@ -31,7 +31,5 @@ with pkgs; let
     typst-lsp
   ];
 in {
-# systemd unit
-  # mcomix ranger librewolf brave calibre chromium thunderbird share/nvim/sesions 
   home.packages = viewers ++ converters ++ downloaders ++ editors ++ compilers;
 }
