@@ -262,6 +262,7 @@ alias playmusic='mpv /run/media/luis/DATA/Music/* --shuffle'
 alias rgf='rg --files | rg'
 alias rsyncdelete='rsync -arv --delete'
 alias rsyncdryrun='rsync -arvn --delete'
+alias sd="cd ~ && cd \$(find * -type d | fzf)"
 
 alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
