@@ -1,3 +1,4 @@
+; Use gitignore.io to generate useful .gitignore files.
 [user]
     email = luislicea@hotmail.com
     name = Luis David Licea Torres
@@ -8,12 +9,24 @@
 [core]
     pager = nvimpager -
     hooksPath = ~/.config/git/hooks
+    whitespace = trailing-space,space-before-tab
+[apply]
+    whitespace = fix # Same as "strip".
+[lfs]
+    enable = true
+; [includes]
+;     ~/.secrets
 [hub]
     protocol = https
 [alias]
+    hello = !(echo "Hello $(git config user.name)!")
+
+    # Clean branches merged to master, or to some some other branch, like main.
+    bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
+
     ; Merge commits obfuscate intent. Pull requests should not include merge
     ; commits. If there are local changes, always fetch and rebase. The commits
-    ; should be applied directly on the of the master branch. It may be
+    ; should be applied directly on top of the master branch. It may be
     ; necessary to stash the changes before rebasing.
     ;
     ; Also, git fetch --all is only necessary when there are changes on the
@@ -40,3 +53,198 @@
     ; cherry-pick the one fix commit.
     ; git cherry-pick deadbeefyourfixcommit
 
+    a = add
+    aa = add --all
+    apa = add --patch
+    au = add --update
+    av = add --verbose
+    ap = apply
+    apt = appply --3way
+    b = branch
+    ba = branch --all
+    bdl = branch --delete
+
+    ; ['gbda'] = [[git branch --no-color --merged \| grep -vE "^([+*]\|\s*(<span>$</span>(git_main_branch)\|<span>$</span>(git_develop_branch))\s*<span>$</span>)" \| xargs git branch --delete 2>/dev/null]],
+
+    bD = branch --delete --force
+    ; bg = [[git branch -vv | grep ": gone\]"]],
+    ; bgd = [[git branch --no-color -vv | grep ": gone\]" | awk '"'"'{print $1}'"'"' | xargs git branch -d]],
+    ; bgD = [[git branch --no-color -vv | grep ": gone\]" | awk '"'"'{print $1}'"'"' | xargs git branch -D]],
+    bl = blame -b -w
+    bnm = branch --no-merged
+    br = branch --remote
+    bs = bisect
+    bsb = bisect bad
+    bsg = bisect good
+    bsr = bisect reset
+    bss = bisect start
+    c = commit --verbose
+    ; c! = commit --verbose --amend
+    cc = commit --verbose --amend
+    ; cn! = 'git commit --verbose --no-edit --amend',
+    ca = commit --verbose --all
+    ; ca! = 'git commit --verbose --all --amend',
+    ; can! = 'git commit --verbose --all --no-edit --amend',
+    ; cans! = 'git commit --verbose --all --signoff --no-edit --amend',
+    cam = commit --all --message
+    cas = commit --all --signoff
+    casm = commit --all --signoff --message
+    csm = commit --signoff --message
+    cb = checkout -b
+    cf = config --list
+    cl = clone --recurse-submodules
+    ; ccd = [[git clone --recurse-submodules "<span>$</span>@" && cd "<span>$</span>(basename <span>$</span>\_ .git)"]],
+    clean = clean --interactive -d
+    ; pristine = 'git reset --hard && git clean -dffx',
+    cm = 'git checkout $(git_main_branch)',
+    cd = 'git checkout $(git_develop_branch)',
+    cmsg = commit --message
+    co = checkout
+    cor = checkout --recurse-submodules
+    count = shortlog --summary -n
+    cp = cherry-pick
+    cpa = cherry-pick --abort
+    cpc = cherry-pick --continue
+    cs = commit -S
+    css = commit -S -s
+    cssm = commit -S -s -m
+    d = diff
+    dca = diff --cached
+    dcw = git diff --cached --word-diff
+    ; dct = 'git describe --tags $(git rev-list --tags --max-count=1)',
+    ds = diff --staged
+    dt = diff-tree --no-commit-id --name-only -r
+    ; dnolock = [[git diff $@ ":(exclude)package-lock.json" ":(exclude)\*.lock"]],
+    ; dup = 'git diff @{upstream}',
+    ; dv = [[git diff -w $@ \| view -]],
+    dw = diff --word-diff
+    f = fetch
+    fa = fetch --all --prune
+    ; fg = [[git ls-files \| grep]],
+    fo = fetch origin
+    g = gui citool
+    ga = gui citool --amend
+    ; gf = 'git push --force origin $(current_branch)',
+    ; gfl = 'git push --force-with-lease origin $(current_branch)',
+    ; gl = 'git pull origin $(current_branch)',
+    ; gp = 'git push origin $(current_branch)',
+    ; gpnp = 'ggl && ggp',
+    ; gpull = [[git pull origin "$(git_current_branch)"]],
+    ; gpur = 'ggu',
+    ; gpush = [[git push origin "$(git_current_branch)"]],
+    ; gsup = 'git branch --set-upstream-to=origin/$(git_current_branch)',
+    ; gu = 'git pull --rebase origin $(current_branch)',
+    ; psup = 'git push --set-upstream origin $(git_current_branch)',
+    ; psupf = 'git push --set-upstream origin $(git_current_branch) --force-with-lease --force-if-includes (git version >= 2.30)',
+    ; psupf = 'git push --set-upstream origin $(git_current_branch) --force-with-lease (git version < 2.30)',
+    hh = help
+    ignore = update-index --assume-unchanged
+    ; ignored = 'git ls-files -v | grep "^[[:lower:]]"',
+    ; it-svn-dcommit-push = 'git svn dcommit && git push github $(git_main_branch):svntrunk',
+    ; k = 'gitk --all --branches &!',
+    ; ke = 'gitk --all $(git log --walk-reflogs --pretty=%h) &!',
+    l = pull
+    lg = log --stat
+    lgp = log --stat --patch
+    lgg = log --graph
+    lgga = log --graph --decorate --all
+    lgm = log --graph --max-count=10
+    lo = log --oneline --decorate
+    lol = log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'
+    lols = log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --stat
+    lod = log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset'
+    lods = log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short
+    lola = log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --all
+    ; log = log --oneline --decorate --graph
+    loga = log --oneline --decorate --graph --all
+    ; lp = log --pretty=<format>
+    m = merge
+    ms = merge --squash
+    ; mom = 'git merge origin/$(git_main_branch)',
+    mtl = mergetool --no-prompt
+    ; mtlvim = 'git mergetool --no-prompt --tool=vimdiff',
+    ; mum = 'git merge upstream/$(git_main_branch)',
+    ; ma = 'git merge --abort',
+    p = push
+    pd = push --dry-run
+    ; pf = 'git push --force-with-lease --force-if-includes (git version >= 2.30)',
+    ; pf = 'git push --force-with-lease (git version < 2.30)',
+    ; pf! = 'git push --force',
+    ; poat = 'git push origin --all && git push origin --tags',
+    ; pod = 'git push origin --delete',
+    ; pr = 'git pull --rebase',
+    ; pu = 'git push upstream',
+    ; pv = 'git push --verbose',
+    ; r = 'git remote',
+    ; ra = 'git remote add',
+    rb = rebase
+    rba = rebase --abort
+    rbc = rebase --continue
+    ; rbd = 'git rebase $(git_develop_branch)',
+    rbi = rebase --interactive
+    ; rbm = 'git rebase $(git_main_branch)',
+    ; rbom = 'git rebase origin/$(git_main_branch)',
+    rbo = rebase --onto
+    rbs = rebase --skip
+    ; rev = 'git revert',
+    ; rh = 'git reset',
+    ; rhh = 'git reset --hard',
+    ; roh = 'git reset origin/$(git_current_branch) --hard',
+    ; rm = 'git rm',
+    ; rmc = 'git rm --cached',
+    ; rmv = 'git remote rename',
+    ; rrm = 'git remote remove',
+    rs = restore
+    ; rset = 'git remote set-url',
+    ; rss = 'git restore --source',
+    ; rst = 'git restore --staged',
+    ; rt = [[cd "$(git rev-parse --show-toplevel \|\| echo .)"]],
+    ; ru = reset --
+    rup = remote update
+    rv = remote --verbose
+    sb = status --short -b
+    ; sd = svn dcommit
+    sh = show
+    si = submodule init
+    sps = show --pretty=short --show-signature
+    ; sr = svn rebase
+    ss = status --short
+    st = status
+    ; sta = 'git stash push (git version >= 2.13)',
+    ; sta = 'git stash save (git version < 2.13)',
+    staa = stash apply
+    stc = stash clear
+    std = stash drop
+    stl = stash list
+    stp = stash pop
+    sts = stash show --text
+    ; stu = 'git stash --include-untracked',
+    ; stall = 'git stash --all',
+    su = submodule update
+    sw = switch
+    swc = switch -c
+    ; swm = 'git switch $(git_main_branch)',
+    ; swd = 'git switch $(git_develop_branch)',
+    ; ts = 'git tag -s',
+    ; tv = [[git tag \| sort -V]],
+    ; tl = [[gtl(){ git tag --sort=-v:refname -n --list ${1}\* }; noglob gtl]],
+    ; unignore = 'git update-index --no-assume-unchanged',
+    ; unwip = [[git rev-list --max-count=1 --format="%s" HEAD \| grep -q "\-\-wip\-\-" && git reset HEAD~1]],
+    ; up = 'git pull --rebase',
+    upv = pull --rebase --verbose
+    upa = pull --rebase --autostash
+    upav = pull --rebase --autostash --verbose
+    upom = 'git pull --rebase origin $(git_main_branch)',
+    ; upomi = 'git pull --rebase=interactive origin $(git_main_branch)',
+    ; lum = 'git pull upstream $(git_main_branch)',
+    ; luc = 'git pull upstream $(git_current_branch)',
+    wch = whatchanged -p --abbrev-commit --pretty=medium
+    ; wip = [[git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"]],
+    am = am
+    amc = am --continue
+    ams = am --skip
+    ama = am --abort
+    amscp = am --show-current-patch
+    wt = worktree
+    wtls = worktree list
+    wtmv = worktree move

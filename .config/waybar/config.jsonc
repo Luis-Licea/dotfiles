@@ -260,8 +260,9 @@
         //"format": "󰂯",
         //"format-disabled": "󰂲",
         "interval": 30,
-        "on-click": "blueman-manager",
-        "on-click-right": "rfkill toggle bluetooth",
+        "on-click": "rfkill toggle bluetooth",
+        "on-click-middle": "blueman-manager",
+        "on-click-right": "bluetoothctl connect 38:F3:2E:A8:45:25",
         "tooltip-format": "{}"
     },
     "custom/scratchpad": {

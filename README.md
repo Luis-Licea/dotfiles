@@ -2,13 +2,14 @@
 
 A backup repository for storing configuration files.
 
-Clone the repo into a 'dotfiles' directory:
+
+Clone the repo into a `dotfiles` directory:
 
 ```bash
 git clone --bare https://github.com/Luis-Licea/dotfiles $HOME/.config/dotfiles/ --recurse-submodules
 ```
 
-Define the aliases in .bashrc or .zshrc to access repo from anywhere:
+Define the aliases in `.bashrc` or `.zshrc` to access repo from anywhere:
 
 ```bash
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME"

@@ -65,7 +65,7 @@ repo_git() {
     git --git-dir="$1" --work-tree="$2" "${@:3}"
 }
 repo_ui() {
-    gitui --polling -d "$1" -w "$2" "${@:3}"
+    gitui -d "$1" -w "$2" "${@:3}"
 }
 
 lfcd() {
@@ -144,12 +144,12 @@ alias alacrittyconfig='$EDITOR ~/.config/alacritty/alacritty.yml'
 alias awesomeconfig='$EDITOR ~/.config/awesome/rc.lua'
 alias bashconfig='$EDITOR ~/.bashrc'
 alias cppmanconfig='$EDITOR ~/.config/cppman/cppman.cfg'
-alias joshutoconfig='$EDITOR ~/.config/joshuto/'
 alias doomconfig='$EDITOR ~/.config/doom/config.el'
 alias dwlconfig='$EDITOR ~/.config/dwl/'
 alias emacsconfig='$EDITOR ~/.config/doom/init.el'
 alias gitconfig='$EDITOR ~/.config/git/config'
 alias homeconfig='$EDITOR ~/.config/home-manager/home.nix'
+alias joshutoconfig='$EDITOR ~/.config/joshuto/'
 alias lynxconfig='$EDITOR .config/lynx/lynx.cfg'
 alias mostconfig='$EDITOR ~/.config/mostrc'
 alias mpdconfig='$EDITOR ~/.config/mpd/mpd.conf'
@@ -158,9 +158,12 @@ alias ncmpcppconfig='$EDITOR ~/.config/ncmpcpp/'
 alias neomuttconfig='$EDITOR ~/.config/mutt/'
 alias neomuttmsmtpconfig='$EDITOR ~/.config/msmtp/config'
 alias newsboatconfig='$EDITOR ~/.config/newsboat/'
+alias nixconfig='sudo -E $EDITOR /etc/nixos/configuration.nix'
 alias nuconfig='$EDITOR ~/.config/nushell/config.nu'
 alias nuconfigenv='$EDITOR ~/.config/nushell/env.nu'
 alias nvimconfig='$EDITOR ~/.config/nvim/init.lua'
+alias nvimlspconfig='$EDITOR /home/luis/.config/nvim/lua/plugins/lspconfig.lua'
+alias nvimnullconfig='$EDITOR /home/luis/.config/nvim/lua/plugins/null-ls.lua'
 alias nvimpagerconfig='$EDITOR ~/.config/nvimpager/init.vim'
 alias nvimswap='cd ~/.local/share/nvim/swap/'
 alias picomconfig='$EDITOR ~/.config/picom/picom.conf'

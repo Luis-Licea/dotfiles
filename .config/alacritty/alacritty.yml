@@ -108,10 +108,13 @@ font:
   normal:
     # Font family
     family: monospace
-    # family: MesloLGS NF
+    # family: MesloLGL Nerd Font # Large gap.
+    # family: MesloLGM Nerd Font # Medium gap.
+    # family: MesloLGS Nerd Font # Small gap.
+    # family: FiraCode Nerd Font Mono
 
     # The `style` can be specified to pick a specific face.
-    # style: Regular
+    # style: Regular # regular, light, medium, retina, semibold, italic, bold, bold italic
 
   # Bold font face
   # bold:
