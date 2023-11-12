@@ -362,7 +362,7 @@ local cpp_group = vim.api.nvim_create_augroup('C++ Group', {})
 -- C++ and Nix code settings.
 vim.api.nvim_create_autocmd('FileType', {
     group = cpp_group,
-    pattern = {'nix', 'cpp'},
+    pattern = { 'nix', 'cpp', 'toml' },
     callback = function()
         vim.opt_local.shiftwidth = 2
         vim.opt_local.softtabstop = 2
@@ -800,7 +800,8 @@ vim.o.tabstop = 4
 -- Other.
 --------------------------------------------------------------------------------
 -- Treat keybindings the same when using a different keyboard layout.
-vim.o.langmap = "йЙцЦуУкКеЕнНгГшШщЩзЗхХъЪфФыЫвВаАпПрРоОлЛдДжЖэЭяЯчЧсСмМиИтТьЬбБюЮ\\,;qQwWeErRtTyYuUiIoOpP[{]}aAsSdDfFgGhHjJkKlL;:'\"zZxXcCvVbBnNmM\\,<.>?"
+vim.o.langmap =
+    'йЙцЦуУкКеЕнНгГшШщЩзЗхХъЪфФыЫвВаАпПрРоОлЛдДжЖэЭяЯчЧсСмМиИтТьЬбБюЮ\\,;qQwWeErRtTyYuUiIoOpP[{]}aAsSdDfFgGhHjJkKlL;:\'"zZxXcCvVbBnNmM\\,<.>?'
 -- Open history file using :q.
 vim.o.history = 200
 -- Ignore case in search patterns.
