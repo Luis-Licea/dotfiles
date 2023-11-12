@@ -1,4 +1,4 @@
----@module Table functions.
+---Table functions.
 ---@author Luis David Licea Torres
 ---@license MIT
 

@@ -1,4 +1,4 @@
----@module String functions.
+---String functions.
 ---@author Luis David Licea Torres
 ---@license MIT
 

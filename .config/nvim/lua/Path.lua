@@ -1,4 +1,4 @@
----@module Path functions.
+---Path functions.
 ---@author Luis David Licea Torres
 ---@license MIT
 

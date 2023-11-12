@@ -1,6 +1,6 @@
 #!/usr/bin/env nvim -l
 
----@module Test documentation code blocks by executing them.
+---Test documentation code blocks by executing them.
 ---@author Luis David Licea Torres
 ---@license MIT
 

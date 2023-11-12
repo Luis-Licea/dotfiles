@@ -1,4 +1,4 @@
----@module Functions for setting keybindings.
+---Functions for setting keybindings.
 ---@author Luis David Licea Torres
 ---@license MIT
 
