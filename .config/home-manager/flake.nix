@@ -8,13 +8,15 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Path or URL to flake.nix.
+    custom-dwl.url = "github:luis-licea/dwl";
   };
 
   outputs = {
     nixpkgs,
     home-manager,
     ...
-  }: let
+  } @ inputs: let
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
   in {
@@ -27,6 +29,7 @@
 
       # Optionally use extraSpecialArgs
       # to pass through arguments to home.nix
+      extraSpecialArgs = {inherit inputs;};
     };
   };
 }
