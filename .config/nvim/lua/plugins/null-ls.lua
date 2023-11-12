@@ -93,6 +93,8 @@ return {
                 null_ls.builtins.diagnostics.cmake_lint,
                 -- Show Python lint errors.
                 null_ls.builtins.diagnostics.pylint.with({
+                    -- Do not save code analysis to ~/.cache/pylint.
+                    extra_args = { '--persistent', 'n' },
                     dynamic_command = function()
                         local command = { 'pylint' }
                         local environment = os.getenv('VIRTUAL_ENV')

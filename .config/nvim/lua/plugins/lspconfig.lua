@@ -9,6 +9,7 @@ return {
         local servers = {
             -- 'java-test' -- Java?
             -- awk_ls = 'awk-language-server', -- AWK
+            -- clangd = 'clangd', -- C/C++
             -- dockerls = 'dockerls', -- Docker
             -- groovyls = 'groovyls', -- Groovy
             -- java_debug_adapter = -- 'java-debug-adapter' -- Java?
@@ -18,7 +19,7 @@ return {
             -- sqls = 'sqls', -- SQL
 
             bashls = 'bashls', -- Bash
-            clangd = 'clangd', -- C/C++
+            ccls = 'ccls', -- C/C++
             cssls = 'cssls', -- CSS
             eslint = 'eslint', -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
             html = 'html', -- HTML
@@ -141,6 +142,7 @@ return {
         })
 
         lspconfig.lua_ls.setup({
+            cmd = { 'lua-language-server', '--logpath=/tmp/lua_language_server' },
             on_attach = on_attach,
             capabilities = capabilities,
             settings = {
