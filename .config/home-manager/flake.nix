@@ -11,7 +11,6 @@
     # Path or URL to flake.nix.
     custom-dwl.url = "github:luis-licea/dwl";
   };
-
   outputs = {
     nixpkgs,
     home-manager,

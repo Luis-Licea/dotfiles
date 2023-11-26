@@ -6,11 +6,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1699422243,
-        "narHash": "sha256-QndQql3xSGeGqF2fGyk6sDvD5u85GO4tlLtP85q+eDw=",
+        "lastModified": 1700896729,
+        "narHash": "sha256-PlWh/I+wTeO1mUKFhosM/0JaxC3LJhGMkBf66UQ10so=",
         "owner": "luis-licea",
         "repo": "dwl",
-        "rev": "c9f3616edff8924b42bfe50440ef379e2dc078fb",
+        "rev": "7fb455da7199fd16adf2af80a0863bc0c6227fef",
         "type": "github"
       },
       "original": {
