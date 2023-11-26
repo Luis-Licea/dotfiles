@@ -1,5 +1,5 @@
 import json
-import os
+from os import symlink, environ, path, devnull
 import threading
 from subprocess import PIPE, Popen
 
@@ -16,6 +16,11 @@ class UeberzugImageDisplayer(ImageDisplayer):
     IMAGE_ID = "preview"
     is_initialized = False
 
+    log = f"/tmp/ueberzugpp-{environ['USER']}.log"
+
+    if not path.exists(log):
+        symlink("/dev/null", log)
+
     def __init__(self):
         self.process = None
 
@@ -26,11 +31,11 @@ class UeberzugImageDisplayer(ImageDisplayer):
 
         # We cannot close the process because that stops the preview.
         # pylint: disable=consider-using-with
-        with open(os.devnull, "wb") as devnull:
+        with open(devnull, "wb") as null:
             self.process = Popen(
                 ["ueberzugpp", "layer", "--silent", "--no-cache"],
                 cwd=self.working_dir,
-                stderr=devnull,
+                stderr=null,
                 stdin=PIPE,
                 universal_newlines=True,
             )
