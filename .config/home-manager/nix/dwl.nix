@@ -16,7 +16,5 @@ in {
     waybar
     wireplumber
     wl-clipboard
-
-    # libsixel
   ];
 }
