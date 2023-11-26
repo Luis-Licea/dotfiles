@@ -52,16 +52,10 @@ with pkgs; let
     tealdeer
 
     gnome.gnome-disk-utility # Look into cfdisk parted
-    thunderbird
 
     # hexyl
     # numbat
     # vivid
-  ];
-  webBrowsers = [
-    # librewolf
-    brave
-    ungoogled-chromium
   ];
 in {
   home.packages =
@@ -71,7 +65,6 @@ in {
     ++ utilities
     ++ fileManagers
     ++ versionControl
-    ++ webBrowsers
     ++ bat-utils
     ++ other;
 }

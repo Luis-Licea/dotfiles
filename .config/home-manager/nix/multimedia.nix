@@ -30,6 +30,19 @@ with pkgs; let
     typst-fmt
     typst-lsp
   ];
+  webBrowsers = [
+    # librewolf
+    brave
+    vimb
+    ungoogled-chromium
+    luakit
+  ];
 in {
-  home.packages = viewers ++ converters ++ downloaders ++ editors ++ compilers;
+  home.packages =
+    viewers
+    ++ converters
+    ++ downloaders
+    ++ editors
+    ++ compilers
+    ++ webBrowsers;
 }
