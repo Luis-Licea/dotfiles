@@ -10,11 +10,6 @@ vim.g.mapleader = ' '
 -- Local Leader Mapping.
 vim.g.maplocalleader = ';'
 
-require('mappings')
-require('auto-commands')
-require('template-loader')
-require('runner')
-
 --------------------------------------------------------------------------------
 -- Interface.
 --------------------------------------------------------------------------------
@@ -59,13 +54,19 @@ vim.o.smartcase = vim.o.ignorecase
 vim.o.spell = true
 -- Define tab and trailing space characters.
 vim.opt.listchars = {
+    -- eol = '↴',
+    -- extends = '◣',
+    -- nbsp = "␣",
+    -- precedes = '◢',
+    -- space = '⋅',
+    -- trail = "·",
+    extends = '…',
+    leadmultispace = ' ', -- ...but don't show any when they're at the start
+    multispace = '·', -- show chars if I have multiple spaces between text
+    nbsp = '○',
+    precedes = '…',
     tab = '◃―▹',
     trail = '●',
-    extends = '◣',
-    precedes = '◢',
-    nbsp = '○',
-    -- eol = '↴',
-    -- space = '⋅',
 }
 -- Show tabs and trailing spaces.
 vim.o.list = true
@@ -87,9 +88,16 @@ vim.opt.shadafile = 'NONE'
 vim.o.path = vim.o.path .. '**'
 
 --------------------------------------------------------------------------------
+-- Import settings, mappings, auto-commands, etc.
+--------------------------------------------------------------------------------
+require('mappings')
+require('auto-commands')
+require('template-loader')
+require('runner')
+
+--------------------------------------------------------------------------------
 -- Plugins.
 --------------------------------------------------------------------------------
-
 -- Bootsrap lazy.nvim.
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
