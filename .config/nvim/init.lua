@@ -321,31 +321,31 @@ vim.api.nvim_create_autocmd('BufReadPre', {
 })
 
 -- Turn off syntax highlighting that conflicts with treesitter.
-vim.api.nvim_create_autocmd('BufEnter', {
-    group = buffer_check_group,
-    pattern = '*',
-    callback = function()
-        local noSyntaxFor = {
-            lua = true,
-            markdown = true,
-            sh = true,
-            json = true,
-            yaml = true,
-            python = true,
-            c = true,
-            cpp = true,
-            rust = true,
-            tex = true,
-        }
-        local noTreeSitterFor = { gitcommit = true }
-        if noSyntaxFor[vim.bo.filetype] then
-            vim.bo.syntax = false
-        end
-        if noTreeSitterFor[vim.bo.filetype] then
-            vim.cmd('TSBufDisable highlight')
-        end
-    end,
-})
+-- vim.api.nvim_create_autocmd('BufEnter', {
+--     group = buffer_check_group,
+--     pattern = '*',
+--     callback = function()
+--         local noSyntaxFor = {
+--             lua = true,
+--             markdown = true,
+--             sh = true,
+--             json = true,
+--             -- yaml = true,
+--             python = true,
+--             c = true,
+--             cpp = true,
+--             rust = true,
+--             tex = true,
+--         }
+--         local noTreeSitterFor = { gitcommit = true }
+--         if noSyntaxFor[vim.bo.filetype] then
+--             vim.bo.syntax = false
+--         end
+--         if noTreeSitterFor[vim.bo.filetype] then
+--             vim.cmd('TSBufDisable highlight')
+--         end
+--     end,
+-- })
 
 local xresources_group = vim.api.nvim_create_augroup('Xresources Group', {})
 -- Apply .Xresources file after editing the file.
@@ -827,6 +827,9 @@ vim.o.cindent = true
 -- Change cwd to file's directory.
 -- vim.o.autochdir = true
 vim.o.shell = Path.first_execuable({ '/usr/bin/zsh', '/usr/bin/bash', '/usr/bin/nu' })
+vim.opt.undodir = '/tmp/'
+vim.opt.shada = ""
+vim.opt.shadafile = "NONE"
 
 --------------------------------------------------------------------------------
 -- File finder.
@@ -855,7 +858,13 @@ if not vim.loop.fs_stat(lazypath) then
 else
     vim.opt.rtp:prepend(lazypath)
     -- Load plugins from files that match the pattern "lua/plugins/*.lua".
-    require('lazy').setup('plugins')
+    require('lazy').setup('plugins', {
+        change_detection = {
+            -- Automatically check for configuration changes and reload the UI.
+            enabled = true,
+            notify = false,
+        },
+    })
 end
 
 --------------------------------------------------------------------------------
