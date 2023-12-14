@@ -29,25 +29,28 @@
     '';
   };
 
-  services.greetd = rec {
-    enable = true;
-    settings = {
-      # Automatic login.
-      initial_session = {
-        command = /home/luis/.config/dwl/init.sh;
-        user = "luis";
+  services = {
+    udisks2.enable = true;
+    greetd = rec {
+      enable = true;
+      settings = {
+        # Automatic login.
+        initial_session = {
+          command = /home/luis/.config/dwl/init.sh;
+          user = "luis";
+        };
+        default_session = settings.initial_session;
+        # default_session = with pkgs;
+        # with lib; {
+        #   command = ''
+        #     ${getExe greetd.tuigreet} \
+        #       --time \
+        #       --asterisks \
+        #       --user-menu \
+        #       --cmd '${getExe dwl} \> $HOME/.cache/dwltags'
+        #   '';
+        # };
       };
-      default_session = settings.initial_session;
-      # default_session = with pkgs;
-      # with lib; {
-      #   command = ''
-      #     ${getExe greetd.tuigreet} \
-      #       --time \
-      #       --asterisks \
-      #       --user-menu \
-      #       --cmd '${getExe dwl} \> $HOME/.cache/dwltags'
-      #   '';
-      # };
     };
   };
 
