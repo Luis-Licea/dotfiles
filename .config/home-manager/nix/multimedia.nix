@@ -31,11 +31,16 @@ with pkgs; let
     typst-lsp
   ];
   webBrowsers = [
-    # librewolf
     brave
-    vimb
     ungoogled-chromium
-    luakit
+  ];
+  archivers = [
+    zip
+    xz
+    unzip
+    p7zip
+    gnutar
+    zstd
   ];
 in {
   home.packages =
@@ -44,5 +49,6 @@ in {
     ++ downloaders
     ++ editors
     ++ compilers
-    ++ webBrowsers;
+    ++ webBrowsers
+    ++ archivers;
 }

@@ -1,12 +1,13 @@
 {pkgs, ...}: {
   # hardware boot networking locale graphics audio users packages gui
   imports = [
-    ./nix/nvim.nix
-    ./nix/multimedia.nix
-    ./nix/archive.nix
     ./nix/cli.nix
-    ./nix/font.nix
     ./nix/dwl.nix
+    ./nix/font.nix
+    ./nix/gui.nix
+    ./nix/multimedia.nix
+    ./nix/neomutt.nix
+    ./nix/nvim.nix
     ./nix/pass.nix
   ];
 
