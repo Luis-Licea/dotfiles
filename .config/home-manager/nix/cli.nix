@@ -27,6 +27,7 @@ with pkgs; let
     bashmount
     file
     lsof
+    ddh
   ];
   bat-utils = with bat-extras; [
     batdiff

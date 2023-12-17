@@ -153,6 +153,12 @@
       SDL_IM_MODULE = "fcitx";
       XMODIFIERS = "@im=fcitx";
     };
+
+    # Configure how NTFS removable disks should be mounted.
+    etc."udisks2/mount_options.conf".text = ''
+      [defaults]
+      ntfs_defaults=uid=$UID,gid=$GID,prealloc
+    '';
   };
 
   # Copy the NixOS configuration file and link it from the resulting system

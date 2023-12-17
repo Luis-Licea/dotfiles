@@ -4,6 +4,7 @@ with pkgs; let
     pcsx2
   ];
   diffTools = [
+    czkawka
     meld
   ];
 in {
