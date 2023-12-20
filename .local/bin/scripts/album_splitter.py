@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 ################################################################################
 # MIT License
@@ -29,7 +29,7 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from dataclasses import dataclass
 from math import inf
 from pathlib import Path
-from re import search, Match
+from re import Match, search
 from subprocess import call
 from textwrap import dedent
 
@@ -41,7 +41,7 @@ patterns = [
     # 01.[00:00(.000)?] Title
     r"(?P<number>\d+)\.\[(?P<minutes>\d+):(?P<seconds>\d+)\.?(?P<milliseconds>\d+)?\] (?P<title>.+)$",
     # 01. Title 00:00(.000)
-    r"(?P<number>\d+)\. (?P<title>.+) (?P<minutes>\d+):(?P<seconds>\d+)\.?(?P<milliseconds>\d+)?$",
+    r"(?P<number>\d+). (?P<title>.+) (?P<minutes>\d+):(?P<seconds>\d+)\.?(?P<milliseconds>\d+)?$",
 ]
 
 
@@ -56,6 +56,87 @@ class Song:
     milliseconds: int
     end: int
     title: str
+
+    def split_song(self, album: Path, artist: Path) -> list[str | Path]:
+        """Return the command to split the song.
+
+        Args:
+            album (Path): The album name.
+            artist (Path): The artist name.
+
+        Returns:
+            list[str | Path]: The command to split the song.
+        """
+        song_location = f"{artist}/{artist} - {self.number:02d} - {self.title}.opus"
+
+        if self.end != inf:
+            # Song command.
+            return [
+                "ffmpeg",
+                "-i",
+                album,
+                "-acodec",
+                "libopus",
+                "-ss",
+                f"{self.start}ms",
+                "-to",
+                f"{self.end}ms",
+                song_location,
+            ]
+        # Last song.
+        return [
+            "ffmpeg",
+            "-i",
+            album,
+            "-acodec",
+            "libopus",
+            "-ss",
+            f"{self.start}ms",
+            song_location,
+        ]
+
+    def split_video(self, album: Path, artist: Path) -> list[str | Path]:
+        """Return the command to split the video.
+
+        Args:
+            album (Path): The album name.
+            artist (Path): The artist name.
+
+        Returns:
+            list[str | Path]: The command to split the video.
+        """
+        suffix = album.suffix
+        song_location = f"{artist}/{artist} - {self.number:02d} - {self.title}{suffix}"
+
+        if self.end != inf:
+            # Song command.
+            return [
+                "ffmpeg",
+                "-i",
+                album,
+                "-acodec",
+                "copy",
+                "-vcodec",
+                "copy",
+                "-ss",
+                f"{self.start}ms",
+                "-to",
+                f"{self.end}ms",
+                song_location,
+            ]
+        # Last song.
+        return [
+            "ffmpeg",
+            "-i",
+            album,
+            "-acodec",
+            "copy",
+            "-vcodec",
+            "copy",
+            "-ss",
+            f"{self.start}ms",
+            song_location,
+        ]
 
     @property
     def start_stamp(self: "Song") -> str:
@@ -153,12 +234,13 @@ def parse_track_list(text: str) -> list[Song]:
 
     def get_song(match: Match[str]):
         attributes: dict = match.groupdict()
+
         song_attributes = {
-            "number": int(attributes.get("number", 0)),
-            "seconds": int(attributes.get("seconds", 0)),
-            "milliseconds": int(attributes.get("milliseconds", 0) or 0),
-            "minutes": int(attributes.get("minutes", 0)),
-            "hours": int(attributes.get("hours", 0)),
+            "number": int(attributes.get("number") or 0),
+            "seconds": int(attributes.get("seconds") or 0),
+            "milliseconds": int(attributes.get("milliseconds") or 0),
+            "minutes": int(attributes.get("minutes") or 0),
+            "hours": int(attributes.get("hours") or 0),
             "title": str(attributes["title"].replace("/", "|")),
             "end": inf,
         }
@@ -185,7 +267,7 @@ def parse_track_list(text: str) -> list[Song]:
     raise ValueError("Tracklist could not be parsed.")
 
 
-def split(album: Path, track_list: Path, artist: Path, dry_run: bool):
+def split(album: Path, track_list: Path, artist: Path, dry_run: bool, video: bool):
     """split a music track into specified sub-tracks by calling ffmpeg from the shell"""
     for file in [album, track_list]:
         if not file.is_file():
@@ -193,39 +275,19 @@ def split(album: Path, track_list: Path, artist: Path, dry_run: bool):
 
     songs = parse_track_list(track_list.read_text())
 
+    no_song_numbers = all(map(lambda song: song.number == 0, songs))
+    if no_song_numbers:
+        for index, song in enumerate(songs, 1):
+            song.number = index
+
     if not artist.exists():
         artist.mkdir()
 
-    def get_command(song):
-        song_location = f"{artist}/{artist} - {song.number:02d} - {song.title}.opus"
-        if song.end != inf:
-            # Song command.
-            return [
-                "ffmpeg",
-                "-i",
-                album,
-                "-acodec",
-                "libopus",
-                "-ss",
-                f"{song.start}ms",
-                "-to",
-                f"{song.end}ms",
-                song_location,
-            ]
-        else:
-            # Last song.
-            return [
-                "ffmpeg",
-                "-i",
-                album,
-                "-acodec",
-                "libopus",
-                "-ss",
-                f"{song.start}ms",
-                song_location,
-            ]
+    if video:
+        commands = list(map(lambda song: song.split_video(album, artist), songs))
+    else:
+        commands = list(map(lambda song: song.split_song(album, artist), songs))
 
-    commands = list(map(get_command, songs))
     if dry_run:
         for song in songs:
             print(song)
@@ -242,6 +304,9 @@ def parse_arguments():
     examples:
         Split the mp3 file into tracks and placed them into a folder.
         $ album_splitter.py "Artist Name" "../some/mp3" "some/tracklist.txt"
+
+        Split the mp4 file into tracks and placed them into a folder.
+        $ album_splitter.py "Artist Name" "../some/mp4" "some/tracklist.txt" -v
 
         Show what would happen if the command were run.
         $ album_splitter.py Artist album.mp3 tracklist.txt --dry-run
@@ -262,6 +327,12 @@ def parse_arguments():
         "--dry-run",
         action="store_true",
         help="Show what would happen",
+    )
+    parser.add_argument(
+        "-v",
+        "--video",
+        action="store_true",
+        help="Split the video and audio without re-encoding",
     )
     args = parser.parse_args()
     print(args)
@@ -289,6 +360,7 @@ def test_tracklist_regex():
     """
 
     songs = parse_track_list(test1)
+    assert songs
 
     test2 = """
     1. 3, 2, 1 Let's Start 0:00
@@ -298,11 +370,30 @@ def test_tracklist_regex():
     5. Cool 3:55
     """
     songs = parse_track_list(test2)
-    for song in songs:
-        print(song)
+    assert songs
 
+    test3 = """
+    # Disk 1:
+    0:00 Song Name (feat. Song name)
+    1:19 Song (feat. Song)
+    31:26 Another song -Song (feat. Song)
+
+    # Disk 2:
+    35:25 Long -Song ver (feat. Song)
+    38:48 S.o.n.g -long ver (feat. SONG)
+    """
+    songs = parse_track_list(test3)
+    assert songs
+
+    test3 = """
+    1) Song 1 (feat. Song Artist) 0:00
+    2) Song 2 (feat. Song Artist) 3:26
+    3) Song 3 (feat. Song Artist) 6:15
+    """
+    songs = parse_track_list(test3)
+    assert songs
 
 
 if __name__ == "__main__":
     main()
-    # test_tracklist_regex()
+    test_tracklist_regex()
