@@ -56,6 +56,13 @@ say() {
     gtts-cli "${*}" | mpv -
 }
 
+
+# Unzip the file to a directory with the same file name minus .zip extension.
+unzipd() {
+    local name="$1"
+    unzip "$name" -d "$(basename "$name" .zip)"
+}
+
 # Go to directory, open file, go to previous directory.
 scratchpad() {
     cd /tmp && nvim "$@" && { cd - || exit; }
@@ -148,7 +155,7 @@ alias doomconfig='$EDITOR ~/.config/doom/config.el'
 alias dwlconfig='$EDITOR ~/.config/dwl/'
 alias emacsconfig='$EDITOR ~/.config/doom/init.el'
 alias gitconfig='$EDITOR ~/.config/git/config'
-alias homeconfig='$EDITOR ~/.config/home-manager/home.nix'
+alias home-config='$EDITOR ~/.config/home-manager/home.nix'
 alias joshutoconfig='$EDITOR ~/.config/joshuto/'
 alias lynxconfig='$EDITOR .config/lynx/lynx.cfg'
 alias mostconfig='$EDITOR ~/.config/mostrc'
@@ -173,7 +180,7 @@ alias rangerconfig='$EDITOR ~/.config/ranger/'
 alias rifleconfig='$EDITOR ~/.config/ranger/rifle.conf'
 alias roficonfig='$EDITOR ~/.config/rofi/config.rasi'
 alias scopeconfig='$EDITOR ~/.config/ranger/scope.sh'
-alias shellconfig='$EDITOR ~/.bash_aliases'
+alias shellconfig='$EDITOR ~/.bash_aliases && source ~/.bash_aliases'
 alias starshipconfig='$EDITOR ~/.config/starship.toml'
 alias vimbconfig='$EDITOR ~/.config/vimb/config'
 alias vscodiumconfig='$EDITOR ~/.config/VSCodium/User/'
@@ -263,6 +270,7 @@ alias rgf='rg --files | rg'
 alias rsyncdelete='rsync -arv --delete'
 alias rsyncdryrun='rsync -arvn --delete'
 alias sd="cd ~ && cd \$(find * -type d | fzf)"
+alias nd="nvim \$(find * -type f | fzf)"
 
 alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
