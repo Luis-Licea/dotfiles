@@ -83,6 +83,15 @@ bindkey -M vicmd "р" vi-backward-char # h
 bindkey -M vicmd "ф" vi-add-next # a
 bindkey -M vicmd "ш" vi-insert # i
 
+# Use `man zshzle` for info.
+copy_line() {
+    wl-copy <<< $BUFFER
+}
+# Register the function as a [N]ew key mapping.
+zle -N copy_line
+bindkey '^Y' copy_line # Register in insert mode.
+bindkey -M vicmd "yy" copy_line # Resiger in vim-mode
+
 # Make Vi mode transitions faster (timeout is in hundredths of a second).
 export KEYTIMEOUT=1
 
