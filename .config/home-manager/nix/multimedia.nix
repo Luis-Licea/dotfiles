@@ -13,6 +13,8 @@ with pkgs; let
   ];
   editors = [
     # sqlite
+    kid3
+    krita
     onlyoffice-bin
     sqlitebrowser
   ];

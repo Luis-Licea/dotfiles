@@ -54,6 +54,7 @@ with pkgs; let
     tealdeer
 
     gnome.gnome-disk-utility # Look into cfdisk parted
+    frogmouth
 
     # hexyl
     # numbat
