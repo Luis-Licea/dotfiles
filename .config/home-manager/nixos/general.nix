@@ -148,11 +148,14 @@
     # Equivalent to `/etc/environment`.
     variables = {
       # Use Fcitx or Fcitx5 for input method control.
-      GTK_IM_MODULE = "fcitx";
-      QT_IM_MODULE = "fcitx";
-      SDL_IM_MODULE = "fcitx";
-      XMODIFIERS = "@im=fcitx";
+      # GTK_IM_MODULE = "fcitx";
+      # QT_IM_MODULE = "fcitx";
+      # SDL_IM_MODULE = "fcitx";
+      # XMODIFIERS = "@im=fcitx";
+      # Allow fcitx5 to change keyboard layout in alacritty.
+      WINIT_UNIX_BACKEND="x11";
     };
+
 
     # Configure how NTFS removable disks should be mounted.
     etc."udisks2/mount_options.conf".text = ''
