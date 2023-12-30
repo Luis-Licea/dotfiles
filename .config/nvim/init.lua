@@ -3,12 +3,18 @@ local Path = require('Path')
 
 
 --------------------------------------------------------------------------------
--- Ungrouped Mappings.
+-- Essential Mappings.
 --------------------------------------------------------------------------------
 -- Leader Mapping.
 vim.g.mapleader = ' '
 -- Local Leader Mapping.
 vim.g.maplocalleader = ';'
+
+-- Disable providers for faster startup.
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_node_provider = 0
 
 --------------------------------------------------------------------------------
 -- Interface.
@@ -68,7 +74,7 @@ vim.opt.listchars = {
     tab = '◃―▹',
     trail = '●',
 }
--- Show tabs and trailing spaces.
+-- Show `listchars`.
 vim.o.list = true
 -- Add indentation when S or cc is pressed.
 vim.o.cindent = true
