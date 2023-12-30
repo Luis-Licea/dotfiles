@@ -1,28 +1,28 @@
 [Groups/0]
 # Group Name
-Name=English
+Name=Japanese
 # Layout
 Default Layout=us
 # Default Input Method
-DefaultIM=keyboard-us
+DefaultIM=mozc
 
 [Groups/0/Items/0]
 # Name
-Name=keyboard-us
+Name=mozc
 # Layout
 Layout=
 
 [Groups/1]
 # Group Name
-Name=Spanish
+Name=Polish
 # Layout
-Default Layout=latam
+Default Layout=pl
 # Default Input Method
-DefaultIM=keyboard-latam
+DefaultIM=keyboard-pl
 
 [Groups/1/Items/0]
 # Name
-Name=keyboard-latam
+Name=keyboard-pl
 # Layout
 Layout=
 
@@ -42,15 +42,29 @@ Layout=
 
 [Groups/3]
 # Group Name
-Name=Polish
+Name=Spanish
 # Layout
-Default Layout=pl
+Default Layout=latam
 # Default Input Method
-DefaultIM=keyboard-pl
+DefaultIM=keyboard-latam
 
 [Groups/3/Items/0]
 # Name
-Name=keyboard-pl
+Name=keyboard-latam
+# Layout
+Layout=
+
+[Groups/4]
+# Group Name
+Name=English
+# Layout
+Default Layout=us
+# Default Input Method
+DefaultIM=keyboard-us
+
+[Groups/4/Items/0]
+# Name
+Name=keyboard-us
 # Layout
 Layout=
 
@@ -59,4 +73,5 @@ Layout=
 1=Russian
 2=Spanish
 3=Polish
+4=Japanese
 
