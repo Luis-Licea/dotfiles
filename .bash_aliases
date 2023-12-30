@@ -233,9 +233,10 @@ alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.ba
 # Zict dictionary aliases.
 alias en='zict alter en'
 alias es='zict alter es'
+alias it='zict it'
 alias ja='zict alter ja'
 alias ru='zict alter ru'
-alias it='zict it'
+alias ан='zict alter en'
 alias ру='zict alter ru'
 
 # Dictionary aliases.
