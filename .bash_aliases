@@ -252,6 +252,7 @@ alias m='man -Hlynx'
 alias n='nvim'
 alias r='rangercd'
 alias v='nvim'
+alias в='exit'
 
 alias y='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music/YouTube'
 alias yd='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths'
