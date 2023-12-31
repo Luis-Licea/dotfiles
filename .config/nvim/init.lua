@@ -17,13 +17,31 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_node_provider = 0
 
 --------------------------------------------------------------------------------
+-- Change temporary file locations.
+--------------------------------------------------------------------------------
+local tmp_dir = '/tmp'
+vim.fn.setenv('XDG_STATE_HOME', tmp_dir)
+
+local state_dir = tmp_dir .. '/nvim'
+-- Change undo directory.
+vim.opt.undodir = state_dir .. '/undo'
+-- Keep track of my undos between sessions.
+vim.opt.undofile = true
+-- Change swapfile directory.
+vim.opt.directory = state_dir .. '/swap'
+-- Change log file path.
+-- vim.fn.setenv('NVIM_LOG_FILE', statedir .. '/log')
+-- Create share data file.
+-- vim.opt.shadafile = 'NONE'
+
+--------------------------------------------------------------------------------
 -- Interface.
 --------------------------------------------------------------------------------
 -- Share clipboard with operating system.
 vim.o.clipboard = 'unnamedplus'
 -- Reminder to keep lines at most 80, 120 characters long.
 vim.o.colorcolumn = '81,101,121'
--- Enable mouse wheel in normal modes.
+-- Enable mouse wheel .
 vim.o.mouse = 'a'
 -- Support true color in vim.
 vim.o.termguicolors = true
@@ -31,6 +49,8 @@ vim.o.termguicolors = true
 vim.o.conceallevel = 1
 -- When using gq, wrap the line at this many characters.
 vim.o.textwidth = 80
+-- Highlight line cursor is on.
+vim.opt.cursorline = true
 
 --------------------------------------------------------------------------------
 -- Tabs & spaces.
@@ -81,9 +101,6 @@ vim.o.cindent = true
 -- Change cwd to file's directory.
 -- vim.o.autochdir = true
 vim.o.shell = Path.first_execuable({ '/usr/bin/zsh', '/usr/bin/bash', '/usr/bin/nu' })
-vim.opt.undodir = '/tmp/'
-vim.opt.shada = ''
-vim.opt.shadafile = 'NONE'
 
 --------------------------------------------------------------------------------
 -- File finder.

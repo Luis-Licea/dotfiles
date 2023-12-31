@@ -152,10 +152,16 @@
       # QT_IM_MODULE = "fcitx";
       # SDL_IM_MODULE = "fcitx";
       # XMODIFIERS = "@im=fcitx";
-      # Allow fcitx5 to change keyboard layout in alacritty.
-      WINIT_UNIX_BACKEND="x11";
-    };
 
+      # Allow fcitx5 to change keyboard layout in alacritty.
+      WINIT_UNIX_BACKEND = "x11";
+
+      # Change log file path.
+      NVIM_LOG_FILE = "/tmp/nvim/log";
+
+      # Disallow shell commands.
+      LESSSECURE = "1";
+    };
 
     # Configure how NTFS removable disks should be mounted.
     etc."udisks2/mount_options.conf".text = ''

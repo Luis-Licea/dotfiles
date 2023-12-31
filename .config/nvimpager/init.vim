@@ -109,3 +109,19 @@ hi IncSearch            guibg=reverse guifg=Orange
 hi Pmenu                guibg=Black guifg=White
 " Selected pop-up menu item should have light backgrounds.
 hi PmenuSel             guibg=Gray guifg=White
+
+lua << EOF
+--------------------------------------------------------------------------------
+-- Change temporary file locations.
+--------------------------------------------------------------------------------
+local tmp_dir = '/tmp'
+vim.fn.setenv('XDG_STATE_HOME', tmp_dir)
+
+local state_dir = tmp_dir .. '/nvim'
+-- Change undo directory.
+vim.opt.undodir = state_dir .. '/undo'
+-- Keep track of my undos between sessions.
+vim.opt.undofile = true
+-- Change swapfile directory.
+vim.opt.directory = state_dir .. '/swap'
+EOF
