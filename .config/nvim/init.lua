@@ -1,7 +1,6 @@
 -- Import custom modules.
 local Path = require('Path')
 
-
 --------------------------------------------------------------------------------
 -- Essential Mappings.
 --------------------------------------------------------------------------------
@@ -144,3 +143,35 @@ else
         },
     })
 end
+
+--------------------------------------------------------------------------------
+-- Not decided.
+--------------------------------------------------------------------------------
+-- vim.opt.splitkeep = 'screen' -- keep text on screen the same when splitting
+-- vim.opt.completeopt = { 'menuone', 'noselect' }
+-- vim.opt.swapfile = true
+-- vim.opt.signcolumn = 'yes' -- show the sign column always
+-- vim.opt.grepprg = 'rg --vimgrep --smart-case --no-heading' -- search with rg
+-- vim.opt.grepformat = '%f:%l:%c:%m' -- filename:line number:column number:error message
+-- vim.opt.scrolloff = 10 -- padding between cursor and top/bottom of window
+-- vim.opt.foldlevelstart = 99 -- open files with all folds open
+-- vim.opt.linebreak = true -- Break between words if `wrap` is ON.
+-- vim.opt.smartindent = true -- add extra indent when it makes sense
+
+-- Colors
+if vim.fn.has('nvim-0.9.5') ~= 0 then
+    vim.opt.foldtext = 'v:lua.vim.treesitter.foldtext()'
+    -- vim.opt.foldtext = vim.treesitter.foldtext()
+end
+
+-- More defined window borders.
+vim.opt.fillchars:append({
+    vert = '┃',
+    horiz = '━',
+    horizup = '┻',
+    horizdown = '┳',
+    vertleft = '┫',
+    vertright = '┣',
+    verthoriz = '╋',
+    diff = '╱',
+})
