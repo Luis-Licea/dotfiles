@@ -1,3 +1,23 @@
 # A sample of ~/.w3m/keymap
 keymap	k	PREV_PAGE
 keymap	j	NEXT_PAGE
+# Type a string to search.
+keymap  D    COMMAND "SET_OPTION dictcommand=file:///cgi-bin/zict-en.cgi; DICT_WORD"
+# Load string under cursor.
+keymap  R    COMMAND "SET_OPTION dictcommand=file:///cgi-bin/zict-hover-en.cgi; DICT_WORD_AT"
+
+# keymap R COMMAND "READ_SHELL 'zict output \"/tmp/zict-en-$W3M_CURRENT_WORD\" en $W3M_CURRENT_WORD; LOAD \"/tmp/zict-en-$W3M_CURRENT_WORD\"'"
+# !env | grep W3M_
+# keymap R COMMAND "READ_SHELL 'rdrview $W3M_URL -H 2> /dev/null 1> /tmp/readable.html' ; LOAD /tmp/readable.html"
+# keymap R COMMAND "READ_SHELL 'echo $W3M_URL -H 2> /dev/null 1> /tmp/readable.h' ; LOAD /tmp/readable.html"
+# keymap R COMMAND 'READ_SHELL echo "$W3M_URL" > /tmp/readable.html ; LOAD /tmp/readable.html'
+#
+# keymap R COMMAND "READ_SHELL 'echo $W3M_CURRENT_WORD 2> /dev/null 1> /tmp/readable.html' ; LOAD /tmp/readable.html"
+# keymap R COMMAND "READ_SHELL 'zict output \"/tmp/zict-en-$W3M_CURRENT_WORD\" en $W3M_CURRENT_WORD '; LOAD \"/tmp/zict-en-$W3M_CURRENT_WORD\" "
+# keymap R COMMAND "READ_SHELL 'zict output \"/tmp/zict-en-$W3M_CURRENT_WORD\" en $W3M_CURRENT_WORD '; LOAD $W3M_CURRENT_WORD"
+# keymap R COMMAND "READ_SHELL 'zict output \"/tmp/zict-en-$W3M_CURRENT_WORD\" en $W3M_CURRENT_WORD; echo \"W3m-control: LOAD \"/tmp/zict-en-$W3M_CURRENT_WORD\"\" '"
+# keymap R COMMAND "READ_SHELL 'zict output \"/tmp/zict-en-$W3M_CURRENT_WORD\" en $W3M_CURRENT_WORD'; READ_SHELL ~/.w3m/script/zict.cgi"
+# keymap R COMMAND "READ_SHELL ~/.w3m/cgi-bin/zict.cgi; GOTO ~/.w3m/cgi-bin/zict.cgi;"
+# keymap R COMMAND "READ_SHELL ~/.w3m/cgi-bin/zict.cgi; LOAD /tmp/zict-en-hello.html"
+# keymap R COMMAND "READ_SHELL ~/.w3m/cgi-bin/zict.cgi;"
+

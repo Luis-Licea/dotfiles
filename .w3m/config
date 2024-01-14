@@ -1,1 +1,2 @@
 confirm_qq false
+cgi_bin ~/.w3m/cgi-bin:/usr/lib/w3m/cgi-bin
