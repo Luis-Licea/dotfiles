@@ -1,8 +1,11 @@
 local Table = require('Table')
+
+local M = {}
+
 --------------------------------------------------------------------------------
 -- Load templates for newly created files.
 --------------------------------------------------------------------------------
-local template_group = vim.api.nvim_create_augroup('Template Group', {})
+M.template_group = vim.api.nvim_create_augroup('Template Group', {})
 
 ---Load a template in the current buffer. The template will be determined
 ---based on the file extension and the file name.
@@ -38,22 +41,6 @@ local function LoadTemplateFromType(name)
     end
 end
 
-vim.api.nvim_create_user_command('LoadTemplate', function(opts)
-    LoadTemplateFromType(opts.args)
-end, {
-    nargs = '*',
-    complete = function()
-        local regular_templates = vim.api.nvim_get_runtime_file('templates/*', true)
-        local hidden_templates = vim.api.nvim_get_runtime_file('templates/.*', true)
-        -- Remove the "." directory.
-        table.remove(hidden_templates, 1)
-        -- Remove the ".." directory.
-        table.remove(hidden_templates, 1)
-        return Table.merge(regular_templates, hidden_templates)
-    end,
-    desc = 'Load the given template',
-})
-
 local function ChooseTemplate()
     local regular_templates = vim.api.nvim_get_runtime_file('templates/**', true)
     local hidden_templates = vim.api.nvim_get_runtime_file('templates/**/.*', true)
@@ -70,17 +57,40 @@ local function ChooseTemplate()
     end)
 end
 
-vim.api.nvim_create_user_command(
-    'ChooseTemplate',
-    ChooseTemplate,
-    { nargs = 0, desc = 'Chose a template and load it into the buffer.' }
-)
+---Define the commands LoadTemplate and ChooseTemplate and register an
+---auto-command to load templates when a file is first created.
+---@param options table|string? A pattern or list of patterns such as "\*" or { "\*.html", "\*.cpp", "Makefile" }
+function M.setup(pattern)
+    -- Load a template if one is available when creating a file.
+    vim.api.nvim_create_autocmd('BufNewFile', {
+        group = M.template_group,
+        pattern = pattern or '*',
+        callback = function()
+            LoadTemplateFromType(nil)
+        end,
+    })
 
--- Load a template if one is available when creating a file.
-vim.api.nvim_create_autocmd('BufNewFile', {
-    group = template_group,
-    pattern = '*',
-    callback = function()
-        LoadTemplateFromType(nil)
-    end,
-})
+    vim.api.nvim_create_user_command('LoadTemplate', function(opts)
+        LoadTemplateFromType(opts.args)
+    end, {
+        nargs = '*',
+        complete = function()
+            local regular_templates = vim.api.nvim_get_runtime_file('templates/*', true)
+            local hidden_templates = vim.api.nvim_get_runtime_file('templates/.*', true)
+            -- Remove the "." directory.
+            table.remove(hidden_templates, 1)
+            -- Remove the ".." directory.
+            table.remove(hidden_templates, 1)
+            return Table.merge(regular_templates, hidden_templates)
+        end,
+        desc = 'Load the given template',
+    })
+
+    vim.api.nvim_create_user_command(
+        'ChooseTemplate',
+        ChooseTemplate,
+        { nargs = 0, desc = 'Chose a template and load it into the buffer.' }
+    )
+end
+
+return M

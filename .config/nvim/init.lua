@@ -114,7 +114,7 @@ vim.o.path = vim.o.path .. '**'
 --------------------------------------------------------------------------------
 require('mappings')
 require('auto-commands')
-require('template-loader')
+require('template-loader').setup()
 require('runner')
 
 --------------------------------------------------------------------------------
