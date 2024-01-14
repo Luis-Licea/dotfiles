@@ -25,9 +25,10 @@ with pkgs; let
   ];
   utilities = [
     bashmount
+    ddh
     file
     lsof
-    ddh
+    xdg-utils
   ];
   bat-utils = with bat-extras; [
     batdiff
@@ -48,6 +49,7 @@ with pkgs; let
     gitui
   ];
   other = [
+    asciinema
     direnv
     yq-go # Yaml processor.
     fzf # Fuzzy finder.
