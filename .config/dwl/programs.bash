@@ -74,9 +74,12 @@ for executable in ${!commands[@]}; do
 done
 
 # Set the background and quit for-loop.
-for executable in ${!wallpapers[@]}; do
-    if [[ $(command -v $executable) ]]; then
-        eval ${wallpapers[$executable]} &
-        break
-    fi
-done
+swaybg -c $(choice colors)
+
+# Set the background and quit for-loop.
+# for executable in ${!wallpapers[@]}; do
+#     if [[ $(command -v $executable) ]]; then
+#         eval ${wallpapers[$executable]} &
+#         break
+#     fi
+# done

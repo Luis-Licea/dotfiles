@@ -19,7 +19,7 @@
   environment = {
     systemPackages = with pkgs; [
       # (builtins.getFlake "github:Deleh/huepaper").defaultPackage.${pkgs.system}
-      (builtins.getFlake "github:Deleh/huepaper/048805bf049a6627c7611b4ec88617806e94d795").defaultPackage.${pkgs.system}
+      # (builtins.getFlake "github:Deleh/huepaper/048805bf049a6627c7611b4ec88617806e94d795").defaultPackage.${pkgs.system}
       greetd.tuigreet
       wireplumber
     ];
