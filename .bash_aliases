@@ -232,12 +232,17 @@ alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.ba
 
 # Zict dictionary aliases.
 alias en='zict alter en'
+alias ens='zict search en'
 alias es='zict alter es'
+alias esb='zict search es'
 alias it='zict it'
 alias ja='zict alter ja'
 alias ru='zict alter ru'
+alias rus='zict search ru'
 alias ан='zict alter en'
+alias ани='zict search en' # искать
 alias ру='zict alter ru'
+alias руи='zict search ru' # искать
 
 # Dictionary aliases.
 alias da='sdcv --non-interactive --color'                                   # Dictionary all <word>
@@ -246,6 +251,7 @@ alias di='sdcv --non-interactive --color --use-dict WordNet'                # Di
 alias th='sdcv --non-interactive --color --use-dict "Moby Thesaurus II"'    # Thesaurus <word>
 
 alias e='exit'
+alias g='git'
 alias j='joshutocd'
 alias l='lfcd'
 alias m='man -Hlynx'

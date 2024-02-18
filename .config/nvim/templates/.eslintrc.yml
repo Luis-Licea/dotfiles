@@ -1,3 +1,4 @@
+# Add to package.json: "lint": "eslint --ext .mjs,.js .",
 env:
   browser: true
   es6: true
