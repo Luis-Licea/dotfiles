@@ -87,7 +87,7 @@ main() {
     fi
 
     # Get the pdf path.
-    local -r pdf_file="$(find "$pdf_dir" -type f -name "*.pdf" -or -name "*.djvu" -print -quit)"
+    local -r pdf_file="$(find "$pdf_dir" -type f \( -name "*.pdf" -or -name "*.djvu" \) -print -quit)"
 
     # If the directory exists:
     if [ -d "$pdf_dir" ]; then
