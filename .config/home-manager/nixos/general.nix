@@ -87,10 +87,11 @@
 
   # Install nerd fonts.
   fonts = {
-    fonts = with pkgs; [
+    packages = with pkgs; [
       noto-fonts
       noto-fonts-cjk
       noto-fonts-emoji
+      noto-fonts-color-emoji
       font-awesome
       (nerdfonts.override {fonts = ["Meslo" "FiraCode"];})
     ];
@@ -168,6 +169,11 @@
       [defaults]
       ntfs_defaults=uid=$UID,gid=$GID,prealloc
     '';
+    systemPackages = with pkgs; [
+      helix
+      alacritty
+      mpv
+    ];
   };
 
   # Copy the NixOS configuration file and link it from the resulting system

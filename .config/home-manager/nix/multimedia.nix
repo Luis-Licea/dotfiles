@@ -5,7 +5,7 @@ with pkgs; let
     calibre
     glow
     mcomix
-    mpv
+    # mpv # Install as a system package for stability.
     nvimpager
     qview
     ueberzugpp

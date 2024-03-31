@@ -7,6 +7,9 @@ with pkgs; let
     czkawka
     meld
   ];
+  other = [
+    firefox
+  ];
 in {
-  home.packages = emulators ++ diffTools;
+  home.packages = emulators ++ diffTools ++ other;
 }

@@ -1,13 +1,12 @@
 {
   pkgs,
   inputs,
-  config,
   ...
 }: let
   inherit (inputs) custom-dwl;
 in {
   home.packages = with pkgs; [
-    alacritty # Default DWL terminal.
+    # alacritty # Default DWL terminal. Install a system package for stability.
     custom-dwl.packages.${system}.default
     dunst # Notification deamon.
     inotify-tools # Needed by swaybar IPC.
