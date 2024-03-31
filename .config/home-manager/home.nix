@@ -5,10 +5,12 @@
     ./nix/dwl.nix
     ./nix/font.nix
     ./nix/gui.nix
+    ./nix/mail.nix
     ./nix/multimedia.nix
     ./nix/neomutt.nix
     ./nix/nvim.nix
     ./nix/pass.nix
+    ./nix/vscodium.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
