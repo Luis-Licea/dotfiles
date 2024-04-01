@@ -281,13 +281,14 @@ local ft2compiler = {
 
 -- Validate GLSL code for extensions: vert, tesc, tese, glsl, geom, frag, comp.
 local ft2interpreter = {
-    python = 'python3',
-    java = 'java',
-    groovy = 'groovy',
-    lua = 'lua',
-    sh = 'bash',
-    javascript = 'node',
     glsl = 'glslangValidator',
+    groovy = 'groovy',
+    java = 'java',
+    javascript = 'node',
+    lua = 'lua',
+    perl = 'perl',
+    python = 'python3',
+    sh = 'bash',
     typst = { 'typst', 'compile' },
 }
 vim.filetype.add({ extension = { typ = 'typst' } })
