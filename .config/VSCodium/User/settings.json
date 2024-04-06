@@ -21,12 +21,18 @@
   "editor.renderWhitespace": "boundary",
   // Show ASCII characters that may be mistaken for spaces.
   "editor.renderControlCharacters": true,
+  // Do not show line numbers.
+  "editor.lineNumbers": "off",
+  // Do not show a minimap.
+  "editor.minimap.enabled": false,
   // Do not show the menu bar when pressing alt.
   "window.customMenuBarAltFocus": false,
   // Do not show menu bar when pressing alt-f, alt-e, alt-s, etc.
   "window.enableMenuBarMnemonics": false,
   // Do not show menu bar at startup.
   "window.menuBarVisibility": "hidden",
+  // Do not show activity icons.
+  "workbench.activityBar.visible": false,
   // File extension associations.
   "workbench.editorAssociations": {
     "*.drawio.png": "hediet.vscode-drawio",
@@ -90,6 +96,15 @@
   // |_|   |_|\__,_|\__, |_|_| |_|___/
   //                |___/
 
+  // Spelling.
+  "cSpell.language": "en,es",
+  "cSpell.userWords": [
+    "Neovim",
+    "pagedown",
+    "pageup",
+    "unstage"
+  ],
+
   // Formatter for each file type.
   "[cpp]": {
     "editor.defaultFormatter": "xaver.clang-format"
@@ -126,11 +141,15 @@
 
   // Base folder for searching Git projects.
   "projectManager.git.baseFolders": [
-    "/home/luis/Code/",
+    "/home/luis/Documents/Code/"
   ],
 
   // Code Runner.
   "code-runner.saveFileBeforeRun": true,
+  
+  // Git graph.
+  "git.showCommitInput": false,
+  "git.showActionButton": false,
 
   // GitLens.
   "gitlens.currentLine.enabled": false,
@@ -147,160 +166,9 @@
   //     "`sdl2-config --cflags`"
   // ],
 
-  // __     ___
-  // \ \   / (_)_ __ ___
-  //  \ \ / /| | '_ ` _ \
-  //   \ V / | | | | | | |
-  //    \_/  |_|_| |_| |_|
-  // Set the leader key.
-  "vim.leader": " ",
-  // Set to true fro copy and paste to work seamlessly.
-  "vim.useSystemClipboard": true,
-  // Set Neovim as the backend.
-  "vim.enableNeovim": true,
-  // Let VSCode handle these keybinding.
-  "vim.handleKeys": {
-    "<C-a>": false, // Select all.
-    "<C-f>": false, // Search.
-    "<C-h>": false, // Search and replace.
-    "<C-H>": false // Global search and replace.
+  // Neovim.
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
   },
-  // Remap keys in normal mode.
-  "vim.normalModeKeyBindings": [
-    {
-      // Show open buffers.
-      "before": [";"],
-      "commands": ["workbench.action.showEditorsInActiveGroup"],
-      "silent": true
-    },
-    {
-      // Indent lines.
-      "before": [">"],
-      "commands": ["editor.action.indentLines"]
-    },
-    {
-      // Outdent lines.
-      "before": ["<"],
-      "commands": ["editor.action.outdentLines"]
-    }
-  ],
-  // Remap keys in normal mode non-recursively.
-  "vim.normalModeKeyBindingsNonRecursive": [
-    {
-        // Go to previous editor (tab).
-        "before": ["L"],
-        "commands": ["workbench.action.nextEditor"]
-    },
-    {
-        // Go to previous editor (tab).
-        "before": ["H"],
-        "commands": ["workbench.action.previousEditor"]
-    },
-    {
-      // Show hover options.
-      "before": ["K"],
-      "commands": ["editor.action.showHover"]
-    },
-    {
-      // Split down.
-      "before": ["<leader>", "s", "j"],
-      "commands": ["workbench.action.splitEditorDown"]
-    },
-    {
-      // Split up.
-      "before": ["<leader>", "s", "k"],
-      "commands": ["workbench.action.splitEditorUp"]
-    },
-    {
-      // Split left.
-      "before": ["<leader>", "s", "h"],
-      "commands": ["workbench.action.splitEditorLeft"]
-    },
-    {
-      // Split right.
-      "before": ["<leader>", "s", "l"],
-      "commands": ["workbench.action.splitEditorRight"]
-    },
-    {
-      // Toggle wordwrap.
-      "before": ["<leader>", "t", "w"],
-      "commands": ["editor.action.toggleWordWrap"]
-    },
-    {
-      // Move to the editor to the left.
-      "before": ["<leader>", "h"],
-      "commands": ["workbench.action.focusLeftGroup"]
-    },
-    {
-      // Move to the editor below.
-      "before": ["<leader>", "j"],
-      "commands": ["workbench.action.focusBelowGroup"]
-    },
-    {
-      // Move to the editor above.
-      "before": ["<leader>", "k"],
-      "commands": ["workbench.action.focusAboveGroup"]
-    },
-    {
-      // Move to the editor to the right.
-      "before": ["<leader>", "l"],
-      "commands": ["workbench.action.focusRightGroup"]
-    },
-    {
-      // Open current file in file explorer.
-      "before": ["<leader>", "o"],
-      "commands": ["revealFileInOS"]
-    },
-    {
-      // Show pallete.
-      "before": ["<leader>", "<leader>"],
-      "commands": ["workbench.action.showCommands"],
-      "silent": true
-    },
-    {
-      // Close buffer.
-      "before": ["<leader>", "q"],
-      "commands": ["workbench.action.closeActiveEditor"],
-      "silent": true
-    },
-    {
-      // Close buffer.
-      "before": ["<leader>", "w"],
-      "commands": ["workbench.action.files.save"],
-      "silent": true
-    },
-    {
-      // Open recent.
-      "before": ["<leader>", "r"],
-      "commands": ["workbench.action.openRecent"],
-      "silent": true
-    },
-    {
-      // Open file explorer.
-      "before": ["<leader>", "e"],
-      "commands": ["workbench.view.explorer"],
-      "silent": true
-    },
-    {
-      // Search files by name.
-      "before": ["<leader>", "f"],
-      "commands": ["workbench.action.quickOpen"],
-      "silent": true
-    },
-    {
-      // Open search in sidebar.
-      "before": ["<leader>", "s"],
-      "commands": ["workbench.action.findInFiles"]
-    },
-    {
-      // Open Git in sidebar.
-      "before": ["<leader>", "g"],
-      "commands": ["workbench.view.scm"]
-    },
-    {
-      // Open Git in sidebar.
-      "before": ["<leader>", "p"],
-      "commands": ["projectManager.listProjects"]
-    }
-  ],
+  "vscode-neovim.neovimClean": true,
 }

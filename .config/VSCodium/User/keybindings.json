@@ -1,5 +1,5 @@
-// Place your key bindings in this file to override the defaultsauto[]
 [
+    // vim: filetype=jsonc
     {
         // Go to the terminal when it is visible.
         "key": "cmd+j",
@@ -111,7 +111,7 @@
         "when": "terminal.active"
     },
     {
-        // Remove Go to File keybinding because it conflicts with Gitui.
+        // Remove Go to File keybinding because it conflicts with GitUI.
         "key": "ctrl+e",
         "command": "-workbench.action.quickOpen"
     },
@@ -145,26 +145,326 @@
     },
     {
         // Go one page up.
-        "key": "ctrl+j",
+        "key": "shift+j",
         "command": "cursorPageDown",
-        "when": "textInputFocus && !suggestWidgetVisible"
-    },
-    {
-        // Disable because it conflicts with ctrl+j.
-        "key": "pagedown",
-        "command": "-cursorPageDown",
-        "when": "textInputFocus"
+        "when": "textInputFocus && !suggestWidgetVisible && neovim.mode != insert"
     },
     {
         // Go one page down.
-        "key": "ctrl+k",
+        "key": "shift+k",
+        "when": "textInputFocus && !suggestWidgetVisible && neovim.mode != insert",
         "command": "cursorPageUp",
-        "when": "textInputFocus && !suggestWidgetVisible"
+    },
+    // {
+    //     // Disable because it conflicts with ctrl+j.
+    //     "key": "pagedown",
+    //     "when": "textInputFocus",
+    //     "command": "-cursorPageDown"
+    // },
+    // {
+    //     // Disable because it conflicts with ctrl+k.
+    //     "key": "pageup",
+    //     "command": "-cursorPageUp",
+    //     "when": "textInputFocus"
+    // },
+
+    // Neovim keybindings.
+    {
+        // Telescope explore files.
+        "key": "[space] t e",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.quickOpen",
     },
     {
-        // Disable because it conflicts with ctrl+k.
-        "key": "pageup",
-        "command": "-cursorPageUp",
-        "when": "textInputFocus"
+        // Telescope list matches.
+        "key": "[space] t l",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.experimental.quickTextSearch",
+    },
+    // Neovim: Git
+    {
+        // Git difference.
+        "key": "[space] h d",
+        "when": "editorFocus && !isInDiffEditor && !terminalFocus && neovim.mode != insert",
+        "command": "git.openChange",
+    },
+    {
+        // Git stage.
+        "key": "[space] h s",
+        "when": "editorFocus && !terminalFocus && neovim.mode != insert",
+        "command": "git.stageSelectedRanges",
+    },
+    {
+        // Git revert.
+        "key": "[space] h r",
+        "when": "editorFocus && !terminalFocus && neovim.mode != insert",
+        "command": "git.revertSelectedRanges",
+    },
+    {
+        // Git unstage.
+        "key": "[space] h u",
+        "when": "editorFocus && !terminalFocus && neovim.mode != insert",
+        "command": "git.unstageSelectedRanges",
+    },
+    {
+        // Git blame-toggle.
+        "key": "[space] h b",
+        "when": "editorFocus && !terminalFocus && neovim.mode != insert",
+        "command": "gitLens.toggleFileBlame",
+    },
+    {
+        // Git next change.
+        "key": "[space] ] c",
+        "when": "textCompareEditorVisible && isInDiffEditor && neovim.mode != insert",
+        "command": "workbench.action.compareEditor.nextChange"
+    },
+    {
+        // Git previous change.
+        "key": "[space] [ c",
+        "when": "textCompareEditorVisible && isInDiffEditor && neovim.mode != insert",
+        "command": "workbench.action.compareEditor.previousChange"
+    },
+    
+    // Spelling.
+    {
+        // Spelling suggestion next.
+        "key": "] s",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "cSpell.goToNextSpellingIssue"
+    },
+    {
+        // Spelling suggestion previous.
+        "key": "[ s",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "cSpell.goToPreviousSpellingIssue"
+    },
+    
+    // File operations.
+    {
+        // Close current editor.
+        "key": "[space] q",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.closeActiveEditor"
+    },
+    {
+        // Save current editor.
+        "key": "[space] w",
+        "when": "!terminalFocus && neovim.mode != insert && editorTextFocus",
+        "command": "workbench.action.files.save"
+    },
+    
+    // Movement.
+    {
+        "key": "[space] 1",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.openEditorAtIndex1"
+    },
+    {
+        "key": "[space] 2",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.openEditorAtIndex2"
+    },
+    {
+        "key": "[space] 3",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.openEditorAtIndex3"
+    },
+    {
+        "key": "[space] 4",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.openEditorAtIndex4"
+    },
+    {
+        "key": "[space] 5",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.openEditorAtIndex5"
+    },
+    {
+        "key": "[space] 6",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.openEditorAtIndex6"
+    },
+    {
+        "key": "[space] 7",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.openEditorAtIndex7"
+    },
+    {
+        "key": "[space] 8",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.openEditorAtIndex8"
+    },
+    {
+        "key": "[space] 9",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.openEditorAtIndex9"
+    },
+    {
+        "key": "[space] 0",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.lastEditorInGroup"
+    },
+    {
+        "key": "[space] [space]",
+        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "command": "workbench.action.navigateBackInNavigationLocations"
+    },
+
+    // Window movement.
+    {
+        "key": "ctrl+h",
+        "command": "workbench.action.navigateLeft"
+    },
+    {
+        "key": "ctrl+j",
+        "when": "!inQuickOpen && !codeActionMenuVisible",
+        "command": "workbench.action.navigateDown"
+    },
+    {
+        "key": "ctrl+k",
+        "when": "!inQuickOpen && !codeActionMenuVisible",
+        "command": "workbench.action.navigateUp"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.navigateRight"
+    },
+
+    // QuickOpen navigation.
+    {
+        "key": "ctrl + j",
+        "when": "inQuickOpen",
+        "command": "workbench.action.quickOpenSelectNext"
+    },
+    {
+        "key": "ctrl + k",
+        "when": "inQuickOpen",
+        "command": "workbench.action.quickOpenSelectPrevious"
+    },
+
+    // Code Action navigation.
+    {
+        "key": "ctrl + j",
+        "when": "codeActionMenuVisible",
+        "command": "selectPrevCodeAction"
+    },
+    {
+        "key": "ctrl + k",
+        "when": "codeActionMenuVisible",
+        "command": "selectNextCodeAction"
+    },
+
+    // Auto-completion menu.
+    {
+        "key": "ctrl+j",
+        "when": "suggestWidgetMultipleSuggestions && !suggestionWidgetVisible && textInputFocus",
+        "command": "selectNextSuggestion"
+    },
+    {
+        "key": "ctrl+k",
+        "when": "suggestWidgetMultipleSuggestions && !suggestionWidgetVisible && textInputFocus",
+        "command": "selectPrevSuggestion"
+    },
+
+    // Search Sidebar Widget navigation.
+    {
+        "key": "ctrl+j",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.search'",
+        "command": "search.focus.nextInputBox"
+    },
+    {
+        "key": "ctrl+k",
+        "when": "sideBarFocus && activeViewlet == 'workbench.view.search'",
+        "command": "search.focus.previousInputBox"
+    },
+
+    // Toggling bottom panel.
+    {
+        "key": "ctrl+i",
+        "command": "workbench.action.togglePanel"
+    },
+
+    // Toggling sidebar.
+    {
+        "key": "ctrl+m",
+        "command": "-editor.action.toggleTabFocusMode"
+    },
+    {
+        "key": "ctrl+m",
+        "command": "workbench.action.toggleSidebarVisibility",
+    },
+
+    // Remove ctrl+<number> keybindings.
+    {
+        "key": "ctrl+1",
+        "command": "-workbench.action.focusFirstEditorGroup"
+    },
+    {
+        "key": "ctrl+2",
+        "command": "-workbench.action.focusSecondEditorGroup"
+    },
+    {
+        "key": "ctrl+3",
+        "command": "-workbench.action.focusThirdEditorGroup"
+    },
+    {
+        "key": "ctrl+4",
+        "command": "-workbench.action.focusFourthEditorGroup"
+    },
+    {
+        "key": "ctrl+5",
+        "command": "-workbench.action.focusFifthEditorGroup"
+    },
+    {
+        "key": "ctrl+6",
+        "command": "-workbench.action.focusSixthEditorGroup"
+    },
+    {
+        "key": "ctrl+7",
+        "command": "-workbench.action.focusSeventhEditorGroup"
+    },
+    {
+        "key": "ctrl+8",
+        "command": "-workbench.action.focusEighthEditorGroup"
+    },
+    {
+        "key": "ctrl+9",
+        "command": "-workbench.action.lastEditorInGroup"
+    },
+    {
+        "key": "ctrl+0",
+        "command": "-workbench.action.focusSideBar"
+    },
+
+    // Map numbers to side bar widgets.
+    {
+        "key": "ctrl+1",
+        "command": "workbench.view.explorer"
+    },
+    {
+        "key": "ctrl+2",
+        "command": "workbench.view.search"
+    },
+    {
+        "key": "ctrl+3",
+        "command": "workbench.view.scm"
+    },
+    {
+        "key": "ctrl+4",
+        "command": "workbench.view.debug"
+    },
+    {
+        "key": "ctrl+5",
+        "command": "workbench.view.extensions"
+    },
+    {
+        "key": "ctrl+6",
+        "command": "workbench.view.extension.project-manager"
+    },
+
+    {
+        "key": "[space] shift+k",
+        "when": "neovim.mode != insert",
+        "command": "editor.action.showHover"
     },
 ]

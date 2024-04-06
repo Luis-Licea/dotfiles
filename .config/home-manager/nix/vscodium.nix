@@ -3,9 +3,18 @@
     enable = true;
     package = pkgs.vscodium;
     extensions = with pkgs.vscode-extensions; [
-      asvetliakov.vscode-neovim
-      streetsidesoftware.code-spell-checker
+      # ms-python.debugpy
+      # rvest.vs-code-prettier-eslint
       # streetsidesoftware.code-spell-checker-spanish
+      # surv.typst-math
+      alefragnani.project-manager
+      asvetliakov.vscode-neovim
+      eamodio.gitlens
+      kamadorueda.alejandra
+      mhutchie.git-graph
+      redhat.vscode-yaml
+      streetsidesoftware.code-spell-checker
+      tamasfe.even-better-toml
     ];
   };
 }
