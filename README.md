@@ -44,8 +44,10 @@ dotfilesui
 ```
 
 ## Backup Checklist
-- Export GPG keys.
-- Backup $GNUHOME.
-- Backup /home/<user> directory.
-- Backup databases if any.
-- Backup /etc folder.
+
+- GPG keys in `$GNUPGHOME`.
+- SQL databases.
+- SSH keys.
+- Unit files in `~/.config/systemd/user`
+- `/etc` folder.
+- `/home/<user>` directory.
