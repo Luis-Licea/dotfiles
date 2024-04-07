@@ -82,6 +82,7 @@
     ; c! = commit --verbose --amend
     cc = commit --verbose --amend
     ; cn! = 'git commit --verbose --no-edit --amend',
+    ccc = commit --verbose --no-edit --amend
     ca = commit --verbose --all
     ; ca! = 'git commit --verbose --all --amend',
     ; can! = 'git commit --verbose --all --no-edit --amend',
