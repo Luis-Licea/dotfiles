@@ -15,6 +15,17 @@
       neomutt.enable = true;
       primary = true;
       realName = "Luis David Licea Torres";
+      # signature = {
+      #   text = ''
+      #     Luis David Licea Torres
+      #     <phone>
+      #   '';
+      #   showSignature = "append";
+      # };
+      # gpg = {
+      #   key = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+      #   signByDefault = true;
+      # };
       passwordCommand = "pass login.live.com/${address}";
     };
   };
