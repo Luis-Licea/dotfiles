@@ -16,6 +16,7 @@ return {
             'google-java-format', -- Java formatter.
             'isort', -- Python formatter.
             'jq', -- JSON formatter.
+            'perlnavigator', -- Perl linter.
             'prettier', -- Markdown formatter.
             'ruff', -- Python linter.
             'shellcheck', -- Bash linter.

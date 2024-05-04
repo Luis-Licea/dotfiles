@@ -18,6 +18,7 @@ return {
             -- phpactor = 'phpactor', -- PHP
             -- sqls = 'sqls', -- SQL
 
+            perlnavigator = 'perlnavigator',
             bashls = 'bashls', -- Bash
             ccls = 'ccls', -- C/C++
             cssls = 'cssls', -- CSS
