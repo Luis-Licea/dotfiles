@@ -5,7 +5,7 @@
 }: {
   nix = {
     settings.experimental-features = ["nix-command" "flakes"];
-    package = pkgs.nixVersions.nix_2_17;
+    package = pkgs.nixVersions.nix_2_19;
   };
 
   boot = {
@@ -170,11 +170,21 @@
       ntfs_defaults=uid=$UID,gid=$GID,prealloc
     '';
     systemPackages = with pkgs; [
-      helix
       alacritty
+      helix
+      home-manager
+      localsend
       mpv
+      obs-studio
+      ollama
     ];
   };
+
+  # Open ports in the firewall.
+  networking.firewall.allowedTCPPorts = [
+    53317 # Needed for localsend to receive files.
+  ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
