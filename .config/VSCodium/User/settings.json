@@ -1,4 +1,5 @@
 {
+  // vim: filetype=jsonc
   //  _____    _ _ _
   // | ____|__| (_) |_ ___  _ __
   // |  _| / _` | | __/ _ \| '__|
@@ -100,6 +101,7 @@
   "cSpell.language": "en,es",
   "cSpell.userWords": [
     "Neovim",
+    "Nifti",
     "pagedown",
     "pageup",
     "unstage"

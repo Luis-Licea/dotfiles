@@ -1,52 +1,6 @@
 [
     // vim: filetype=jsonc
     {
-        // Go to the terminal when it is visible.
-        "key": "cmd+j",
-        "command": "terminal.focus",
-        // "when": "view.terminal.visible"
-        "when": "terminalViewShowing"
-    },
-    {
-        // Leave terminal when it is focused.
-        "key": "cmd+k",
-        "command": "workbench.action.focusPreviousPart",
-        "when": "terminalFocus"
-    },
-    {
-        // Go to the next buffer.
-        "key": "cmd+l",
-        "command": "workbench.action.nextEditor"
-    },
-    {
-        // Leave sidebar when it is focused.
-        "key": "cmd+l",
-        "command": "workbench.action.focusNextPart",
-        "when": "sideBarFocus"
-    },
-    {
-        // Go to the previous buffer.
-        "key": "cmd+h",
-        "command": "workbench.action.previousEditor"
-    },
-    {
-        // Leave sidebar when it is focused.
-        "key": "cmd+h",
-        "command": "workbench.action.focusNextPart",
-        "when": "sideBarFocus"
-    },
-    {
-        // Close buffer.
-        "key": "cmd+w",
-        "command": "workbench.action.closeActiveEditor"
-    },
-    {
-        // Show open buffers in palette.
-        "key": "cmd+o",
-        "command": "workbench.action.showEditorsInActiveGroup",
-        // "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
-    },
-    {
         // When using autocomplete, use to move down the list.
         "key": "ctrl+j",
         "command": "selectNextSuggestion",
@@ -69,22 +23,6 @@
         "key": "ctrl+k",
         "command": "workbench.action.quickOpenSelectPrevious",
         "when": "inQuickOpen"
-    },
-    {
-        // Toggle sidebar.
-        "key": "cmd+s",
-        "command": "workbench.action.toggleSidebarVisibility",
-
-        // Use ctrl+0 repeatedly to close sidebar.
-        // "key": "ctrl+0",
-        // "command": "workbench.action.toggleSidebarVisibility",
-        // "when": "!editorTextFocus"
-    },
-    {
-        // Close sidebar when it is focused.
-        "key": "cmd+w",
-        "command": "workbench.action.closeSidebar",
-        "when": "!editorTextFocus && sideBarFocus"
     },
     {
         // Collapse all folders in sidebar using H.
@@ -128,12 +66,6 @@
         "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
     },
     {
-        // Format document.
-        "key": "cmd+f",
-        "command": "editor.action.formatSelection",
-        "when": "editorHasDocumentSelectionFormattingProvider && editorTextFocus && !editorReadonly"
-    },
-    {
         // Disable because it conflicts with Neovim.
         "key": "ctrl+p",
         "command": "-workbench.action.quickOpen",
@@ -147,12 +79,12 @@
         // Go one page up.
         "key": "shift+j",
         "command": "cursorPageDown",
-        "when": "textInputFocus && !suggestWidgetVisible && neovim.mode != insert"
+        "when": "textInputFocus && !suggestWidgetVisible && neovim.mode == normal"
     },
     {
         // Go one page down.
         "key": "shift+k",
-        "when": "textInputFocus && !suggestWidgetVisible && neovim.mode != insert",
+        "when": "textInputFocus && !suggestWidgetVisible && neovim.mode == normal",
         "command": "cursorPageUp",
     },
     // {
@@ -223,19 +155,20 @@
         "key": "[space] [ c",
         "when": "textCompareEditorVisible && isInDiffEditor && neovim.mode != insert",
         "command": "workbench.action.compareEditor.previousChange"
+
     },
     
     // Spelling.
     {
         // Spelling suggestion next.
-        "key": "] s",
-        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "key": "[space] ] s",
+        "when": "!terminalFocus && neovim.mode != insert && neovim.mode != visual && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
         "command": "cSpell.goToNextSpellingIssue"
     },
     {
         // Spelling suggestion previous.
-        "key": "[ s",
-        "when": "!terminalFocus && neovim.mode != insert && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
+        "key": "[space] [ s",
+        "when": "!terminalFocus && neovim.mode != insert && neovim.mode != 'operator-pending' && !sideBarFocus && !inQuickOpen && !isSnippetMode && !inDebugMode",
         "command": "cSpell.goToPreviousSpellingIssue"
     },
     
@@ -438,33 +371,135 @@
 
     // Map numbers to side bar widgets.
     {
-        "key": "ctrl+1",
+        "key": "ctrl+0",
         "command": "workbench.view.explorer"
     },
     {
-        "key": "ctrl+2",
-        "command": "workbench.view.search"
-    },
-    {
-        "key": "ctrl+3",
-        "command": "workbench.view.scm"
-    },
-    {
         "key": "ctrl+4",
-        "command": "workbench.view.debug"
+        "command": "workbench.view.remote"
     },
     {
         "key": "ctrl+5",
-        "command": "workbench.view.extensions"
+        "command": "workbench.view.extension.project-manager"
     },
     {
         "key": "ctrl+6",
-        "command": "workbench.view.extension.project-manager"
+        "command": "workbench.view.extensions"
+    },
+    {
+        "key": "ctrl+7",
+        "command": "workbench.view.debug"
+    },
+    {
+        "key": "ctrl+8",
+        "command": "workbench.view.scm"
+    },
+    {
+        "key": "ctrl+9",
+        "command": "workbench.view.search"
+    },
+    // Hide sidebar.
+    {
+        "key": "ctrl+0",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "sideBarVisible"
+    },
+    {
+        "key": "ctrl+4",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "sideBarVisible"
+    },
+    {
+        "key": "ctrl+5",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "sideBarVisible"
+    },
+    {
+        "key": "ctrl+6",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "sideBarVisible"
+    },
+    {
+        "key": "ctrl+7",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "sideBarVisible"
+    },
+    {
+        "key": "ctrl+8",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "sideBarVisible"
+    },
+    {
+        "key": "ctrl+9",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "sideBarVisible"
     },
 
+    // {
+    //     "key": "[space] shift+k",
+    //     "when": "neovim.mode != insert",
+    //     "command": "editor.action.showHover"
+    // },
     {
-        "key": "[space] shift+k",
-        "when": "neovim.mode != insert",
-        "command": "editor.action.showHover"
+        // Go to the terminal when it is visible.
+        "key": "cmd+j",
+        "command": "terminal.focus",
+        "when": "terminalViewShowing"
+    },
+    {
+        // Leave terminal when it is focused.
+        "key": "cmd+k",
+        "command": "workbench.action.focusPreviousPart",
+        "when": "terminalFocus"
+    },
+    {
+        // Go to the next buffer.
+        "key": "cmd+l",
+        "command": "workbench.action.nextEditor"
+    },
+    {
+        // Leave sidebar when it is focused.
+        "key": "cmd+l",
+        "command": "workbench.action.focusNextPart",
+        "when": "sideBarFocus"
+    },
+    {
+        // Go to the previous buffer.
+        "key": "cmd+h",
+        "command": "workbench.action.previousEditor"
+    },
+    {
+        // Leave sidebar when it is focused.
+        "key": "cmd+h",
+        "command": "workbench.action.focusNextPart",
+        "when": "sideBarFocus"
+    },
+    {
+        // Close buffer.
+        "key": "cmd+w",
+        "command": "workbench.action.closeActiveEditor"
+    },
+    {
+        // Show open buffers in palette.
+        "key": "cmd+o",
+        "command": "workbench.action.showEditorsInActiveGroup",
+        // "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+    },
+    {
+        // Toggle sidebar.
+        "key": "cmd+s",
+        "command": "workbench.action.toggleSidebarVisibility",
+    },
+    {
+        // Close sidebar when it is focused.
+        "key": "cmd+w",
+        "command": "workbench.action.closeSidebar",
+        "when": "!editorTextFocus && sideBarFocus"
+    },
+    {
+        // Format document.
+        "key": "cmd+f",
+        "command": "editor.action.formatSelection",
+        "when": "editorHasDocumentSelectionFormattingProvider && editorTextFocus && !editorReadonly"
     },
 ]
