@@ -12,9 +12,11 @@
       eamodio.gitlens
       kamadorueda.alejandra
       mhutchie.git-graph
+      nvarner.typst-lsp
       redhat.vscode-yaml
       streetsidesoftware.code-spell-checker
       tamasfe.even-better-toml
+      tomoki1207.pdf
     ];
   };
 }

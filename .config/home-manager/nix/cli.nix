@@ -49,6 +49,7 @@ with pkgs; let
     gitui
   ];
   other = [
+    amdgpu_top
     asciinema
     direnv
     yq-go # Yaml processor.

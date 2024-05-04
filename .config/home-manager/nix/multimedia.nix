@@ -16,6 +16,7 @@ with pkgs; let
     kid3
     krita
     onlyoffice-bin
+    soundconverter
     sqlitebrowser
   ];
   converters = [
