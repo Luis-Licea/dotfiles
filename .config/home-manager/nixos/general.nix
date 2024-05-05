@@ -36,33 +36,20 @@
   services = {
     printing = {
       enable = true;
-      browsing = true;
-      drivers = with pkgs; [gutenprint cnijfilter2];
-      defaultShared = true;
-      listenAddresses = [ "*:631" ];
-      allowFrom = [ "all" ];
+      drivers = with pkgs; [gutenprint];
       openFirewall = true;
     };
     avahi = {
       enable = true;
       nssmdns = true;
       openFirewall = true; # For a WiFi printer.
-      publish = {
-        enable = true;
-        addresses = true;
-        userServices = true;
-      };
     };
   };
   hardware.sane = {
     enable = true;
-    openFirewall = true;
     extraBackends = with pkgs; [ sane-airscan ];
     disabledDefaultBackends = [ "escl" ];
   };
-  users.users.luis.extraGroups = [ "scanner" "lp" ];
-
-  # networking.firewall.enable = false;
 
   ## Sound ##
   # Enable sound with pipewire.
@@ -207,7 +194,7 @@
     53317 # Needed for localsend to receive files.
   ];
   networking.firewall.allowedUDPPorts = [
-    5353 # Needed to connect printer scanner.
+    5353 # Needed simple-scan to connect to scanner.
   ];
 
   # Copy the NixOS configuration file and link it from the resulting system
