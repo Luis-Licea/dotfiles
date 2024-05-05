@@ -34,13 +34,35 @@
   ## Printers ##
   # Enable CUPS to print documents. Add printers on: http://localhost:631/admin
   services = {
-    printing.enable = true;
+    printing = {
+      enable = true;
+      browsing = true;
+      drivers = with pkgs; [gutenprint cnijfilter2];
+      defaultShared = true;
+      listenAddresses = [ "*:631" ];
+      allowFrom = [ "all" ];
+      openFirewall = true;
+    };
     avahi = {
       enable = true;
       nssmdns = true;
       openFirewall = true; # For a WiFi printer.
+      publish = {
+        enable = true;
+        addresses = true;
+        userServices = true;
+      };
     };
   };
+  hardware.sane = {
+    enable = true;
+    openFirewall = true;
+    extraBackends = with pkgs; [ sane-airscan ];
+    disabledDefaultBackends = [ "escl" ];
+  };
+  users.users.luis.extraGroups = [ "scanner" "lp" ];
+
+  # networking.firewall.enable = false;
 
   ## Sound ##
   # Enable sound with pipewire.
@@ -184,7 +206,9 @@
   networking.firewall.allowedTCPPorts = [
     53317 # Needed for localsend to receive files.
   ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.allowedUDPPorts = [
+    5353 # Needed to connect printer scanner.
+  ];
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
