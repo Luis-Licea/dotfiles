@@ -3,6 +3,15 @@
   config,
   ...
 }: {
+  imports = [
+    ./i18n.nix
+    ./dwl.nix
+    ./hyprland.nix
+    ./virtualization.nix
+    # ./8bitdo.nix
+    # ./gnome.nix
+  ];
+
   nix = {
     settings.experimental-features = ["nix-command" "flakes"];
     package = pkgs.nixVersions.nix_2_19;
@@ -47,8 +56,8 @@
   };
   hardware.sane = {
     enable = true;
-    extraBackends = with pkgs; [ sane-airscan ];
-    disabledDefaultBackends = [ "escl" ];
+    extraBackends = with pkgs; [sane-airscan];
+    disabledDefaultBackends = ["escl"];
   };
 
   ## Sound ##
@@ -80,15 +89,6 @@
     };
 
     bash.shellAliases = config.programs.zsh.shellAliases;
-  };
-
-  # Select internationalisation properties.
-  i18n.inputMethod = {
-    enabled = "fcitx5";
-    fcitx5.addons = with pkgs; [
-      fcitx5-mozc
-      fcitx5-gtk
-    ];
   };
 
   # Might need to `rfkill unblock bluetooth`.
@@ -157,19 +157,10 @@
 
     # Equivalent to `/etc/environment`.
     variables = {
-      # Use Fcitx or Fcitx5 for input method control.
-      # GTK_IM_MODULE = "fcitx";
-      # QT_IM_MODULE = "fcitx";
-      # SDL_IM_MODULE = "fcitx";
-      # XMODIFIERS = "@im=fcitx";
-
-      # Allow fcitx5 to change keyboard layout in alacritty.
-      WINIT_UNIX_BACKEND = "x11";
-
       # Change log file path.
       NVIM_LOG_FILE = "/tmp/nvim/log";
 
-      # Disallow shell commands.
+      # Disallow shell commands in less.
       LESSSECURE = "1";
     };
 
@@ -179,13 +170,15 @@
       ntfs_defaults=uid=$UID,gid=$GID,prealloc
     '';
     systemPackages = with pkgs; [
-      alacritty
-      helix
+      alacritty # Essential.
+      helix # Any editor is better than nano.
       home-manager
-      localsend
-      mpv
+      localsend # HM version does not work correctly.
+      mpv # HM version does not work correctly.
       obs-studio
       ollama
+      paperwork # HM version is a few minor versions behind.
+      gnome.simple-scan # HM version does not work correctly.
     ];
   };
 

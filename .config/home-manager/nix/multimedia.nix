@@ -1,12 +1,9 @@
 {pkgs, ...}:
 with pkgs; let
   viewers = [
-    bat
     calibre
-    glow
     mcomix
     # mpv # Install as a system package for stability.
-    nvimpager
     qview
     ueberzugpp
     zathura

@@ -1,5 +1,14 @@
 {pkgs, ...}:
 with pkgs; let
+  bat-utils = with bat-extras; [
+    bat
+    batdiff
+    batgrep
+    batman
+    batpipe
+    batwatch
+    prettybat
+  ];
   networkMetrics = [
     nethogs
     btop # htop/nmon replacement.
@@ -15,13 +24,16 @@ with pkgs; let
     # ipcalc # IPv4/IPv6 address calculator.
   ];
   systemMetrics = [
-    neofetch
+    amdgpu_top
     hyperfine
     lm_sensors # `sensors` command.
+    neofetch
   ];
   search = [
-    ripgrep # Search files.
+    atuin
     fd
+    fzf # Fuzzy finder.
+    ripgrep # Search files.
   ];
   utilities = [
     bashmount
@@ -29,14 +41,6 @@ with pkgs; let
     file
     lsof
     xdg-utils
-  ];
-  bat-utils = with bat-extras; [
-    batdiff
-    batgrep
-    batman
-    batpipe
-    batwatch
-    prettybat
   ];
   fileManagers = [
     ranger
@@ -48,12 +52,17 @@ with pkgs; let
     git
     gitui
   ];
+  viewers = [
+    glow # Needed by Neovim Telescope for Markdown file previews.
+    nvimpager
+  ];
   other = [
-    amdgpu_top
+    # podman
+    # distrobox
+
     asciinema
     direnv
     yq-go # Yaml processor.
-    fzf # Fuzzy finder.
     tealdeer
 
     gnome.gnome-disk-utility # Look into cfdisk parted
@@ -65,12 +74,13 @@ with pkgs; let
   ];
 in {
   home.packages =
-    networkMetrics
+    bat-utils
+    ++ networkMetrics
     ++ systemMetrics
     ++ search
     ++ utilities
     ++ fileManagers
     ++ versionControl
-    ++ bat-utils
+    ++ viewers
     ++ other;
 }

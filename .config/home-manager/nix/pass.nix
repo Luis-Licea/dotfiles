@@ -18,12 +18,14 @@
 
   services.gpg-agent = {
     enable = true;
-    pinentryFlavor = "gtk2";
+    pinentryFlavor = "gnome3"; # Choises: curses emacs gnome3 gtk2 qt tty
   };
 
-  home.packages = with pkgs; [
-    wl-clipboard
-    gnupg
-    pass
-  ];
+  home.packages = with pkgs;
+    [
+      wl-clipboard
+      gnupg
+      pass
+    ]
+    ++ lib.optional (config.services.gpg-agent.pinentryFlavor == "gnome3") gcr;
 }

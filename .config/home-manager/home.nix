@@ -5,6 +5,7 @@
     ./nix/dwl.nix
     ./nix/font.nix
     ./nix/gui.nix
+    ./nix/i18n.nix
     ./nix/mail.nix
     ./nix/multimedia.nix
     ./nix/neomutt.nix
