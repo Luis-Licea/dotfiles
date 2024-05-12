@@ -97,8 +97,8 @@ vim.opt.listchars = {
 vim.o.list = true
 -- Add indentation when S or cc is pressed.
 vim.o.cindent = true
--- Change cwd to file's directory.
--- vim.o.autochdir = true
+-- Change cwd to file's directory. Do not change directory inside repositories.
+vim.o.autochdir = vim.fn.system('git rev-parse --is-inside-work-tree') ~= 'true'
 vim.o.shell = Path.first_execuable({ '/usr/bin/zsh', '/usr/bin/bash', '/usr/bin/nu' })
 
 --------------------------------------------------------------------------------
