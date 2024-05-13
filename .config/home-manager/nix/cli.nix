@@ -30,7 +30,6 @@ with pkgs; let
     neofetch
   ];
   search = [
-    atuin
     fd
     fzf # Fuzzy finder.
     ripgrep # Search files.
@@ -41,6 +40,7 @@ with pkgs; let
     file
     lsof
     xdg-utils
+    xdotool
   ];
   fileManagers = [
     ranger
@@ -57,6 +57,7 @@ with pkgs; let
     nvimpager
   ];
   other = [
+    chezmoi
     # podman
     # distrobox
 
@@ -66,7 +67,7 @@ with pkgs; let
     tealdeer
 
     gnome.gnome-disk-utility # Look into cfdisk parted
-    frogmouth
+    # frogmouth
 
     # hexyl
     # numbat
