@@ -6,10 +6,9 @@
 }: {
   imports = [
     # ./8bitdo.nix
-    # ./gnome.nix
-    ./dwl.nix
+    ./gnome.nix
+    # ./dwl.nix
     ./fonts.nix
-    ./hyprland.nix
     ./i18n.nix
     ./nvim.nix
     ./printer.nix
@@ -46,13 +45,6 @@
   ## Sound ##
   # Enable sound with pipewire.
   security.rtkit.enable = true; # Optional but recommended.
-  services.pipewire = {
-    alsa.enable = true;
-    enable = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-  };
 
   # Might need to `rfkill unblock bluetooth`.
   hardware.bluetooth.enable = true;
@@ -108,15 +100,20 @@
     '';
     systemPackages = with pkgs; [
       alacritty # Essential.
+      gnome.simple-scan # HM version does not work correctly.
+      gnucash
       home-manager
       localsend # HM version does not work correctly.
       mpv # HM version does not work correctly.
       obs-studio
       ollama
       paperwork # HM version is a few minor versions behind.
-      gnome.simple-scan # HM version does not work correctly.
     ];
   };
+
+  # Enable the OpenSSH daemon.
+  services.openssh.enable = true;
+  programs.ssh.startAgent = true;
 
   # Open ports in the firewall.
   # localsend needs port 53317 to receive files.

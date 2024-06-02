@@ -29,6 +29,14 @@
     '';
   };
 
+  services.pipewire = {
+    alsa.enable = true;
+    enable = false;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+  };
+
   services = {
     udisks2.enable = true;
     greetd = rec {

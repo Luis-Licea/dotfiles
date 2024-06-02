@@ -23,7 +23,7 @@
     gnome-logs
     gnome-maps
     gnome-music
-    gnome-photos
+    pkgs.gnome-photos
     gnome-screenshot
     gnome-system-monitor
     gnome-weather
@@ -38,7 +38,7 @@
   services = {
     xserver = {
       # Enable the X11 windowing system.
-      enable = false;
+      enable = true;
 
       displayManager = {
         # Enable the GNOME Display Manager.
@@ -59,4 +59,13 @@
       libinput.enable = true;
     };
   };
+
+  environment.systemPackages = with pkgs; [
+    gnomeExtensions.appindicator # Systray icons.
+    gnomeExtensions.forge # Tiling window manager.
+    gnome.dconf-editor
+  ];
+
+  # Enable Systray icons.
+  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
 }
