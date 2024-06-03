@@ -1,0 +1,26 @@
+import = ["~/.local/share/nvim/site/pack/packer/start/tokyonight.nvim/extras/alacritty/tokyonight_storm.yml"]
+
+[cursor.style]
+blinking = "Always"
+
+[font.normal]
+family = "monospace"
+
+[[keyboard.bindings]]
+action = "ScrollPageUp"
+key = "K"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "ScrollPageDown"
+key = "J"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[window]
+opacity = 0.9
+
+[window.padding]
+x = 20
+y = 20
