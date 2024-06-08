@@ -7,7 +7,7 @@
     };
     avahi = {
       enable = true;
-      nssmdns = true;
+      nssmdns4 = true;
       openFirewall = true; # Open UPD port 5353 to discover WiFi printer.
     };
   };

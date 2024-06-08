@@ -36,28 +36,28 @@
   systemd.services."autovt@tty1".enable = false;
 
   services = {
+    # Enable automatic login for the user.
+    displayManager.autoLogin = {
+      enable = true;
+      user = "luis";
+    };
+
     xserver = {
       # Enable the X11 windowing system.
       enable = true;
-
-      displayManager = {
-        # Enable the GNOME Display Manager.
-        gdm.enable = true;
-
-        # Enable automatic login for the user.
-        autoLogin.enable = true;
-        autoLogin.user = "luis";
-      };
+      # Enable the GNOME Display Manager.
+      displayManager.gdm.enable = true;
       # Enable the GNOME Desktop Environment.
       desktopManager.gnome.enable = true;
 
       ## Configure keymap in X11
-      layout = "us";
-      xkbVariant = "";
-
-      # Enable touchpad support (enabled default in most desktopManager).
-      libinput.enable = true;
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
     };
+    # Enable touchpad support (enabled default in most desktopManager).
+    libinput.enable = true;
   };
 
   environment.systemPackages = with pkgs; [
