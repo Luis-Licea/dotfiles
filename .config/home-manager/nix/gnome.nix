@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  # Use gsettings list-recursively to show all settings.
+  # Use `gsettings list-recursively` to show all settings.
   dconf.settings = {
 
     # Workaround for freezing during activity switching on Ubuntu

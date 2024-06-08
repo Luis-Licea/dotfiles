@@ -38,6 +38,8 @@ in {
       jsonnet # Functional language similar to Nix.
       perlnavigator # Perl linter.
       nixfmt-rfc-style # Nix formatter.
+      pylint # Python linter.
+      python312Packages.flake8 # Python linter.
 
       # # Debug adapters.
       # 'bash-debug-adpater', # Bash, Sh.
