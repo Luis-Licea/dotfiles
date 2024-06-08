@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 # Previous Keyboard Layout
 # A script that switches to the previous keyboard layout, as opposed to cycling through all of them.
