@@ -4,7 +4,7 @@
     cheese # photo booth
     eog # image viewer
     epiphany # web browser
-    gedit # text editor
+    pkgs.gedit # text editor
     simple-scan # document scanner
     totem # video player
     yelp # help viewer
@@ -63,9 +63,20 @@
   environment.systemPackages = with pkgs; [
     gnomeExtensions.appindicator # Systray icons.
     gnomeExtensions.forge # Tiling window manager.
-    gnome.dconf-editor
+    gnome.dconf-editor # View dconf settings.
+
+    wireplumber
   ];
 
+  services.pipewire = {
+    alsa.enable = true;
+    enable = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+  };
+  hardware.pulseaudio.enable = false;
+
   # Enable Systray icons.
-  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
 }
