@@ -37,6 +37,7 @@ in {
       stylua # Lua formatter.
       jsonnet # Functional language similar to Nix.
       perlnavigator # Perl linter.
+      nixfmt-rfc-style # Nix formatter.
 
       # # Debug adapters.
       # 'bash-debug-adpater', # Bash, Sh.

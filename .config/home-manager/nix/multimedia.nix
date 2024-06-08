@@ -9,11 +9,11 @@ with pkgs; let
     zathura
   ];
   editors = [
-    # sqlite
     kid3
     krita
     onlyoffice-bin
     soundconverter
+    sqlite
     sqlitebrowser
   ];
   converters = [

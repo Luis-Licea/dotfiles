@@ -9,6 +9,8 @@ with pkgs; let
   ];
   other = [
     firefox
+    #citations
+    raider
   ];
 in {
   home.packages = emulators ++ diffTools ++ other;

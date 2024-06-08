@@ -10,18 +10,20 @@ with pkgs; let
     prettybat
   ];
   networkMetrics = [
-    nethogs
-    btop # htop/nmon replacement.
-    iftop # Network monitoring.
-    htop-vim
-    # mtr # Network diagnostics tool.
-    # iperf3
-    # dnsutils # `dig` + `nslookup`
-    # ldns # Replacement fo dig, provides the command `drill`.
     # aria2 # Multi-protocol & multi-source command-line download utility.
-    # socat # openbsd-netcat replacement.
-    # nmap # Newtork discovery and security auditing utility.
+    # dnsutils # `dig` + `nslookup`
     # ipcalc # IPv4/IPv6 address calculator.
+    # iperf3
+    # ldns # Replacement fo dig, provides the command `drill`.
+    # mtr # Network diagnostics tool.
+    # nmap # Newtork discovery and security auditing utility.
+    # socat # openbsd-netcat replacement.
+    btop # htop/nmon replacement.
+    dig
+    htop-vim
+    iftop # Network monitoring.
+    nethogs
+    termshark
   ];
   systemMetrics = [
     amdgpu_top
@@ -57,7 +59,9 @@ with pkgs; let
     nvimpager
   ];
   other = [
+    #keychain
     chezmoi
+    #scc
     # podman
     # distrobox
 
