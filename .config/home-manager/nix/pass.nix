@@ -13,19 +13,18 @@
     # ║   $ gpg-connect-agent reloadagent /bye                                    ║
     # ╚═══════════════════════════════════════════════════════════════════════════╝
     grab
-    pinentry-program ${pkgs.pinentry.${config.services.gpg-agent.pinentryFlavor}}/bin/pinentry
+    pinentry-program ${config.services.gpg-agent.pinentryPackage}/bin/pinentry
   '';
 
   services.gpg-agent = {
     enable = true;
-    pinentryFlavor = "gnome3"; # Choises: curses emacs gnome3 gtk2 qt tty
+    pinentryPackage = pkgs.pinentry-gnome3;
   };
 
-  home.packages = with pkgs;
-    [
-      wl-clipboard
-      gnupg
-      pass
-    ]
-    ++ lib.optional (config.services.gpg-agent.pinentryFlavor == "gnome3") gcr;
+  home.packages = with pkgs; [
+    wl-clipboard
+    gnupg
+    pass
+    gcr # Needed for Gnome pin-entry.
+  ];
 }
