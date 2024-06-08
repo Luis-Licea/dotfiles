@@ -182,8 +182,9 @@
         "format-ethernet": " {ifname}", // Icon: ethernet 
         "format-disconnected": "",
         "tooltip-format": "{essid}: {ifname}: {ipaddr}/{cidr} ",
-        "tooltip-format-disconnected": "Disconnected"
+        "tooltip-format-disconnected": "Disconnected",
         // "on-click": "swaymsg exec \\$term_float_portrait nmtui"
+        "on-click-middle": "rfkill toggle wlan"
     },
     "custom/spotify": {
         "format": " {}",
