@@ -17,7 +17,10 @@
   ];
 
   nix = {
-    settings.experimental-features = ["nix-command" "flakes"];
+    settings = {
+      experimental-features = ["nix-command" "flakes"];
+      use-xdg-base-directories = true;
+    };
     package = pkgs.nixVersions.nix_2_19;
   };
 
@@ -70,18 +73,15 @@
       NIXCONFIG = "/etc/nixos/configuration.nix";
 
       # XDG-Ninja
-
-      # [cargo]: $HOME/.cargo
-      CARGO_HOME = "${XDG_DATA_HOME}/cargo";
-
-      # [gnupg]: $HOME/.gnupg
-      GNUPGHOME = "${XDG_DATA_HOME}/gnupg";
-
-      # [pass]: $HOME/.password-store
-      PASSWORD_STORE_DIR = "${XDG_DATA_HOME}/pass";
-
-      # [zsh]: $HOME.zshrc
-      ZDOTDIR = "${XDG_CONFIG_HOME}/zsh";
+      CARGO_HOME = "${XDG_DATA_HOME}/cargo"; # [cargo]: $HOME/.cargo
+      GNUPGHOME = "${XDG_DATA_HOME}/gnupg"; # [gnupg]: $HOME/.gnupg
+      KERAS_HOME = "${XDG_STATE_HOME}/keras"; # [python-tensorflow]: $HOME/.keras
+      NODE_REPL_HISTORY = "${XDG_DATA_HOME}/node_repl_history"; # [nodejs]: $HOME/.node_repl_history
+      PASSWORD_STORE_DIR = "${XDG_DATA_HOME}/pass"; # [pass]: $HOME/.password-store
+      PYTHONSTARTUP = "$HOME/python/pythonrc"; # [python]: $HOME/.python_history
+      RUSTUP_HOME = "${XDG_DATA_HOME}/rustup"; # [rustup]: $HOME/.rustup
+      W3M_DIR = "${XDG_CONFIG_HOME}/w3m"; # [w3m]: $HOME/.w3m
+      ZDOTDIR = "${XDG_CONFIG_HOME}/zsh"; # [zsh]: $HOME.zshrc
     };
 
     # Equivalent to `/etc/environment`.

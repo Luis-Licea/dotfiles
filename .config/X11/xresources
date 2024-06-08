@@ -1,4 +1,4 @@
-! NOTE: Always run "xrdb -merge ~/.Xresources" to apply changes.
+! NOTE: Always run "xrdb -merge $XDG_CONFIG_HOME/X11/xresources" to apply changes.
 
 ! Run xrandr to get resolution. Use resolution to calculate DPI using
 ! https://www.calculators.tech/dpi-calculator. Display: 1920x1080 24 inch.

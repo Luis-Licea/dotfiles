@@ -3,6 +3,7 @@
 from os import environ
 from os.path import join
 from readline import write_history_file
+from sys import argv
 import readline
 
 def write_history(path: str):
@@ -16,4 +17,8 @@ def write_history(path: str):
     # Using readline.write_history_file will cause infinite recursion.
     write_history_file(history)
 
-readline.write_history_file = write_history
+def is_vanilla() -> bool:
+    return not hasattr(__builtins__, '__IPYTHON__') and 'bpython' not in argv[0]
+
+if is_vanilla():
+    readline.write_history_file = write_history
