@@ -13,7 +13,7 @@
 [apply]
     whitespace = fix # Same as "strip".
 [lfs]
-    enable = true
+    enable = false
 ; [includes]
 ;     ~/.secrets
 [hub]
