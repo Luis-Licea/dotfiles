@@ -37,7 +37,7 @@ vim.opt.directory = state_dir .. '/swap'
 -- Interface.
 --------------------------------------------------------------------------------
 -- Share clipboard with operating system.
-vim.o.clipboard = 'unnamedplus'
+vim.o.clipboard = 'unnamed,unnamedplus'
 -- Reminder to keep lines at most 80, 120 characters long.
 vim.o.colorcolumn = '81,101,121'
 -- Enable mouse wheel .
