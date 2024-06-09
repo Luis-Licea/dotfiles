@@ -3,10 +3,11 @@ with pkgs; let
   pythonPackages = [
     black # Python formatter.
     isort # Python formatter.
-    python311Packages.debugpy # Python debugger.
-    python311Packages.flake8 # Python linter.
-    ruff # Python linter.
     nodePackages.pyright # Python diagnostics.
+    pylint # Python linter.
+    python311Packages.debugpy # Python debugger.
+    python312Packages.flake8 # Python linter.
+    ruff # Python linter.
   ];
   bashPackages = [
     shellcheck # Bash linter.
@@ -38,8 +39,6 @@ in {
       jsonnet # Functional language similar to Nix.
       perlnavigator # Perl linter.
       nixfmt-rfc-style # Nix formatter.
-      pylint # Python linter.
-      python312Packages.flake8 # Python linter.
 
       # # Debug adapters.
       # 'bash-debug-adpater', # Bash, Sh.

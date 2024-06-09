@@ -9,7 +9,7 @@ with pkgs; let
     zathura
   ];
   editors = [
-    kid3
+    eartag
     krita
     onlyoffice-bin
     soundconverter

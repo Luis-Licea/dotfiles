@@ -1,4 +1,14 @@
 {pkgs, ...}: {
+  imports = [
+    ./audio.nix
+    ./block-youtube.nix
+    ./fonts.nix
+    ./i18n.nix
+    ./ntfs.nix
+    ./printer.nix
+    ./virtualization.nix
+  ];
+
   # nixpkgs.overlays = [
   #   (
   #     final: prev: {
@@ -20,8 +30,8 @@
     systemPackages = with pkgs; [
       # (builtins.getFlake "github:Deleh/huepaper").defaultPackage.${pkgs.system}
       # (builtins.getFlake "github:Deleh/huepaper/048805bf049a6627c7611b4ec88617806e94d795").defaultPackage.${pkgs.system}
+      gnome.adwaita-icon-theme # Fix missing icons.
       greetd.tuigreet
-      wireplumber
     ];
 
     etc."greetd/environments".text = ''
@@ -29,16 +39,7 @@
     '';
   };
 
-  services.pipewire = {
-    alsa.enable = true;
-    enable = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-  };
-
   services = {
-    udisks2.enable = true;
     greetd = rec {
       enable = true;
       settings = {
@@ -71,9 +72,4 @@
 
   # Necessary for DWL to work.
   hardware.opengl.enable = true;
-  # hardware = {
-  #   opengl.extraPackages = with pkgs; [
-  #     rocm-opencl-icd
-  #   ];
-  # };
 }

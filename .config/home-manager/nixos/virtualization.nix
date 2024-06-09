@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{pkgs, ...}: {
   boot.kernelModules = ["kvm-amd" "kvm-intel"];
   users.users.luis.extraGroups = ["libvirtd"];
   virtualisation = {
@@ -46,13 +42,4 @@
       ];
     };
   };
-
-  # home-manager.users.luis = {
-  #   dconf.settings = {
-  #     "org/virt-manager/virt-manager/connections" = {
-  #       autoconnect = ["qemu:///system"];
-  #       uris = ["qemu:///system"];
-  #     };
-  #   };
-  # };
 }

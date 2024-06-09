@@ -1,35 +1,47 @@
 {pkgs, ...}: {
-  environment.gnome.excludePackages = with pkgs.gnome; [
-    baobab # disk usage analyzer
-    cheese # photo booth
-    eog # image viewer
-    epiphany # web browser
-    pkgs.gedit # text editor
-    simple-scan # document scanner
-    totem # video player
-    yelp # help viewer
-    evince # document viewer
-    file-roller # archive manager
-    geary # email client
-    seahorse # password manager
-
-    # these should be self explanatory
-    gnome-calculator
-    gnome-calendar
-    gnome-characters
-    gnome-clocks
-    gnome-contacts
-    gnome-font-viewer
-    gnome-logs
-    gnome-maps
-    gnome-music
-    pkgs.gnome-photos
-    gnome-screenshot
-    gnome-system-monitor
-    gnome-weather
-    gnome-disk-utility
-    pkgs.gnome-connections
+  imports = [
+    ./audio.nix
+    ./block-youtube.nix
+    ./fonts.nix
+    ./printer.nix
+    ./virtualization.nix
   ];
+  hardware.pulseaudio.enable = false;
+
+  environment.gnome.excludePackages =
+    (with pkgs.gnome; [
+      baobab # disk usage analyzer
+      cheese # photo booth
+      eog # image viewer
+      epiphany # web browser
+      simple-scan # document scanner
+      totem # video player
+      yelp # help viewer
+      evince # document viewer
+      file-roller # archive manager
+      geary # email client
+      seahorse # password manager
+
+      # these should be self explanatory
+      gnome-calculator
+      gnome-calendar
+      gnome-characters
+      gnome-clocks
+      gnome-contacts
+      gnome-font-viewer
+      gnome-logs
+      gnome-maps
+      gnome-music
+      gnome-screenshot
+      gnome-system-monitor
+      gnome-weather
+      gnome-disk-utility
+    ])
+    ++ (with pkgs; [
+      gnome-photos
+      gnome-connections
+      gedit # text editor
+    ]);
 
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
   systemd.services."getty@tty1".enable = false;
@@ -64,18 +76,7 @@
     gnomeExtensions.appindicator # Systray icons.
     gnomeExtensions.forge # Tiling window manager.
     gnome.dconf-editor # View dconf settings.
-
-    wireplumber
   ];
-
-  services.pipewire = {
-    alsa.enable = true;
-    enable = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-  };
-  hardware.pulseaudio.enable = false;
 
   # Enable Systray icons.
   services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];

@@ -1,9 +1,11 @@
 {pkgs, ...}: {
   # hardware boot networking locale graphics audio users packages gui
   imports = [
+
+    # ./nix/dwl.nix
+    # ./nix/gnome.nix
+
     ./nix/cli.nix
-    ./nix/dwl.nix
-    ./nix/gnome.nix
     ./nix/font.nix
     ./nix/gui.nix
     ./nix/i18n.nix

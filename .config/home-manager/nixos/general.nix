@@ -6,14 +6,11 @@
 }: {
   imports = [
     # ./8bitdo.nix
-    ./gnome.nix
     # ./dwl.nix
-    ./fonts.nix
-    ./i18n.nix
+    # ./gnome.nix
+    ./hyprland.nix
     ./nvim.nix
-    ./printer.nix
     ./shell.nix
-    ./virtualization.nix
   ];
 
   nix = {
@@ -24,37 +21,18 @@
     package = pkgs.nixVersions.nix_2_19;
   };
 
-  boot = {
-    # Configure the /tmp folder.
-    tmp = {
-      # Make NixOS put /tmp on a tmpfs.
-      useTmpfs = true;
-      # The maximum amount of RAM /tmp is allowed to take.
-      tmpfsSize = "%80";
-    };
+  # Configure the /tmp folder.
+  boot.tmp = {
+    # Make NixOS put /tmp on a tmpfs.
+    useTmpfs = true;
+    # The maximum amount of RAM /tmp is allowed to take.
+    tmpfsSize = "%80";
   };
-
-  networking.extraHosts = ''
-    # /etc/hosts - Block YouTube.
-    127.0.0.1       www.youtube.com
-    127.0.0.1       m.youtube.com
-    127.0.0.1       youtube.com
-    127.0.0.1       youtu.be
-    127.0.0.1       ytimg.com
-    127.0.0.1       l.google.com
-    127.0.0.1       googlevideo.com
-  '';
-
-  ## Sound ##
-  # Enable sound with pipewire.
-  security.rtkit.enable = true; # Optional but recommended.
 
   # Might need to `rfkill unblock bluetooth`.
   hardware.bluetooth.enable = true;
 
   environment = {
-    # This is using a rec (recursive) expression to set and access XDG_BIN_HOME within the expression
-    # For more on rec expressions see https://nix.dev/tutorials/first-steps/nix-language#recursive-attribute-set-rec
     # Equivalent to `/etc/profile`.
     sessionVariables = rec {
       XDG_CACHE_HOME = "$HOME/.cache";
@@ -68,9 +46,6 @@
         "${XDG_BIN_HOME}"
         "${XDG_BIN_HOME}/scripts"
       ];
-
-      # Custom variables.
-      NIXCONFIG = "/etc/nixos/configuration.nix";
 
       # XDG-Ninja
       CARGO_HOME = "${XDG_DATA_HOME}/cargo"; # [cargo]: $HOME/.cargo
@@ -93,11 +68,6 @@
       LESSSECURE = "1";
     };
 
-    # Configure how NTFS removable disks should be mounted.
-    etc."udisks2/mount_options.conf".text = ''
-      [defaults]
-      ntfs_defaults=uid=$UID,gid=$GID,prealloc
-    '';
     systemPackages = with pkgs; [
       alacritty # Essential.
       gnome.simple-scan # HM version does not work correctly.
@@ -108,6 +78,7 @@
       obs-studio
       ollama
       paperwork # HM version is a few minor versions behind.
+      cached-nix-shell
     ];
   };
 
