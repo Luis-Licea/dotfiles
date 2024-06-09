@@ -1,0 +1,19 @@
+# ft=conf
+
+cache_file=/dev/null
+insensitive=true
+show=drun
+
+# Look and feel.
+allow_images=true
+allow_markup=true
+gtk_dark=true
+normal_window=true
+prompt=Search
+
+# Keybindings.
+key_backward=Ctrl-k
+key_expand=Ctrl-o
+key_forward=Ctrl-j
+key_left=Ctrl-h
+key_right=Ctrl-l
