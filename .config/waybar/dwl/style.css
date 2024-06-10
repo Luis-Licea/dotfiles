@@ -55,26 +55,61 @@
 @define-color maroon #EBA0AC;
 
 * {
-  border: none;
-  border-radius: 0;
-  font-family: monospace;
-  font-size: 14px;
-  min-height: 0;
+    border: none;
+    border-radius: 0;
+    font-family: monospace;
+    font-size: 14px;
+    min-height: 0;
+}
+
+#custom-dwl_tag.urgent {
+    background-color: #FF0000;
+}
+
+#custom-dwl_tag.active {
+    border-top: 2px solid @blue;
+}
+
+#custom-dwl_tag.selected {
+    color: @red;
+    border-top: 2px solid @red;
+}
+
+#custom-dwl_tag.0 {
+    border-radius: 7px 0 0 7px;
+    margin: 0 0 0 5px;
+}
+
+/* A layout like []= or ><>. */
+#custom-dwl_layout {
+    border-radius: 0 7px 7px 0;
+    padding-right: 10px;
+    padding-left: 5px;
+}
+
+
+#custom-dwl_layout,
+#custom-dwl_tag {
+    background-color: @bg;
+    color: @fg;
 }
 
 window#waybar {
-  /* The bar color. */
-  /* background: @nord_bg_blue; */
-  background: transparent;
+    /* The bar color. */
+    /* background: @nord_bg_blue; */
+    background: transparent;
 
-  /* The waybar module text color. */
-  color: @nord_light_font;
+    /* The waybar module text color. */
+    color: @nord_light_font;
 }
 
+#custom-dwl_title, /* The title of the current window. */
 #battery,
 #bluetooth,
 #clock,
 #cpu,
+#custom-pacman,
+#custom-spotify,
 #disk,
 #memory,
 #network,
@@ -82,79 +117,65 @@ window#waybar {
 #temperature,
 #tray,
 #workspaces {
-  background: @light_gray;
-  margin: 0 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  border-radius: 7px;
-  background-color: @bg;
+    background: @light_gray;
+    margin: 0 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 7px;
+    background-color: @bg;
 }
 
 #tray {
-  /* background: #434C5E; */
-  color: #434c5e;
+    /* background: #434C5E; */
+    color: #434C5E;
 }
 
 #bluetooth {
-  color: @dark_blue;
+    color: @dark_blue;
+}
+
+#custom-spotify {
+    color: @green;
 }
 
 #network {
-  color: @blue;
+    color: @blue;
 }
 
 #temperature {
-  color: @orange;
+    color: @orange;
 }
 
 #workspaces button {
-  padding: 0 2px;
-  color: #fdf6e3;
+    padding: 0 2px;
+    color: #fdf6e3;
 }
-#workspaces button.active {
-  color: #268bd2;
-}
-
-#workspaces button.urgent {
-  color: red;
-  border-radius: 1em;
+#workspaces button.focused {
+    color: #268bd2;
 }
 #workspaces button:hover {
-  box-shadow: inherit;
-  text-shadow: inherit;
+    box-shadow: inherit;
+    text-shadow: inherit;
 }
 #workspaces button:hover {
-  background: @light_gray;
-  border: @light_gray;
-  padding: 0 3px;
-}
-
-#window {
-  border-radius: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
-
-  background: rgba(43, 48, 59, 0.5);
-  border-bottom: 3px solid rgba(100, 114, 125, 0.5);
-  color: #ffffff;
-}
-
-window#waybar.empty #window {
-  background-color: transparent;
+    background: @light_gray;
+    border: @light_gray;
+    padding: 0 3px;
 }
 
 #pulseaudio {
-  color: @blue;
+    color: @blue;
 }
 #memory {
-  color: @teal;
+    color: @teal;
 }
 #cpu {
-  color: @violet;
+    color: @violet;
 }
 #battery {
-  color: @green;
+    color: @green;
 }
 #disk {
-  color: @orange;
+    color: @orange;
 }
+
