@@ -15,6 +15,7 @@
     ./nix/nvim.nix
     ./nix/pass.nix
     ./nix/vscodium.nix
+    ./nix/development.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
