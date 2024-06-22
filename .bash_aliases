@@ -180,6 +180,7 @@ alias rangercache='cd ~/.cache/ranger/'
 alias rangerconfig='$EDITOR ~/.config/ranger/'
 alias rifleconfig='$EDITOR ~/.config/ranger/rifle.conf'
 alias roficonfig='$EDITOR ~/.config/rofi/config.rasi'
+alias woficonfig='$EDITOR ~/.config/wofi/config'
 alias scopeconfig='$EDITOR ~/.config/ranger/scope.sh'
 alias shellconfig='$EDITOR ~/.bash_aliases && source ~/.bash_aliases'
 alias starshipconfig='$EDITOR ~/.config/starship.toml'
@@ -206,6 +207,7 @@ alias javascratch='scratchpad scratchpad.java'
 alias luascratch='scratchpad scratchpad.lua'
 alias mdscratch='scratchpad scratchpad.md'
 alias nuscratch='scratchpad scratchpad.nu'
+alias plscratch='scratchpad scratchpad.pl'
 alias pyscratch='scratchpad scratchpad.py'
 alias pyscratchtest='scratchpad scratchpad_test.py'
 alias sagescratch='scratchpad scratchpad.sage'
@@ -226,7 +228,7 @@ if [[ $(command -v bat) ]]; then
 fi
 
 alias dotfiles='repo_git ~/.config/dotfiles/ ~'
-alias dotfilesui='repo_ui ~/.config/dotfiles/ ~ && git-summary ~/Code -s'
+alias dotfilesui='repo_ui ~/.config/dotfiles/ ~ && git-summary ~/Documents -s'
 alias passbgit='repo_git ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 
@@ -274,12 +276,13 @@ alias man='man -a'
 alias nr='setsid --fork alacritty -e ranger'
 alias nt='setsid --fork alacritty'
 alias nullls='cd $HOME/.local/share/nvim/lazy/null-ls.nvim/lua/null-ls/builtins'
-alias playmusic='mpv /run/media/luis/DATA/Music/* --shuffle'
+alias playmusic='mpv --shuffle ~/Music/*'
+alias restart-pipewire='systemctl --user restart pipewire.service'
 alias rgf='rg --files | rg'
 alias rsyncdelete='rsync -arv --delete'
 alias rsyncdryrun='rsync -arvn --delete'
-alias sd="cd ~ && cd \$(find * -type d | fzf)"
-alias nd="nvim \$(find * -type f | fzf)"
+
+alias cdf='cd ~ && cd "$(find * -type d | fzf)"'
 
 alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
