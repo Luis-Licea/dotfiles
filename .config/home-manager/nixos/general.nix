@@ -39,6 +39,7 @@
       XDG_CONFIG_HOME = "$HOME/.config";
       XDG_DATA_HOME = "$HOME/.local/share";
       XDG_STATE_HOME = "$HOME/.local/state";
+      XDG_PICTURES_DIR = "$HOME/Pictures";
 
       # Not officially in the specification
       XDG_BIN_HOME = "$HOME/.local/bin";
