@@ -86,8 +86,8 @@ window#waybar {
   margin: 0 5px;
   padding-left: 10px;
   padding-right: 10px;
-  border-radius: 7px;
-  background-color: @bg;
+  border-radius: 15px;
+  /* background-color: @bg; */
 }
 
 #tray {
@@ -157,4 +157,62 @@ window#waybar.empty #window {
 }
 #disk {
   color: @orange;
+}
+
+#pulseaudio-slider slider {
+    min-height: 2px;
+    min-width: 2px;
+    opacity: 0;
+    background-image: none;
+    border: none;
+    box-shadow: none;
+}
+#pulseaudio-slider trough {
+    min-height: 3px;
+    min-width: 80px;
+    border-radius: 5px;
+    background-color: green;
+}
+#pulseaudio-slider highlight {
+    min-height: 3px;
+    min-width: 10px;
+    border-radius: 5px;
+    background-color: aqua;
+}
+
+/* Padding. */
+#custom-r_end {
+    border-radius: 0px 21px 21px 0px;
+    margin-right: 9px;
+    padding-right: 3px;
+}
+
+#custom-l_end {
+    border-radius: 21px 0px 0px 21px;
+    margin-left: 9px;
+    padding-left: 3px;
+}
+
+#custom-sr_end {
+    border-radius: 0px;
+    margin-right: 9px;
+    padding-right: 3px;
+}
+
+#custom-sl_end {
+    border-radius: 0px;
+    margin-left: 9px;
+    padding-left: 3px;
+}
+
+#custom-rr_end {
+    border-radius: 0px 7px 7px 0px;
+    margin-right: 9px;
+    padding-right: 3px;
+}
+
+#custom-rl_end {
+    border-radius: 7px 0px 0px 7px;
+    margin-left: 9px;
+    padding-left: 3px;
 }

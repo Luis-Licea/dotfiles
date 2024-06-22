@@ -1,114 +1,183 @@
 {
-  "modules-left": ["hyprland/workspaces", "hyprland/window"],
-  "modules-center": ["clock"],
+    "reload_style_on_change": true,
+    "reload-style-on-change": true,
+    // "mode": "hide",
+    "margin-left": 10,
+    "margin-right": 10,
+    // "margin-top": 10,
+    "margin-bottom": 0,
+    // "position": "bottom",
+
+  "include": [
+    "~/.config/waybar/modules/power.jsonc",
+    "~/.config/waybar/modules/padding.jsonc",
+    "~/.config/waybar/modules/hyprland.jsonc"
+  ],
+  "modules-left": [
+    "custom/padd",
+    "group/menu",
+    "hyprland/workspaces",
+    "group/power"
+  ],
+  // "modules-center": ["clock"],
   "modules-right": [
     "network",
+    // "network#2",
     "temperature",
     "cpu",
     "memory",
-    "pulseaudio",
+    "idle_inhibitor",
+    "group/sound",
     "disk",
     "bluetooth",
-    "battery", // use for compliant batteries
+    "battery",
     "backlight",
     "privacy",
-    "tray"
+    "tray",
+    "clock",
+    "custom/padd"
   ],
-  "hyprland/window": {
-    "format": "{}",
-    "max-length": 120
+  "wlr/taskbar": {
+    "app_ids-mapping": {
+      "firefoxdeveloperedition": "firefox-developer-edition"
+    },
+    "format": "{icon}",
+    "icon-size": 14,
+    "icon-theme": "Numix-Circle",
+    "ignore-list": ["Alacritty"],
+    "on-click": "activate",
+    "on-click-middle": "close",
+    "rewrite": {
+      "Firefox Web Browser": "Firefox",
+      "Foot Server": "Terminal"
+    },
+    "tooltip-format": "{title}"
   },
-  "hyprland/workspaces": {
-    "format": "{name}:{icon} ",
-    "disable-scroll": true,
-    "format-window-separator": "\n",
-    "window-rewrite-default": "",
-    "format-icons": {
-      "1": "",
-      "2": "󰝚", // 󰝛
-      "3": "",
-      "4": "󰨞",
-      "5": "",
-      "6": "",
-      "7": "",
-      "8": "",
-      "9": "",
-      "10": "",
-      "active": "",
-      "urgent": "",
-      "default": ""
-    }
+  "custom/wlogout": {
+    "format": "",
+    "on-click": "wlogout",
+    "tooltip-format": " Menu"
+  },
+  "custom/wallpaper": {
+    "format": " ",
+    "on-click": "bash ~/.config/system_scripts/pkill_bc"
+  },
+  "group/menu": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "children-class": "not-power",
+      "transition-left-to-right": true
+    },
+    "modules": [
+      "custom/launcher",
+      "custom/padd",
+      "custom/wlogout",
+      "custom/padd",
+      "custom/wallpaper",
+      "wlr/taskbar",
+      "hyprland/window"
+    ]
+  },
+  "custom/launcher": {
+    "format": "", // 
+    "on-click": "wofi"
   },
   "temperature": {
     "critical-threshold": 90,
-    "interval": 30,
     "format": "{icon} {temperatureC}°C",
-    "format-icons": [
-      "", // Icon: temperature-empty
-      "", // Icon: temperature-quarter
-      "", // Icon: temperature-half
-      "", // Icon: temperature-three-quarters
-      "" // Icon: temperature-full
-    ],
+    "format-icons": ["", "", "", "", ""],
+    "interval": 30,
     "tooltip": true
   },
+  "clock": {
+    "format": " {:%e %b %Y %I:%M:%S %p} ",
+    "interval": 1,
+    "on-click": "gnome-calendar",
+    "tooltip": true,
+    "tooltip-format": "<big>{:%B %Y}</big>\n<tt>{calendar}</tt>"
+  },
+  "cpu": {
+    "format": "󰍛 {usage}%",
+    "interval": 10,
+    "on-click": "alacritty -e btop",
+    "states": {
+      "warning": 70,
+      "critical": 90
+    }
+  },
+  "memory": {
+    "format": "<big></big> {}%", // 
+    "interval": 10,
+    "on-click": "alacritty -e btop",
+    "states": {
+      "warning": 70,
+      "critical": 90
+    }
+  },
+  "disk": {
+    "format": "󱛟 {percentage_used}%"
+  },
   "battery": {
+    "format": "{icon} {capacity}%",
+    "format-charging": " {icon} {capacity}%",
+    "format-icons": ["", "", "", "", ""],
     "interval": 60,
     "states": {
       "warning": 30,
       "critical": 15
     },
-    "format-charging": " {icon} {capacity}%", // Icon: bolt 
-    "format": "{icon} {capacity}%",
-    "format-icons": [
-      "", // Icon: battery-empty
-      "", // Icon: battery-quarter
-      "", // Icon: battery-half
-      "", // Icon: battery-three-quarters
-      "" // Icon: battery-full
-    ],
     "tooltip": true
   },
-  "disk": {
-    "format": "󱛟 {percentage_used}%"
-  },
-  "clock": {
-    "interval": 1,
-    "format": " {:%e %b %Y %I:%M:%S %p} ", // Icon: calendar-alt 
-    "tooltip": true,
-    "tooltip-format": "<big>{:%B %Y}</big>\n<tt>{calendar}</tt>",
-    "on-click": "gnome-calendar"
-  },
-  "cpu": {
-    "interval": 10,
-    "format": "󰍛 {usage}%", // Icon: microchip 
-    "states": {
-      "warning": 70,
-      "critical": 90
+  "group/hardware": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "children-class": "not-power",
+      "transition-left-to-right": false
     },
-    "on-click": "alacritty -e btop"
+    "modules": ["cpu", "memory", "battery", "disk", "temperature"]
   },
-  "memory": {
-    "interval": 10,
-    "format": " {}%", // Icon: memory 
-    "states": {
-      "warning": 70,
-      "critical": 90
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "  I'M WIDE AWAKE!!",
+      "deactivated": " "
     },
-    "on-click": "alacritty -e btop"
+    "timeout": 30
   },
-  // Run ifconfig to configure interface.
   "network": {
-    "interface": "wlo1", // (Optional) To force the use of this interface
-    "interval": 1,
-    "format-wifi": "{bandwidthUpOctets} {bandwidthDownOctets}",
-    "format-ethernet": " {ifname}", // Icon: ethernet 
     "format-disconnected": "",
-    "tooltip-format": "{essid}: {ifname}: {ipaddr}/{cidr} ",
-    "tooltip-format-disconnected": "Disconnected",
+    "format-ethernet": " {ifname}",
+    "format-wifi": "{bandwidthUpBytes} {bandwidthDownBytes}",
+    "interface": "wlo1", // Force using this interface (optional). See ifconfig.
+    "interval": 1,
     "on-click": "alacritty -e nmtui",
+    "on-click-middle": "rfkill toggle wlan",
     "on-click-right": "alacritty -e sudo termshark",
-    "on-click-middle": "rfkill toggle wlan"
+    "tooltip-format": "{essid}: {ifname}: {ipaddr}/{cidr} ",
+    "tooltip-format-disconnected": "Disconnected"
+  },
+  "network#2": {
+    "format-disconnected": "",
+    // "format-ethernet": " {ifname}",
+    // "format-wifi": "{bandwidthUpOctets} {bandwidthDownOctets}",
+    // "interval": 1,
+    // "on-click": "alacritty -e nmtui",
+    // "on-click-middle": "rfkill toggle wlan",
+    // "on-click-right": "alacritty -e sudo termshark",
+    // "tooltip-format": "{essid}: {ifname}: {ipaddr}/{cidr} ",
+    // "tooltip-format-disconnected": "Disconnected"
+    // "interface": "wlp2s0",
+    "interface": "wlo1", // Force using this interface (optional). See ifconfig.
+    "format": "{ifname}",
+    "format-wifi": "{essid} ({signalStrength}%) ",
+    "format-ethernet": "{ipaddr}/{cidr} 󰊗",
+    "tooltip-format": "{ifname} via {gwaddr} 󰊗",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
+    "tooltip-format-ethernet": "{ifname} ",
+    "tooltip-format-disconnected": "Disconnected",
+    "max-length": 60
   },
   "backlight": {
     "format": "{icon} {percent}%",
@@ -119,7 +188,6 @@
   "pulseaudio": {
     "format": "{icon} {volume}%",
     "format-bluetooth": "{volume}% {icon}",
-    "format-muted": "{icon} ",
     "format-icons": {
       "headphones": "",
       "handsfree": "",
@@ -129,8 +197,23 @@
       "car": "",
       "default": ["", ""]
     },
+    "format-muted": "{icon} ",
+    "on-click": "pwvucontrol",
     "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle;",
-    "on-click": "pwvucontrol"
+    "on-click-right": "wpctl set-default 103 || wpctl set-default 28"
+  },
+  "pulseaudio/slider": {
+    "max": 100,
+    "min": 0,
+    "orientation": "horizontal"
+  },
+  "group/sound": {
+    "drawer": {
+      "transition-duration": 500,
+      "transition-left-to-right": false
+    },
+    "modules": ["pulseaudio", "pulseaudio/slider"],
+    "orientation": "horizontal"
   },
   "tray": {
     "icon-size": 21,

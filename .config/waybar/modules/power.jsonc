@@ -1,0 +1,66 @@
+{
+  "include": ["~/.config/waybar/modules/padding.jsonc"],
+  "group/power": {
+    "drawer": {
+      "transition-duration": 500,
+      "transition-left-to-right": false
+    },
+    "modules": [
+      "custom/lock",
+      "custom/r_end",
+      "custom/l_end",
+      "custom/logout",
+      "custom/r_end",
+      "custom/l_end",
+      "custom/suspend",
+      "custom/r_end",
+      "custom/l_end",
+      "custom/hibernate",
+      "custom/r_end",
+      "custom/l_end",
+      "custom/shutdown",
+      "custom/r_end",
+      "custom/l_end",
+      "custom/reboot",
+      "custom/r_end",
+      "custom/l_end"
+    ],
+    "orientation": "horizontal"
+  },
+  "custom/lock": {
+    "format": "",
+    "on-click": "pidof hyprlock || hyprlock",
+    "tooltip": true,
+    "tooltip-format": " Screen Lock"
+  },
+  "custom/logout": {
+    "format": "",
+    "on-click": "hyprctl dispatch exit 0",
+    "tooltip": true,
+    "tooltip-format": " Logout"
+  },
+  "custom/suspend": {
+    "format": "",
+    "on-click": "systemctl suspend",
+    "tooltip": true,
+    "tooltip-format": " Suspend"
+  },
+  "custom/hibernate": {
+    "format": "⏼",
+    "on-click": "systemctl hibernate",
+    "tooltip": true,
+    "tooltip-format": "⏼ Hibernate"
+  },
+  "custom/shutdown": {
+    "format": "",
+    "on-click": "systemctl poweroff",
+    "tooltip": true,
+    "tooltip-format": " Shutdown"
+  },
+  "custom/reboot": {
+    "format": "",
+    "on-click": "systemctl reboot",
+    "tooltip": true,
+    "tooltip-format": " Reboot"
+  }
+}
