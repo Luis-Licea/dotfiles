@@ -32,7 +32,7 @@ return {
             nil_ls = 'nil', -- Nix language server.
             nixd = 'nixd', -- Nix language server.
             pyright = 'pyright',
-            rust_analyzer = 'rust_analyzer', -- Rust
+            rust_analyzer = 'rust-analyzer', -- Rust
             taplo = 'taplo', -- TOML
             texlab = 'texlab', -- LaTeX
             tsserver = 'tsserver', -- JavaScript, TypeScript; LSP functionality.
