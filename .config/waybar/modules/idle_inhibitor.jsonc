@@ -1,0 +1,10 @@
+{
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "<big>󰈈</big>",
+      "deactivated": "<big>󰈉</big>"
+    },
+    "timeout": 30
+  }
+}

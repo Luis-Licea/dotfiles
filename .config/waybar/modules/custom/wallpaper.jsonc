@@ -1,0 +1,8 @@
+{
+  "custom/wallpaper": {
+    "format": " ",
+    "on-click": "bash ~/.config/system_scripts/pkill_bc",
+    "tooltip": true,
+    "tooltip-format": " Wallpaper"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "include": [
+    "~/.config/waybar/modules/custom/launcher.jsonc",
+    "~/.config/waybar/modules/custom/launcher.jsonc",
+    "~/.config/waybar/modules/custom/wallpaper.jsonc",
+    "~/.config/waybar/modules/custom/wlogout.jsonc",
+    "~/.config/waybar/modules/hyprland/window.jsonc"
+  ],
+  "group/menu": {
+    "drawer": {
+      "transition-duration": 500,
+      "transition-left-to-right": true
+    },
+    "modules": [
+      "custom/launcher",
+      "idle_inhibitor",
+      "custom/wlogout",
+      "custom/wallpaper",
+      "wlr/taskbar",
+      "hyprland/window"
+    ],
+    "orientation": "inherit"
+  }
+}

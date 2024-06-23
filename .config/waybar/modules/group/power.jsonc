@@ -1,0 +1,27 @@
+{
+  "include": [
+    "~/.config/waybar/modules/custom/hibernate.jsonc",
+    "~/.config/waybar/modules/custom/lock.jsonc",
+    "~/.config/waybar/modules/custom/logout.jsonc",
+    "~/.config/waybar/modules/custom/reboot.jsonc",
+    "~/.config/waybar/modules/custom/shutdown.jsonc",
+    "~/.config/waybar/modules/custom/suspend.jsonc",
+    "~/.config/waybar/modules/idle_inhibitor.jsonc"
+  ],
+  "group/power": {
+    "drawer": {
+      "transition-duration": 500,
+      "transition-left-to-right": true
+    },
+    "modules": [
+      "custom/lock",
+      "custom/logout",
+      "custom/suspend",
+      "custom/hibernate",
+      "custom/shutdown",
+      "custom/reboot",
+      "idle_inhibitor"
+    ],
+    "orientation": "horizontal"
+  }
+}

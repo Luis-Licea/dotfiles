@@ -1,0 +1,14 @@
+{
+  "include": [
+    "~/.config/waybar/modules/pulseaudio.jsonc",
+    "~/.config/waybar/modules/pulseaudio/slider.jsonc"
+  ],
+  "group/audio": {
+    "drawer": {
+      "transition-duration": 500,
+      "transition-left-to-right": false
+    },
+    "modules": ["pulseaudio", "pulseaudio/slider"],
+    "orientation": "horizontal"
+  }
+}

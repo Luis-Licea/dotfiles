@@ -1,0 +1,30 @@
+#custom-pad_light {
+    border-radius: 0px;
+    margin-right: 9px;
+    padding-right: 3px;
+}
+#custom-pad_left {
+    border-radius: 0px;
+    margin-left: 9px;
+    padding-left: 3px;
+}
+#custom-pad_right_rounded {
+    border-radius: 0px 7px 7px 0px;
+    margin-right: 9px;
+    padding-right: 3px;
+}
+#custom-pad_left_rounded {
+    border-radius: 7px 0px 0px 7px;
+    margin-left: 9px;
+    padding-left: 3px;
+}
+#custom-pad_right_semicircle {
+    border-radius: 0px 21px 21px 0px;
+    margin-right: 9px;
+    padding-right: 3px;
+}
+#custom-pad_left_semicircle {
+    border-radius: 21px 0px 0px 21px;
+    margin-left: 9px;
+    padding-left: 3px;
+}

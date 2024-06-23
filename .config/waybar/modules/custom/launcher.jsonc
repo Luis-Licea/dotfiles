@@ -1,0 +1,9 @@
+{
+  "custom/launcher": {
+    "comment": "",
+    "format": "",
+    "on-click": "wofi",
+    "tooltip": true,
+    "tooltip-format": " Applications"
+  }
+}

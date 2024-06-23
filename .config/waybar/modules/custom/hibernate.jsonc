@@ -1,0 +1,8 @@
+{
+  "custom/hibernate": {
+    "format": "⏼",
+    "on-click": "systemctl hibernate",
+    "tooltip": true,
+    "tooltip-format": "⏼ Hibernate"
+  }
+}

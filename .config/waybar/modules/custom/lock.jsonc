@@ -1,0 +1,8 @@
+{
+  "custom/lock": {
+    "format": "",
+    "on-click": "pidof hyprlock || hyprlock",
+    "tooltip": true,
+    "tooltip-format": " Screen Lock"
+  }
+}

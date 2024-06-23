@@ -1,40 +1,32 @@
 {
   "reload_style_on_change": true,
   "reload-style-on-change": true,
-  // "mode": "hide",
-  "margin-left": 10,
-  "margin-right": 10,
-  "margin-top": 10,
   "margin-bottom": 0,
-  // "position": "bottom",
   "include": [
-    "~/.config/waybar/modules/power.jsonc",
-    "~/.config/waybar/modules/padding.jsonc",
-    "~/.config/waybar/modules/hyprland.jsonc",
-    "~/.config/waybar/modules/menu.jsonc"
+    "~/.config/waybar/modules/group/menu.jsonc",
+    "~/.config/waybar/modules/group/power.jsonc",
+    "~/.config/waybar/modules/group/audio.jsonc",
+    "~/.config/waybar/modules/hyprland/workspaces.jsonc",
+    "~/.config/waybar/modules/custom/pad.jsonc"
   ],
   "modules-left": [
-    "custom/padd",
+    "custom/pad_space",
     "group/menu",
     "hyprland/workspaces",
     "group/power"
   ],
-  // "modules-center": ["clock"],
+  "modules-center": ["clock"],
   "modules-right": [
     "network",
-    // "network#2",
     "temperature",
     "cpu",
     "memory",
-    "group/sound",
+    "group/audio",
     "disk",
     "bluetooth",
-    "battery",
-    "backlight",
     "privacy",
     "tray",
-    "clock",
-    "custom/padd"
+    "custom/pad_right_semicircle"
   ],
   "wlr/taskbar": {
     "app_ids-mapping": {
@@ -60,14 +52,16 @@
     "tooltip": true
   },
   "clock": {
-    "format": " {:%e %b %Y %I:%M:%S %p} ",
-    "interval": 1,
+    "format": "{:%e %b %I:%M %p}",
+    "format-comment": " {:%e %b %Y %I:%M:%S %p}",
+    "interval": 10,
+    "interval-comment": 1,
     "on-click": "gnome-calendar",
     "tooltip": true,
-    "tooltip-format": "<big>{:%B %Y}</big>\n<tt>{calendar}</tt>"
+    "tooltip-format": "<tt>{calendar}</tt>"
   },
   "cpu": {
-    "format": "󰍛 {usage}%",
+    "format": "<big>󰍛</big>  {usage}%",
     "interval": 10,
     "on-click": "alacritty -e btop",
     "states": {
@@ -76,7 +70,7 @@
     }
   },
   "memory": {
-    "format": "<big></big> {}%", // 
+    "format": "<small></small>  {}%", // 
     "interval": 10,
     "on-click": "alacritty -e btop",
     "states": {
@@ -87,17 +81,6 @@
   "disk": {
     "format": "󱛟 {percentage_used}%"
   },
-  "battery": {
-    "format": "{icon} {capacity}%",
-    "format-charging": " {icon} {capacity}%",
-    "format-icons": ["", "", "", "", ""],
-    "interval": 60,
-    "states": {
-      "warning": 30,
-      "critical": 15
-    },
-    "tooltip": true
-  },
   "group/hardware": {
     "orientation": "inherit",
     "drawer": {
@@ -105,12 +88,12 @@
       // "children-class": "not-power",
       "transition-left-to-right": false
     },
-    "modules": ["cpu", "memory", "battery", "disk", "temperature"]
+    "modules": ["cpu", "memory", "disk", "temperature"]
   },
   "network": {
     "format-disconnected": "",
     "format-ethernet": " {ifname}",
-    "format-wifi": "{bandwidthUpBytes} {bandwidthDownBytes}",
+    "format-wifi": " {bandwidthUpBytes}  {bandwidthDownBytes}",
     "interface": "wlo1", // Force using this interface (optional). See ifconfig.
     "interval": 1,
     "on-click": "alacritty -e nmtui",
@@ -140,49 +123,13 @@
     "tooltip-format-disconnected": "Disconnected",
     "max-length": 60
   },
-  "backlight": {
-    "format": "{icon} {percent}%",
-    "format-icons": ["", ""],
-    "on-scroll-down": "light -A 1",
-    "on-scroll-up": "light -U 1"
-  },
-  "pulseaudio": {
-    "format": "{icon} {volume}%",
-    "format-bluetooth": "{volume}% {icon}",
-    "format-icons": {
-      "headphones": "",
-      "handsfree": "",
-      "headset": "",
-      "phone": "",
-      "portable": "",
-      "car": "",
-      "default": ["", ""]
-    },
-    "format-muted": "{icon} ",
-    "on-click": "pwvucontrol",
-    "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle;",
-    "on-click-right": "wpctl set-default 103 || wpctl set-default 28"
-  },
-  "pulseaudio/slider": {
-    "max": 100,
-    "min": 0,
-    "orientation": "horizontal"
-  },
-  "group/sound": {
-    "drawer": {
-      "transition-duration": 500,
-      "transition-left-to-right": false
-    },
-    "modules": ["pulseaudio", "pulseaudio/slider"],
-    "orientation": "horizontal"
-  },
   "tray": {
     "icon-size": 21,
     "spacing": 5
   },
   "bluetooth": {
-    "format": "<big>󰂯</big>",
-    "format-disabled": "<big>󰂲</big>",
+    "format": "<big><big>󰂯</big></big>",
+    "format-disabled": "<big><big>󰂲</big></big>",
     "interval": 30,
     "on-click": "rfkill toggle bluetooth",
     "on-click-middle": "blueman-manager",

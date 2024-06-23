@@ -1,0 +1,8 @@
+{
+  "custom/suspend": {
+    "format": "",
+    "on-click": "systemctl suspend",
+    "tooltip": true,
+    "tooltip-format": " Suspend"
+  }
+}

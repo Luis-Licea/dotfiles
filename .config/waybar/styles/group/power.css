@@ -1,4 +1,4 @@
-@import "./idle_inhibitor.css";
+@import "../idle_inhibitor.css";
 
 #custom-lock,
 #custom-logout,
@@ -10,12 +10,10 @@
   padding-left: 10px;
   padding-right: 10px;
 }
-
 #power {
   border-radius: 20px;
   background-color: @bg;
 }
-
 #power :hover {
   background: @light_gray;
   border-radius: 20px;

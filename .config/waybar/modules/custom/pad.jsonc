@@ -1,37 +1,30 @@
 {
-  "custom/l_end": {
+  "custom/pad_right": {
     "format": " ",
-    "interval": "once",
     "tooltip": false
   },
-  "custom/r_end": {
+  "custom/pad_left": {
     "format": " ",
-    "interval": "once",
     "tooltip": false
   },
-  "custom/sl_end": {
+  "custom/pad_right_rounded": {
     "format": " ",
-    "interval": "once",
     "tooltip": false
   },
-  "custom/sr_end": {
+  "custom/pad_left_rounded": {
     "format": " ",
-    "interval": "once",
     "tooltip": false
   },
-  "custom/rl_end": {
+  "custom/pad_right_semicircle": {
     "format": " ",
-    "interval": "once",
     "tooltip": false
   },
-  "custom/rr_end": {
+  "custom/pad_left_semicircle": {
     "format": " ",
-    "interval": "once",
     "tooltip": false
   },
-  "custom/padd": {
+  "custom/pad_space": {
     "format": "  ",
-    "interval": "once",
     "tooltip": false
   }
 }
