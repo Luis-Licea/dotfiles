@@ -1,0 +1,14 @@
+window {
+    font-family: monospace;
+    background-color: transparent;
+}
+button {
+    background: transparent;
+    font-size: 15em;
+    color: white;
+    text-shadow: none;
+    border-radius: 50px;
+}
+button:hover {
+    background-color: mix(alpha(shade(white, 0.3), 0.3), black, 0.1);
+}

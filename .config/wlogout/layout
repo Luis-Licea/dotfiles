@@ -1,0 +1,36 @@
+{
+    "action" : "loginctl lock-session",
+    "keybind" : "l",
+    "label" : "lock",
+    "text" : ""
+}
+{
+    "action" : "hyprctl dispatch exit 0",
+    "keybind" : "e",
+    "label" : "logout",
+    "text" : ""
+}
+{
+    "action" : "systemctl poweroff",
+    "keybind" : "q",
+    "label" : "shutdown",
+    "text" : ""
+}
+{
+    "action" : "systemctl reboot",
+    "keybind" : "r",
+    "label" : "reboot",
+    "text" : ""
+}
+{
+    "action" : "systemctl suspend",
+    "keybind" : "s",
+    "label" : "suspend",
+    "text" : ""
+}
+{
+    "action" : "systemctl hibernate",
+    "keybind" : "h",
+    "label" : "hibernate",
+    "text" : ""
+}
