@@ -1,0 +1,22 @@
+@import "./idle_inhibitor.css";
+
+#custom-lock,
+#custom-logout,
+#custom-suspend,
+#custom-hibernate,
+#custom-shutdown,
+#custom-reboot,
+#idle_inhibitor {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#power {
+  border-radius: 20px;
+  background-color: @bg;
+}
+
+#power :hover {
+  background: @light_gray;
+  border-radius: 20px;
+}

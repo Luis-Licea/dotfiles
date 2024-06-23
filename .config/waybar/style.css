@@ -1,4 +1,8 @@
-@define-color bg #2E3440;
+@import "./styles/padding.css";
+@import "./styles/power.css";
+@import "./styles/menu.css";
+
+@define-color bg #1a1a1a;
 @define-color light #D8DEE9;
 @define-color warning #ebcb8b;
 @define-color critical #BF616A;
@@ -27,7 +31,7 @@
 @define-color light_orange #875F00;
 @define-color dark_blue #017AFF;
 @define-color dark_gray #292b2e;
-@define-color light_gray #1a1a1a;
+@define-color light_gray #2E3440;
 
 /* Nice colors. */
 @define-color violet #6c71c4;
@@ -82,12 +86,11 @@ window#waybar {
 #temperature,
 #tray,
 #workspaces {
-  background: @light_gray;
+  background: @bg;
   margin: 0 5px;
   padding-left: 10px;
   padding-right: 10px;
   border-radius: 15px;
-  /* background-color: @bg; */
 }
 
 #tray {
@@ -178,41 +181,4 @@ window#waybar.empty #window {
     min-width: 10px;
     border-radius: 5px;
     background-color: aqua;
-}
-
-/* Padding. */
-#custom-r_end {
-    border-radius: 0px 21px 21px 0px;
-    margin-right: 9px;
-    padding-right: 3px;
-}
-
-#custom-l_end {
-    border-radius: 21px 0px 0px 21px;
-    margin-left: 9px;
-    padding-left: 3px;
-}
-
-#custom-sr_end {
-    border-radius: 0px;
-    margin-right: 9px;
-    padding-right: 3px;
-}
-
-#custom-sl_end {
-    border-radius: 0px;
-    margin-left: 9px;
-    padding-left: 3px;
-}
-
-#custom-rr_end {
-    border-radius: 0px 7px 7px 0px;
-    margin-right: 9px;
-    padding-right: 3px;
-}
-
-#custom-rl_end {
-    border-radius: 7px 0px 0px 7px;
-    margin-left: 9px;
-    padding-left: 3px;
 }

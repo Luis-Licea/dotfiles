@@ -1,29 +1,17 @@
 {
-  "include": ["~/.config/waybar/modules/padding.jsonc"],
   "group/power": {
     "drawer": {
       "transition-duration": 500,
-      "transition-left-to-right": false
+      "transition-left-to-right": true
     },
     "modules": [
       "custom/lock",
-      "custom/r_end",
-      "custom/l_end",
       "custom/logout",
-      "custom/r_end",
-      "custom/l_end",
       "custom/suspend",
-      "custom/r_end",
-      "custom/l_end",
       "custom/hibernate",
-      "custom/r_end",
-      "custom/l_end",
       "custom/shutdown",
-      "custom/r_end",
-      "custom/l_end",
       "custom/reboot",
-      "custom/r_end",
-      "custom/l_end"
+      "idle_inhibitor"
     ],
     "orientation": "horizontal"
   },
@@ -62,5 +50,14 @@
     "on-click": "systemctl reboot",
     "tooltip": true,
     "tooltip-format": " Reboot"
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "<big>󰈈</big>",
+      "deactivated": "<big>󰈉</big>"
+    },
+    "timeout": 30
   }
+
 }

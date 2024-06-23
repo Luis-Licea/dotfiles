@@ -1,17 +1,17 @@
 {
-    "reload_style_on_change": true,
-    "reload-style-on-change": true,
-    // "mode": "hide",
-    "margin-left": 10,
-    "margin-right": 10,
-    // "margin-top": 10,
-    "margin-bottom": 0,
-    // "position": "bottom",
-
+  "reload_style_on_change": true,
+  "reload-style-on-change": true,
+  // "mode": "hide",
+  "margin-left": 10,
+  "margin-right": 10,
+  "margin-top": 10,
+  "margin-bottom": 0,
+  // "position": "bottom",
   "include": [
     "~/.config/waybar/modules/power.jsonc",
     "~/.config/waybar/modules/padding.jsonc",
-    "~/.config/waybar/modules/hyprland.jsonc"
+    "~/.config/waybar/modules/hyprland.jsonc",
+    "~/.config/waybar/modules/menu.jsonc"
   ],
   "modules-left": [
     "custom/padd",
@@ -26,7 +26,6 @@
     "temperature",
     "cpu",
     "memory",
-    "idle_inhibitor",
     "group/sound",
     "disk",
     "bluetooth",
@@ -52,36 +51,6 @@
       "Foot Server": "Terminal"
     },
     "tooltip-format": "{title}"
-  },
-  "custom/wlogout": {
-    "format": "",
-    "on-click": "wlogout",
-    "tooltip-format": " Menu"
-  },
-  "custom/wallpaper": {
-    "format": " ",
-    "on-click": "bash ~/.config/system_scripts/pkill_bc"
-  },
-  "group/menu": {
-    "orientation": "inherit",
-    "drawer": {
-      "transition-duration": 500,
-      "children-class": "not-power",
-      "transition-left-to-right": true
-    },
-    "modules": [
-      "custom/launcher",
-      "custom/padd",
-      "custom/wlogout",
-      "custom/padd",
-      "custom/wallpaper",
-      "wlr/taskbar",
-      "hyprland/window"
-    ]
-  },
-  "custom/launcher": {
-    "format": "", // 
-    "on-click": "wofi"
   },
   "temperature": {
     "critical-threshold": 90,
@@ -133,18 +102,10 @@
     "orientation": "inherit",
     "drawer": {
       "transition-duration": 500,
-      "children-class": "not-power",
+      // "children-class": "not-power",
       "transition-left-to-right": false
     },
     "modules": ["cpu", "memory", "battery", "disk", "temperature"]
-  },
-  "idle_inhibitor": {
-    "format": "{icon}",
-    "format-icons": {
-      "activated": "  I'M WIDE AWAKE!!",
-      "deactivated": " "
-    },
-    "timeout": 30
   },
   "network": {
     "format-disconnected": "",
@@ -220,8 +181,8 @@
     "spacing": 5
   },
   "bluetooth": {
-    "format": "󰂯",
-    "format-disabled": "󰂲",
+    "format": "<big>󰂯</big>",
+    "format-disabled": "<big>󰂲</big>",
     "interval": 30,
     "on-click": "rfkill toggle bluetooth",
     "on-click-middle": "blueman-manager",

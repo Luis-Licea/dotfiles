@@ -1,0 +1,15 @@
+@import "./idle_inhibitor.css";
+
+#idle_inhibitor,
+#custom-wlogout,
+#custom-wallpaper,
+#wlr-taskbar,
+#custom-launcher {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#menu {
+  border-radius: 20px;
+  background: @bg;
+}
