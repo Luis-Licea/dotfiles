@@ -1,7 +1,6 @@
 {
   "include": [
     "~/.config/waybar/modules/custom/launcher.jsonc",
-    "~/.config/waybar/modules/custom/launcher.jsonc",
     "~/.config/waybar/modules/custom/wallpaper.jsonc",
     "~/.config/waybar/modules/custom/wlogout.jsonc",
     "~/.config/waybar/modules/hyprland/window.jsonc"

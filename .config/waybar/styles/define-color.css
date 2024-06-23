@@ -1,0 +1,5 @@
+/* https://docs.gtk.org/gtk3/css-overview.html shade() alpha() mix() */
+@define-color background #1a1a1a;
+@define-color background-hover #2E3440;
+@define-color border shade(white, 0.8);
+@define-color font #D8DEE9;

@@ -1,11 +1,8 @@
+@import "./styles/define-color.css";
 @import "./styles/custom/pad.css";
 @import "./styles/group/menu.css";
 @import "./styles/group/power.css";
 @import "./styles/pulseaudio/slider.css";
-
-@define-color bg #1a1a1a;
-@define-color nord_light_font #D8DEE9;
-@define-color light_gray #2E3440;
 
 * {
   border: none;
@@ -16,10 +13,8 @@
 }
 
 window#waybar {
-  background: @bg;
-
-  /* The waybar module text color. */
-  color: @nord_light_font;
+  background: @background;
+  color: @font;
 }
 
 #battery,
@@ -33,7 +28,7 @@ window#waybar {
 #temperature,
 #tray,
 #workspaces {
-  background: @bg;
+  background: @background;
   margin: 0 5px;
   padding-left: 10px;
   padding-right: 10px;
@@ -42,13 +37,12 @@ window#waybar {
 
 #workspaces button {
   padding: 0 2px;
-  /* color: white; */
-  color: @nord_light_font;
+  color: @font;
 }
 
 #workspaces button.active {
-  color: #268bd2;
-  /* border-bottom: 3px solid white; */
+  border: 1px solid @border;
+  border-radius: 8px;
 }
 
 #workspaces button.urgent {
@@ -60,9 +54,8 @@ window#waybar {
   text-shadow: inherit;
 }
 #workspaces button:hover {
-  background: @light_gray;
-  border: @light_gray;
-  padding: 0 3px;
+  background: @background-hover;
+  border: @background-hover;
 }
 
 #window {
@@ -72,7 +65,7 @@ window#waybar {
 
   background: rgba(43, 48, 59, 0.5);
   border-bottom: 3px solid rgba(100, 114, 125, 0.5);
-  color: #ffffff;
+  color: white;
 }
 
 window#waybar.empty #window {
@@ -85,7 +78,7 @@ tooltip {
 
 @keyframes blink {
   to {
-    background-color: #ffffff;
+    background-color: white;
     color: black;
   }
 }

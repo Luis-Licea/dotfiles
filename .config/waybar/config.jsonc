@@ -9,20 +9,15 @@
     "~/.config/waybar/modules/hyprland/workspaces.jsonc",
     "~/.config/waybar/modules/custom/pad.jsonc"
   ],
-  "modules-left": [
-    "custom/pad_space",
-    "group/menu",
-    "hyprland/workspaces",
-    "group/power"
-  ],
+  "modules-left": ["custom/pad_space", "group/menu", "hyprland/workspaces"],
   "modules-center": ["clock"],
   "modules-right": [
     "network",
     "temperature",
     "cpu",
     "memory",
-    "group/audio",
     "disk",
+    "group/audio",
     "bluetooth",
     "privacy",
     "tray",
@@ -57,71 +52,59 @@
     "interval": 10,
     "interval-comment": 1,
     "on-click": "gnome-calendar",
+    "on-click-right": "gnome-clocks",
     "tooltip": true,
     "tooltip-format": "<tt>{calendar}</tt>"
   },
   "cpu": {
     "format": "<big>󰍛</big>  {usage}%",
     "interval": 10,
-    "on-click": "alacritty -e btop",
+    "on-click": "gnome-system-monitor --show-resources-tab",
+    "on-click-right": "alacritty -e btop",
     "states": {
       "warning": 70,
       "critical": 90
     }
   },
   "memory": {
-    "format": "<small></small>  {}%", // 
+    "format": "<small></small>  {}%",
+    "format-comment": "",
     "interval": 10,
-    "on-click": "alacritty -e btop",
+    "on-click-right": "alacritty -e btop",
+    "on-click": "gnome-system-monitor --show-processes-tab",
     "states": {
       "warning": 70,
       "critical": 90
     }
   },
   "disk": {
-    "format": "󱛟 {percentage_used}%"
+    "format": "󱛟 {percentage_used}%",
+    "on-click": "baobab",
+    "on-click-right": "gnome-system-monitor --show-file-systems-tab"
   },
   "group/hardware": {
     "orientation": "inherit",
     "drawer": {
       "transition-duration": 500,
-      // "children-class": "not-power",
       "transition-left-to-right": false
     },
     "modules": ["cpu", "memory", "disk", "temperature"]
   },
   "network": {
+    "format": "{ifname}",
     "format-disconnected": "",
     "format-ethernet": " {ifname}",
-    "format-wifi": " {bandwidthUpBytes}  {bandwidthDownBytes}",
-    "interface": "wlo1", // Force using this interface (optional). See ifconfig.
-    "interval": 1,
+    "format-wifi": "   {signalStrength}%",
+    "interface": "wlo1",
+    "interface-comment": "Force using this interface (optional). See ifconfig.",
+    "max-length": 40,
     "on-click": "alacritty -e nmtui",
     "on-click-middle": "rfkill toggle wlan",
     "on-click-right": "alacritty -e sudo termshark",
     "tooltip-format": "{essid}: {ifname}: {ipaddr}/{cidr} ",
-    "tooltip-format-disconnected": "Disconnected"
-  },
-  "network#2": {
-    "format-disconnected": "",
-    // "format-ethernet": " {ifname}",
-    // "format-wifi": "{bandwidthUpOctets} {bandwidthDownOctets}",
-    // "interval": 1,
-    // "on-click": "alacritty -e nmtui",
-    // "on-click-middle": "rfkill toggle wlan",
-    // "on-click-right": "alacritty -e sudo termshark",
-    // "tooltip-format": "{essid}: {ifname}: {ipaddr}/{cidr} ",
-    // "tooltip-format-disconnected": "Disconnected"
-    // "interface": "wlp2s0",
-    "interface": "wlo1", // Force using this interface (optional). See ifconfig.
-    "format": "{ifname}",
-    "format-wifi": "{essid} ({signalStrength}%) ",
-    "format-ethernet": "{ipaddr}/{cidr} 󰊗",
-    "tooltip-format": "{ifname} via {gwaddr} 󰊗",
-    "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
-    "tooltip-format-ethernet": "{ifname} ",
     "tooltip-format-disconnected": "Disconnected",
-    "max-length": 60
+    "tooltip-format-ethernet": "{essid}: {ifname}: {ipaddr}/{cidr} ",
+    "tooltip-format-wifi": "essid: {essid} ({signalStrength}%) \nifname:  {ifname}\nipaddr: {ipaddr}/{cidr} "
   },
   "tray": {
     "icon-size": 21,

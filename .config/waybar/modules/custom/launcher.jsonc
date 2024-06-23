@@ -4,6 +4,6 @@
     "format": "",
     "on-click": "wofi",
     "tooltip": true,
-    "tooltip-format": " Applications"
+    "tooltip-format": "<tt> </tt>Applications"
   }
 }

@@ -3,6 +3,6 @@
     "format": " ",
     "on-click": "bash ~/.config/system_scripts/pkill_bc",
     "tooltip": true,
-    "tooltip-format": " Wallpaper"
+    "tooltip-format": "<tt> </tt>Wallpaper"
   }
 }

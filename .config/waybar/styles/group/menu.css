@@ -1,3 +1,4 @@
+@import "../define-color.css";
 @import "../idle_inhibitor.css";
 
 #idle_inhibitor,
@@ -10,5 +11,5 @@
 }
 #menu {
   border-radius: 20px;
-  background: @bg;
+  background: @background;
 }
