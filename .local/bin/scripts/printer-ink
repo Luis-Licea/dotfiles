@@ -1,0 +1,9 @@
+#!/usr/bin/env nix-shell
+#! nix-shell -i bash -p ink
+
+printers=$(avahi-browse --all -t -r | grep --after-contex=4 -P "^=.*bjnp")
+ip_addresses=$(echo "$printers" | grep -oP "\d+\.\d+\.\d+\.\d+" | sort | uniq)
+
+for ip_address in $ip_addresses; do
+  ink -b "bjnp://$ip_address"
+done
