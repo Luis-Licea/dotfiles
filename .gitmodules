@@ -1,3 +1,6 @@
 [submodule "Documents/Public/suckless"]
 	path = Documents/GitHub/suckless
 	url = https://github.com/luis-licea/suckless
+[submodule "/home/luis/Pictures/Wallpaper/Gradient"]
+	path = /home/luis/Pictures/Wallpaper/Gradient
+	url = https://github.com/Luis-Licea/Gradient
