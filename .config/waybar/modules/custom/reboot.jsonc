@@ -1,8 +1,8 @@
 {
   "custom/reboot": {
-    "format": "",
+    "format": "",
     "on-click": "systemctl reboot",
     "tooltip": true,
-    "tooltip-format": " Reboot"
+    "tooltip-format": " Reboot"
   }
 }

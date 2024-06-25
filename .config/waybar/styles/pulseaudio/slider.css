@@ -10,11 +10,11 @@
     min-height: 3px;
     min-width: 80px;
     border-radius: 5px;
-    background-color: green;
+    background-color: shade(white, 0.5);
 }
 #pulseaudio-slider highlight {
-    min-height: 3px;
+    min-height: 4px;
     min-width: 10px;
     border-radius: 5px;
-    background-color: aqua;
+    background-color: white;
 }
