@@ -1,0 +1,10 @@
+@import "./define-color.css";
+
+window#waybar {
+  background: @background;
+  color: @font;
+}
+window#waybar.empty #window {
+  background-color: transparent;
+}
+

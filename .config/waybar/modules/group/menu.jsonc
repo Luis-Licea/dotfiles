@@ -15,8 +15,7 @@
       "idle_inhibitor",
       "custom/wlogout",
       "custom/wallpaper",
-      "wlr/taskbar",
-      "hyprland/window"
+      "wlr/taskbar"
     ],
     "orientation": "inherit"
   }

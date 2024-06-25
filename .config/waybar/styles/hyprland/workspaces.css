@@ -1,0 +1,32 @@
+@import "../define-color.css";
+
+#workspaces button {
+  border-radius: 8px;
+  margin: 3px 0;
+  padding: 0 3px;
+  color: @font;
+  animation: slide 1s ease-in infinite;
+  transition: all 0.2s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+  border: 1px solid transparent;
+}
+#workspaces button.active {
+  border: 1px solid @border;
+  margin: 3px 0;
+  padding: 0 12px;
+}
+#workspaces button.urgent {
+  color: red;
+  animation: blink 1s linear infinite;
+}
+#workspaces button:hover {
+  box-shadow: inherit;
+  text-shadow: inherit;
+  background: @background-hover;
+  border: @background-hover;
+  border: 1px solid shade(@border, 0.8);
+}
+@keyframes blink {
+  to {
+    color: white;
+  }
+}
