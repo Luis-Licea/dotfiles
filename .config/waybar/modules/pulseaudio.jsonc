@@ -12,8 +12,8 @@
       "default": ["", ""]
     },
     "format-muted": "{icon} ",
-    "on-click": "pwvucontrol",
+    "on-click": "~/.config/waybar/scripts/switch-sink.mjs",
     "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle;",
-    "on-click-right": "wpctl set-default 103 || wpctl set-default 28"
+    "on-click-right": "pwvucontrol"
   }
 }
