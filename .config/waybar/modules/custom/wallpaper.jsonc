@@ -1,7 +1,7 @@
 {
   "custom/wallpaper": {
-    "format": " ",
-    "on-click": "bash ~/.config/system_scripts/pkill_bc",
+    "format": "",
+    "on-click": "~/.config/hypr/scripts/set-background.mjs",
     "tooltip": true,
     "tooltip-format": "<tt> </tt>Wallpaper"
   }
