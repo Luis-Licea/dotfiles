@@ -14,8 +14,7 @@
       "custom/launcher",
       "idle_inhibitor",
       "custom/wlogout",
-      "custom/wallpaper",
-      "wlr/taskbar"
+      "custom/wallpaper"
     ],
     "orientation": "inherit"
   }

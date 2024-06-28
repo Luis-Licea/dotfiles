@@ -6,10 +6,9 @@
     "~/.config/waybar/modules/group/menu.jsonc",
     "~/.config/waybar/modules/group/power.jsonc",
     "~/.config/waybar/modules/group/audio.jsonc",
-    "~/.config/waybar/modules/hyprland/workspaces.jsonc",
-    "~/.config/waybar/modules/custom/pad.jsonc"
+    "~/.config/waybar/modules/hyprland/workspaces.jsonc"
   ],
-  "modules-left": ["custom/pad_space", "group/menu", "hyprland/workspaces"],
+  "modules-left": ["group/menu", "hyprland/workspaces",  "wlr/taskbar"],
   "modules-center": ["clock"],
   "modules-right": [
     "network",
@@ -20,8 +19,7 @@
     "group/audio",
     "bluetooth",
     "privacy",
-    "tray",
-    "custom/pad_right_semicircle"
+    "tray"
   ],
   "wlr/taskbar": {
     "app_ids-mapping": {
