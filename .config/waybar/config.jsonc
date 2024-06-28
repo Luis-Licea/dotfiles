@@ -6,11 +6,13 @@
     "~/.config/waybar/modules/group/menu.jsonc",
     "~/.config/waybar/modules/group/power.jsonc",
     "~/.config/waybar/modules/group/audio.jsonc",
-    "~/.config/waybar/modules/hyprland/workspaces.jsonc"
+    "~/.config/waybar/modules/hyprland/workspaces.jsonc",
+    "~/.config/waybar/modules/custom/days-to-live.jsonc"
   ],
   "modules-left": ["group/menu", "hyprland/workspaces",  "wlr/taskbar"],
   "modules-center": ["clock"],
   "modules-right": [
+    "custom/days-to-live",
     "network",
     "temperature",
     "cpu",

@@ -1,0 +1,10 @@
+{
+  "custom/days-to-live": {
+    "format-comment": " 󰚌  󰯆 󰯈 󱓇 󱄲 󱓈",
+    "format": "󰚌 {}",
+    "tooltip": true,
+    "tooltip-format": "<tt>󰚌 </tt>You have {} days remaining.",
+    "eval": 86400,
+    "exec": "~/.config/waybar/scripts/days-to-live.mjs"
+  }
+}
