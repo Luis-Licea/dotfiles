@@ -1,8 +1,9 @@
 # ft=conf
 
 cache_file=/dev/null
+exec_search=true
 insensitive=true
-show=drun
+show=drun,run
 
 # Look and feel.
 allow_images=true
