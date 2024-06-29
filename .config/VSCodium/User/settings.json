@@ -32,8 +32,6 @@
   "window.enableMenuBarMnemonics": false,
   // Do not show menu bar at startup.
   "window.menuBarVisibility": "hidden",
-  // Do not show activity icons.
-  "workbench.activityBar.visible": false,
   // File extension associations.
   "workbench.editorAssociations": {
     "*.drawio.png": "hediet.vscode-drawio",
