@@ -3,9 +3,9 @@
   imports = [
 
     # ./nix/dwl.nix
-    # ./nix/gnome.nix
-
     ./nix/cli.nix
+    ./nix/dconf.nix
+    ./nix/development.nix
     ./nix/font.nix
     ./nix/gui.nix
     ./nix/i18n.nix
@@ -15,7 +15,6 @@
     ./nix/nvim.nix
     ./nix/pass.nix
     ./nix/vscodium.nix
-    ./nix/development.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should

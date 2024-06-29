@@ -10,7 +10,9 @@ with pkgs; let
   other = [
     firefox
     #citations
+    audio-recorder
     raider
+    # gnome.gnome-sound-recorder
   ];
 in {
   home.packages = emulators ++ diffTools ++ other;
