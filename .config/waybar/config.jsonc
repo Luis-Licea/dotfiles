@@ -111,8 +111,8 @@
     "spacing": 5
   },
   "bluetooth": {
-    "format": "<big><big>󰂯</big></big>",
-    "format-disabled": "<big><big>󰂲</big></big>",
+    "format": "<big>󰂯</big> on",
+    "format-disabled": "<big>󰂲</big> off",
     "interval": 30,
     "on-click": "rfkill toggle bluetooth",
     "on-click-middle": "blueman-manager",
