@@ -17,15 +17,13 @@ invert=true
 [selection]
 fg = "light_yellow"
 bold = true
+prefix = "  "
+size = 2
 
 # Files selected in current visual mode
 [visual_mode_selection]
 fg = "light_red"
 bold = true
-
-[selection.prefix]
-prefix = "  "
-size = 2
 
 ##########################################
 ## File List - System File Types
