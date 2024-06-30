@@ -39,7 +39,7 @@ export RANGER_LOAD_DEFAULT_RC=FALSE
 ################################################################################
 
 [[ -f /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
-[[ -v NVM_BIN ]] && nvm_node_modules=${NVM_BIN%/bin}/lib/node_modules
+[[ $(command -v npm) ]] && nvm_node_modules=$(npm -g root)/npm/node_modules
 
 ################################################################################
 # Lynx Browser.
@@ -113,7 +113,7 @@ joshutocd() {
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
 setup_js_scratchpad() {
     cd /tmp || exit
-    if [ ! -f package.json ]; then
+    if [[ ! -f package.json ]]; then
         npm init -f >/dev/null
         ln -s "$nvm_node_modules" node_modules
         ln -s ~/.config/nvim/templates/.eslintrc.yml .eslintrc.yml
@@ -136,7 +136,7 @@ jsscratchtest() {
 # Create cargo project rather than individual file.
 rsscratch() {
     cd /tmp || exit
-    if [ ! -d rsscratch ]; then
+    if [[ ! -d rsscratch ]]; then
         cargo new rsscratch
     fi
     nvim /tmp/rsscratch/src/main.rs "$@"
@@ -157,6 +157,7 @@ alias emacsconfig='$EDITOR ~/.config/doom/init.el'
 alias gitconfig='$EDITOR ~/.config/git/config'
 alias home-config='$EDITOR ~/.config/home-manager/home.nix'
 alias hyprconfig='$EDITOR ~/.config/hypr/hyprland.conf'
+alias hypridleconfig='$EDITOR ~/.config/hypr/hypridle.conf'
 alias joshutoconfig='$EDITOR ~/.config/joshuto/'
 alias lynxconfig='$EDITOR .config/lynx/lynx.cfg'
 alias mostconfig='$EDITOR ~/.config/mostrc'
@@ -170,8 +171,8 @@ alias nixconfig='sudo -E $EDITOR /etc/nixos/configuration.nix'
 alias nuconfig='$EDITOR ~/.config/nushell/config.nu'
 alias nuconfigenv='$EDITOR ~/.config/nushell/env.nu'
 alias nvimconfig='$EDITOR ~/.config/nvim/init.lua'
-alias nvimlspconfig='$EDITOR /home/luis/.config/nvim/lua/plugins/lspconfig.lua'
-alias nvimnullconfig='$EDITOR /home/luis/.config/nvim/lua/plugins/null-ls.lua'
+alias nvimlspconfig='$EDITOR ~/.config/nvim/lua/plugins/lspconfig.lua'
+alias nvimnullconfig='$EDITOR ~/.config/nvim/lua/plugins/null-ls.lua'
 alias nvimpagerconfig='$EDITOR ~/.config/nvimpager/init.vim'
 alias nvimswap='cd ~/.local/share/nvim/swap/'
 alias picomconfig='$EDITOR ~/.config/picom/picom.conf'
@@ -180,13 +181,14 @@ alias rangercache='cd ~/.cache/ranger/'
 alias rangerconfig='$EDITOR ~/.config/ranger/'
 alias rifleconfig='$EDITOR ~/.config/ranger/rifle.conf'
 alias roficonfig='$EDITOR ~/.config/rofi/config.rasi'
-alias woficonfig='$EDITOR ~/.config/wofi/config'
 alias scopeconfig='$EDITOR ~/.config/ranger/scope.sh'
 alias shellconfig='$EDITOR ~/.bash_aliases && source ~/.bash_aliases'
 alias starshipconfig='$EDITOR ~/.config/starship.toml'
 alias vimbconfig='$EDITOR ~/.config/vimb/config'
 alias vscodiumconfig='$EDITOR ~/.config/VSCodium/User/'
 alias waybarconfig='$EDITOR ~/.config/waybar/'
+alias wlogoutconfig='$EDITOR ~/.config/wlogout/layout'
+alias woficonfig='$EDITOR ~/.config/wofi/config'
 alias zathuraconfig='$EDITOR ~/.config/zathura/zathurarc'
 alias zictconfig='$EDITOR ~/.config/zict/zict.bash'
 alias zshconfig='$EDITOR ~/.config/zsh/.zshrc'
