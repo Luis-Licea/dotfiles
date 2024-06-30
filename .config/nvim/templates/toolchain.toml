@@ -1,0 +1,24 @@
+[toolchain]
+components = [
+    # "rustfmt",
+    # "rustc-dev",
+    "cargo-x86_64-unknown-linux-gnu",
+    "clippy-x86_64-unknown-linux-gnu",
+    "rust-analyzer-x86_64-unknown-linux-gnu",
+    "rust-docs-x86_64-unknown-linux-gnu",
+    "rust-std-x86_64-unknown-linux-gnu",
+    "rustc-x86_64-unknown-linux-gnu",
+    "rustfmt-x86_64-unknown-linux-gnu",
+
+]
+channel = "nightly-2020-07-10"
+targets = [
+    "x86_64-unknown-linux-gnu",
+    # "wasm32-unknown-unknown",
+    # "thumbv2-none-eabi",
+]
+# minimal: rustc, rust-std, cargo
+# default: minimal, rust-docs, rustfmt, clippy
+# complete: Never use this profile. It includes ever component.
+#           Use `rustup component add` instead.
+profile = "minimal"
