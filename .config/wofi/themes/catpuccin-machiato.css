@@ -1,7 +1,10 @@
+@define-color background-color rgba(24, 25, 38, 1);
+@define-color border-radius 15px;
+
 window {
   margin: 0px;
   border: 5px solid #181926;
-  background-color: rgba(24, 25, 38, 1);
+  background-color: @background-color;
   /* font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free Solid"; */
   font-size: 16px;
 }
@@ -28,7 +31,7 @@ window {
   font-weight: bold;
   background-color: #1e2030;
   outline: none;
-  border-radius: 15px;
+  border-radius: @border-radius;
   margin: 10px;
   margin-bottom: 2px;
 }
@@ -37,7 +40,7 @@ window {
   margin: 4px;
   padding: 10px;
   font-weight: bold;
-  border-radius: 15px;
+  border-radius: @border-radius;
 }
 
 #outer-box {
@@ -50,7 +53,7 @@ window {
 #scroll {
   margin-top: 5px;
   border: none;
-  border-radius: 15px;
+  border-radius: @border-radius;
   margin-bottom: 5px;
 }
 
@@ -58,20 +61,20 @@ window {
   color: #1e2030;
   margin: 0px 0px;
   border: none;
-  border-radius: 15px;
+  border-radius: @border-radius;
 }
 
 #entry {
   margin: 0px 0px;
   border: none;
-  border-radius: 15px;
+  border-radius: @border-radius;
   background-color: transparent;
 }
 
 #entry:selected {
   margin: 0px 0px;
   border: none;
-  border-radius: 15px;
+  border-radius: @border-radius;
   /* background: linear-gradient(90deg, #7dc4e4 0%, #f5bde6 100%); */
   background: radial-gradient(
     circle,
@@ -101,4 +104,11 @@ window {
   animation-delay: 0s;
   animation-fill-mode: forwards;
   animation-duration: 10s;
+}
+
+#expander-box {
+  background-color: @background-color;
+  border-radius: @border-radius;
+  margin: 1px;
+  padding: 3px;
 }

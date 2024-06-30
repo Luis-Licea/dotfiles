@@ -3,6 +3,7 @@
 cache_file=/dev/null
 exec_search=true
 insensitive=true
+no_actions=true
 show=drun,run
 
 # Look and feel.
@@ -14,7 +15,7 @@ prompt=Search
 
 # Keybindings.
 key_backward=Ctrl-k
-key_expand=Ctrl-o
+key_expand=Ctrl-o # Not needed when no_actions is set to true.
 key_forward=Ctrl-j
 key_left=Ctrl-h
 key_right=Ctrl-l
