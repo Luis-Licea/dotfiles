@@ -86,7 +86,9 @@ in {
     withNodeJs = true;
 
     # Install additional Nix packages alongside Neovim
-    plugins = [pkgs.vimPlugins.nvim-treesitter.withAllGrammars];
+    plugins = [
+      # pkgs.vimPlugins.nvim-treesitter.withAllGrammars
+    ];
     extraPackages = with pkgs; [
       # Install the vim-tree-lua plugin
       # vimPlugins.vim-tree-lua
