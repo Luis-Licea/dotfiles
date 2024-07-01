@@ -1,10 +1,10 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i python3 -p python3 ffmpeg
+#!nix-shell -p python3 ffmpeg -i python3
 
 ################################################################################
 # MIT License
 #
-# Copyright (c) 2023 Luis David Licea Torres
+# Copyright (c) 2024 Luis David Licea Torres
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -58,12 +58,13 @@ class Song:
     end: int
     title: str
 
-    def split_song(self, album: Path, artist: Path) -> list[str | Path]:
+    def split_song(self, album: Path, artist: Path, volume: float) -> list[str | Path]:
         """Return the command to split the song.
 
         Args:
             album (Path): The album name.
             artist (Path): The artist name.
+            volume(float): Multiplier to increase or decrease the volume.
 
         Returns:
             list[str | Path]: The command to split the song.
@@ -76,6 +77,8 @@ class Song:
                 "ffmpeg",
                 "-i",
                 album,
+                "-filter:a",
+                f"volume={volume}",
                 "-acodec",
                 "libopus",
                 "-ss",
@@ -89,6 +92,8 @@ class Song:
             "ffmpeg",
             "-i",
             album,
+            "-filter:a",
+            f"volume={volume}",
             "-acodec",
             "libopus",
             "-ss",
@@ -268,7 +273,7 @@ def parse_track_list(text: str) -> list[Song]:
     raise ValueError("Tracklist could not be parsed.")
 
 
-def split(album: Path, track_list: Path, artist: Path, dry_run: bool, video: bool):
+def split(album: Path, track_list: Path, artist: Path, dry_run: bool, video: bool, volume: float):
     """split a music track into specified sub-tracks by calling ffmpeg from the shell"""
     for file in [album, track_list]:
         if not file.is_file():
@@ -287,7 +292,7 @@ def split(album: Path, track_list: Path, artist: Path, dry_run: bool, video: boo
     if video:
         commands = list(map(lambda song: song.split_video(album, artist), songs))
     else:
-        commands = list(map(lambda song: song.split_song(album, artist), songs))
+        commands = list(map(lambda song: song.split_song(album, artist, volume), songs))
 
     if dry_run:
         for song in songs:
@@ -310,7 +315,7 @@ def parse_arguments():
         $ album_splitter.py "Artist Name" "../some/mp4" "some/tracklist.txt" -v
 
         Show what would happen if the command were run.
-        $ album_splitter.py Artist album.mp3 tracklist.txt --dry-run
+        $ album_splitter.py Artist album.mp3 tracklist.txt --volume 2.5 --dry-run
 
         Supported patterns:
         {patterns_txt}
@@ -334,6 +339,12 @@ def parse_arguments():
         "--video",
         action="store_true",
         help="Split the video and audio without re-encoding",
+    )
+    parser.add_argument(
+        "--volume",
+        type=float,
+        default=1,
+        help="Multiplier to increase or decrease the volume of split songs",
     )
     args = parser.parse_args()
     print(args)
