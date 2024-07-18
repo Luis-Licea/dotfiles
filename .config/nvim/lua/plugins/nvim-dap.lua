@@ -279,6 +279,7 @@ return {
     dependencies = {
         -- Fancy debug adapter UI provider and Debug Adapter Protocol.
         'rcarriga/nvim-dap-ui',
+        'nvim-neotest/nvim-nio',
         -- Adapter for vscode-js-debug.
         'mxsdev/nvim-dap-vscode-js',
         'theHamsta/nvim-dap-virtual-text',

@@ -1,6 +1,6 @@
 ---Table functions.
 ---@author Luis David Licea Torres
----@license MIT
+---@license GPL3
 
 local Table = {}
 
@@ -52,6 +52,7 @@ function Table.compare(table1, table2)
     return true
 end
 
+local Table = {}
 ---Join two or more arrays or strings and return the new array.
 ---```lua
 ---local Table = require("Table")
