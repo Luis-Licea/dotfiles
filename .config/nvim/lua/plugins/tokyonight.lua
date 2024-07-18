@@ -2,8 +2,6 @@
 return {
     'folke/tokyonight.nvim',
     config = function()
-        -- vim.cmd.colorscheme('lunaperche')
-        -- vim.cmd.colorscheme('habamax')
         require('tokyonight').setup({
             style = 'moon',
             -- Enable this to disable setting the background color.
@@ -14,6 +12,8 @@ return {
                 floats = 'transparent', -- Style for floating windows
             },
         })
-        require('tokyonight').colorscheme()
+        vim.cmd.colorscheme('tokyonight')
+        -- vim.cmd.colorscheme('lunaperche')
+        -- vim.cmd.colorscheme('habamax')
     end,
 }

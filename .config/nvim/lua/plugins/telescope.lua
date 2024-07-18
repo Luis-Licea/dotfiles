@@ -1,7 +1,6 @@
 -- Related: ./nvim-dap.lua
 return {
     'nvim-telescope/telescope.nvim',
-    -- tag = '0.1.0',
     dependencies = {
         -- NOTE: Nvim-web-devicons requires a patched font such as MesloLGS NF.
         'kyazdani42/nvim-web-devicons',

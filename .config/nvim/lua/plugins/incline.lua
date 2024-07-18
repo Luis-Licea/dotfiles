@@ -51,7 +51,7 @@ return {
             },
             -- #51a0cf
             render = function(props)
-                print(props.buf)
+                -- print(props.buf) -- The buffer number.
                 local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ':t')
                 local ft_icon, ft_color = require('nvim-web-devicons').get_icon_color(filename)
                 local modified = vim.api.nvim_buf_get_option(props.buf, 'modified')
