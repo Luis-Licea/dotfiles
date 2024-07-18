@@ -112,10 +112,9 @@ vim.o.path = vim.o.path .. '**'
 --------------------------------------------------------------------------------
 -- Import settings, mappings, auto-commands, etc.
 --------------------------------------------------------------------------------
-require('mappings')
-require('auto-commands')
-require('template-loader').setup()
-require('runner')
+local _ = require('mappings')
+local _ = require('auto-commands')
+local _ = require('runner')
 
 --------------------------------------------------------------------------------
 -- Plugins.
