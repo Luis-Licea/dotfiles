@@ -1,5 +1,4 @@
 @define-color background-color rgba(24, 25, 38, 1);
-@define-color border-radius 15px;
 
 window {
   margin: 0px;
@@ -31,7 +30,7 @@ window {
   font-weight: bold;
   background-color: #1e2030;
   outline: none;
-  border-radius: @border-radius;
+  border-radius: 15px;
   margin: 10px;
   margin-bottom: 2px;
 }
@@ -40,7 +39,7 @@ window {
   margin: 4px;
   padding: 10px;
   font-weight: bold;
-  border-radius: @border-radius;
+  border-radius: 15px;
 }
 
 #outer-box {
@@ -53,7 +52,7 @@ window {
 #scroll {
   margin-top: 5px;
   border: none;
-  border-radius: @border-radius;
+  border-radius: 15px;
   margin-bottom: 5px;
 }
 
@@ -61,20 +60,20 @@ window {
   color: #1e2030;
   margin: 0px 0px;
   border: none;
-  border-radius: @border-radius;
+  border-radius: 15px;
 }
 
 #entry {
   margin: 0px 0px;
   border: none;
-  border-radius: @border-radius;
+  border-radius: 15px;
   background-color: transparent;
 }
 
 #entry:selected {
   margin: 0px 0px;
   border: none;
-  border-radius: @border-radius;
+  border-radius: 15px;
   /* background: linear-gradient(90deg, #7dc4e4 0%, #f5bde6 100%); */
   background: radial-gradient(
     circle,
@@ -108,7 +107,7 @@ window {
 
 #expander-box {
   background-color: @background-color;
-  border-radius: @border-radius;
+  border-radius: 15px;
   margin: 1px;
   padding: 3px;
 }
