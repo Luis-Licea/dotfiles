@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -p python3 ffmpeg -i python3
+#!nix-shell -p python3 ffmpeg opustags -i python3
 
 ################################################################################
 # MIT License
@@ -33,6 +33,7 @@ from pathlib import Path
 from re import Match, search
 from subprocess import call
 from textwrap import dedent
+from typing import Optional
 
 patterns = [
     # 00:?00:00 Title
@@ -43,6 +44,8 @@ patterns = [
     r"(?P<number>\d+)\.\[(?P<minutes>\d+):(?P<seconds>\d+)\.?(?P<milliseconds>\d+)?\] (?P<title>.+)$",
     # 01. Title 00:00(.000)
     r"(?P<number>\d+). (?P<title>.+) (?P<minutes>\d+):(?P<seconds>\d+)\.?(?P<milliseconds>\d+)?$",
+    # 01. Title (00:00(.000))
+    r"(?P<number>\d+). (?P<title>.+) \((?P<minutes>\d+):(?P<seconds>\d+)\.?(?P<milliseconds>\d+)?\)$",
 ]
 
 
@@ -57,6 +60,7 @@ class Song:
     milliseconds: int
     end: int
     title: str
+    song_location: Optional[str]
 
     def split_song(self, album: Path, artist: Path, volume: float) -> list[str | Path]:
         """Return the command to split the song.
@@ -69,7 +73,7 @@ class Song:
         Returns:
             list[str | Path]: The command to split the song.
         """
-        song_location = f"{artist}/{artist} - {self.number:02d} - {self.title}.opus"
+        self.song_location = f"{artist}/{artist} - {self.number:02d} - {self.title}.opus"
 
         if self.end != inf:
             # Song command.
@@ -85,7 +89,7 @@ class Song:
                 f"{self.start}ms",
                 "-to",
                 f"{self.end}ms",
-                song_location,
+                self.song_location,
             ]
         # Last song.
         return [
@@ -98,7 +102,7 @@ class Song:
             "libopus",
             "-ss",
             f"{self.start}ms",
-            song_location,
+            self.song_location,
         ]
 
     def split_video(self, album: Path, artist: Path) -> list[str | Path]:
@@ -143,6 +147,17 @@ class Song:
             f"{self.start}ms",
             song_location,
         ]
+
+    def add_album_cover(self, album_cover: Path) -> list[str | Path]:
+        """Return the command to add an album cover to the song.
+
+        Args:
+            album_cover (Path): The path to the album cover to attach.
+
+        Returns:
+            list[str | Path]: The command to attach the album cover.
+        """
+        return ["opustags", "--in-place", self.song_location, "--set-cover", album_cover]
 
     @property
     def start_stamp(self: "Song") -> str:
@@ -249,6 +264,7 @@ def parse_track_list(text: str) -> list[Song]:
             "hours": int(attributes.get("hours") or 0),
             "title": str(attributes["title"].replace("/", "|")),
             "end": inf,
+            "song_location": None,
         }
         return Song(**song_attributes)
 
@@ -273,7 +289,7 @@ def parse_track_list(text: str) -> list[Song]:
     raise ValueError("Tracklist could not be parsed.")
 
 
-def split(album: Path, track_list: Path, artist: Path, dry_run: bool, video: bool, volume: float):
+def split(album: Path, track_list: Path, artist: Path, dry_run: bool, video: bool, volume: float, album_cover: Optional[Path]):
     """split a music track into specified sub-tracks by calling ffmpeg from the shell"""
     for file in [album, track_list]:
         if not file.is_file():
@@ -293,6 +309,8 @@ def split(album: Path, track_list: Path, artist: Path, dry_run: bool, video: boo
         commands = list(map(lambda song: song.split_video(album, artist), songs))
     else:
         commands = list(map(lambda song: song.split_song(album, artist, volume), songs))
+        if album_cover:
+            commands += list(map(lambda song: song.add_album_cover(album_cover), songs))
 
     if dry_run:
         for song in songs:
@@ -328,6 +346,7 @@ def parse_arguments():
     parser.add_argument("artist", type=Path, help="The artist name.")
     parser.add_argument("album", type=Path, help="The path to the album (a music file).")
     parser.add_argument("track_list", type=Path, help="The path to the track list (a text file).")
+    parser.add_argument("--album_cover", "-a", type=Path, help="The path to the album cover (a .jpeg or .png file).")
     parser.add_argument(
         "-d",
         "--dry-run",
