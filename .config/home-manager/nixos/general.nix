@@ -89,7 +89,7 @@
 
   # Open ports in the firewall.
   # localsend needs port 53317 to receive files.
-  networking.firewall.allowedTCPPorts = lib.optional (builtins.elem "localsend" config.environment.systemPackages) 53317;
+  networking.firewall.allowedTCPPorts = lib.optional (builtins.elem pkgs.localsend config.environment.systemPackages) 53317;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you

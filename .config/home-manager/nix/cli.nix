@@ -41,6 +41,7 @@ with pkgs; let
     ddh
     file
     lsof
+    sshfs
     xdg-utils
     xdotool
   ];
@@ -59,6 +60,7 @@ with pkgs; let
     nvimpager
   ];
   other = [
+    bluetuith
     #keychain
     chezmoi
     #scc
