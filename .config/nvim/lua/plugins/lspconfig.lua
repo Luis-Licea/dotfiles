@@ -15,6 +15,7 @@ return {
             -- java_debug_adapter = -- 'java-debug-adapter' -- Java?
             -- java_language_server = 'java-language-server' -- Java
             -- jdtls = 'jdtls', -- Java
+            -- ltex = 'ltex-ls', -- Tex and Markdown spell checking. Note: It uses a lot of RAM.
             -- phpactor = 'phpactor', -- PHP
             -- sqls = 'sqls', -- SQL
 
@@ -25,7 +26,6 @@ return {
             eslint = 'eslint', -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
             html = 'html', -- HTML
             jsonls = 'jsonls', -- JSON
-            ltex = 'ltex-ls', -- Tex and Markdown spell checking.
             lua_ls = 'lua-language-server', -- Lua
             marksman = 'marksman', -- Markdown language server; Provides TOC code action, and help with Markdown links, and references, not spelling.
             neocmake = 'neocmakelsp', -- CMake

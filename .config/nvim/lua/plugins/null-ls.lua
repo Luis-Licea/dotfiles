@@ -147,7 +147,26 @@ return {
                 null_ls.builtins.formatting.alejandra,
 
                 -- Formats Markdown tables.
-                null_ls.builtins.formatting.prettier,
+                null_ls.builtins.formatting.prettier.with({
+                    filetypes = {
+                        -- 'javascript',
+                        -- 'javascriptreact',
+                        -- 'typescript',
+                        -- 'typescriptreact',
+                        'vue',
+                        'css',
+                        'scss',
+                        'less',
+                        -- 'html',
+                        'json',
+                        'jsonc',
+                        'yaml',
+                        'markdown',
+                        'markdown.mdx',
+                        'graphql',
+                        'handlebars',
+                    },
+                }),
 
                 -- Java linter.
                 null_ls.builtins.diagnostics.checkstyle.with({
