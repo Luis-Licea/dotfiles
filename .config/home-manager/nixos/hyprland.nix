@@ -25,7 +25,6 @@
       gnome.gnome-disk-utility
       gnome.gnome-maps
       gnome.gnome-system-monitor
-      hyprpaper
       hyprshot # Screenshot utility.
       libnotify # Notification commands.
       pwvucontrol # Volume control.
