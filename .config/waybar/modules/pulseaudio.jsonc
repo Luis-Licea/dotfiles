@@ -9,7 +9,7 @@
       "phone": "",
       "portable": "",
       "car": "",
-      "default": ["", ""]
+      "default": [" ", "  "]
     },
     "format-muted": "{icon} ",
     "on-click": "~/.config/waybar/scripts/switch-sink.mjs",
