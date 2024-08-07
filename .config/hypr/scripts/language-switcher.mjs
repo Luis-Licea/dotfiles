@@ -2,6 +2,9 @@
 import { execSync } from "node:child_process";
 import { existsSync, writeFileSync, readFileSync } from "node:fs";
 import { basename } from "node:path";
+import { parseArgs } from "node:util";
+
+const { noNotification } = parseArgs({ options: { noNotification: { type: 'boolean' } } }).values;
 
 /**
  * @param {string} command The command to execute.
@@ -21,14 +24,17 @@ function getLayout() {
 /**
  * @param {string} layout The keyboard layout to switch to, such as us, latam, ru, etc.
  * @param {?number} notificationId The notification ID used to replace a notification.
- * @returns {number} The notification ID, which can be used to replace the notification.
+ * @returns {number?} The notification ID, which can be used to replace the notification.
  */
 function setLayout(layout, notificationId) {
-    const command = notificationId
+    exec(`hyprctl keyword input:kb_layout ${layout}`);
+    if (noNotification) {
+        return null;
+    }
+    const command = Number.isInteger(notificationId)
         ? `notify-send --expire-time 1500 --print-id --replace-id ${notificationId} ${layout}`
         : `notify-send --expire-time 1500 --print-id ${layout}`;
     const id = parseInt(exec(command));
-    exec(`hyprctl keyword input:kb_layout ${layout}`);
     return id;
 }
 

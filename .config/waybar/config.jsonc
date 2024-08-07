@@ -30,7 +30,7 @@
     "format-en": "en",
     "format-ru": "ru",
     "format-es": "es",
-    "on-click": "~/.config/hypr/scripts/language-switcher.mjs"
+    "on-click": "~/.config/hypr/scripts/language-switcher.mjs --noNotification"
   },
   "wlr/taskbar": {
     "app_ids-mapping": {
