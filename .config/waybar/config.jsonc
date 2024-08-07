@@ -21,8 +21,17 @@
     "group/audio",
     "bluetooth",
     "privacy",
+    "hyprland/language",
     "tray"
   ],
+  "hyprland/language": {
+    "format": "󰌌  {}",
+    "min-length": 5,
+    "format-en": "en",
+    "format-ru": "ru",
+    "format-es": "es",
+    "on-click": "~/.config/hypr/scripts/language-switcher.mjs"
+  },
   "wlr/taskbar": {
     "app_ids-mapping": {
       "firefoxdeveloperedition": "firefox-developer-edition"
