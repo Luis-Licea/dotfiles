@@ -5,6 +5,8 @@ import { basename } from "node:path";
 import { parseArgs } from "node:util";
 
 const { noNotification } = parseArgs({ options: { noNotification: { type: 'boolean' } } }).values;
+const myLayouts = ["us", "latam", "ru", "de"];
+const timeTreshhold = 2_000;
 
 /**
  * @param {string} command The command to execute.
@@ -14,58 +16,83 @@ function exec(command) {
     return execSync(command, { encoding: "utf8", shell: true });
 }
 
-/**
- * @returns {string} The current Hyprland keyboard layout, like us, latam, ru, etc.
- */
-function getLayout() {
-    return JSON.parse(exec("hyprctl getoption input:kb_layout -j")).str
-}
+// /**
+//  * @returns {string} The current Hyprland keyboard layout, like us, latam, ru, etc.
+//  */
+// function getLayout() {
+//     return JSON.parse(exec("hyprctl getoption input:kb_layout -j")).str
+// }
 
 /**
  * @param {string} layout The keyboard layout to switch to, such as us, latam, ru, etc.
- * @param {?number} notificationId The notification ID used to replace a notification.
- * @returns {number?} The notification ID, which can be used to replace the notification.
+ * @param {number} notificationId The notification ID used to replace a notification.
+ * @returns {number} The notification ID, which can be used to replace the notification.
  */
 function setLayout(layout, notificationId) {
     exec(`hyprctl keyword input:kb_layout ${layout}`);
     if (noNotification) {
-        return null;
+        return 0;
     }
-    const command = Number.isInteger(notificationId)
-        ? `notify-send --expire-time 1500 --print-id --replace-id ${notificationId} ${layout}`
-        : `notify-send --expire-time 1500 --print-id ${layout}`;
+    const command = notificationId
+        ? `notify-send --expire-time ${timeTreshhold} --print-id --replace-id ${notificationId} ${layout}`
+        : `notify-send --expire-time ${timeTreshhold} --print-id ${layout}`;
     const id = parseInt(exec(command));
     return id;
 }
 
 /**
- * @param {{layout: string, date: Date}} now The current keyboard layout, and the date when it was set.
- * @param {{layout: string, date: Date}} last The last keyboard layout, and the date when it was set.
- * @param {string[]} layouts The available keyboard layouts.
+ * @param {Cache} cache The cache holds the state required to switch
+ * between layouts. It does not provide any logic.
  */
-function switchLayout(now, last, layouts) {
-    if (layouts.length <= 1) {
+function switchLayout(cache) {
+    if (cache.layouts.length <= 1) {
         return;
     }
-    if (now.date - last.date > 1_500 && last.layout !== now.layout) {
-        return setLayout(last.layout, last.id)
+    const switchTime = new Date();
+    cache.difference = switchTime - new Date(cache.lastSwitchTime);
+    cache.lastSwitchTime = switchTime;
+    let layout;
+    if (cache.difference >= timeTreshhold) {
+        const lastLayoutIndex = cache.lastLayoutIndex % cache.layouts.length;
+        cache.lastLayoutIndex = 1;
+        layout = cache.layouts.splice(lastLayoutIndex, 1).pop();
+    } else {
+        cache.lastLayoutIndex++;
+        layout = cache.layouts.pop()
     }
-    const next = (layouts.findIndex(layout => layout === now.layout) + 1) % layouts.length;
-    return setLayout(layouts[next], last.id)
+    cache.layouts.unshift(layout);
+    cache.notificationId = setLayout(layout, cache.notificationId)
 
 }
 
-const cacheFile = `/tmp/${basename(import.meta.filename)}.cache.json`;
-const now = { layout: getLayout(), date: new Date() };
-const layouts = [
-    "us",
-    "latam",
-    "ru",
-]
-const last = existsSync(cacheFile)
-    ? JSON.parse(readFileSync(cacheFile), (key, value) => (key === "date" ? new Date(value) : value))
-    : now;
+class Cache {
+    static path = `/tmp/${basename(import.meta.filename)}.cache.json`;
+    constructor({ notificationId, difference, lastSwitchTime, lastLayoutIndex, layouts } = {
+        notificationId: 0,
+        difference: timeTreshhold,
+        lastSwitchTime: new Date(Date.now() - timeTreshhold),
+        lastLayoutIndex: 1,
+        layouts: []
+    }) {
+        this.notificationId = notificationId;
+        this.lastLayoutIndex = lastLayoutIndex;
+        this.difference = difference;
+        this.lastSwitchTime = lastSwitchTime;
+        this.layouts = myLayouts.every(myLayout => layouts.includes(myLayout)) ? layouts : myLayouts;
+    }
 
-now.id = switchLayout(now, last, layouts);
+    static load() {
+        return existsSync(Cache.path)
+            ? new Cache(JSON.parse(readFileSync(Cache.path)))
+            : new Cache();
+    }
 
-writeFileSync(cacheFile, JSON.stringify(now));
+    save() {
+        writeFileSync(Cache.path, JSON.stringify(this, null, 4));
+    }
+}
+
+const cache = Cache.load();
+
+switchLayout(cache)
+cache.save()
