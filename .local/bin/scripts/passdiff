@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+gpgdiff() {
+    # gpg --decrypt "pass_phone/$*"
+    # echo "-----------"
+    # pass "$(basename "$*" .gpg)"
+    gpg --decrypt "$DIR/$*.gpg"
+    echo -e "\n-----------"
+    pass "$*"
+}
+
+passdiff() {
+    # nvim -d <(gpg --decrypt "pass_phone/$*") <(pass "$(basename "$*" .gpg)")
+    if [[ ! -v PASSWORD_STORE_DIR ]]; then
+        echo 'The directory $PASSWORD_STORE_DIR is not defined.'
+        exit 1
+    fi
+    if [[ ! -v DIR ]]; then
+        echo 'The second directory $DIR is not defined. Do:'
+        echo 'export DIR=<path to second pass folder>'
+        exit 1
+    fi
+    nvim -d <(echo "$DIR"; gpg --decrypt "$DIR/$*.gpg") <(echo "$PASSWORD_STORE_DIR"; pass "$*")
+}
+
+passdiff "$@"

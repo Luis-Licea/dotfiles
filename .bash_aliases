@@ -196,7 +196,7 @@ alias zshconfig='$EDITOR ~/.config/zsh/.zshrc'
 alias passconfig='cd ~/.local/share/pass'
 alias passbackup='cp -viur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8/primary/pass/'
 alias passrefresh='kdeconnect-cli --refresh'
-alias passdiff='diff -q -r ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/'
+# alias passdiff='diff -q -r ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/'
 
 alias awkscratch='scratchpad scratchpad.awk'
 alias bashscratch='scratchpad scratchpad.bash'
