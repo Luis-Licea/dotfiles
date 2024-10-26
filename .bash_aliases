@@ -192,6 +192,7 @@ alias woficonfig='$EDITOR ~/.config/wofi/config'
 alias zathuraconfig='$EDITOR ~/.config/zathura/zathurarc'
 alias zictconfig='$EDITOR ~/.config/zict/zict.bash'
 alias zshconfig='$EDITOR ~/.config/zsh/.zshrc'
+alias zwimconfig='$EDITOR ~/.config/zwim/zwim.mjs'
 
 alias passconfig='cd ~/.local/share/pass'
 alias passbackup='cp -viur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8/primary/pass/'
@@ -285,7 +286,16 @@ alias rgf='rg --files | rg'
 alias rsyncdelete='rsync -arv --delete'
 alias rsyncdryrun='rsync -arvn --delete'
 
-alias cdf='cd ~ && cd "$(find * -type d | fzf)"'
+cdf(){
+    [[ -v 1 ]] && {
+        cd "$1" || exit
+    }
+    if git rev-parse --is-inside-work-tree 2> /dev/null; then
+        cd "$(find "$(git rev-parse --show-toplevel)" -type d -not -path '*/node_modules/*' -not -path '*/.git/*' | fzf)" || exit
+    else
+        cd "$(find ./* .config -type d | fzf)" || exit
+    fi
+}
 
 alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
