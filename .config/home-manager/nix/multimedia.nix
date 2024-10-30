@@ -35,11 +35,12 @@ with pkgs; let
     ungoogled-chromium
   ];
   archivers = [
-    zip
-    xz
-    unzip
-    p7zip
     gnutar
+    p7zip
+    unrar-wrapper
+    unzip
+    xz
+    zip
     zstd
   ];
 in {
