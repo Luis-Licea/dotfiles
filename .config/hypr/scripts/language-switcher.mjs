@@ -5,8 +5,8 @@ import { basename } from "node:path";
 import { parseArgs } from "node:util";
 
 const { noNotification } = parseArgs({ options: { noNotification: { type: 'boolean' } } }).values;
-const myLayouts = ["us", "latam", "ru", "de"];
-const timeTreshhold = 2_000;
+const myLayouts = ["us", "latam", "ru"];
+const timeTreshhold = 1000;
 
 /**
  * @param {string} command The command to execute.
