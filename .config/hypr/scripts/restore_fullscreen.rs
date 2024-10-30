@@ -7,13 +7,13 @@
 /*
 #! nix-shell -i rust-script -p rustc -p rust-script -p cargo
 */
-use std::io::{BufReader, BufRead};
-use std::os::unix::net::UnixStream;
-use std::env::var;
-use std::process::Command;
+use serde::de;
 use serde::Deserialize;
 use serde_json::Result;
-use serde::de;
+use std::env::var;
+use std::io::{BufRead, BufReader};
+use std::os::unix::net::UnixStream;
+use std::process::Command;
 
 #[derive(Debug, Deserialize)]
 struct ActiveWindow {
@@ -33,14 +33,22 @@ struct ActiveWorkspace {
  * Query the active window or workspace and return the state as a JSON string.
  */
 fn hyprctl(command: &str) -> String {
-    return String::from_utf8(Command::new("hyprctl").args(["-j", command]).output().unwrap().stdout).unwrap();
+    return String::from_utf8(
+        Command::new("hyprctl")
+            .args(["-j", command])
+            .output()
+            .unwrap()
+            .stdout,
+    )
+    .unwrap();
 }
 
 /**
  * Query the active window or workspace and return the state as an object.
  */
 fn parse<T>(command: &str) -> Result<T>
-where T: for<'a> de::Deserialize<'a>
+where
+    T: for<'a> de::Deserialize<'a>,
 {
     let json_string: String = hyprctl(command);
     return serde_json::from_str::<T>(&json_string);
@@ -52,7 +60,11 @@ where T: for<'a> de::Deserialize<'a>
  */
 fn main() -> std::io::Result<()> {
     // Connect to the Hyprland socket and listen for full-screen and close-window events.
-    let socket_path = format!("{}/hypr/{}/.socket2.sock", var("XDG_RUNTIME_DIR").unwrap(), var("HYPRLAND_INSTANCE_SIGNATURE").unwrap());
+    let socket_path = format!(
+        "{}/hypr/{}/.socket2.sock",
+        var("XDG_RUNTIME_DIR").unwrap(),
+        var("HYPRLAND_INSTANCE_SIGNATURE").unwrap()
+    );
     let socket = UnixStream::connect(socket_path)?;
     let mut stream = BufReader::new(socket);
 
@@ -69,19 +81,24 @@ fn main() -> std::io::Result<()> {
             Some("fullscreen") | Some("workspace") => {
                 // Store whether the current window is full-screen.
                 active_window = parse("activewindow")?;
-            },
-            Some("closewindow") =>  {
+            }
+            Some("closewindow") => {
                 let active_workspace: ActiveWorkspace = parse("activeworkspace")?;
                 // Restore full-screen if necessary after closing a window.
                 if active_window.is_fullscreen && !active_workspace.is_fullscreen {
-                    let _ = Command::new("hyprctl").args(["dispatch", "fullscreen", &active_window.fullscreen_mode.to_string()]).output();
+                    let _ = Command::new("hyprctl")
+                        .args([
+                            "dispatch",
+                            "fullscreen",
+                            &active_window.fullscreen_mode.to_string(),
+                        ])
+                        .output();
                 }
-            },
+            }
             // Ignore other Hyprland events.
-            Some(_) => {},
+            Some(_) => {}
             // Ignore lines that are not events. These types of lines should never happen.
             None => println!("Could not handle action: {}", line),
         }
     }
 }
-
