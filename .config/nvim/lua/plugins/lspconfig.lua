@@ -19,7 +19,6 @@ return {
             -- phpactor = 'phpactor', -- PHP
             -- sqls = 'sqls', -- SQL
 
-            perlnavigator = 'perlnavigator',
             bashls = 'bashls', -- Bash
             ccls = 'ccls', -- C/C++
             cssls = 'cssls', -- CSS
@@ -31,6 +30,8 @@ return {
             neocmake = 'neocmakelsp', -- CMake
             nil_ls = 'nil', -- Nix language server.
             nixd = 'nixd', -- Nix language server.
+            nushell = '', -- Nushell
+            perlnavigator = 'perlnavigator',
             pyright = 'pyright',
             rust_analyzer = 'rust-analyzer', -- Rust
             taplo = 'taplo', -- TOML
@@ -41,7 +42,7 @@ return {
         }
         local not_installed = {}
         for configuration, server in pairs(servers) do
-            if vim.fn.executable(server) == 0 then
+            if server ~= '' and vim.fn.executable(server) == 0 then
                 table.insert(not_installed, configuration)
             end
         end

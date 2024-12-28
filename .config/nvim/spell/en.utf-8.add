@@ -19,7 +19,6 @@ cr
 jobname
 InstallVimPlug
 junegunn
-nvim
 json
 mru
 PlugInstall
@@ -55,7 +54,6 @@ window
 Lualine
 lualine
 falsey
-Neovim
 gitignore
 cwd
 netrw
@@ -103,3 +101,5 @@ mn
 Hyprland
 param
 nvim
+Zim
+Bachata
