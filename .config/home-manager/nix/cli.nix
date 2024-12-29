@@ -9,6 +9,11 @@ with pkgs; let
     batwatch
     prettybat
   ];
+  # browsers = [
+  #   chawan
+  #   lynx
+  #   w3m
+  # ];
   networkMetrics = [
     # aria2 # Multi-protocol & multi-source command-line download utility.
     # dnsutils # `dig` + `nslookup`
@@ -22,14 +27,14 @@ with pkgs; let
     dig
     htop-vim
     iftop # Network monitoring.
-    nethogs
+    nethogs # A net top tool which displays traffic used per process instead of per IP or interface.
     termshark
   ];
   systemMetrics = [
     amdgpu_top
     hyperfine
     lm_sensors # `sensors` command.
-    neofetch
+    fastfetch
   ];
   search = [
     fd
@@ -48,12 +53,13 @@ with pkgs; let
   fileManagers = [
     ranger
     xdragon
-    joshuto
+    # joshuto
   ];
   versionControl = [
-    git-lfs
     git
+    git-lfs
     gitui
+    # restic
   ];
   viewers = [
     glow # Needed by Neovim Telescope for Markdown file previews.
@@ -61,8 +67,8 @@ with pkgs; let
   ];
   other = [
     bluetuith
-    #keychain
-    chezmoi
+    # keychain # A front-end to ssh-agent, allowing one long-running ssh-agent process per system, rather than per login
+    # chezmoi
     #scc
     # podman
     # distrobox
@@ -77,11 +83,13 @@ with pkgs; let
 
     # hexyl
     # numbat
+    ffmpeg-full
     # vivid
   ];
 in {
   home.packages =
     bat-utils
+    # ++ browsers
     ++ networkMetrics
     ++ systemMetrics
     ++ search
