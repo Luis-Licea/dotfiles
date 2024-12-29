@@ -193,9 +193,6 @@ $env.config = {
   rm: {
     always_trash: false # always act as if -t was given. Can be overridden with -p
   }
-  cd: {
-    abbreviations: false # allows `cd s/o/f` to expand to `cd some/other/folder`
-  }
   table: {
     mode: rounded # basic, compact, compact_double, light, thin, with_love, rounded, reinforced, heavy, none, other
     index_mode: always # "always" show indexes, "never" show indexes, "auto" = show indexes when a table has "index" column
@@ -608,7 +605,7 @@ export extern "joshuto" [
     --path: path, # The path
 ]
 
-def-env ranger-cd [] {
+def ranger-cd [] {
     let temporary_directory = (mktemp);
     try {
         ranger --choosedir $temporary_directory;
@@ -620,7 +617,7 @@ def-env ranger-cd [] {
     rm $temporary_directory;
 }
 
-def-env lf-cd [] {
+def lf-cd [] {
     let temporary_directory = (mktemp);
     try {
         lf --last-dir-path $temporary_directory;
@@ -632,7 +629,7 @@ def-env lf-cd [] {
     rm $temporary_directory;
 }
 
-def-env joshuto-cd [] {
+def joshuto-cd [] {
     let temporary_directory = (mktemp);
     try {
         joshuto --output-file $temporary_directory;
