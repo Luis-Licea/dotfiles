@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# Execupte C++ files.
+# Usage: Add the hash-bang to a C++ file:
+# //usr/bin/env cpp-script "$0"; exit
+# //usr/bin/env cpp-script "$0" -O3; exit
+
+declare -A cache
+
+# Create cache folder.
+cacheFolder=/tmp/cpp-script
+if [[ ! -d $cacheFolder ]]; then
+  mkdir "$cacheFolder"
+fi
+
+# Source the cache if it exists.
+cacheFile=$cacheFolder/cache.sh
+if [[ -f $cacheFile ]]; then
+  source "$cacheFile"
+fi
+
+file=$(realpath "$1")
+
+shaSum=$cacheFolder/$(sha1sum "$file" | cut -d' ' -f1)
+lastShaSum="${cache["$file"]}"
+
+if [[ $lastShaSum && $shaSum != "$lastShaSum" ]]; then
+  rm "$lastShaSum"
+fi
+
+if [[ ! -f $shaSum ]]; then
+  # Overwrite -o flag!
+  g++ "$@" -o "$shaSum"
+fi
+
+# Save the cache.
+cache["$file"]="$shaSum"
+declare -p cache >"$cacheFile"
+
+# Execute the compiled C++ file.
+"$shaSum"
