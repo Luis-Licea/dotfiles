@@ -1,19 +1,23 @@
 {pkgs, ...}:
 with pkgs; let
-  emulators = [
-    pcsx2
-  ];
   diffTools = [
     czkawka
     meld
   ];
+  emulators = [
+    pcsx2
+  ];
+  language = [
+    goldendict-ng
+  ];
   other = [
-    firefox
-    #citations
-    audio-recorder
-    raider
     # gnome.gnome-sound-recorder
+    # citations
+    audio-recorder
+    helm
+    raider
+    nextjs-ollama-llm-ui
   ];
 in {
-  home.packages = emulators ++ diffTools ++ other;
+  home.packages = diffTools ++ emulators ++ language ++ other;
 }

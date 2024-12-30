@@ -65,6 +65,9 @@ with pkgs; let
     glow # Needed by Neovim Telescope for Markdown file previews.
     nvimpager
   ];
+  editors = [
+    helix
+  ];
   other = [
     bluetuith
     # keychain # A front-end to ssh-agent, allowing one long-running ssh-agent process per system, rather than per login
@@ -97,5 +100,6 @@ in {
     ++ fileManagers
     ++ versionControl
     ++ viewers
+    ++ editors
     ++ other;
 }

@@ -15,6 +15,7 @@ with pkgs; let
     soundconverter
     sqlite
     sqlitebrowser
+    zrythm
   ];
   converters = [
     catdoc
@@ -43,6 +44,9 @@ with pkgs; let
     zip
     zstd
   ];
+  finance = [
+      # gnucash
+  ];
 in {
   home.packages =
     viewers
@@ -51,5 +55,6 @@ in {
     ++ editors
     ++ compilers
     ++ webBrowsers
-    ++ archivers;
+    ++ archivers
+    ++ finance;
 }

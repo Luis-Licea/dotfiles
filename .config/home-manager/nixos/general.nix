@@ -8,9 +8,12 @@
     # ./8bitdo.nix
     # ./dwl.nix
     # ./gnome.nix
+    ./ai.nix
     ./hyprland.nix
+    ./ntfs.nix
     ./nvim.nix
     ./shell.nix
+    # ./gpu.nix
   ];
 
   nix = {
@@ -30,7 +33,13 @@
   };
 
   # Might need to `rfkill unblock bluetooth`.
-  hardware.bluetooth.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    # Enable support for the PS3 DualShock 3.
+    input.General = {
+      ClassicBondedOnly = false;
+    };
+  };
 
   environment = {
     # Equivalent to `/etc/profile`.
@@ -72,12 +81,10 @@
     systemPackages = with pkgs; [
       alacritty # Essential.
       gnome.simple-scan # HM version does not work correctly.
-      gnucash
       home-manager
       localsend # HM version does not work correctly.
       mpv # HM version does not work correctly.
       obs-studio
-      ollama
       paperwork # HM version is a few minor versions behind.
       cached-nix-shell
     ];
