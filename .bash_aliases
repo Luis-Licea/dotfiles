@@ -20,7 +20,6 @@ if [[ -v SSH_CONNECTION ]]; then
 fi
 
 if [[ $(command -v nvimpager) ]]; then
-
     export PAGER=nvimpager
 elif [[ $(command -v most) ]]; then
     export PAGER=most
@@ -143,6 +142,18 @@ rsscratch() {
     cd - || exit
 }
 
+# Fuzzy-find a directory and go to it.
+cdf(){
+    [[ -v 1 ]] && {
+        cd "$1" || exit
+    }
+    if git rev-parse --is-inside-work-tree 2> /dev/null; then
+        cd "$(find "$(git rev-parse --show-toplevel)" -type d -not -path '*/node_modules/*' -not -path '*/.git/*' | fzf)" || exit
+    else
+        cd "$(find ./* .config -type d | fzf)" || exit
+    fi
+}
+
 ################################################################################
 # Aliases.
 ################################################################################
@@ -237,17 +248,10 @@ alias passbgit='repo_git ~/.local/share/pass/.backup/.git ~/.local/share/pass/.b
 alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 
 # Zict dictionary aliases.
-alias en='zict alter en'
 alias ens='zict search en'
-alias es='zict alter es'
 alias esb='zict search es'
-alias it='zict it'
-alias ja='zict alter ja'
-alias ru='zict alter ru'
 alias rus='zict search ru'
-alias ан='zict alter en'
 alias ани='zict search en' # искать
-alias ру='zict alter ru'
 alias руи='zict search ru' # искать
 
 # Dictionary aliases.
@@ -266,55 +270,35 @@ alias r='rangercd'
 alias v='nvim'
 alias в='exit'
 
-alias y='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music/YouTube'
-alias yd='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths'
-
 alias alacrittyx11='WAYLAND_DISPLAY= alacritty'
-alias bc='bc --mathlib'
-alias cheat='cht.sh'
+alias bookmark='$EDITOR ~/Documents/Private/bookmark-browser.yaml'
+alias fixtime='sudo ntpd -qg' # ntpdate -s ntp.ubuntu.com; sudo hwclock -w
+alias freemusic='mpv ~/Music/chosic.com -shuffle -no-video'
 alias gdiff='git fetch && git diff origin/master HEAD'
 alias lf='$HOME/Code/lfimg/lfrun'
 alias locksway='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
 alias lockx='xscreensaver-command -lock'
 alias man='man -a'
+alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias nr='setsid --fork alacritty -e ranger'
 alias nt='setsid --fork alacritty'
 alias nullls='cd $HOME/.local/share/nvim/lazy/null-ls.nvim/lua/null-ls/builtins'
 alias playmusic='mpv --shuffle ~/Music/*'
-alias restart-pipewire='systemctl --user restart pipewire.service'
 alias rgf='rg --files | rg'
 alias rsyncdelete='rsync -arv --delete'
 alias rsyncdryrun='rsync -arvn --delete'
-
-cdf(){
-    [[ -v 1 ]] && {
-        cd "$1" || exit
-    }
-    if git rev-parse --is-inside-work-tree 2> /dev/null; then
-        cd "$(find "$(git rev-parse --show-toplevel)" -type d -not -path '*/node_modules/*' -not -path '*/.git/*' | fzf)" || exit
-    else
-        cd "$(find ./* .config -type d | fzf)" || exit
-    fi
-}
-
-alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
+alias y='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music/YouTube'
+alias yd='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
 
 alias nixadd='nix derivation add'
-alias nixadd='nix derivation show'
 alias nixedit='nix edit -f "<nixpkgs>"'
 alias nixrepl='nix repl --file "<nixpkgs/nixos>" -I nixos-config=/etc/nixos/configuration.nix'
 alias nixsearch='nix search nixpkgs --extra-experimental-features flakes'
+alias nixshow='nix derivation show'
 
 # XDG-Ninja.
 alias wget=wget --hsts-file='$XDG_DATA_HOME/wget-hsts'
-
-# https://unix.stackexchange.com/questions/79112/how-do-i-set-time-and-date-from-the-internet
-# sudo ntpd -qg; sudo hwclock -w
-alias fixtime='sudo ntpd -qg'
-
-# Only enter SSH password once.
-# keychain --quiet --eval id_rsa > /dev/null
 
 # shellcheck source=./.my_aliases
 [[ -f ~/.my_aliases ]] && source ~/.my_aliases
