@@ -1,0 +1,8 @@
+model: ollama
+clients:
+- type: ollama
+  api_base: http://localhost:11434 # Value produced by `ollama serve`
+  api_auth: null
+  models:
+  - name: mistral
+    max_input_tokens: null
