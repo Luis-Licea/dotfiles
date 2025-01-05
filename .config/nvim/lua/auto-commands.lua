@@ -134,7 +134,12 @@ local cpp_group = vim.api.nvim_create_augroup('C++ Group', {})
 -- C++ and Nix code settings.
 vim.api.nvim_create_autocmd('FileType', {
     group = cpp_group,
-    pattern = { 'nix', 'cpp', 'toml' },
+    pattern = {
+        'cpp',
+        'dart',
+        'nix',
+        'toml',
+    },
     callback = function()
         vim.opt_local.shiftwidth = 2
         vim.opt_local.softtabstop = 2
