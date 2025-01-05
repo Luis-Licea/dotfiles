@@ -9,11 +9,12 @@ with pkgs; let
 in {
   home.packages =
     [
-      python3
-      nodejs_22
-      deno
-      tinycc
       # gnome-builder
+      dart
+      deno
+      nodejs_22
+      python3
+      tinycc
     ]
     ++ rust;
 }

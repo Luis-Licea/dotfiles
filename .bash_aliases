@@ -142,6 +142,13 @@ rsscratch() {
     cd - || exit
 }
 
+dartscratch() {
+    if [[ ! -f /tmp/pubspec.yaml ]]; then
+        echo "name: scratchpad" > /tmp/pubspec.yaml
+    fi
+    scratchpad scratchpad.dart "$@"
+}
+
 # Fuzzy-find a directory and go to it.
 cdf(){
     [[ -v 1 ]] && {

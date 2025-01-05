@@ -1,4 +1,6 @@
 -- Ensure lspconfig servers are installed.
+-- ~/.local/share/nvim/lazy/nvim-lspconfig/lua/lspconfig/server_configurations
+
 return {
     'neovim/nvim-lspconfig',
     -- Configurations for Nvim LSP.
@@ -22,6 +24,7 @@ return {
             bashls = 'bashls', -- Bash
             ccls = 'ccls', -- C/C++
             cssls = 'cssls', -- CSS
+            dartls = '',
             eslint = 'eslint', -- JavaScript, TypeScript; Linter needs .eslintrc.yml.
             html = 'html', -- HTML
             jsonls = 'jsonls', -- JSON
@@ -121,8 +124,9 @@ return {
         local lspconfig = require('lspconfig')
 
         -- Ignore these servers.
-        servers.lua_ls = nil
+        servers.dartls = nil
         servers.jsonls = nil
+        servers.lua_ls = nil
 
         for server, _ in pairs(servers) do
             lspconfig[server].setup({
@@ -130,6 +134,18 @@ return {
                 capabilities = capabilities,
             })
         end
+
+        lspconfig.dartls.setup({
+            on_attach = on_attach,
+            capabilities = capabilities,
+            init_options = {
+                -- closingLabels = false,
+                -- flutterOutline = false,
+                onlyAnalyzeProjectsWithOpenFiles = false,
+                -- outline = false,
+                -- suggestFromUnimportedLibraries = true,
+            },
+        })
 
         lspconfig.jsonls.setup({
             on_attach = on_attach,
