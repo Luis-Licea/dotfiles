@@ -46,6 +46,7 @@ with pkgs; let
     ddh
     file
     lsof
+    poppler_utils # pdftotext pdfunite
     sshfs
     xdg-utils
     xdotool

@@ -1,9 +1,7 @@
 {...}: let
   blockYoutube = false;
-in {
-  networking.extraHosts =
-    if blockYoutube
-    then ''
+  blockDiscord = true;
+  youtubeList = ''
       # /etc/hosts - Block YouTube.
       127.0.0.1       www.youtube.com
       127.0.0.1       m.youtube.com
@@ -12,6 +10,14 @@ in {
       127.0.0.1       ytimg.com
       127.0.0.1       l.google.com
       127.0.0.1       googlevideo.com
-    ''
-    else "";
+  '';
+  discordList = ''
+      127.0.0.1 discord.com
+      127.0.0.1 discordapp.com
+      127.0.0.1 discordapp.net
+  '';
+in {
+  networking.extraHosts = "" +
+    (if blockYoutube then youtubeList else "") +
+    (if blockDiscord then discordList else "");
 }

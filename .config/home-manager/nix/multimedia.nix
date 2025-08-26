@@ -1,9 +1,10 @@
 {pkgs, ...}:
 with pkgs; let
   viewers = [
-    calibre
-    mcomix
     # mpv # Install as a system package for stability.
+    calibre
+    image-roll # Simple image viewer with image crop functionality.
+    mcomix
     qview
     ueberzugpp
     zathura
