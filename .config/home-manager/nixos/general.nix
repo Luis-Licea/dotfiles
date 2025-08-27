@@ -33,11 +33,15 @@
   };
 
   # Might need to `rfkill unblock bluetooth`.
-  hardware.bluetooth = {
-    enable = true;
-    # Enable support for the PS3 DualShock 3.
-    input.General = {
-      ClassicBondedOnly = false;
+  hardware = {
+    # Enable proprietary blobs to avoid choppy Bluetooth.
+    enableAllFirmware = true;
+    bluetooth = {
+      enable = true;
+      # Enable support for the PS3 DualShock 3.
+      input.General = {
+        ClassicBondedOnly = false;
+      };
     };
   };
 
