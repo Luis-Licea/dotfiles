@@ -165,7 +165,7 @@ cdf(){
 # Aliases.
 ################################################################################
 
-alias alacrittyconfig='$EDITOR ~/.config/alacritty/alacritty.yml'
+alias alacrittyconfig='$EDITOR ~/.config/alacritty/alacritty.toml'
 alias awesomeconfig='$EDITOR ~/.config/awesome/rc.lua'
 alias bashconfig='$EDITOR ~/.bashrc'
 alias cppmanconfig='$EDITOR ~/.config/cppman/cppman.cfg'

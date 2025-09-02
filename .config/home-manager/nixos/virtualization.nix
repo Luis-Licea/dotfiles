@@ -14,7 +14,7 @@
     spiceUSBRedirection.enable = true;
   };
   environment.systemPackages = with pkgs; [
-    gnome.gnome-boxes # qemu
+    gnome-boxes # qemu
 
     # Note: Inside VM run: sudo apt install spice-webdavd spice-client-gtk
     spice

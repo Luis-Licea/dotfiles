@@ -19,12 +19,12 @@
     systemPackages = with pkgs; [
       baobab # disk usage analyzer
       dunst # Notification server.
-      gnome.adwaita-icon-theme # Fix missing icons.
-      gnome.gnome-calendar
-      gnome.gnome-clocks
-      gnome.gnome-disk-utility
-      gnome.gnome-maps
-      gnome.gnome-system-monitor
+      adwaita-icon-theme # Fix missing icons.
+      gnome-calendar
+      gnome-clocks
+      gnome-disk-utility
+      gnome-maps
+      gnome-system-monitor
       hyprshot # Screenshot utility.
       libnotify # Notification commands.
       pwvucontrol # Volume control.

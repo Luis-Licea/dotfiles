@@ -2,12 +2,16 @@
   # Install fonts system-wide.
   fonts = {
     packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk
-      noto-fonts-emoji
-      noto-fonts-color-emoji
       font-awesome
-      (nerdfonts.override {fonts = ["Meslo" "FiraCode"];})
+      nerd-fonts.fira-code
+      nerd-fonts.meslo-lg
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      noto-fonts-color-emoji
+      noto-fonts-emoji
+      noto-fonts-extra
+      noto-fonts-lgc-plus
     ];
     fontDir.enable = true;
     fontconfig = {

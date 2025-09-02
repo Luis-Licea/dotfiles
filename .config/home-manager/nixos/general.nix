@@ -21,7 +21,7 @@
       experimental-features = ["nix-command" "flakes"];
       use-xdg-base-directories = true;
     };
-    package = pkgs.nixVersions.nix_2_19;
+    # package = pkgs.nixVersions.nix_2_19;
   };
 
   # Configure the /tmp folder.
@@ -84,7 +84,7 @@
 
     systemPackages = with pkgs; [
       alacritty # Essential.
-      gnome.simple-scan # HM version does not work correctly.
+      simple-scan # HM version does not work correctly.
       home-manager
       localsend # HM version does not work correctly.
       mpv # HM version does not work correctly.
