@@ -13,6 +13,7 @@
     ./ntfs.nix
     ./nvim.nix
     ./shell.nix
+    ./wine.nix
     # ./gpu.nix
   ];
 

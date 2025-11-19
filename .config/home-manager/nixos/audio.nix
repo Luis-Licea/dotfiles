@@ -12,7 +12,7 @@
       enable = true;
       support32Bit = true;
     };
-    jack.enable = true;
+    # jack.enable = true;
     pulse.enable = true;
   };
 
@@ -20,20 +20,20 @@
   services.pulseaudio.enable = false;
 
   # Needed for Zrythm.
-  security.pam.loginLimits = [
-    {
-      domain = "@audio";
-      item = "rtprio";
-      type = "-";
-      value = "95";
-    }
-    {
-      domain = "@audio";
-      item = "memlock";
-      type = "-";
-      value = "unlimited";
-    }
-  ];
+  # security.pam.loginLimits = [
+  #   {
+  #     domain = "@audio";
+  #     item = "rtprio";
+  #     type = "-";
+  #     value = "95";
+  #   }
+  #   {
+  #     domain = "@audio";
+  #     item = "memlock";
+  #     type = "-";
+  #     value = "unlimited";
+  #   }
+  # ];
 
   # # Allow detection of VST plugins like Helm.
   # environment.variables = let
@@ -57,6 +57,7 @@
   environment.systemPackages = with pkgs; [
     reaper
     reaper-reapack-extension
+    alsa-utils
 
     # ardour
     # zrythm
@@ -102,44 +103,3 @@
     # lsp-plugins
   ];
 }
-# hardware.pulseaudio.enable = false; # Use Pipewire, the modern sound subsystem
-# # Enable sound with pipewire.
-# security.rtkit.enable = true; # Optional but recommended.
-#
-# # Audio settings.
-# services.pipewire = {
-#   alsa.enable = true;
-#   enable = true;
-#   # jack.enable = true;
-#   pulse.enable = true;
-#   wireplumber.enable = true;
-# };
-# services.jack = {
-#   jackd.enable = true;
-#   # support ALSA only programs via ALSA JACK PCM plugin
-#   alsa.enable = false;
-#   # support ALSA only programs via loopback device (supports programs like Steam)
-#   loopback = {
-#     enable = true;
-#     # buffering parameters for dmix device to work with ALSA only semi-professional sound programs
-#     #dmixConfig = ''
-#     #  period_size 2048
-#     #'';
-#   };
-# };
-# users.extraUsers.luis.extraGroups = [ "jackaudio" ];
-# Needed for Zrythm.
-# users.extraUsers.luis.extraGroups = ["jackaudio"];
-# services.jack = {
-#   jackd.enable = true;
-#   # support ALSA only programs via ALSA JACK PCM plugin
-#   alsa.enable = false;
-#   # support ALSA only programs via loopback device (supports programs like Steam)
-#   loopback = {
-#     enable = true;
-#     # buffering parameters for dmix device to work with ALSA only semi-professional sound programs
-#     #dmixConfig = ''
-#     #  period_size 2048
-#     #'';
-#   };
-# };
