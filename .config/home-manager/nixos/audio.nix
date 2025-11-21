@@ -57,7 +57,6 @@
   environment.systemPackages = with pkgs; [
     reaper
     reaper-reapack-extension
-    alsa-utils
 
     # ardour
     # zrythm
