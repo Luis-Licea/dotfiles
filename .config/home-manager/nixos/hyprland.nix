@@ -17,9 +17,9 @@
 
   environment = {
     systemPackages = with pkgs; [
+      adwaita-icon-theme # Fix missing icons.
       baobab # disk usage analyzer
       dunst # Notification server.
-      adwaita-icon-theme # Fix missing icons.
       gnome-calendar
       gnome-clocks
       gnome-disk-utility
@@ -34,6 +34,7 @@
       wlogout # Logout menu.
       wofi
       xdg-utils # for opening default programs when clicking links
+      xfce.thunar # dolphin installs the fucking annoying, intrusive kwallet
     ];
     etc."greetd/environments".text = ''
       Hyprland
