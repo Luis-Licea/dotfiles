@@ -1,0 +1,13 @@
+[MM_CTX_MIDI_NOTE]
+mm_0=3 m
+
+[MM_CTX_MIDI_NOTE_CLK]
+mm_0=6 m
+mm_4=2 m
+
+[MM_CTX_MIDI_PIANOROLL]
+mm_0=13 m
+
+[MM_CTX_MIDI_PIANOROLL_CLK]
+mm_0=4 m
+
