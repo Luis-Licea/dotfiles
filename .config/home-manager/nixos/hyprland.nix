@@ -28,7 +28,7 @@
       hyprshot # Screenshot utility.
       libnotify # Notification commands.
       pwvucontrol # Volume control.
-      rofi-wayland-unwrapped
+      rofi-unwrapped
       waybar
       wdisplays # tool to configure displays
       wlogout # Logout menu.
