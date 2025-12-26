@@ -85,13 +85,15 @@
 
     systemPackages = with pkgs; [
       alacritty # Essential.
-      simple-scan # HM version does not work correctly.
+      brave # Essential.
+      cached-nix-shell
       home-manager
       localsend # HM version does not work correctly.
       mpv # HM version does not work correctly.
       obs-studio
       paperwork # HM version is a few minor versions behind.
-      cached-nix-shell
+      simple-scan # HM version does not work correctly.
+      ungoogled-chromium # Used for isolation.
     ];
   };
 

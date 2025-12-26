@@ -16,7 +16,6 @@ with pkgs; let
     soundconverter
     sqlite
     sqlitebrowser
-    zrythm
   ];
   converters = [
     catdoc
@@ -32,10 +31,6 @@ with pkgs; let
     typst-fmt
     typst-lsp
   ];
-  webBrowsers = [
-    brave
-    ungoogled-chromium
-  ];
   archivers = [
     gnutar
     p7zip
@@ -48,6 +43,20 @@ with pkgs; let
   finance = [
       # gnucash
   ];
+  diffTools = [
+    czkawka
+    meld
+  ];
+  language = [
+    goldendict-ng
+  ];
+  other = [
+    # citations
+    # gnome.gnome-sound-recorder
+    audio-recorder
+    gnome-secrets
+    nextjs-ollama-llm-ui
+  ];
 in {
   home.packages =
     viewers
@@ -55,7 +64,9 @@ in {
     ++ downloaders
     ++ editors
     ++ compilers
-    ++ webBrowsers
     ++ archivers
-    ++ finance;
+    ++ finance
+    ++ diffTools
+    ++ language
+    ++ other;
 }

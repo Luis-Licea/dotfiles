@@ -22,9 +22,10 @@
   };
 
   home.packages = with pkgs; [
-    wl-clipboard
-    gnupg
-    pass
     gcr # Needed for Gnome pin-entry.
+    gnupg
+    keepassxc
+    pass
+    wl-clipboard
   ];
 }
