@@ -10,6 +10,7 @@
     # ./gnome.nix
     ./ai.nix
     ./hyprland.nix
+    ./nas.nix
     ./ntfs.nix
     ./nvim.nix
     ./shell.nix
