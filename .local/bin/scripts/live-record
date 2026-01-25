@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# shellcheck disable=2155
+
+# Return the path to the camera device.
+getCamera() {
+    for device in /dev/video*; do
+        if udevadm info "$device" | grep -q 'CAPABILITIES=.*:capture:'; then
+            echo "$device"
+            exit
+        fi
+    done
+}
+
+
+liveRecord() {
+    local defaultFileName="/tmp/$(date '+%Y-%m-%d_%H-%M-%S').mkv"
+    local fileName=${1-$defaultFileName}
+    local ffmpegLog=/tmp/live-record-ffmpeg.log
+    local ffplayLog=/tmp/live-record-ffplay.log
+    echo "file: $fileName"
+    echo "logs: $ffmpegLog"
+    echo "logs: $ffplayLog"
+
+
+    ffplay -volume 0 -f matroska -x 1440 -y 1080 <(
+        ffmpeg -f v4l2 -video_size 720x480 -framerate 30 \
+            -thread_queue_size 471040 -i "$(getCamera)"  \
+            -f alsa -thread_queue_size 480000 -i default -c:v libx264 -preset medium \
+            -crf 11 -c:a ac3 -b:a 384k  \
+            -y "$fileName" -f  matroska -c copy - 2>$ffmpegLog
+    ) 2>$ffplayLog
+
+    pkill ffmpeg
+
+    echo "$fileName"
+    sleep 0.5
+    mpv --loop-file=inf "$fileName"
+}
+
+
+liveRecord "$@"
