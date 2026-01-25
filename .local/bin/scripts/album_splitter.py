@@ -73,7 +73,7 @@ class Song:
         Returns:
             list[str | Path]: The command to split the song.
         """
-        self.song_location = f"{artist}/{artist} - {self.number:02d} - {self.title}.opus"
+        self.song_location = f"{artist}/{artist} - {self.number:02d} - {self.title}.mp3"
 
         if self.end != inf:
             # Song command.
