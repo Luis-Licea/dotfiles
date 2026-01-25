@@ -86,10 +86,13 @@
 
     systemPackages = with pkgs; [
       alacritty # Essential.
+      beets # Music organizer
       brave # Essential.
       cached-nix-shell
       home-manager
       localsend # HM version does not work correctly.
+      lollypop # Music player
+      lrcget # Download synced lyrics.
       mpv # HM version does not work correctly.
       obs-studio
       paperwork # HM version is a few minor versions behind.
