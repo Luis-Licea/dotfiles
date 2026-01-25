@@ -1,6 +1,8 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i bash -p ink
 
+# Show printer-ink levels.
+
 printers=$(avahi-browse --all -t -r | grep --after-contex=4 -P "^=.*bjnp")
 ip_addresses=$(echo "$printers" | grep -oP "\d+\.\d+\.\d+\.\d+" | sort | uniq)
 

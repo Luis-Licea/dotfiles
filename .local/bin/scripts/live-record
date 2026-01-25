@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # shellcheck disable=2155
 
+# Record, preview, and replay video using the first system camera.
+
 # Return the path to the camera device.
 getCamera() {
     for device in /dev/video*; do
