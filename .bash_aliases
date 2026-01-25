@@ -74,14 +74,6 @@ repo_ui() {
     gitui -d "$1" -w "$2" "${@:3}"
 }
 
-lfcd() {
-    local temporary_directory
-    temporary_directory=$(mktemp)
-    lf --last-dir-path "$temporary_directory" "$@"
-    cd "$(cat "$temporary_directory")" || exit
-    rm "$temporary_directory"
-}
-
 rangercd() {
     local temporary_directory
     temporary_directory=$(mktemp)
@@ -159,6 +151,31 @@ cdf(){
     else
         cd "$(find ./* .config -type d | fzf)" || exit
     fi
+}
+
+find-duplicates() {
+    find . ! -empty -type f -exec md5sum {} + | sort | uniq -w32 -dD
+}
+
+kpass() {
+    # Example: $0 search google.com
+    local db db_password entry
+    db="$HOME/SynologyDrive/Documents/Vault.kdbx"
+    db_password=$(pass keepassxc-cli)
+    if [[ $# -eq 0 ]]; then
+        entry=$(echo "$db_password" | keepassxc-cli ls "$db" --recursive --flatten | fzf)
+        echo "$db_password" | keepassxc-cli show "$db" "$entry" --show-protected
+    else
+        echo "$db_password" | keepassxc-cli "$1" "$db" "${@:2}"
+    fi
+}
+
+kpass-add() {
+    # Example: $0 --url "url" --notes "notes" /path/to/entry password
+    local entry_password db_password
+    db_password=$(pass keepassxc-cli)
+    entry_password="${*: -1}" # The last argument is the entry password.
+    printf "%s\n%s" "$db_password" "$entry_password" | keepassxc-cli add ~/Documents/Vault.kdbx "${@:1: -1}" -p
 }
 
 ################################################################################
@@ -295,7 +312,7 @@ alias rgf='rg --files | rg'
 alias rsyncdelete='rsync -arv --delete'
 alias rsyncdryrun='rsync -arvn --delete'
 alias y='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music/YouTube'
-alias yd='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths'
+alias yd='yt-dlp --cookies-from-browser brave --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
 
 alias nixadd='nix derivation add'
