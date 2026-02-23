@@ -33,6 +33,7 @@ with pkgs; let
   ];
   archivers = [
     gnutar
+    kdePackages.ark
     p7zip
     unrar-wrapper
     unzip
