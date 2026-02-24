@@ -88,6 +88,7 @@ with pkgs; let
     # hexyl
     # numbat
     ffmpeg-full
+    handbrake
     # vivid
   ];
 in {
