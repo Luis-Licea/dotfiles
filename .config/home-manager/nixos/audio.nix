@@ -40,8 +40,30 @@
     # sfizz # Crappy synth.
     # swh_lv2
     # zam-plugins
+
     surge
     x42-gmsynth
     x42-plugins
+
+    # alsa-lib
+    # alsa-utils
+    # ardour
+    # audacious
+    # ffado
+    # jack2
+    # jack_capture
+    # libjack2
+    # lmms
+    # pavucontrol
+    # pkgs-brian.ardour
+    # pulseaudioFull
+    # qjackctl
+    # show-midi
+    # spotify
+    # surge
+    # x42-gmsynth
+    # x42-plugins
+    # zrythm
+    # zynaddsubfx # Plugin
   ];
 }
