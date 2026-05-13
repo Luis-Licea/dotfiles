@@ -93,6 +93,7 @@
       localsend # HM version does not work correctly.
       lollypop # Music player
       lrcget # Download synced lyrics.
+      media-downloader # Yt-dlp front-end.
       mpv # HM version does not work correctly.
       obs-studio
       paperwork # HM version is a few minor versions behind.

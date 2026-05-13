@@ -7,10 +7,10 @@
     ./nix/dconf.nix
     ./nix/development.nix
     ./nix/font.nix
+    ./nix/game.nix
     ./nix/i18n.nix
     ./nix/mail.nix
     ./nix/multimedia.nix
-    ./nix/neomutt.nix
     ./nix/nvim.nix
     ./nix/pass.nix
     ./nix/vscodium.nix
