@@ -10,7 +10,10 @@
 
   programs = {
     geary.enable = true;
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      withUWSM = true;
+    };
     hyprlock.enable = true;
   };
   services.hypridle.enable = true;

@@ -9,10 +9,10 @@
     ./nix/font.nix
     ./nix/game.nix
     ./nix/i18n.nix
-    ./nix/mail.nix
     ./nix/multimedia.nix
     ./nix/nvim.nix
     ./nix/pass.nix
+    ./nix/synology.nix
     ./nix/vscodium.nix
   ];
 

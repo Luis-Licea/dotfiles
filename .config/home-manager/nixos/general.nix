@@ -8,14 +8,14 @@
     # ./8bitdo.nix
     # ./dwl.nix
     # ./gnome.nix
+    # ./gpu.nix
+    # ./synology.nix
     ./ai.nix
     ./hyprland.nix
-    ./nas.nix
     ./ntfs.nix
     ./nvim.nix
     ./shell.nix
     ./wine.nix
-    # ./gpu.nix
   ];
 
   nix = {

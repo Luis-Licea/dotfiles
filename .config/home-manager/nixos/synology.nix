@@ -6,6 +6,7 @@
   environment.systemPackages = with pkgs; [
     synology-drive-client
   ];
+
   # environment.systemPackages = [
   #   (pkgs.synology-drive-client.overrideAttrs
   #     (oldAttrs: rec {
@@ -17,7 +18,7 @@
   #         url = "${baseUrl}/${version}/Ubuntu/Installer/synology-drive-client-${buildNumber}.x86_64.deb";
   #         sha256 = "sha256-DMHqh8o0RknWTycANSbMpJj133/MZ8uZ18ytDZVaKMg=";
   #       };
-  #       
+  #
   #       autoPatchelfIgnoreMissingDeps = [
   #         "libnautilus-extension.so.4"
   #         "libQt5Pdf.so.5"
