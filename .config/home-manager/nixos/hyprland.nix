@@ -12,7 +12,7 @@
     geary.enable = true;
     hyprland = {
       enable = true;
-      withUWSM = true;
+      withUWSM = false;
     };
     hyprlock.enable = true;
   };

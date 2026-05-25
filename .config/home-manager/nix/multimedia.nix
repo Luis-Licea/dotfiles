@@ -11,6 +11,7 @@ with pkgs; let
   ];
   editors = [
     eartag
+    kdePackages.gwenview
     krita
     onlyoffice-bin
     soundconverter

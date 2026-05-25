@@ -45,9 +45,11 @@ dotfilesui
 
 ## Backup Checklist
 
-- GPG keys in `$GNUPGHOME`.
-- SQL databases.
-- SSH keys.
+- GPG keys in `$GNUPGHOME`
+- Passwords in `$PASSWORD_STORE_DIR`
+- SSH keys in `~/.ssh`
+- Game data in `~/.config/PCSX2`
+- Plugin data in `~/.config/REAPER`
 - Unit files in `~/.config/systemd/user`
-- `/etc` folder.
-- `/home/<user>` directory.
+- Nixos configurations in `/etc/nixos`
+- `/home/<user>` directory
