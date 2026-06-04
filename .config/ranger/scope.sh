@@ -278,7 +278,10 @@ handle_mime() {
         ## uncommented other methods to preview those formats
         *wordprocessingml.document|*/epub+zip|*/x-fictionbook+xml)
             ## Preview as markdown conversion
-            pandoc -s -t markdown -- "${FILE_PATH}" && exit 5
+            [[ $mimetype = *wordprocessingml.document ]] && format=docx
+            [[ $mimetype = */epub+zip ]] && format=epub
+            [[ $mimetype = */x-fictionbook+xml  ]] && format=fb2
+            timeout 10 pandoc -s -t markdown -f "$format" -- "${FILE_PATH}" && exit 5
             exit 1;;
 
         ## XLS
