@@ -11,6 +11,7 @@
     # ./gpu.nix
     # ./synology.nix
     ./ai.nix
+    ./game.nix
     ./hyprland.nix
     ./ntfs.nix
     ./nvim.nix
