@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -euo pipefail -o noglob
+
+scan() {
+    local file
+    file=$(date -u '+%Y-%m-%d %H-%M-%S').png
+    set -x
+    scanimage \
+        --scan-intent Document \
+        --progress \
+        -d 'airscan:w1:Canon MG3200 series' \
+        --output "$file" \
+        --mode Gray \
+        "$@"
+    set +x
+}
+
+# Width and height in millimeters.
+dimensions='{
+    "Usage": "scan-receipt <name>",
+    "description": "Scan the receipt with the given dimensions",
+    "Old Navy": [79, 274],
+    "Walmart": [79, 192]
+}'
+
+scan-from-name() {
+    local receipt width height
+    receipt=$(echo "$dimensions" | jq --arg name "$1" '.[$name]')
+    if [[ $receipt == null ]]; then
+        echo "Invalid name: $1"
+        exit 1
+    fi
+    width=$(echo "$receipt" | jq '.[0]')
+    height=$(echo "$receipt" | jq '.[1]')
+    scan -x "$width" -y "$height"
+}
+
+if [[ $# = 0 ]]; then
+    NAME=$(basename "$PWD")
+    echo "Assuming: $NAME"
+    scan-from-name "$NAME"
+elif [[ $1 = "-h" || $1 = "--help" ]]; then
+    echo "$dimensions" | jq
+    scan -h
+    exit 1
+else
+    scan-from-name "$1"
+fi
+
