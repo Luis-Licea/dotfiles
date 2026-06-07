@@ -14,8 +14,8 @@ pdf() {
 if [[ $1 = "-h" || $1 = "--help" ]]; then
     echo "Commands:"
     declare -F | sed "s/^declare -f/ /"
-    scan -h
+    scanimage "${OPTIONS[@]}" -h
 else
-    "$@"
+    "$1" "${@:2}"
 fi
 
