@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+OPTIONS=(--scan-intent Document --progress -d 'airscan:w1:Canon MG3200 series')
+
+png() {
+    local file
+    file=$(date -u '+%Y-%m-%d %H-%M-%S').png
+    scanimage "${OPTIONS[@]}" --output "$file" "$@"
+}
+
+pdf() {
+    local fileName
+    fileName="$(date -u '+%Y-%m-%d %H:%M:%S')"
+    scanimage "${OPTIONS[@]}" --format pdf  --batch="$fileName" --batch-prompt "$@"
+}
+
+if [[ $1 = "-h" || $1 = "--help" ]]; then
+    echo "Commands:"
+    declare -F | sed "s/^declare -f/ /"
+    scan -h
+else
+    "$@"
+fi
+
