@@ -10,7 +10,7 @@ png() {
 
 pdf() {
     local fileName
-    fileName="$(date -u '+%Y-%m-%d %H:%M:%S')"
+    fileName="$(date -u '+%Y-%m-%d %H:%M:%S').pdf"
     scanimage "${OPTIONS[@]}" --format pdf  --batch="$fileName" --batch-prompt "$@"
 }
 
