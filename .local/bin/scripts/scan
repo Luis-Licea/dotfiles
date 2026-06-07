@@ -1,17 +1,14 @@
 #!/usr/bin/env bash
 
 OPTIONS=(--scan-intent Document --progress -d 'airscan:w1:Canon MG3200 series')
+DATE=$(date -u '+%Y-%m-%d %H-%M-%S')
 
 png() {
-    local file
-    file=$(date -u '+%Y-%m-%d %H-%M-%S').png
-    scanimage "${OPTIONS[@]}" --output "$file" "$@"
+    scanimage "${OPTIONS[@]}" --output "$DATE.png" "$@"
 }
 
 pdf() {
-    local fileName
-    fileName="$(date -u '+%Y-%m-%d %H:%M:%S').pdf"
-    scanimage "${OPTIONS[@]}" --format pdf  --batch="$fileName" --batch-prompt "$@"
+    scanimage "${OPTIONS[@]}" --format pdf --batch="$DATE.pdf" --batch-prompt "$@"
 }
 
 if [[ $1 = "-h" || $1 = "--help" ]]; then
