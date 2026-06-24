@@ -11,6 +11,14 @@ pdf() {
     scanimage "${OPTIONS[@]}" --format pdf --batch="$DATE.pdf" --batch-prompt "$@"
 }
 
+photo() {
+    png --resolution 600 --scan-intent Photo "$@"
+}
+
+check() {
+    png -x 153  -y 70 "$@"
+}
+
 if [[ $1 = "-h" || $1 = "--help" ]]; then
     echo "Commands:"
     declare -F | sed "s/^declare -f/ /"

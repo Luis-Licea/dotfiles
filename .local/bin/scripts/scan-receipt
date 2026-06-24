@@ -21,7 +21,10 @@ dimensions='{
     "Usage": "scan-receipt <name>",
     "description": "Scan the receipt with the given dimensions",
     "Old Navy": [79, 274],
-    "Walmart": [79, 192]
+    "Walmart": [79, 192],
+    "Family Dollar": [79, 110],
+    "HEB": [79, 191],
+    "Food Town": [79, 237]
 }'
 
 scan-from-name() {

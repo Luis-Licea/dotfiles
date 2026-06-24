@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+rotate-clockwise() {
+    mogrify -rotate 90 "$@"
+}
+
+rotate-counterclockwise() {
+    mogrify -rotate -90 "$@"
+}
+
+
+if [[ $1 = "-h" || $1 = "--help" ]]; then
+    echo "Commands:"
+    declare -F | sed "s/^declare -f/ /"
+else
+    "$1" "${@:2}"
+fi
+
