@@ -106,6 +106,9 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
+  # Disable annoying prompt to enter credentials when opening Thunar or Brave.
+  services.gnome.gnome-keyring.enable = lib.mkForce false;
+
   # Open ports in the firewall.
   # localsend needs port 53317 to receive files.
   networking.firewall.allowedTCPPorts = lib.optional (builtins.elem pkgs.localsend config.environment.systemPackages) 53317;
