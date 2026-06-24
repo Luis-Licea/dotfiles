@@ -1,53 +1,61 @@
-#!/usr/bin/env bash
+#!/usr/bin/env -S node --experimental-default-type=module
 
-set -euo pipefail -o noglob
+import {basename} from 'node:path';
 
-scan() {
-    local file
-    file=$(date -u '+%Y-%m-%d %H-%M-%S').png
-    set -x
-    scanimage \
-        --scan-intent Document \
-        --progress \
-        -d 'airscan:w1:Canon MG3200 series' \
-        --output "$file" \
-        --mode Gray \
-        "$@"
-    set +x
+import {spawnSync} from 'node:child_process';
+
+function $(command) {
+    return spawnSync(
+        command,
+        {
+            shell: true,
+            encoding: 'utf8',
+            maxBuffer: Number.MAX_VALUE,
+            stdio: ['inherit', 'pipe', 'inherit']
+        }
+    ).stdout.trimEnd();
 }
 
-# Width and height in millimeters.
-dimensions='{
+function scan(...args) {
+    const date = $("date -u '+%Y-%m-%d %H-%M-%S'")
+    const file=`${date}.png`
+    const options = args.join(" ")
+    const command = `scanimage --scan-intent Document --progress -d 'airscan:w1:Canon MG3200 series' --output "${file}" --mode Gray ${options}`
+    console.log(command);
+    return $(command);
+}
+
+// Width and height in millimeters.
+const dimensions = {
     "Usage": "scan-receipt <name>",
     "description": "Scan the receipt with the given dimensions",
     "Old Navy": [79, 274],
     "Walmart": [79, 192],
     "Family Dollar": [79, 110],
     "HEB": [79, 191],
-    "Food Town": [79, 237]
-}'
-
-scan-from-name() {
-    local receipt width height
-    receipt=$(echo "$dimensions" | jq --arg name "$1" '.[$name]')
-    if [[ $receipt == null ]]; then
-        echo "Invalid name: $1"
-        exit 1
-    fi
-    width=$(echo "$receipt" | jq '.[0]')
-    height=$(echo "$receipt" | jq '.[1]')
-    scan -x "$width" -y "$height"
+    "Food Town": [79, 237],
+    "Cheddar's Scratch Kitchen": [79, 205]
 }
 
-if [[ $# = 0 ]]; then
-    NAME=$(basename "$PWD")
-    echo "Assuming: $NAME"
-    scan-from-name "$NAME"
-elif [[ $1 = "-h" || $1 = "--help" ]]; then
-    echo "$dimensions" | jq
-    scan -h
-    exit 1
-else
-    scan-from-name "$1"
-fi
+function scanFromName(receiptName) {
+    const receipt=dimensions[receiptName];
+    if (!receipt) {
+        throw Error(`Invalid name: ${receipt}`)
+    }
+    const [width, height] = receipt;
+    return scan(`-x ${width} -y ${height}`)
+}
+
+const [receiptName, ...scanOptions] = process.argv.slice(2);
+if (!receiptName) {
+    const folderName = basename(process.env.PWD);
+    console.log(`Assuming: ${folderName}`);
+    scanFromName(folderName);
+} else if (['-h', '--helep'].includes(receiptName)) {
+    console.log(dimensions)
+    scan("-h")
+} else {
+    scanFromName(receiptName, scanOptions)
+}
+
 
