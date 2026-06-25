@@ -112,6 +112,7 @@ fi
 [[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
 
 [[ $(command -v starship) ]] && eval "$(starship init zsh)"
+[[ $(command -v direnv) ]] && eval "$(direnv hook zsh)"
 
 export HISTFILE=/tmp/zsh_history
 

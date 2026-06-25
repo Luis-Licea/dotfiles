@@ -124,5 +124,6 @@ fi
 set -o vi
 
 [[ $(command -v starship) ]] && eval "$(starship init bash)"
+[[ $(command -v direnv) ]] && eval "$(direnv hook bash)"
 
 export HISTFILE=/tmp/bash_history

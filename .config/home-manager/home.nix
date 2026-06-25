@@ -12,6 +12,7 @@
     ./nix/multimedia.nix
     ./nix/nvim.nix
     ./nix/pass.nix
+    ./nix/programs.nix
     ./nix/synology.nix
     ./nix/vscodium.nix
   ];
