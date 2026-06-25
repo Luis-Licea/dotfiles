@@ -1,1 +1,55 @@
+plugins: musicbrainz autobpm smartplaylist lyrics
+# chroma
+
+lyrics:
+    auto: yes
+    synced: yes
+    keep_synced: yes
+    sources: [lrclib]
+    # force: yes
+
+smartplaylist:
+    relative_to: ~/SynologyDrive/Music/Playlists
+    playlist_dir: ~/SynologyDrive/Music/Playlists
+    forward_slash: no
+    playlists:
+        - name: BPM 000.m3u
+          query: bpm+
+
+        - name: BPM 040-059.m3u
+          query: bpm:40..59 bpm+
+
+        - name: BPM 060-079.m3u
+          query: bpm:80..79 bpm+
+
+        - name: BPM 080-099.m3u
+          query: bpm:80..99 bpm+
+
+        - name: BPM 100-109.m3u
+          query: bpm:100..109 bpm+
+
+        - name: BPM 110-119.m3u
+          query: bpm:110..119 bpm+
+
+        - name: BPM 120-139.m3u
+          query: bpm:120..139 bpm+
+
+        - name: BPM 140-159.m3u
+          query: bpm:140..159 bpm+
+
+        - name: BPM 160-179.m3u
+          query: bpm:160..179 bpm+
+
+        - name: BPM 180-200.m3u
+          query: bpm:180..200 bpm+
+
+autobpm:
+    auto: yes
+    force: no
+    beat_track_kwargs: {}
+    quiet: no
+
+musicbrainz:
+  genres: yes
+
 directory: ~/SynologyDrive/Music
