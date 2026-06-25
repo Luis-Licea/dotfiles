@@ -78,7 +78,7 @@ with pkgs; let
     # distrobox
 
     asciinema
-    direnv
+    nix-direnv
     yq-go # Yaml processor.
     tealdeer
 
