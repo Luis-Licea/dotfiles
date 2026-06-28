@@ -56,18 +56,9 @@ with pkgs; let
     xdragon
     # joshuto
   ];
-  versionControl = [
-    git
-    git-lfs
-    gitui
-    # restic
-  ];
   viewers = [
     glow # Needed by Neovim Telescope for Markdown file previews.
     nvimpager
-  ];
-  editors = [
-    helix
   ];
   other = [
     bluetuith
@@ -100,8 +91,6 @@ in {
     ++ search
     ++ utilities
     ++ fileManagers
-    ++ versionControl
     ++ viewers
-    ++ editors
     ++ other;
 }

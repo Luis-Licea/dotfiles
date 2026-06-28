@@ -1,4 +1,3 @@
-#theme = "dark_plus"
 theme = "onedark"
 
 [editor]
@@ -11,3 +10,7 @@ select = "underline"
 
 [editor.file-picker]
 hidden = false
+
+[keys.normal]
+C-k = "page_up"
+C-j = "page_down"

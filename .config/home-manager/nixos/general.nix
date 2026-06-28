@@ -87,14 +87,31 @@
 
     systemPackages = with pkgs; [
       alacritty # Essential.
-      beets # Music organizer
+
+      # Music
+      eartag
+      media-downloader # Yt-dlp front-end
+      lollypop # Music player
+      beets # Musig organizer
+      lrcget # Synced lyrics downloader
+
+      # Version control
+      git
+      git-lfs
+      gitui
+
+      # Text editor
+      helix
+
+      # Formatter for Markdown
+      prettier
+
+      # Unified shell theme
+      starship
+
       brave # Essential.
       cached-nix-shell
       home-manager
-      localsend # HM version does not work correctly.
-      lollypop # Music player
-      lrcget # Download synced lyrics.
-      media-downloader # Yt-dlp front-end.
       mpv # HM version does not work correctly.
       obs-studio
       paperwork # HM version is a few minor versions behind.
@@ -109,9 +126,6 @@
   # Disable annoying prompt to enter credentials when opening Thunar or Brave.
   services.gnome.gnome-keyring.enable = lib.mkForce false;
 
-  # Open ports in the firewall.
-  # localsend needs port 53317 to receive files.
-  networking.firewall.allowedTCPPorts = lib.optional (builtins.elem pkgs.localsend config.environment.systemPackages) 53317;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
