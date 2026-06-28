@@ -7,10 +7,12 @@ unset IFS
 # Preferred editor for local and remote sessions
 ################################################################################
 
-export EDITOR=nvim
+export EDITOR=hx
 export VISUAL="$EDITOR"
 if [[ -v SSH_CONNECTION ]]; then
-    if [[ $(command -v nvim) ]]; then
+    if [[ $(command -v hx) ]]; then
+        export EDITOR=nvim
+    elif [[ $(command -v nvim) ]]; then
         export EDITOR=nvim
     elif [[ $(command -v vim) ]]; then
         export EDITOR=vim
@@ -185,24 +187,16 @@ kpass-add() {
 alias alacrittyconfig='$EDITOR ~/.config/alacritty/alacritty.toml'
 alias awesomeconfig='$EDITOR ~/.config/awesome/rc.lua'
 alias bashconfig='$EDITOR ~/.bashrc'
-alias beetsconfig='$EDITOR ~/.config/beets/config.yaml'
-alias cppmanconfig='$EDITOR ~/.config/cppman/cppman.cfg'
-alias doomconfig='$EDITOR ~/.config/doom/config.el'
+alias beetconfig='$EDITOR ~/.config/beets/config.yaml'
 alias dwlconfig='$EDITOR ~/.config/dwl/'
-alias emacsconfig='$EDITOR ~/.config/doom/init.el'
 alias gitconfig='$EDITOR ~/.config/git/config'
-alias home-config='$EDITOR ~/.config/home-manager/home.nix'
+alias homeconfig='$EDITOR ~/.config/home-manager/home.nix'
+alias hxconfig='$EDITOR= ~/.config/helix/config.toml'
 alias hyprconfig='$EDITOR ~/.config/hypr/hyprland.conf'
 alias hypridleconfig='$EDITOR ~/.config/hypr/hypridle.conf'
 alias joshutoconfig='$EDITOR ~/.config/joshuto/'
-alias lynxconfig='$EDITOR .config/lynx/lynx.cfg'
 alias mostconfig='$EDITOR ~/.config/mostrc'
-alias mpdconfig='$EDITOR ~/.config/mpd/mpd.conf'
 alias mpvconfig='$EDITOR ~/.config/mpv'
-alias ncmpcppconfig='$EDITOR ~/.config/ncmpcpp/'
-alias neomuttconfig='$EDITOR ~/.config/mutt/'
-alias neomuttmsmtpconfig='$EDITOR ~/.config/msmtp/config'
-alias newsboatconfig='$EDITOR ~/.config/newsboat/'
 alias nixconfig='sudo -E $EDITOR /etc/nixos/configuration.nix'
 alias nuconfig='$EDITOR ~/.config/nushell/config.nu'
 alias nuconfigenv='$EDITOR ~/.config/nushell/env.nu'
@@ -210,14 +204,8 @@ alias nvimconfig='$EDITOR ~/.config/nvim/init.lua'
 alias nvimlspconfig='$EDITOR ~/.config/nvim/lua/plugins/lspconfig.lua'
 alias nvimnullconfig='$EDITOR ~/.config/nvim/lua/plugins/null-ls.lua'
 alias nvimpagerconfig='$EDITOR ~/.config/nvimpager/init.vim'
-alias nvimswap='cd ~/.local/share/nvim/swap/'
-alias picomconfig='$EDITOR ~/.config/picom/picom.conf'
 alias qtileconfig='$EDITOR ~/.config/qtile/config.py'
-alias rangercache='cd ~/.cache/ranger/'
 alias rangerconfig='$EDITOR ~/.config/ranger/'
-alias rifleconfig='$EDITOR ~/.config/ranger/rifle.conf'
-alias roficonfig='$EDITOR ~/.config/rofi/config.rasi'
-alias scopeconfig='$EDITOR ~/.config/ranger/scope.sh'
 alias shellconfig='$EDITOR ~/.bash_aliases && source ~/.bash_aliases'
 alias starshipconfig='$EDITOR ~/.config/starship.toml'
 alias vimbconfig='$EDITOR ~/.config/vimb/config'
@@ -226,12 +214,9 @@ alias waybarconfig='$EDITOR ~/.config/waybar/'
 alias wlogoutconfig='$EDITOR ~/.config/wlogout/layout'
 alias woficonfig='$EDITOR ~/.config/wofi/config'
 alias zathuraconfig='$EDITOR ~/.config/zathura/zathurarc'
-alias zictconfig='$EDITOR ~/.config/zict/zict.bash'
 alias zshconfig='$EDITOR ~/.config/zsh/.zshrc'
-alias zwimconfig='$EDITOR ~/.config/zwim/zwim.mjs'
 
 alias passconfig='cd ~/.local/share/pass'
-alias passbackup='cp -viur ~/.local/share/pass/* /run/user/1000/5bfbfc95be7243f8/primary/pass/'
 alias passrefresh='kdeconnect-cli --refresh'
 # alias passdiff='diff -q -r ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/'
 
