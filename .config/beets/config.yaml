@@ -1,5 +1,21 @@
-plugins: musicbrainz autobpm smartplaylist lyrics
+plugins: musicbrainz missing info autobpm smartplaylist lyrics
+
+# nix-shell -p pipx
+# pipx ensurepath
+# pipx install beets-xtractor
+# beet xtractor
+# pipx install beets
+# pipx inject beets beets-xtractor   
+
+
 # chroma
+#python313Packages.beetcamp
+
+replaygain:
+    # [a]lbum [w]rite tag to file
+    # beet replaygain -a -w --threads 4
+    backend: ffmpeg
+
 
 lyrics:
     auto: yes
@@ -49,7 +65,15 @@ autobpm:
     beat_track_kwargs: {}
     quiet: no
 
+missing:
+    count: no
+    total: no
+
+play:
+    command: lollypop
+
 musicbrainz:
   genres: yes
 
 directory: ~/SynologyDrive/Music
+
