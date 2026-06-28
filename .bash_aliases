@@ -46,11 +46,6 @@ export RANGER_LOAD_DEFAULT_RC=FALSE
 # Functions.
 ################################################################################
 
-say() {
-    gtts-cli "${*}" | mpv -
-}
-
-
 # Unzip the file to a directory with the same file name minus .zip extension.
 unzipd() {
     local name="$1"
@@ -183,8 +178,8 @@ alias bashconfig='$EDITOR ~/.bashrc'
 alias beetconfig='$EDITOR ~/.config/beets/config.yaml'
 alias dwlconfig='$EDITOR ~/.config/dwl/'
 alias gitconfig='$EDITOR ~/.config/git/config'
-alias homeconfig='$EDITOR ~/.config/home-manager/home.nix'
-alias hxconfig='$EDITOR= ~/.config/helix/config.toml'
+alias homeconfig='cd ~/.config/home-manager/ && $EDITOR home.nix'
+alias hxconfig='cd ~/.config/helix/ && $EDITOR config.toml'
 alias hyprconfig='$EDITOR ~/.config/hypr/hyprland.conf'
 alias hypridleconfig='$EDITOR ~/.config/hypr/hypridle.conf'
 alias joshutoconfig='$EDITOR ~/.config/joshuto/'
