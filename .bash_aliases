@@ -8,7 +8,7 @@ unset IFS
 ################################################################################
 
 export EDITOR=hx
-export VISUAL="$EDITOR"
+export VISUAL=codium
 if [[ -v SSH_CONNECTION ]]; then
     if [[ $(command -v hx) ]]; then
         export EDITOR=nvim
@@ -41,13 +41,6 @@ export RANGER_LOAD_DEFAULT_RC=FALSE
 
 [[ -f /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
 [[ $(command -v npm) ]] && nvm_node_modules=$(npm -g root)/npm/node_modules
-
-################################################################################
-# Lynx Browser.
-################################################################################
-
-export LYNX_CFG=$HOME/.config/lynx/lynx.cfg
-export LYNX_LSS=$HOME/.config/lynx/lynx.lss
 
 ################################################################################
 # Functions.
@@ -218,7 +211,6 @@ alias zshconfig='$EDITOR ~/.config/zsh/.zshrc'
 
 alias passconfig='cd ~/.local/share/pass'
 alias passrefresh='kdeconnect-cli --refresh'
-# alias passdiff='diff -q -r ~/.local/share/pass/ /run/user/1000/5bfbfc95be7243f8/primary/pass/'
 
 alias awkscratch='scratchpad scratchpad.awk'
 alias bashscratch='scratchpad scratchpad.bash'
@@ -257,37 +249,20 @@ alias dotfilesui='repo_ui ~/.config/dotfiles/ ~ && git-summary ~/Documents -s'
 alias passbgit='repo_git ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 alias passbgui='repo_ui ~/.local/share/pass/.backup/.git ~/.local/share/pass/.backup'
 
-# Zict dictionary aliases.
-alias ens='zict search en'
-alias esb='zict search es'
-alias rus='zict search ru'
-alias ани='zict search en' # искать
-alias руи='zict search ru' # искать
-
-# Dictionary aliases.
-alias da='sdcv --non-interactive --color'                                   # Dictionary all <word>
-alias de='sdcv --non-interactive --color --use-dict --exact-search WordNet' # Dictionary exact <word>
-alias di='sdcv --non-interactive --color --use-dict WordNet'                # Dictionary <word>
-alias th='sdcv --non-interactive --color --use-dict "Moby Thesaurus II"'    # Thesaurus <word>
-
-alias e='exit'
+alias q='exit' # quit
+alias e='$EDITOR'
+alias v='$VISUAL'
 alias g='git'
 alias j='joshutocd'
 alias l='lfcd'
-alias m='man -Hlynx'
 alias n='nvim'
 alias r='rangercd'
-alias v='nvim'
 alias в='exit'
 
 alias alacrittyx11='WAYLAND_DISPLAY= alacritty'
-alias bookmark='$EDITOR ~/Documents/Private/bookmark-browser.yaml'
 alias fixtime='sudo ntpd -qg' # ntpdate -s ntp.ubuntu.com; sudo hwclock -w
-alias freemusic='mpv ~/Music/chosic.com -shuffle -no-video'
 alias gdiff='git fetch && git diff origin/master HEAD'
 alias lf='$HOME/Code/lfimg/lfrun'
-alias locksway='swaylock -i /usr/share/backgrounds/suckless-wallpapers/nord_hills.png'
-alias lockx='xscreensaver-command -lock'
 alias man='man -a'
 alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias nr='setsid --fork alacritty -e ranger'
@@ -295,11 +270,6 @@ alias nt='setsid --fork alacritty'
 alias nullls='cd $HOME/.local/share/nvim/lazy/null-ls.nvim/lua/null-ls/builtins'
 alias playmusic='mpv --shuffle ~/SynologyDrive/Music/*'
 alias rgf='rg --files | rg'
-alias rsyncdelete='rsync -arv --delete'
-alias rsyncdryrun='rsync -arvn --delete'
-alias y='yt-dlp --write-thumbnail --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths ~/Music/YouTube'
-alias yd='yt-dlp --cookies-from-browser brave --write-thumbnail --embed-metadata --extract-audio --sub-langs "en.*,ja,es,ru" --write-subs --audio-format mp3 --paths'
-alias dm='yt-dlp --cookies-from-browser brave -x --audio-format mp3 --audio-quality 0 --embed-thumbnail --add-metadata -o "%(artist)s - %(title)s.%(ext)s"'
 alias zathurah='zathura --config-dir="$HOME/.config/zathura/base"'
 
 alias nixadd='nix derivation add'
