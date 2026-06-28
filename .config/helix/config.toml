@@ -1,6 +1,9 @@
 #theme = "dark_plus"
 theme = "onedark"
 
+[editor]
+bufferline = "multiple"
+
 [editor.cursor-shape]
 insert = "bar"
 normal = "block"
@@ -8,4 +11,3 @@ select = "underline"
 
 [editor.file-picker]
 hidden = false
-

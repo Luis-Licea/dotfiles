@@ -1,11 +1,11 @@
 {pkgs, ...}: {
   imports = [
-    ./audio.nix
+    # ./audio.nix
     ./block-youtube.nix
     ./fonts.nix
     ./ntfs.nix
     ./printer.nix
-    ./virtualization.nix
+    # ./virtualization.nix
   ];
 
   programs = {
@@ -26,18 +26,15 @@
       gnome-calendar
       gnome-clocks
       gnome-disk-utility
-      gnome-maps
       gnome-system-monitor
       hyprshot # Screenshot utility.
       libnotify # Notification commands.
       pwvucontrol # Volume control.
-      rofi-unwrapped
       waybar
-      wdisplays # tool to configure displays
       wlogout # Logout menu.
       wofi
       xdg-utils # for opening default programs when clicking links
-      xfce.thunar # dolphin installs the fucking annoying, intrusive kwallet
+      thunar # dolphin installs the fucking annoying, intrusive kwallet
     ];
     etc."greetd/environments".text = ''
       Hyprland
@@ -49,7 +46,7 @@
     settings = {
       # Automatic login.
       initial_session = {
-        command = "Hyprland";
+        command = "start-hyprland";
         user = "luis";
       };
       default_session = settings.initial_session;

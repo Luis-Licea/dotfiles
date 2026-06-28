@@ -21,12 +21,6 @@ if [[ -v SSH_CONNECTION ]]; then
     fi
 fi
 
-if [[ $(command -v nvimpager) ]]; then
-    export PAGER=nvimpager
-elif [[ $(command -v most) ]]; then
-    export PAGER=most
-fi
-
 ################################################################################
 # Ranger.
 ################################################################################
@@ -61,7 +55,7 @@ repo_git() {
     git --git-dir="$1" --work-tree="$2" "${@:3}"
 }
 repo_ui() {
-    gitui -d "$1" -w "$2" "${@:3}"
+    VISUAL=$EDITOR gitui -d "$1" -w "$2" "${@:3}"
 }
 
 rangercd() {

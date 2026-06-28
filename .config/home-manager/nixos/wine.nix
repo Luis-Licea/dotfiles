@@ -9,7 +9,7 @@
     winetricks
 
     # native wayland support (unstable)
-    wineWowPackages.waylandFull
+    wineWow64Packages.waylandFull
   ];
 }
 # winetricks sound=alsa
