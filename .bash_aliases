@@ -67,24 +67,6 @@ rangercd() {
     echo "Level ${RANGER_LEVEL:-0}"
 }
 
-joshutocd() {
-    local id=$$
-    mkdir -p "/tmp/$USER"
-    local output_file="/tmp/$USER/joshuto-cwd-$id"
-    env joshuto --output-file "$output_file" "$@"
-    local exit_code=$?
-
-    case "$exit_code" in
-        # regular exit
-        0) ;;
-        # output contains current directory
-        101) cd "$(cat "$output_file")" || exit ;;
-        # output selected files
-        102) ;;
-        *) echo "Exit code: $exit_code" ;;
-    esac
-}
-
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
 setup_js_scratchpad() {
     cd /tmp || exit
@@ -185,7 +167,6 @@ alias homeconfig='cd ~/.config/home-manager/ && $EDITOR home.nix'
 alias hxconfig='cd ~/.config/helix/ && $EDITOR config.toml'
 alias hyprconfig='$EDITOR ~/.config/hypr/hyprland.conf'
 alias hypridleconfig='$EDITOR ~/.config/hypr/hypridle.conf'
-alias joshutoconfig='$EDITOR ~/.config/joshuto/'
 alias mostconfig='$EDITOR ~/.config/mostrc'
 alias mpvconfig='$EDITOR ~/.config/mpv'
 alias nixconfig='sudo -E $EDITOR /etc/nixos/configuration.nix'
@@ -251,8 +232,6 @@ alias q='exit' # quit
 alias e='$EDITOR'
 alias v='$VISUAL'
 alias g='git'
-alias j='joshutocd'
-alias l='lfcd'
 alias n='nvim'
 alias r='rangercd'
 alias в='exit'
