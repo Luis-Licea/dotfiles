@@ -14,3 +14,13 @@ hidden = false
 [keys.normal]
 C-k = "page_up"
 C-j = "page_down"
+
+# yank-path
+y.p = ':sh printf "%sh{pwd}/%{buffer_name}" | wl-copy'
+# Yank selection.
+y.y = ["yank", ":clipboard-yank"]
+# New terminal in CWD
+y.t = ':sh setsid --fork alacritty --working-directory "%sh{pwd}"'
+
+[keys.select]
+y = ["yank", ":clipboard-yank"]   
