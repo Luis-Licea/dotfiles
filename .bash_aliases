@@ -162,6 +162,15 @@ kpass-add() {
     printf "%s\n%s" "$db_password" "$entry_password" | keepassxc-cli add ~/Documents/Vault.kdbx "${@:1: -1}" -p
 }
 
+function y() {
+    local tmp cwd
+	  tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	  command yazi "$@" --cwd-file="$tmp"
+	  IFS= read -r -d '' cwd < "$tmp"
+	  [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd" || return
+	  command rm -f -- "$tmp"
+}
+
 ################################################################################
 # Aliases.
 ################################################################################
@@ -251,7 +260,6 @@ alias в='exit'
 alias alacrittyx11='WAYLAND_DISPLAY= alacritty'
 alias fixtime='sudo ntpd -qg' # ntpdate -s ntp.ubuntu.com; sudo hwclock -w
 alias gdiff='git fetch && git diff origin/master HEAD'
-alias lf='$HOME/Code/lfimg/lfrun'
 alias man='man -a'
 alias mpvh='mpv --config-dir="$HOME/.config/mpv/base"'
 alias nr='setsid --fork alacritty -e ranger'
