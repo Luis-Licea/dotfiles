@@ -14,7 +14,6 @@
     # ./ai.nix
     # ./game.nix
     ./hyprland.nix
-    ./nvim.nix
     ./shell.nix
     ./pager.nix
     # ./wine.nix
