@@ -17,6 +17,7 @@
     ./shell.nix
     ./pager.nix
     ./yazi.nix
+    ./helix.nix
     # ./wine.nix
   ];
 
@@ -113,27 +114,6 @@
       git
       git-lfs
       gitui
-
-      # Text editor
-      helix
-
-      # Formatter for Markdown
-      prettier
-
-      # LSPs and formatters for coding
-      # Markdown LSP
-      marksman
-      # Lua
-      stylua # Formatter
-      lua-language-server # LSP
-      # Bash
-      shellcheck # Bash linter.
-      shellharden # Bash linter, formatter.
-      shfmt # Bash formatter.
-      bash-language-server # Bash language server.
-      # Nix
-      nil # Nix language server.
-      nixd # Nix language server.
 
       brave # Essential.
       cached-nix-shell
