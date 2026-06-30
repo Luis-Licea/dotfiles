@@ -3,25 +3,29 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   imports = [
     # ./8bitdo.nix
     # ./dwl.nix
     # ./gnome.nix
     # ./gpu.nix
     # ./synology.nix
-    ./ai.nix
-    ./game.nix
+    # ./ai.nix
+    # ./game.nix
     ./hyprland.nix
-    ./ntfs.nix
     ./nvim.nix
     ./shell.nix
-    ./wine.nix
+    ./pager.nix
+    # ./wine.nix
   ];
 
   nix = {
     settings = {
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       use-xdg-base-directories = true;
     };
     # package = pkgs.nixVersions.nix_2_19;
@@ -88,6 +92,10 @@
     systemPackages = with pkgs; [
       alacritty # Essential.
 
+      # TUI file manager
+      #yazi
+      #yaziPlugins.git
+
       # Music
       eartag
       media-downloader # Yt-dlp front-end
@@ -106,8 +114,26 @@
       # Formatter for Markdown
       prettier
 
+      # LSPs and formatters for coding
+      # Markdown LSP
+      marksman
+      # Lua
+      stylua # Formatter
+      lua-language-server # LSP
+      # Bash
+      shellcheck # Bash linter.
+      shellharden # Bash linter, formatter.
+      shfmt # Bash formatter.
+      bash-language-server # Bash language server.
+      # Nix
+      nil # Nix language server.
+      nixd # Nix language server.
+
       # Unified shell theme
       starship
+
+      # Needeb by yazi
+      ueberzugpp
 
       brave # Essential.
       cached-nix-shell
@@ -120,20 +146,32 @@
     ];
   };
 
+  programs.yazi = {
+    enable = true;
+    plugins = {
+      git = pkgs.yaziPlugins.git;
+    };
+  };
+
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
   # Disable annoying prompt to enter credentials when opening Thunar or Brave.
   services.gnome.gnome-keyring.enable = lib.mkForce false;
 
+  system = {
+    # Automate updating nixos channel.
+    autoUpgrade.enable = true;
+    autoUpgrade.allowReboot = true; # Reboots if kernel changes
 
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  system.copySystemConfiguration = false;
+    # Copy the NixOS configuration file and link it from the resulting system
+    # (/run/current-system/configuration.nix). This is useful in case you
+    # accidentally delete configuration.nix.
+    copySystemConfiguration = false;
+  };
 
   # Whether to generate the manual page index caches. This allows searching for
   # a page or keyword using utilities like apropos(1) and the -k option of
   # man(1).
-  documentation.man.generateCaches = true;
+  documentation.man.cache.enable = true;
 }

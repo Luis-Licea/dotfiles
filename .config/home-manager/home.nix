@@ -1,16 +1,15 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   # hardware boot networking locale graphics audio users packages gui
   imports = [
     # ./nix/dwl.nix
-    ./nix/ai.nix
-    ./nix/cli.nix
-    ./nix/dconf.nix
-    ./nix/development.nix
-    ./nix/font.nix
-    ./nix/game.nix
-    ./nix/i18n.nix
-    ./nix/multimedia.nix
-    ./nix/nvim.nix
+    # ./nix/ai.nix
+    # ./nix/cli.nix
+    # ./nix/dconf.nix
+    # ./nix/development.nix
+    # ./nix/game.nix
+    # ./nix/i18n.nix
+    # ./nix/multimedia.nix
+    #./nix/nvim.nix
     ./nix/pass.nix
     ./nix/synology.nix
     ./nix/vscodium.nix

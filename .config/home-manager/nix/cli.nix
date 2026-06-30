@@ -78,6 +78,7 @@ with pkgs; let
 
     # hexyl
     # numbat
+    essentia-extractor
     ffmpeg-full
     handbrake
     # vivid

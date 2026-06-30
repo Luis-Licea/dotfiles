@@ -24,18 +24,18 @@
     ccls # C/C++ language server.
     neocmakelsp
   ];
-  webDevPackages = [
-    # cssls # CSS language server.
-  ];
+  # webDevPackages = [
+  #   # cssls # CSS language server.
+  # ];
   other = with pkgs; [
     # 'checkstyle', # Java linter.
     # 'cmakelang', # CMake linter.
     # 'google-java-format', # Java formatter.
-    jq # JSON formatter.
+    # jq # JSON formatter.
     # 'prettier', # Markdown formatter.
     stylua # Lua formatter.
-    jsonnet # Functional language similar to Nix.
-    perlnavigator # Perl linter.
+    # jsonnet # Functional language similar to Nix.
+    # perlnavigator # Perl linter.
 
     # # Debug adapters.
     # 'bash-debug-adpater', # Bash, Sh.
@@ -67,7 +67,7 @@
     # typst_lsp = 'typst_lsp', # Typst
     # yamlls = 'yaml-language-server', # YAML
 
-    jdk17 # Needed by ltex-ls.
+    # jdk17 # Needed by ltex-ls.
   ];
 in {
   home.packages =
@@ -75,8 +75,8 @@ in {
     ++ pythonPackages
     ++ bashPackages
     ++ nixPackages
-    ++ cppPackages
-    ++ webDevPackages;
+    ++ cppPackages;
+    # ++ webDevPackages;
 
   programs.neovim = {
     enable = true;

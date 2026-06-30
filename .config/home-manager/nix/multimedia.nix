@@ -1,5 +1,6 @@
-{pkgs, ...}:
-with pkgs; let
+{ pkgs, ... }:
+with pkgs;
+let
   viewers = [
     # mpv # Install as a system package for stability.
     calibre
@@ -14,7 +15,7 @@ with pkgs; let
     kdePackages.gwenview
     krita
     onlyoffice-bin
-    soundconverter
+    # soundconverter
     sqlite
     sqlitebrowser
   ];
@@ -43,7 +44,7 @@ with pkgs; let
     zstd
   ];
   finance = [
-      # gnucash
+    # gnucash
   ];
   diffTools = [
     czkawka
@@ -53,10 +54,11 @@ with pkgs; let
     # citations
     # gnome.gnome-sound-recorder
     audio-recorder
-    gnome-secrets
+    # gnome-secrets
     nextjs-ollama-llm-ui
   ];
-in {
+in
+{
   home.packages =
     viewers
     ++ converters
