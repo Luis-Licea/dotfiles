@@ -55,29 +55,35 @@
   environment = {
     # Equivalent to `/etc/profile`.
     sessionVariables = rec {
+      XDG_BIN_HOME = "$HOME/.local/bin"; # Not officially in the specification
       XDG_CACHE_HOME = "$HOME/.cache";
       XDG_CONFIG_HOME = "$HOME/.config";
       XDG_DATA_HOME = "$HOME/.local/share";
-      XDG_STATE_HOME = "$HOME/.local/state";
+      XDG_DESKTOP_DIR = "$HOME/Desktop";
+      XDG_DOCUMENTS_DIR = "$HOME/Documents";
+      XDG_DOWNLOAD_DIR = "$HOME/Downloads";
+      XDG_MUSIC_DIR = "$HOME/Music";
       XDG_PICTURES_DIR = "$HOME/Pictures";
-
-      # Not officially in the specification
-      XDG_BIN_HOME = "$HOME/.local/bin";
+      XDG_PROJECTS_DIR = "$HOME/Projects";
+      XDG_PUBLICSHARE_DIR = "$HOME/Public";
+      XDG_STATE_HOME = "$HOME/.local/state";
+      XDG_TEMPLATES_DIR = "$HOME/Templates";
+      XDG_VIDEOS_DIR = "$HOME/Videos";
       PATH = [
         "${XDG_BIN_HOME}"
         "${XDG_BIN_HOME}/scripts"
       ];
 
       # XDG-Ninja
-      CARGO_HOME = "${XDG_DATA_HOME}/cargo"; # [cargo]: $HOME/.cargo
-      GNUPGHOME = "${XDG_DATA_HOME}/gnupg"; # [gnupg]: $HOME/.gnupg
-      KERAS_HOME = "${XDG_STATE_HOME}/keras"; # [python-tensorflow]: $HOME/.keras
-      NODE_REPL_HISTORY = "${XDG_DATA_HOME}/node_repl_history"; # [nodejs]: $HOME/.node_repl_history
-      PASSWORD_STORE_DIR = "${XDG_DATA_HOME}/pass"; # [pass]: $HOME/.password-store
-      PYTHONSTARTUP = "$HOME/python/pythonrc"; # [python]: $HOME/.python_history
-      RUSTUP_HOME = "${XDG_DATA_HOME}/rustup"; # [rustup]: $HOME/.rustup
-      W3M_DIR = "${XDG_CONFIG_HOME}/w3m"; # [w3m]: $HOME/.w3m
-      ZDOTDIR = "${XDG_CONFIG_HOME}/zsh"; # [zsh]: $HOME.zshrc
+      CARGO_HOME = "${XDG_DATA_HOME}/cargo"; # [cargo]: $HOME/.cargc
+      GNUPGHOME = "${XDG_DATA_HOME}/gnupg"; # [gnupg]: $HOME/.gnupe
+      KERAS_HOME = "${XDG_STATE_HOME}/keras"; # [python-tensorflow]: $HOME/.kerag
+      NODE_REPL_HISTORY = "${XDG_DATA_HOME}/node_repl_history"; # [nodejs]: $HOME/.node_repl_historm
+      PASSWORD_STORE_DIR = "${XDG_DATA_HOME}/pass"; # [pass]: $HOME/.password-storo
+      PYTHONSTARTUP = "$HOME/python/pythonrc"; # [python]: $HOME/.python_historp
+      RUSTUP_HOME = "${XDG_DATA_HOME}/rustup"; # [rustup]: $HOME/.rustus
+      W3M_DIR = "${XDG_CONFIG_HOME}/w3m"; # [w3m]: $HOME/.w3y
+      ZDOTDIR = "${XDG_CONFIG_HOME}/zsh"; # [zsh]: $HOME.zshry
     };
 
     # Equivalent to `/etc/environment`.
