@@ -11,7 +11,7 @@
     # ./gnome.nix
     # ./gpu.nix
     # ./synology.nix
-    # ./ai.nix
+    ./ai.nix
     # ./game.nix
     ./hyprland.nix
     ./shell.nix
@@ -99,10 +99,6 @@
     systemPackages = with pkgs; [
       alacritty # Essential.
 
-      # TUI file manager
-      #yazi
-      #yaziPlugins.git
-
       # Music
       eartag
       media-downloader # Yt-dlp front-end
@@ -115,14 +111,18 @@
       git-lfs
       gitui
 
+      # Browsers
       brave # Essential.
+      ungoogled-chromium # Used for isolation.
+
+      # Nixos
       cached-nix-shell
       home-manager
+
       mpv # HM version does not work correctly.
       obs-studio
       paperwork # HM version is a few minor versions behind.
       simple-scan # HM version does not work correctly.
-      ungoogled-chromium # Used for isolation.
     ];
   };
 

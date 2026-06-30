@@ -184,6 +184,7 @@ alias vscodiumconfig='$EDITOR ~/.config/VSCodium/User/'
 alias waybarconfig='$EDITOR ~/.config/waybar/'
 alias wlogoutconfig='$EDITOR ~/.config/wlogout/layout'
 alias woficonfig='$EDITOR ~/.config/wofi/config'
+alias yaziconfig='cd ~/.config/yazi/ && $EDITOR yazi.toml'
 alias zathuraconfig='$EDITOR ~/.config/zathura/zathurarc'
 alias zshconfig='$EDITOR ~/.config/zsh/.zshrc'
 
