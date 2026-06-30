@@ -20,4 +20,6 @@
     nil # Nix language server.
     nixd # Nix language server.
   ];
+
+  environment.variables.EDITOR = "hx";
 }

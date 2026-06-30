@@ -7,7 +7,6 @@ unset IFS
 # Preferred editor for local and remote sessions
 ################################################################################
 
-export EDITOR=hx
 export VISUAL=codium
 if [[ -v SSH_CONNECTION ]]; then
     if [[ $(command -v hx) ]]; then
