@@ -2,7 +2,8 @@
   pkgs,
   config,
   ...
-}: {
+}:
+{
   # Needed to make Zsh the default shell.
   programs = {
     zsh = {
@@ -11,7 +12,10 @@
       syntaxHighlighting.enable = true;
       ohMyZsh = {
         enable = true;
-        plugins = ["vi-mode" "git"];
+        plugins = [
+          "vi-mode"
+          "git"
+        ];
       };
     };
 
@@ -20,6 +24,7 @@
 
   environment.systemPackages = with pkgs; [
     nushell
+    starship # Unified shell theme
   ];
 
   # This option defines the default shell assigned to user accounts. This can
@@ -29,5 +34,9 @@
   users.defaultUserShell = pkgs.zsh;
 
   # Enable users to log in with Bash, ZSh, and Nushell shells in GDM.
-  environment.shells = with pkgs; [bashInteractive zsh nushell];
+  environment.shells = with pkgs; [
+    bashInteractive
+    zsh
+    nushell
+  ];
 }

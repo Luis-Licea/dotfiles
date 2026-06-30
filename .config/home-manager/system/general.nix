@@ -16,6 +16,7 @@
     ./hyprland.nix
     ./shell.nix
     ./pager.nix
+    ./yazi.nix
     # ./wine.nix
   ];
 
@@ -134,12 +135,6 @@
       nil # Nix language server.
       nixd # Nix language server.
 
-      # Unified shell theme
-      starship
-
-      # Needeb by yazi
-      ueberzugpp
-
       brave # Essential.
       cached-nix-shell
       home-manager
@@ -149,13 +144,6 @@
       simple-scan # HM version does not work correctly.
       ungoogled-chromium # Used for isolation.
     ];
-  };
-
-  programs.yazi = {
-    enable = true;
-    plugins = {
-      git = pkgs.yaziPlugins.git;
-    };
   };
 
   # Enable the OpenSSH daemon.
