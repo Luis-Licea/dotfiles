@@ -17,6 +17,7 @@ C-j = "page_down"
 
 # yank-path
 y.p = ':sh printf "%sh{pwd}/%{buffer_name}" | wl-copy'
+y.d = ':sh printf "%sh{pwd}" | wl-copy'
 # Yank selection.
 y.y = ["yank", ":clipboard-yank"]
 # New terminal in CWD
