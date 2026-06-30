@@ -1,13 +1,4 @@
-{pkgs, ...}: {
-  imports = [
-    # ./audio.nix
-    ./block-youtube.nix
-    ./fonts.nix
-    ./ntfs.nix
-    ./printer.nix
-    # ./virtualization.nix
-  ];
-
+{ pkgs, ... }: {
   programs = {
     geary.enable = true;
     hyprland = {
@@ -35,6 +26,33 @@
       wofi
       xdg-utils # for opening default programs when clicking links
       thunar # dolphin installs the fucking annoying, intrusive kwallet
+
+      alacritty # Essential.
+
+      # Music
+      eartag
+      media-downloader # Yt-dlp front-end
+      lollypop # Music player
+      beets # Musig organizer
+      lrcget # Synced lyrics downloader
+
+      # Version control
+      git
+      git-lfs
+      gitui
+
+      # Browsers
+      brave # Essential.
+      ungoogled-chromium # Used for isolation.
+
+      # Nixos
+      cached-nix-shell
+      home-manager
+
+      mpv # HM version does not work correctly.
+      obs-studio
+      paperwork # HM version is a few minor versions behind.
+      simple-scan # HM version does not work correctly.
     ];
     etc."greetd/environments".text = ''
       Hyprland
