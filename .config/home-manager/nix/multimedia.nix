@@ -49,9 +49,6 @@ with pkgs; let
     czkawka
     meld
   ];
-  language = [
-    goldendict-ng
-  ];
   other = [
     # citations
     # gnome.gnome-sound-recorder
@@ -69,6 +66,5 @@ in {
     ++ archivers
     ++ finance
     ++ diffTools
-    ++ language
     ++ other;
 }
