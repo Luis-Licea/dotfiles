@@ -8,6 +8,7 @@ unset IFS
 ################################################################################
 
 export VISUAL=codium
+export EDITOR=hx
 if [[ -v SSH_CONNECTION ]]; then
     if [[ $(command -v hx) ]]; then
         export EDITOR=nvim
@@ -19,21 +20,6 @@ if [[ -v SSH_CONNECTION ]]; then
         export EDITOR=vi
     fi
 fi
-
-################################################################################
-# Ranger.
-################################################################################
-
-# Disable loading Ranger's global configuration files because custom
-# configurations are provided.
-export RANGER_LOAD_DEFAULT_RC=FALSE
-
-################################################################################
-# Node Version Manager.
-################################################################################
-
-[[ -f /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
-[[ $(command -v npm) ]] && nvm_node_modules=$(npm -g root)/npm/node_modules
 
 ################################################################################
 # Functions.
@@ -68,6 +54,7 @@ rangercd() {
 
 # Create a symlink to globally installed node modules for access to Mocha and Chai.
 setup_js_scratchpad() {
+    [[ $(command -v npm) ]] && nvm_node_modules=$(npm -g root)/npm/node_modules
     cd /tmp || exit
     if [[ ! -f package.json ]]; then
         npm init -f >/dev/null
@@ -164,7 +151,7 @@ alias dwlconfig='$EDITOR ~/.config/dwl/'
 alias gitconfig='$EDITOR ~/.config/git/config'
 alias homeconfig='cd ~/.config/home-manager/ && $EDITOR home.nix'
 alias hxconfig='cd ~/.config/helix/ && $EDITOR config.toml'
-alias hyprconfig='$EDITOR ~/.config/hypr/hyprland.conf'
+alias hyprconfig='cd ~/.config/hypr/ && $EDITOR hyprland.lua'
 alias hypridleconfig='$EDITOR ~/.config/hypr/hypridle.conf'
 alias mostconfig='$EDITOR ~/.config/mostrc'
 alias mpvconfig='$EDITOR ~/.config/mpv'
