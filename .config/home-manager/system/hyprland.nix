@@ -53,6 +53,7 @@
       obs-studio
       paperwork # HM version is a few minor versions behind.
       simple-scan # HM version does not work correctly.
+
     ];
     etc."greetd/environments".text = ''
       Hyprland
